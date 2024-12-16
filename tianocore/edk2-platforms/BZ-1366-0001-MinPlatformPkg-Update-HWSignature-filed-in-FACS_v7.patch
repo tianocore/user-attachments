@@ -1,0 +1,372 @@
+From 1ac8b05198d2d111ea6309820dc8db966cd23da2 Mon Sep 17 00:00:00 2001
+From: VincentX Ke <vincentx.ke@intel.com>
+Date: Thu, 13 Apr 2023 21:57:33 +0800
+Subject: [PATCH v7] MinPlatformPkg: Update HWSignature filed in FACS
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4428
+
+Calculating CRC based on each ACPI table.
+Update HWSignature filed in FACS based on CRC while ACPI table changed.
+
+Change-Id: Ic0ca66ff10cda0fbcd0683020fab1bc9aea9b78c
+Signed-off-by: VincentX Ke <vincentx.ke@intel.com>
+Cc: Chasel Chiu <chasel.chiu@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Isaac Oram <isaac.w.oram@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ankit Sinha<ankit.sinha@intel.com>
+Signed-off-by: VincentX Ke <vincentx.ke@intel.com>
+---
+ Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.c   | 287 +++++++++++++++-----
+ Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.inf |   1 +
+ 2 files changed, 223 insertions(+), 65 deletions(-)
+
+diff --git a/Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.c b/Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.c
+index e967031a3b..3dca6f99f7 100644
+--- a/Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.c
++++ b/Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.c
+@@ -1191,98 +1191,255 @@ PlatformUpdateTables (
+ }
+ 
+ /**
+-  This function calculates RCR based on PCI Device ID and Vendor ID from the devices
+-  available on the platform.
+-  It also includes other instances of BIOS change to calculate CRC and provides as
+-  HWSignature filed in FADT table.
++  This function calculates CRC based on each offset in the ACPI table.
++
++  @param[in] Table  The ACPI table required to calculate CRC.
++
++  @retval CRC       A pointer to allocate UINT32 that
++                    contains the CRC32 data.
++**/
++UINT32
++AcpiTableCrcCalculator (
++  IN  EFI_ACPI_COMMON_HEADER  *Table
++  )
++{
++  EFI_STATUS  Status;
++  UINT32      CRC;
++
++  Status = EFI_SUCCESS;
++  CRC    = 0;
++
++  //
++  // Calculate CRC value.
++  //
++  if (Table->Signature == EFI_ACPI_6_5_FIRMWARE_ACPI_CONTROL_STRUCTURE_SIGNATURE) {
++    //
++    // Zero HardwareSignature field before Calculating FACS CRC
++    //
++    ((EFI_ACPI_6_5_FIRMWARE_ACPI_CONTROL_STRUCTURE *)Table)->HardwareSignature = 0;
++  }
++
++  Status = gBS->CalculateCrc32 ((UINT8 *)Table, (UINTN)Table->Length, &CRC);
++  return CRC;
++}
++
++/**
++  This function count ACPI tables in RSDT/XSDT and return the result.
++
++  @param[in] Sdt                ACPI XSDT/RSDT.
++  @param[in] TablePointerSize   Size of table pointer:
++                                4(RSDT) or 8(XSDT).
++
++  @retval TableCount            The total number of ACPI tables in
++                                RSDT or XSDT.
++**/
++UINTN
++CountTableInSDT (
++  IN  EFI_ACPI_DESCRIPTION_HEADER  *Sdt,
++  IN  UINTN                        TablePointerSize
++  )
++{
++  UINTN                   Index;
++  UINTN                   TableCount;
++  UINTN                   EntryCount;
++  UINT64                  EntryPtr;
++  UINTN                   BasePtr;
++  EFI_ACPI_COMMON_HEADER  *Table;
++
++  EntryCount = (Sdt->Length - sizeof (EFI_ACPI_DESCRIPTION_HEADER)) / TablePointerSize;
++  BasePtr    = (UINTN)(Sdt + 1);
++
++  for (Index = 0, TableCount = 0; Index < EntryCount; Index++) {
++    EntryPtr = 0;
++    Table    = NULL;
++    CopyMem (&EntryPtr, (VOID *)(BasePtr + Index * TablePointerSize), TablePointerSize);
++    Table = (EFI_ACPI_COMMON_HEADER *)((UINTN)(EntryPtr));
++    if (Table) {
++      TableCount++;
++    }
++
++    if (Table->Signature == EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE_SIGNATURE) {
++      CopyMem ((VOID *)&Fadt, (VOID *)Table, sizeof (EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE));
++      if (Fadt.FirmwareCtrl || Fadt.XFirmwareCtrl) {
++        TableCount++;
++      }
++
++      if (Fadt.Dsdt || Fadt.XDsdt) {
++        TableCount++;
++      }
++    }
++  }
++
++  return TableCount;
++}
++
++/**
++  This function calculates CRC based on each ACPI table.
++  It also calculates CRC and provides as HWSignature filed in FACS.
+ **/
+ VOID
+-IsHardwareChange (
++IsAcpiTableChange (
+   VOID
+   )
+ {
+-  EFI_STATUS                    Status;
+-  UINTN                         Index;
+-  UINTN                         HandleCount;
+-  EFI_HANDLE                    *HandleBuffer;
+-  EFI_PCI_IO_PROTOCOL           *PciIo;
+-  UINT32                        CRC;
+-  UINT32                        *HWChange;
+-  UINTN                         HWChangeSize;
+-  UINT32                        PciId;
+-  UINTN                         Handle;
+-  EFI_ACPI_6_3_FIRMWARE_ACPI_CONTROL_STRUCTURE *FacsPtr;
+-  EFI_ACPI_6_3_FIXED_ACPI_DESCRIPTION_TABLE    *pFADT;
+-
+-  HandleCount  = 0;
+-  HandleBuffer = NULL;
+-
+-  Status = gBS->LocateHandleBuffer (
+-                  ByProtocol,
+-                  &gEfiPciIoProtocolGuid,
+-                  NULL,
+-                  &HandleCount,
+-                  &HandleBuffer
+-                  );
+-  if (EFI_ERROR (Status)) {
+-    return; // PciIO protocol not installed yet!
++  EFI_STATUS                                    Status;
++  UINTN                                         Index;
++  UINTN                                         AcpiTableCount;
++  UINTN                                         EntryCount;
++  UINTN                                         BasePtr;
++  UINT64                                        EntryPtr;
++  UINT32                                        *TableCrcRecord;
++  UINT32                                        HWSignature;
++  EFI_ACPI_COMMON_HEADER                        *Table;
++  EFI_ACPI_6_5_ROOT_SYSTEM_DESCRIPTION_POINTER  *Rsdp;
++  EFI_ACPI_DESCRIPTION_HEADER                   *Rsdt;
++  EFI_ACPI_DESCRIPTION_HEADER                   *Xsdt;
++  EFI_ACPI_6_5_FIRMWARE_ACPI_CONTROL_STRUCTURE  *FacsPtr;
++
++  Index          = 0;
++  AcpiTableCount = 0;
++  EntryCount     = 0;
++  BasePtr        = 0;
++  EntryPtr       = 0;
++  HWSignature    = 0;
++  TableCrcRecord = NULL;
++  Rsdp           = NULL;
++  Rsdt           = NULL;
++  Xsdt           = NULL;
++  FacsPtr        = NULL;
++
++  DEBUG ((DEBUG_INFO, "%a() - Start\n", __FUNCTION__));
++
++  Status = EfiGetSystemConfigurationTable (&gEfiAcpiTableGuid, (VOID **)&Rsdp);
++  if (EFI_ERROR (Status) || (Rsdp == NULL)) {
++    return;
++  }
++
++  Rsdt = (EFI_ACPI_DESCRIPTION_HEADER *)(UINTN)Rsdp->RsdtAddress;
++  Xsdt = (EFI_ACPI_DESCRIPTION_HEADER *)(UINTN)Rsdp->XsdtAddress;
++
++  if (Xsdt->Signature != EFI_ACPI_6_5_EXTENDED_SYSTEM_DESCRIPTION_TABLE_SIGNATURE) {
++    if (Rsdt->Signature != EFI_ACPI_6_5_ROOT_SYSTEM_DESCRIPTION_TABLE_SIGNATURE) {
++      return;
++    }
+   }
+ 
+   //
+-  // Allocate memory for HWChange and add additional entrie for
+-  // pFADT->XDsdt
++  // ACPI table count starts with 0.
++  // Then add ACPI tables found by RSDT/XSDT and FADT.
+   //
+-  HWChangeSize = HandleCount + 1;
+-  HWChange = AllocateZeroPool (sizeof(UINT32) * HWChangeSize);
+-  ASSERT(HWChange != NULL);
++  AcpiTableCount = CountTableInSDT (Xsdt, sizeof (UINT64));
++  if (AcpiTableCount == 0) {
++    AcpiTableCount = CountTableInSDT (Rsdt, sizeof (UINT32));
++  }
+ 
+-  if (HWChange == NULL) return;
++  //
++  // Allocate memory for founded ACPI tables.
++  //
++  TableCrcRecord = AllocateZeroPool (sizeof (UINT32) * AcpiTableCount);
++  if (TableCrcRecord == NULL) {
++    return;
++  }
+ 
+   //
+-  // add HWChange inputs: PCI devices
++  // Search XSDT
+   //
+-  for (Index = 0; HandleCount > 0; HandleCount--) {
+-    PciId = 0;
+-    Status = gBS->HandleProtocol (HandleBuffer[Index], &gEfiPciIoProtocolGuid, (VOID **) &PciIo);
+-    if (!EFI_ERROR (Status)) {
+-      Status = PciIo->Pci.Read (PciIo, EfiPciIoWidthUint32, 0, 1, &PciId);
+-      if (EFI_ERROR (Status)) {
+-        continue;
++  AcpiTableCount = 0;
++  EntryCount     = (Xsdt->Length - sizeof (EFI_ACPI_DESCRIPTION_HEADER)) / sizeof (UINT64);
++  BasePtr        = (UINTN)(Xsdt + 1);
++  for (Index = 0; Index < EntryCount; Index++) {
++    EntryPtr = 0;
++    Table    = NULL;
++    CopyMem ((VOID *)&EntryPtr, (VOID *)(BasePtr + Index * sizeof (UINT64)), sizeof (UINT64));
++    Table = (EFI_ACPI_COMMON_HEADER *)((UINTN)(EntryPtr));
++    if (Table) {
++      TableCrcRecord[AcpiTableCount++] = AcpiTableCrcCalculator (Table);
++    }
++
++    if (Table->Signature == EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE_SIGNATURE) {
++      CopyMem ((VOID *)&Fadt, (VOID *)Table, sizeof (EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE));
++      //
++      // Locate FACS in FADT
++      //
++      CopyMem ((VOID *)&EntryPtr, (VOID *)&Fadt.XFirmwareCtrl, sizeof (UINT64));
++      if (EntryPtr != 0) {
++        FacsPtr = (EFI_ACPI_6_5_FIRMWARE_ACPI_CONTROL_STRUCTURE *)(UINTN)((EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE *)Table)->XFirmwareCtrl;
++
++        TableCrcRecord[AcpiTableCount++] = AcpiTableCrcCalculator ((EFI_ACPI_COMMON_HEADER *)(UINTN)EntryPtr);
++      } else {
++        FacsPtr = (EFI_ACPI_6_5_FIRMWARE_ACPI_CONTROL_STRUCTURE *)(UINTN)((EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE *)Table)->FirmwareCtrl;
++
++        TableCrcRecord[AcpiTableCount++] = AcpiTableCrcCalculator ((EFI_ACPI_COMMON_HEADER *)(UINTN)Fadt.FirmwareCtrl);
++      }
++
++      //
++      // Locate DSDT in FADT
++      //
++      CopyMem ((VOID *)&EntryPtr, (VOID *)&Fadt.XDsdt, sizeof (UINT64));
++      if (EntryPtr != 0) {
++        TableCrcRecord[AcpiTableCount++] = AcpiTableCrcCalculator ((EFI_ACPI_COMMON_HEADER *)(UINTN)EntryPtr);
++      } else {
++        TableCrcRecord[AcpiTableCount++] = AcpiTableCrcCalculator ((EFI_ACPI_COMMON_HEADER *)(UINTN)Fadt.Dsdt);
+       }
+-      HWChange[Index++] = PciId;
+     }
+   }
+ 
+-  //
+-  // Locate FACP Table
+-  //
+-  Handle = 0;
+-  Status = LocateAcpiTableBySignature (
+-              EFI_ACPI_6_3_FIXED_ACPI_DESCRIPTION_TABLE_SIGNATURE,
+-              (EFI_ACPI_DESCRIPTION_HEADER **) &pFADT,
+-              &Handle
+-              );
+-  if (EFI_ERROR (Status) || (pFADT == NULL)) {
+-    return;  //Table not found or out of memory resource for pFADT table
++  if (FacsPtr->Signature != EFI_ACPI_6_5_FIRMWARE_ACPI_CONTROL_STRUCTURE_SIGNATURE) {
++    //
++    // Search RSDT
++    //
++    AcpiTableCount = 0;
++    EntryCount     = (Rsdt->Length - sizeof (EFI_ACPI_DESCRIPTION_HEADER)) / sizeof (UINT32);
++    BasePtr        = (UINTN)(Rsdt + 1);
++    for (Index = 0; Index < EntryCount; Index++) {
++      EntryPtr = 0;
++      Table    = NULL;
++      CopyMem ((VOID *)&EntryPtr, (VOID *)(BasePtr + Index * sizeof (UINT32)), sizeof (UINT32));
++      Table = (EFI_ACPI_COMMON_HEADER *)((UINTN)(EntryPtr));
++      if (Table) {
++        TableCrcRecord[AcpiTableCount++] = AcpiTableCrcCalculator (Table);
++      }
++
++      if (Table->Signature == EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE_SIGNATURE) {
++        CopyMem ((VOID *)&Fadt, (VOID *)Table, sizeof (EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE));
++        //
++        // Locate FACS in FADT
++        //
++        if (Fadt.FirmwareCtrl) {
++          FacsPtr = (EFI_ACPI_6_5_FIRMWARE_ACPI_CONTROL_STRUCTURE *)(UINTN)((EFI_ACPI_6_5_FIXED_ACPI_DESCRIPTION_TABLE *)Table)->FirmwareCtrl;
++
++          TableCrcRecord[AcpiTableCount++] = AcpiTableCrcCalculator ((EFI_ACPI_COMMON_HEADER *)(UINTN)Fadt.FirmwareCtrl);
++        }
++
++        //
++        // Locate DSDT in FADT
++        //
++        if (Fadt.Dsdt) {
++          TableCrcRecord[AcpiTableCount++] = AcpiTableCrcCalculator ((EFI_ACPI_COMMON_HEADER *)(UINTN)Fadt.Dsdt);
++        }
++      }
++    }
+   }
+ 
+   //
+-  // add HWChange inputs: others
++  // FACS not found
+   //
+-  HWChange[Index++] = (UINT32)pFADT->XDsdt;
++  if (FacsPtr->Signature != EFI_ACPI_6_5_FIRMWARE_ACPI_CONTROL_STRUCTURE_SIGNATURE) {
++    return;
++  }
+ 
+   //
+-  // Calculate CRC value with HWChange data.
++  // Calculate HWSignature data.
+   //
+-  Status = gBS->CalculateCrc32(HWChange, HWChangeSize, &CRC);
+-  DEBUG ((DEBUG_INFO, "CRC = %x and Status = %r\n", CRC, Status));
++  Status = gBS->CalculateCrc32 (TableCrcRecord, AcpiTableCount, &HWSignature);
++  DEBUG ((DEBUG_INFO, "HardwareSignature = %x and Status = %r\n", HWSignature, Status));
+ 
+   //
+   // Set HardwareSignature value based on CRC value.
+   //
+-  FacsPtr = (EFI_ACPI_6_3_FIRMWARE_ACPI_CONTROL_STRUCTURE *)(UINTN)pFADT->FirmwareCtrl;
+-  FacsPtr->HardwareSignature = CRC;
+-  FreePool (HWChange);
++  FacsPtr->HardwareSignature = HWSignature;
++  FreePool (TableCrcRecord);
++  DEBUG ((DEBUG_INFO, "%a() - End\n", __FUNCTION__));
+ }
+ 
+ VOID
+@@ -1329,7 +1486,7 @@ AcpiEndOfDxeEvent (
+   //
+   // Calculate Hardware Signature value based on current platform configurations
+   //
+-  IsHardwareChange ();
++  IsAcpiTableChange ();
+ }
+ 
+ /**
+diff --git a/Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.inf b/Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.inf
+index 694492112b..f47cc3908d 100644
+--- a/Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.inf
++++ b/Platform/Intel/MinPlatformPkg/Acpi/AcpiTables/AcpiPlatform.inf
+@@ -128,6 +128,7 @@
+   gEfiGlobalVariableGuid                        ## CONSUMES
+   gEfiHobListGuid                               ## CONSUMES
+   gEfiEndOfDxeEventGroupGuid                    ## CONSUMES
++  gEfiAcpiTableGuid                             ## CONSUMES
+ 
+ [Depex]
+   gEfiAcpiTableProtocolGuid           AND
+-- 
+2.39.2.windows.1
+

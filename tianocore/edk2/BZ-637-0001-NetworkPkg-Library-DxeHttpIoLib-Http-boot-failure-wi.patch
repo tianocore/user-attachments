@@ -1,0 +1,67 @@
+From a04881afbe68aec1dbec2e17db66494f4354c4c7 Mon Sep 17 00:00:00 2001
+From: GregX Yeh <gregx.yeh@intel.com>
+Date: Fri, 15 Jan 2021 14:17:42 +0800
+Subject: [PATCH] NetworkPkg/Library/DxeHttpIoLib: Http boot failure with no
+ initializes timeout value.
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=3170
+Using PcdHttpIoTimeout to set default timeout value to HttpIoLib.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+Signed-off-by: GregX Yeh <gregx.yeh@intel.com>
+---
+ NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c   | 1 +
+ NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.inf | 1 +
+ NetworkPkg/NetworkPkg.dec                        | 6 +++++-
+ 3 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c b/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c
+index 67583fb220..04b01adec5 100644
+--- a/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c
++++ b/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c
+@@ -189,6 +189,7 @@ HttpIoCreateIo (
+   HttpIo->Http        = Http;
+   HttpIo->Callback    = Callback;
+   HttpIo->Context     = Context;
++  HttpIo->Timeout     = PcdGet32 (PcdHttpIoTimeout);
+ 
+   if (ConfigData != NULL) {
+     if (HttpIo->IpVersion == IP_VERSION_4) {
+diff --git a/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.inf b/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.inf
+index 25f5eb2ec6..347f8d5508 100644
+--- a/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.inf
++++ b/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.inf
+@@ -43,3 +43,4 @@
+ 
+ [Pcd]
+   gEfiNetworkPkgTokenSpaceGuid.PcdMaxHttpChunkTransfer  ## SOMETIMES_CONSUMES
++  gEfiNetworkPkgTokenSpaceGuid.PcdHttpIoTimeout         ## SOMETIMES_CONSUMES
+diff --git a/NetworkPkg/NetworkPkg.dec b/NetworkPkg/NetworkPkg.dec
+index 2d0d7fd2dc..87725674e9 100644
+--- a/NetworkPkg/NetworkPkg.dec
++++ b/NetworkPkg/NetworkPkg.dec
+@@ -3,7 +3,7 @@
+ #
+ # This package provides network modules that conform to UEFI 2.4 specification.
+ #
+-# Copyright (c) 2009 - 2019, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2009 - 2021, Intel Corporation. All rights reserved.<BR>
+ # (C) Copyright 2015-2020 Hewlett Packard Enterprise Development LP<BR>
+ #
+ # SPDX-License-Identifier: BSD-2-Clause-Patent
+@@ -96,6 +96,10 @@
+   ## The maximum size of total HTTP chunk transfer.
+   # @Prompt Max size of total HTTP chunk transfer. the default value is 12MB.
+   gEfiNetworkPkgTokenSpaceGuid.PcdMaxHttpChunkTransfer|0x0C00000|UINT32|0x0000000E
++  
++  ## The Timeout value of HTTP IO.
++  # @Prompt The Timeout value of HTTP Io. Default value is 5000.
++  gEfiNetworkPkgTokenSpaceGuid.PcdHttpIoTimeout|5000|UINT32|0x0000000F
+ 
+ [PcdsFixedAtBuild, PcdsPatchableInModule]
+   ## Indicates whether HTTP connections (i.e., unsecured) are permitted or not.
+-- 
+2.16.2.windows.1
+

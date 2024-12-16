@@ -1,0 +1,58 @@
+From 34d7971c00ef8342182458df52317d6babfb7435 Mon Sep 17 00:00:00 2001
+Message-Id: <34d7971c00ef8342182458df52317d6babfb7435.1598196638.git.emergingsiva@gmail.com>
+From: "INDIA\\sivaramann" <emergingsiva@gmail.com>
+Date: Sun, 23 Aug 2020 20:37:56 +0530
+Subject: [PATCH 1/2] NetworkPackage: Bug fix changes for IP Getting assigned
+ even the IP Configuration is disabled in setup
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2873
+
+IP Configuration is disabled or not verified before Initiating the IP Configuration
+
+Signed-off-by: Contributor Name <sivaramann@ami.com>
+---
+ NetworkPkg/Ip4Dxe/Ip4Config2Impl.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/NetworkPkg/Ip4Dxe/Ip4Config2Impl.c b/NetworkPkg/Ip4Dxe/Ip4Config2Impl.c
+index 9cfad5916d..23ba25ce09 100644
+--- a/NetworkPkg/Ip4Dxe/Ip4Config2Impl.c
++++ b/NetworkPkg/Ip4Dxe/Ip4Config2Impl.c
+@@ -1968,7 +1968,8 @@ Ip4Config2InitInstance (
+   UINTN                 Index;
+   UINT16                IfIndex;
+   IP4_CONFIG2_DATA_ITEM *DataItem;
+-
++  BOOLEAN 				IPConfigEnabled = FALSE;
++  IP4_CONFIG2_IFR_NVDATA  *IfrFromNvData = NULL;
+ 
+   IpSb = IP4_SERVICE_FROM_IP4_CONFIG2_INSTANCE (Instance);
+ 
+@@ -2040,10 +2041,20 @@ Ip4Config2InitInstance (
+   // If not found, write initialized config data into NV variable
+   // as a default config data.
+   //
+-  Status = Ip4Config2ReadConfigData (IpSb->MacString, Instance);
+-  if (Status == EFI_NOT_FOUND) {
+-    Status = Ip4Config2WriteConfigData (IpSb->MacString, Instance);
+-  }
++    Status = GetVariable2(IpSb->MacString, &gIp4Config2NvDataGuid, (VOID**)&IfrFromNvData, NULL);
++    if(!EFI_ERROR(Status)){
++        if (IfrFromNvData->Configure == TRUE) {
++            Status = Ip4Config2ReadConfigData (IpSb->MacString, Instance);
++            if (Status == EFI_NOT_FOUND) {
++                Status = Ip4Config2WriteConfigData (IpSb->MacString, Instance);
++            }
++            IPConfigEnabled = TRUE;
++        }
++        FreePool(IfrFromNvData);
++    }
++    if(!IPConfigEnabled){
++        Status = Ip4Config2WriteConfigData (IpSb->MacString, Instance);
++    }
+ 
+   if (EFI_ERROR (Status)) {
+     return Status;
+-- 
+2.28.0.windows.1
+

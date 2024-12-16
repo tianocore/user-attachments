@@ -1,0 +1,179 @@
+From 9a98c593a5f61a9449ddd3036bc5d3886dc532ce Mon Sep 17 00:00:00 2001
+From: Jiewen Yao <jiewen.yao@intel.com>
+Date: Thu, 2 Nov 2017 18:21:13 +0800
+Subject: [PATCH 1/2] MdePkg/SmmMemLib: Add check for untested memory.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Jiewen Yao <jiewen.yao@intel.com>
+---
+ MdePkg/Library/SmmMemLib/SmmMemLib.c   | 90 +++++++++++++++++++-
+ MdePkg/Library/SmmMemLib/SmmMemLib.inf |  3 +-
+ 2 files changed, 90 insertions(+), 3 deletions(-)
+
+diff --git a/MdePkg/Library/SmmMemLib/SmmMemLib.c b/MdePkg/Library/SmmMemLib/SmmMemLib.c
+index db55a1a..88364cb 100644
+--- a/MdePkg/Library/SmmMemLib/SmmMemLib.c
++++ b/MdePkg/Library/SmmMemLib/SmmMemLib.c
+@@ -25,12 +25,20 @@
+ #include <Library/DebugLib.h>
+ #include <Library/MemoryAllocationLib.h>
+ #include <Library/UefiBootServicesTableLib.h>
++#include <Library/DxeServicesTableLib.h>
+ #include <Library/SmmServicesTableLib.h>
+ #include <Library/HobLib.h>
+ #include <Protocol/SmmAccess2.h>
+ #include <Protocol/SmmReadyToLock.h>
+ #include <Protocol/SmmEndOfDxe.h>
+ 
++//
++// attributes for reserved memory before it is promoted to system memory
++//
++#define EFI_MEMORY_PRESENT      0x0100000000000000ULL
++#define EFI_MEMORY_INITIALIZED  0x0200000000000000ULL
++#define EFI_MEMORY_TESTED       0x0400000000000000ULL
++
+ #define NEXT_MEMORY_DESCRIPTOR(MemoryDescriptor, Size) \
+   ((EFI_MEMORY_DESCRIPTOR *)((UINT8 *)(MemoryDescriptor) + (Size)))
+ 
+@@ -46,6 +54,9 @@ UINTN                 mMemoryMapEntryCount;
+ EFI_MEMORY_DESCRIPTOR *mMemoryMap;
+ UINTN                 mDescriptorSize;
+ 
++EFI_GCD_MEMORY_SPACE_DESCRIPTOR   *mSmmMemLibGcdMemSpace       = NULL;
++UINTN                             mSmmMemLibGcdMemNumberOfDesc = 0;
++
+ VOID                  *mRegistrationEndOfDxe;
+ VOID                  *mRegistrationReadyToLock;
+ 
+@@ -171,12 +182,28 @@ SmmIsBufferOutsideSmmValid (
+     if (!InValidCommunicationRegion) {
+       DEBUG ((
+         EFI_D_ERROR,
+-        "SmmIsBufferOutsideSmmValid: Not in ValidCommunicationRegion: Buffer (0x%lx) - Length (0x%lx), ",
++        "SmmIsBufferOutsideSmmValid: Not in ValidCommunicationRegion: Buffer (0x%lx) - Length (0x%lx)\n",
+         Buffer,
+         Length
+         ));
+       return FALSE;
+     }
++
++    //
++    // Check untested memory as invalid communication buffer.
++    //
++    for (Index = 0; Index < mSmmMemLibGcdMemNumberOfDesc; Index++) {
++      if ((Buffer >= mSmmMemLibGcdMemSpace[Index].BaseAddress) &&
++          (Buffer + Length <= mSmmMemLibGcdMemSpace[Index].BaseAddress + mSmmMemLibGcdMemSpace[Index].Length)) {
++        DEBUG ((
++          EFI_D_ERROR,
++          "SmmIsBufferOutsideSmmValid: Is in InvalidCommunicationRegion: Buffer (0x%lx) - Length (0x%lx)\n",
++          Buffer,
++          Length
++          ));
++        return FALSE;
++      }
++    }
+   }
+   return TRUE;
+ }
+@@ -318,6 +345,61 @@ SmmSetMem (
+ }
+ 
+ /**
++  Get GCD memory map.
++  Only record untested memory as invalid communication buffer.
++**/
++VOID
++SmmMemLibInternalGetGcdMemoryMap (
++  VOID
++  )
++{
++  UINTN                            NumberOfDescriptors;
++  EFI_GCD_MEMORY_SPACE_DESCRIPTOR  *MemSpaceMap;
++  EFI_STATUS                       Status;
++  UINTN                            Index;
++
++  Status = gDS->GetMemorySpaceMap (&NumberOfDescriptors, &MemSpaceMap);
++  if (EFI_ERROR (Status)) {
++    return ;
++  }
++
++  mSmmMemLibGcdMemNumberOfDesc = 0;
++  for (Index = 0; Index < NumberOfDescriptors; Index++) {
++    if (MemSpaceMap[Index].GcdMemoryType == EfiGcdMemoryTypeReserved &&
++        (MemSpaceMap[Index].Capabilities & (EFI_MEMORY_PRESENT | EFI_MEMORY_INITIALIZED | EFI_MEMORY_TESTED)) ==
++          (EFI_MEMORY_PRESENT | EFI_MEMORY_INITIALIZED)
++          ) {
++      mSmmMemLibGcdMemNumberOfDesc++;
++    }
++  }
++
++  mSmmMemLibGcdMemSpace = AllocateZeroPool (mSmmMemLibGcdMemNumberOfDesc * sizeof (EFI_GCD_MEMORY_SPACE_DESCRIPTOR));
++  ASSERT (mSmmMemLibGcdMemSpace != NULL);
++  if (mSmmMemLibGcdMemSpace == NULL) {
++    mSmmMemLibGcdMemNumberOfDesc = 0;
++    gBS->FreePool (MemSpaceMap);
++    return ;
++  }
++
++  mSmmMemLibGcdMemNumberOfDesc = 0;
++  for (Index = 0; Index < NumberOfDescriptors; Index++) {
++    if (MemSpaceMap[Index].GcdMemoryType == EfiGcdMemoryTypeReserved &&
++        (MemSpaceMap[Index].Capabilities & (EFI_MEMORY_PRESENT | EFI_MEMORY_INITIALIZED | EFI_MEMORY_TESTED)) ==
++          (EFI_MEMORY_PRESENT | EFI_MEMORY_INITIALIZED)
++          ) {
++      CopyMem (
++        &mSmmMemLibGcdMemSpace[mSmmMemLibGcdMemNumberOfDesc],
++        &MemSpaceMap[Index],
++        sizeof(EFI_GCD_MEMORY_SPACE_DESCRIPTOR)
++        );
++      mSmmMemLibGcdMemNumberOfDesc++;
++    }
++  }
++
++  gBS->FreePool (MemSpaceMap);
++}
++
++/**
+   Notification for SMM EndOfDxe protocol.
+ 
+   @param[in] Protocol   Points to the protocol's unique identifier.
+@@ -415,10 +497,14 @@ SmmLibInternalEndOfDxeNotify (
+   
+   gBS->FreePool (MemoryMap);
+ 
++  //
++  // Get additional information from GCD memory map.
++  //
++  SmmMemLibInternalGetGcdMemoryMap ();
++
+   return EFI_SUCCESS;
+ }
+ 
+-
+ /**
+   Notification for SMM ReadyToLock protocol.
+ 
+diff --git a/MdePkg/Library/SmmMemLib/SmmMemLib.inf b/MdePkg/Library/SmmMemLib/SmmMemLib.inf
+index b1691cc..1f8fd27 100644
+--- a/MdePkg/Library/SmmMemLib/SmmMemLib.inf
++++ b/MdePkg/Library/SmmMemLib/SmmMemLib.inf
+@@ -6,7 +6,7 @@
+ #  all SMRAM range via SMM_ACCESS2_PROTOCOL, including the range for firmware (like SMM Core
+ #  and SMM driver) and/or specific dedicated hardware.
+ #  
+-#  Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2015 - 2017, Intel Corporation. All rights reserved.<BR>
+ #  This program and the accompanying materials
+ #  are licensed and made available under the terms and conditions of the BSD License
+ #  which accompanies this distribution.  The full text of the license may be found at
+@@ -43,6 +43,7 @@
+ [LibraryClasses]
+   SmmServicesTableLib
+   UefiBootServicesTableLib
++  DxeServicesTableLib
+   DebugLib
+   BaseMemoryLib
+   HobLib
+-- 
+2.7.4.windows.1
+

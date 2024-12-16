@@ -1,0 +1,116 @@
+===========================================================================================
+input1
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000000400e68 in MakeTable (Sd=0x7fffffffa810, NumOfChar=510, BitLen=0x7fffffffb82e '\001' <repeats 174 times>, TableBits=12, Table=0x7fffffffba4c) at Decompress-main.c:265
+265             Table[Index] = Char;
+(gdb) bt
+#0  0x0000000000400e68 in MakeTable (Sd=0x7fffffffa810, NumOfChar=510, BitLen=0x7fffffffb82e '\001' <repeats 174 times>, TableBits=12, Table=0x7fffffffba4c) at Decompress-main.c:265
+#1  0x00000000004015c5 in ReadCLen (Sd=0x7fffffffa810) at Decompress-main.c:531
+#2  0x0000000000401648 in DecodeC (Sd=0x7fffffffa810) at Decompress-main.c:570
+#3  0x000000000040176a in Decode (Sd=0x7fffffffa810) at Decompress-main.c:630
+#4  0x0000000000401f90 in Decompress (Source=0x609490, SrcSize=42, Destination=0x6094d0, DstSize=42, Scratch=0x7fffffffa810, ScratchSize=13376) at Decompress-main.c:905
+#5  0x000000000040205c in EfiDecompress (Source=0x609490, SrcSize=42, Destination=0x6094d0, DstSize=42, Scratch=0x7fffffffa810, ScratchSize=13376) at Decompress-main.c:1009
+#6  0x0000000000401cdd in main (argc=4, argv=0x7fffffffdd48) at Decompress-main.c:796
+
+
+264           for (Index = Start[Len]; Index < NextCode; Index++) {
+265             Table[Index] = Char;    <---------
+266           }
+
+(gdb) display Index
+1: Index = 6874
+
+(gdb) display NextCode
+5: NextCode = 8192
+
+[Note: Relates to UEFI Spec MakeTable(..) function]
+
+===========================================================================================
+input2
+
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000000401834 in Decode (Sd=0x7fffffffa810) at Decompress-main.c:656
+656             Sd->mDstBase[Sd->mOutBuf++] = Sd->mDstBase[DataIdx++];
+(gdb) bt
+#0  0x0000000000401834 in Decode (Sd=0x7fffffffa810) at Decompress-main.c:656
+#1  0x0000000000401f90 in Decompress (Source=0x609490, SrcSize=42, Destination=0x6094d0, DstSize=42, Scratch=0x7fffffffa810, ScratchSize=13376) at Decompress-main.c:905
+#2  0x000000000040205c in EfiDecompress (Source=0x609490, SrcSize=42, Destination=0x6094d0, DstSize=42, Scratch=0x7fffffffa810, ScratchSize=13376) at Decompress-main.c:1009
+#3  0x0000000000401cdd in main (argc=4, argv=0x7fffffffdd48) at Decompress-main.c:796
+
+  
+[Note: Relates to UEFI Spec Decode (..) function]
+===========================================================================================
+input3
+
+Program received signal SIGSEGV, Segmentation fault.
+strlen () at ../sysdeps/x86_64/strlen.S:106
+106     ../sysdeps/x86_64/strlen.S: No such file or directory.
+(gdb) bt
+#0  strlen () at ../sysdeps/x86_64/strlen.S:106
+#1  0x00007ffff7a8dde1 in __libc_message (do_abort=do_abort@entry=1, fmt=fmt@entry=0x7ffff7b94966 "*** %s ***: %s terminated\n") at ../sysdeps/posix/libc_fatal.c:109
+#2  0x00007ffff7b21a7c in __GI___fortify_fail (msg=<optimized out>, msg@entry=0x7ffff7b9494e "stack smashing detected") at fortify_fail.c:37
+#3  0x00007ffff7b21a20 in __stack_chk_fail () at stack_chk_fail.c:28
+#4  0x0000000000401df2 in main (argc=4, argv=0x7fffffffdd48) at Decompress-main.c:820
+
+
+===========================================================================================
+input4
+
+Program received signal SIGSEGV, Segmentation fault.
+__GI_getenv (name=0x7ffff7b92f20 "BC_FATAL_STDERR_", name@entry=0x7ffff7b92f1e "LIBC_FATAL_STDERR_") at getenv.c:85
+85      getenv.c: No such file or directory.
+(gdb) bt
+#0  __GI_getenv (name=0x7ffff7b92f20 "BC_FATAL_STDERR_", name@entry=0x7ffff7b92f1e "LIBC_FATAL_STDERR_") at getenv.c:85
+#1  0x00007ffff7a505c2 in __GI___libc_secure_getenv (name=name@entry=0x7ffff7b92f1e "LIBC_FATAL_STDERR_") at secure-getenv.c:30
+#2  0x00007ffff7a8dcfd in __libc_message (do_abort=do_abort@entry=1, fmt=fmt@entry=0x7ffff7b94966 "*** %s ***: %s terminated\n") at ../sysdeps/posix/libc_fatal.c:80
+#3  0x00007ffff7b21a7c in __GI___fortify_fail (msg=<optimized out>, msg@entry=0x7ffff7b9494e "stack smashing detected") at fortify_fail.c:37
+#4  0x00007ffff7b21a20 in __stack_chk_fail () at stack_chk_fail.c:28
+#5  0x0000000000401df2 in main (argc=4, argv=0x7fffffffdd48) at Decompress-main.c:820
+
+
+===========================================================================================
+input5
+
+
+Breakpoint 2, ReadPTLen (Sd=0x7fffffffa810, nn=19, nbit=5, Special=3) at Decompress-main.c:437
+437       return MakeTable (Sd, nn, Sd->mPTLen, 8, Sd->mPTTable);
+(gdb) bt
+#0  ReadPTLen (Sd=0x7fffffffa810, nn=19, nbit=5, Special=3) at Decompress-main.c:437
+#1  0x000000000040161b in DecodeC (Sd=0x7fffffffa810) at Decompress-main.c:565
+#2  0x000000000040176a in Decode (Sd=0x7fffffffa810) at Decompress-main.c:630
+#3  0x0000000000401f90 in Decompress (Source=0x609490, SrcSize=42, Destination=0x6094d0, DstSize=42, Scratch=0x7fffffffa810, ScratchSize=13376) at Decompress-main.c:905
+#4  0x000000000040205c in EfiDecompress (Source=0x609490, SrcSize=42, Destination=0x6094d0, DstSize=42, Scratch=0x7fffffffa810, ScratchSize=13376) at Decompress-main.c:1009
+#5  0x0000000000401cdd in main (argc=4, argv=0x7fffffffdd48) at Decompress-main.c:796
+(gdb) n
+
+Program received signal SIGBUS, Bus error.
+ReadPTLen (Sd=<error reading variable: Cannot access memory at address 0xc07fffffffa678>, nn=<error reading variable: Cannot access memory at address 0xc07fffffffa674>,
+    nbit=<error reading variable: Cannot access memory at address 0xc07fffffffa670>, Special=<error reading variable: Cannot access memory at address 0xc07fffffffa66c>) at Decompress-main.c:438
+438     }
+(gdb)
+.
+
+[Note: Relates to DecodeC in UEFI Spec]
+===========================================================================================
+input6
+
+
+Program received signal SIGSEGV, Segmentation fault.
+__GI_getenv (name=0x7ffff7b92f20 "BC_FATAL_STDERR_", name@entry=0x7ffff7b92f1e "LIBC_FATAL_STDERR_") at getenv.c:85
+85      getenv.c: No such file or directory.
+(gdb) bt
+#0  __GI_getenv (name=0x7ffff7b92f20 "BC_FATAL_STDERR_", name@entry=0x7ffff7b92f1e "LIBC_FATAL_STDERR_") at getenv.c:85
+#1  0x00007ffff7a505c2 in __GI___libc_secure_getenv (name=name@entry=0x7ffff7b92f1e "LIBC_FATAL_STDERR_") at secure-getenv.c:30
+#2  0x00007ffff7a8dcfd in __libc_message (do_abort=do_abort@entry=1, fmt=fmt@entry=0x7ffff7b94966 "*** %s ***: %s terminated\n") at ../sysdeps/posix/libc_fatal.c:80
+#3  0x00007ffff7b21a7c in __GI___fortify_fail (msg=<optimized out>, msg@entry=0x7ffff7b9494e "stack smashing detected") at fortify_fail.c:37
+#4  0x00007ffff7b21a20 in __stack_chk_fail () at stack_chk_fail.c:28
+#5  0x0000000000401059 in MakeTable (Sd=0x7fffffffa810, NumOfChar=31, BitLen=0x7fffffffba2c "\024\001 \001\030\001", TableBits=8, Table=0x7fffffffda4c) at Decompress-main.c:300
+#6  0x0000000000401355 in ReadPTLen (Sd=0x0, nn=0, nbit=0, Special=0) at Decompress-main.c:437
+Backtrace stopped: previous frame inner to this frame (corrupt stack?)
+
+
+[Note: Relates to MakeTable in UEFI Spec]
+
+===========================================================================================

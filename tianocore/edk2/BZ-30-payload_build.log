@@ -1,0 +1,213 @@
+[
+tuanln@ubuntu:~/boot_edk2$ build -a IA32 -a X64 -p CorebootPayloadPkg/CorebootPayloadPkgIa32X64.dsc -b DEBUG -t GCC48
+Build environment: Linux-3.19.0-25-generic-x86_64-with-Ubuntu-14.04-trusty
+Build start time: 10:17:14, Dec.26 2016
+
+WORKSPACE        = /home/tuanln/boot_edk2
+ECP_SOURCE       = /home/tuanln/boot_edk2/EdkCompatibilityPkg
+EDK_SOURCE       = /home/tuanln/boot_edk2/EdkCompatibilityPkg
+EFI_SOURCE       = /home/tuanln/boot_edk2/EdkCompatibilityPkg
+EDK_TOOLS_PATH   = /home/tuanln/boot_edk2/BaseTools
+CONF_PATH        = /home/tuanln/boot_edk2/Conf
+
+
+Architecture(s)  = IA32 X64
+Build target     = DEBUG
+Toolchain        = GCC48
+
+Active Platform          = /home/tuanln/boot_edk2/CorebootPayloadPkg/CorebootPayloadPkgIa32X64.dsc
+Flash Image Definition   = /home/tuanln/boot_edk2/CorebootPayloadPkg/CorebootPayloadPkg.fdf
+
+Processing meta-data .... done!
+Building ... /home/tuanln/boot_edk2/UefiCpuPkg/Library/BaseUefiCpuLib/BaseUefiCpuLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseLib/BaseLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseMemoryLibRepStr/BaseMemoryLibRepStr.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePeCoffExtraActionLibNull/BasePeCoffExtraActionLibNull.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootModulePkg/SecCore/SecCore.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/OemHookStatusCodeLibNull/OemHookStatusCodeLibNull.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/PeiPcdLib/PeiPcdLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/PeiServicesTablePointerLibIdt/PeiServicesTablePointerLibIdt.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/PeiDxeDebugLibReportStatusCode/PeiDxeDebugLibReportStatusCode.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/PeiHobLib/PeiHobLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/PeiServicesLib/PeiServicesLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/PeiReportStatusCodeLib/PeiReportStatusCodeLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/PeiCoreEntryPoint/PeiCoreEntryPoint.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseCacheMaintenanceLib/BaseCacheMaintenanceLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseIoLibIntrinsic/BaseIoLibIntrinsic.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePciExpressLib/BasePciExpressLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootModulePkg/Library/CbParseLib/CbParseLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootPayloadPkg/Library/PlatformHookLib/PlatformHookLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootModulePkg/Library/BaseSerialPortLib16550/BaseSerialPortLib16550.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePrintLib/BasePrintLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseCpuLib/BaseCpuLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/UefiCpuPkg/Library/MtrrLib/MtrrLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootModulePkg/Library/CbPlatformSupportLibNull/CbPlatformSupportLibNull.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/PeiExtractGuidedSectionLib/PeiExtractGuidedSectionLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Core/Pei/PeiMain.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Universal/PCD/Pei/Pcd.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Universal/ReportStatusCodeRouter/Pei/ReportStatusCodeRouterPei.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Universal/StatusCodeHandler/Pei/StatusCodeHandlerPei.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootModulePkg/CbSupportPei/CbSupportPei.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf [IA32]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePrintLib/BasePrintLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/DxeCoreMemoryAllocationLib/DxeCoreMemoryAllocationLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/PeiDxeDebugLibReportStatusCode/PeiDxeDebugLibReportStatusCode.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseLib/BaseLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseMemoryLibRepStr/BaseMemoryLibRepStr.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseIoLibIntrinsic/BaseIoLibIntrinsic.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/DxeCoreEntryPoint/DxeCoreEntryPoint.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePciExpressLib/BasePciExpressLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/DxeCoreHobLib/DxeCoreHobLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootModulePkg/Library/CbParseLib/CbParseLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/UefiRuntimeServicesTableLib/UefiRuntimeServicesTableLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootPayloadPkg/Library/AcpiTimerLib/AcpiTimerLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootPayloadPkg/Library/PlatformHookLib/PlatformHookLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePeCoffExtraActionLibNull/BasePeCoffExtraActionLibNull.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/UefiLib/UefiLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/UefiCpuPkg/Library/BaseXApicLib/BaseXApicLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseSynchronizationLib/BaseSynchronizationLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/CorebootModulePkg/Library/BaseSerialPortLib16550/BaseSerialPortLib16550.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseCacheMaintenanceLib/BaseCacheMaintenanceLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/DxeServicesLib/DxeServicesLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/UefiCpuPkg/Library/CpuExceptionHandlerLib/DxeCpuExceptionHandlerLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/DxePcdLib/DxePcdLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Library/DxeSecurityManagementLib/DxeSecurityManagementLib.inf [X64]
+make: Nothing to be done for `tbuild'.
+Building ... /home/tuanln/boot_edk2/MdeModulePkg/Core/Dxe/DxeMain.inf [X64]
+cp -f /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.debug
+objcopy --strip-unneeded -R .eh_frame /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll
+objcopy --add-gnu-debuglink=/home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.debug /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll
+objcopy: /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/stTRTZRx: debuglink section already exists
+cp -f /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.debug /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/DxeCore.debug
+"GenFw" -e DXE_CORE -o /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.efi /home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll
+GenFw: ERROR 3000: Invalid
+GenFw: Elf64Convert.c:428: ScanSections64: Assertion `((BOOLEAN)(0==1))' failed.
+  Did not find any '.text' section.
+Aborted (core dumped)
+make: *** [/home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.efi] Error 134
+
+
+build.py...
+ : error 7000: Failed to execute command
+	make tbuild [/home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Core/Dxe/DxeMain]
+
+
+build.py...
+ : error 7000: Failed to execute command
+	make tbuild [/home/tuanln/boot_edk2/Build/CorebootPayloadPkgX64/DEBUG_GCC48/X64/MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe]
+
+
+build.py...
+ : error F002: Failed to build module
+	/home/tuanln/boot_edk2/MdeModulePkg/Core/Dxe/DxeMain.inf [X64, GCC48, DEBUG]
+
+- Failed -
+Build end time: 10:17:24, Dec.26 2016
+Build total time: 00:00:10
+
+tuanln@ubuntu:~/boot_edk2$ 
+[END] 12/26/2016 10:19:42

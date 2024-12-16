@@ -1,0 +1,38 @@
+From 58a1b61b0cad838e4688ff1ece3eb13e895142f6 Mon Sep 17 00:00:00 2001
+From: Star Zeng <star.zeng@intel.com>
+Date: Fri, 5 Jan 2018 13:37:35 +0800
+Subject: [PATCH 3/3] IntelFrameworkModulePkg FwVolDxe: Ensure FfsFileHeader 8
+ bytes aligned
+
+To follow PI spec, ensure FfsFileHeader 8 bytes aligned.
+
+Current code only handles (FwVolHeader->ExtHeaderOffset != 0) path,
+update code to also handle (FwVolHeader->ExtHeaderOffset == 0) path.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Star Zeng <star.zeng@intel.com>
+---
+ IntelFrameworkModulePkg/Universal/FirmwareVolume/FwVolDxe/FwVol.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/IntelFrameworkModulePkg/Universal/FirmwareVolume/FwVolDxe/FwVol.c b/IntelFrameworkModulePkg/Universal/FirmwareVolume/FwVolDxe/FwVol.c
+index 9a031bab1425..bec798779e5a 100644
+--- a/IntelFrameworkModulePkg/Universal/FirmwareVolume/FwVolDxe/FwVol.c
++++ b/IntelFrameworkModulePkg/Universal/FirmwareVolume/FwVolDxe/FwVol.c
+@@ -510,10 +510,10 @@ FvCheck (
+     //
+     FwVolExtHeader = (EFI_FIRMWARE_VOLUME_EXT_HEADER *) (UINTN) (FvDevice->CachedFv + FvDevice->FwVolHeader->ExtHeaderOffset);
+     Ptr = (UINT8 *) FwVolExtHeader + FwVolExtHeader->ExtHeaderSize;
+-    Ptr = (UINT8 *) ALIGN_POINTER (Ptr, 8);
+   } else {
+     Ptr = (UINT8 *) (UINTN) (FvDevice->CachedFv + FvDevice->FwVolHeader->HeaderLength);
+   }
++  Ptr = (UINT8 *) ALIGN_POINTER (Ptr, 8);
+   TopFvAddress = (UINT8 *) (UINTN) (FvDevice->CachedFv + FvDevice->FwVolHeader->FvLength);
+ 
+   //
+-- 
+2.7.0.windows.1
+

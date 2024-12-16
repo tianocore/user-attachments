@@ -1,0 +1,2841 @@
+From 2e1c3b3336810ffdc175b9b3bc5ace1534e89eac Mon Sep 17 00:00:00 2001
+From: Loo Tung Lun <tung.lun.loo@intel.com>
+Date: Tue, 5 Jan 2021 09:09:09 +0800
+Subject: [PATCH] IntelFsp2Pkg: Add YAML file generation support
+
+Add support for YAML format file generation in addition
+to current BSF structure. Configuration of YAML format
+output will be supported by an open source ConfigEditor.
+
+Reference to YAML code, test and ConfigEditor is at
+https://github.com/joshloo/fsp_yaml_cfg/tree/master/Tools
+
+A unit test is also added in Tests folder. This test compares
+the generated yaml file against the expected output to know
+if it is constructing the yaml data structure as expected.
+---
+ IntelFsp2Pkg/Tools/FspDscBsf2Yaml.py          | 875 ++++++++++++++++++
+ IntelFsp2Pkg/Tools/GenCfgOpt.py               | 467 +++++++---
+ IntelFsp2Pkg/Tools/Tests/ExpectedFspUpd.h     |  16 +
+ IntelFsp2Pkg/Tools/Tests/ExpectedFspmUpd.h    |  75 ++
+ IntelFsp2Pkg/Tools/Tests/ExpectedFspsUpd.h    |  73 ++
+ IntelFsp2Pkg/Tools/Tests/ExpectedFsptUpd.h    |  87 ++
+ IntelFsp2Pkg/Tools/Tests/ExpectedOutput.bsf   |  88 ++
+ IntelFsp2Pkg/Tools/Tests/ExpectedOutput.yaml  | 288 ++++++
+ IntelFsp2Pkg/Tools/Tests/QemuFspPkg.dsc       | 469 ++++++++++
+ IntelFsp2Pkg/Tools/Tests/test_yaml.py         |  90 ++
+ .../UserManuals/FspDscBsf2YamlUserManual.md   |  39 +
+ 11 files changed, 2436 insertions(+), 131 deletions(-)
+ create mode 100644 IntelFsp2Pkg/Tools/FspDscBsf2Yaml.py
+ create mode 100644 IntelFsp2Pkg/Tools/Tests/ExpectedFspUpd.h
+ create mode 100644 IntelFsp2Pkg/Tools/Tests/ExpectedFspmUpd.h
+ create mode 100644 IntelFsp2Pkg/Tools/Tests/ExpectedFspsUpd.h
+ create mode 100644 IntelFsp2Pkg/Tools/Tests/ExpectedFsptUpd.h
+ create mode 100644 IntelFsp2Pkg/Tools/Tests/ExpectedOutput.bsf
+ create mode 100644 IntelFsp2Pkg/Tools/Tests/ExpectedOutput.yaml
+ create mode 100644 IntelFsp2Pkg/Tools/Tests/QemuFspPkg.dsc
+ create mode 100644 IntelFsp2Pkg/Tools/Tests/test_yaml.py
+ create mode 100644 IntelFsp2Pkg/Tools/UserManuals/FspDscBsf2YamlUserManual.md
+
+diff --git a/IntelFsp2Pkg/Tools/FspDscBsf2Yaml.py b/IntelFsp2Pkg/Tools/FspDscBsf2Yaml.py
+new file mode 100644
+index 0000000000..6f23bff368
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/FspDscBsf2Yaml.py
+@@ -0,0 +1,875 @@
++#!/usr/bin/env python
++## @ FspDscBsf2Yaml.py
++# This script convert FSP BSF format into DSC format
++#
++# Copyright(c) 2020, Intel Corporation. All rights reserved.<BR>
++# SPDX-License-Identifier: BSD-2-Clause-Patent
++#
++##
++
++import os
++import re
++import sys
++from datetime import date
++from collections import OrderedDict
++from functools import reduce
++
++from GenCfgOpt import CGenCfgOpt
++
++__copyright_tmp__ = """## @file
++#
++#  YAML CFGDATA %s File.
++#
++#  Copyright(c) %4d, Intel Corporation. All rights reserved.<BR>
++#  SPDX-License-Identifier: BSD-2-Clause-Patent
++#
++##
++"""
++
++__copyright_dsc__ = """## @file
++#
++#  Copyright (c) %04d, Intel Corporation. All rights reserved.<BR>
++#  SPDX-License-Identifier: BSD-2-Clause-Patent
++#
++##
++
++[PcdsDynamicVpd.Upd]
++  #
++  # Global definitions in BSF
++  # !BSF BLOCK:{NAME:"FSP UPD Configuration", VER:"0.1"}
++  #
++
++"""
++
++
++def Bytes2Val(Bytes):
++    return reduce(lambda x, y: (x << 8) | y, Bytes[::-1])
++
++
++class CFspBsf2Dsc:
++
++    def __init__(self, bsf_file):
++        self.cfg_list = CFspBsf2Dsc.parse_bsf(bsf_file)
++
++    def get_dsc_lines(self):
++        return CFspBsf2Dsc.generate_dsc(self.cfg_list)
++
++    def save_dsc(self, dsc_file):
++        return CFspBsf2Dsc.generate_dsc(self.cfg_list, dsc_file)
++
++    @staticmethod
++    def parse_bsf(bsf_file):
++
++        fd = open(bsf_file, 'r')
++        bsf_txt = fd.read()
++        fd.close()
++
++        find_list = []
++        regex = re.compile(r'\s+Find\s+"(.*?)"(.*?)^\s+\$(.*?)\s+', re.S | re.MULTILINE)
++        for match in regex.finditer(bsf_txt):
++            find = match.group(1)
++            name = match.group(3)
++            if not name.endswith('_Revision'):
++                raise Exception("Unexpected CFG item following 'Find' !")
++            find_list.append((name, find))
++
++        idx = 0
++        count = 0
++        prefix = ''
++        chk_dict = {}
++        cfg_list = []
++        cfg_temp = {'find': '', 'cname': '', 'length': 0, 'value': '0', 'type': 'Reserved',
++                    'embed': '', 'page': '', 'option': '', 'instance': 0}
++        regex = re.compile(r'^\s+(\$(.*?)|Skip)\s+(\d+)\s+bytes(\s+\$_DEFAULT_\s+=\s+(.+?))?$',
++                           re.S | re.MULTILINE)
++
++        for match in regex.finditer(bsf_txt):
++            dlen = int(match.group(3))
++            if match.group(1) == 'Skip':
++                key = 'gPlatformFspPkgTokenSpaceGuid_BsfSkip%d' % idx
++                val = ', '.join(['%02X' % ord(i) for i in '\x00' * dlen])
++                idx += 1
++                option = '$SKIP'
++            else:
++                key = match.group(2)
++                val = match.group(5)
++                option = ''
++
++            cfg_item = dict(cfg_temp)
++            finds = [i for i in find_list if i[0] == key]
++            if len(finds) > 0:
++                if count >= 1:
++                    # Append a dummy one
++                    cfg_item['cname'] = 'Dummy'
++                    cfg_list.append(dict(cfg_item))
++                    cfg_list[-1]['embed'] = '%s:TAG_%03X:END' % (prefix, ord(prefix[-1]))
++                prefix = finds[0][1]
++                cfg_item['embed'] = '%s:TAG_%03X:START' % (prefix, ord(prefix[-1]))
++                cfg_item['find'] = prefix
++                cfg_item['cname'] = 'Signature'
++                cfg_item['length'] = len(finds[0][1])
++                cfg_item['value'] = '0x%X' % Bytes2Val(finds[0][1].encode('UTF-8'))
++                cfg_list.append(dict(cfg_item))
++                cfg_item = dict(cfg_temp)
++                find_list.pop(0)
++                count = 0
++
++            cfg_item['cname'] = key
++            cfg_item['length'] = dlen
++            cfg_item['value'] = val
++            cfg_item['option'] = option
++
++            if key not in chk_dict.keys():
++                chk_dict[key] = 0
++            else:
++                chk_dict[key] += 1
++            cfg_item['instance'] = chk_dict[key]
++
++            cfg_list.append(cfg_item)
++            count += 1
++
++        if prefix:
++            cfg_item = dict(cfg_temp)
++            cfg_item['cname'] = 'Dummy'
++            cfg_item['embed'] = '%s:%03X:END' % (prefix, ord(prefix[-1]))
++            cfg_list.append(cfg_item)
++
++        option_dict = {}
++        selreg = re.compile(r'\s+Selection\s*(.+?)\s*,\s*"(.*?)"$', re.S | re.MULTILINE)
++        regex = re.compile(r'^List\s&(.+?)$(.+?)^EndList$', re.S | re.MULTILINE)
++        for match in regex.finditer(bsf_txt):
++            key = match.group(1)
++            option_dict[key] = []
++            for select in selreg.finditer(match.group(2)):
++                option_dict[key].append((int(select.group(1), 0), select.group(2)))
++
++        chk_dict = {}
++        pagereg = re.compile(r'^Page\s"(.*?)"$(.+?)^EndPage$', re.S | re.MULTILINE)
++        for match in pagereg.finditer(bsf_txt):
++            page = match.group(1)
++            for line in match.group(2).splitlines():
++                match = re.match(r'\s+(Combo|EditNum)\s\$(.+?),\s"(.*?)",\s(.+?),$', line)
++                if match:
++                    cname = match.group(2)
++                    if cname not in chk_dict.keys():
++                        chk_dict[cname] = 0
++                    else:
++                        chk_dict[cname] += 1
++                    instance = chk_dict[cname]
++                    cfg_idxs = [i for i, j in enumerate(cfg_list) if j['cname'] == cname and j['instance'] == instance]
++                    if len(cfg_idxs) != 1:
++                        raise Exception("Multiple CFG item '%s' found !" % cname)
++                    cfg_item = cfg_list[cfg_idxs[0]]
++                    cfg_item['page'] = page
++                    cfg_item['type'] = match.group(1)
++                    cfg_item['prompt'] = match.group(3)
++                    cfg_item['range'] = None
++                    if cfg_item['type'] == 'Combo':
++                        cfg_item['option'] = option_dict[match.group(4)[1:]]
++                    elif cfg_item['type'] == 'EditNum':
++                        cfg_item['option'] = match.group(4)
++                match = re.match(r'\s+ Help\s"(.*?)"$', line)
++                if match:
++                    cfg_item['help'] = match.group(1)
++
++                match = re.match(r'\s+"Valid\srange:\s(.*)"$', line)
++                if match:
++                    parts = match.group(1).split()
++                    cfg_item['option'] = (
++                        (int(parts[0], 0), int(parts[2], 0), cfg_item['option']))
++
++        return cfg_list
++
++    @staticmethod
++    def generate_dsc(option_list, dsc_file=None):
++        dsc_lines = []
++        header = '%s' % (__copyright_dsc__ % date.today().year)
++        dsc_lines.extend(header.splitlines())
++
++        pages = []
++        for cfg_item in option_list:
++            if cfg_item['page'] and (cfg_item['page'] not in pages):
++                pages.append(cfg_item['page'])
++
++        page_id = 0
++        for page in pages:
++            dsc_lines.append('  # !BSF PAGES:{PG%02X::"%s"}' % (page_id, page))
++            page_id += 1
++        dsc_lines.append('')
++
++        last_page = ''
++        for option in option_list:
++            dsc_lines.append('')
++            default = option['value']
++            pos = option['cname'].find('_')
++            name = option['cname'][pos + 1:]
++
++            if option['find']:
++                dsc_lines.append('  # !BSF FIND:{%s}' % option['find'])
++                dsc_lines.append('')
++
++            if option['instance'] > 0:
++                name = name + '_%s' % option['instance']
++
++            if option['embed']:
++                dsc_lines.append('  # !HDR EMBED:{%s}' % option['embed'])
++
++            if option['type'] == 'Reserved':
++                dsc_lines.append('  # !BSF NAME:{Reserved} TYPE:{Reserved}')
++                if option['option'] == '$SKIP':
++                    dsc_lines.append('  # !BSF OPTION:{$SKIP}')
++            else:
++                prompt = option['prompt']
++
++                if last_page != option['page']:
++                    last_page = option['page']
++                    dsc_lines.append('  # !BSF PAGE:{PG%02X}' % (pages.index(option['page'])))
++
++                if option['type'] == 'Combo':
++                    dsc_lines.append('  # !BSF NAME:{%s} TYPE:{%s}' %
++                                     (prompt, option['type']))
++                    ops = []
++                    for val, text in option['option']:
++                        ops.append('0x%x:%s' % (val, text))
++                    dsc_lines.append('  # !BSF OPTION:{%s}' % (', '.join(ops)))
++                elif option['type'] == 'EditNum':
++                    cfg_len = option['length']
++                    if ',' in default and cfg_len > 8:
++                        dsc_lines.append('  # !BSF NAME:{%s} TYPE:{Table}' % (prompt))
++                        if cfg_len > 16:
++                            cfg_len = 16
++                        ops = []
++                        for i in range(cfg_len):
++                            ops.append('%X:1:HEX' % i)
++                        dsc_lines.append('  # !BSF OPTION:{%s}' % (', '.join(ops)))
++                    else:
++                        dsc_lines.append(
++                            '  # !BSF NAME:{%s} TYPE:{%s, %s,(0x%X, 0x%X)}' %
++                            (prompt, option['type'], option['option'][2],
++                             option['option'][0], option['option'][1]))
++                dsc_lines.append('  # !BSF HELP:{%s}' % option['help'])
++
++            if ',' in default:
++                default = '{%s}' % default
++            dsc_lines.append('  gCfgData.%-30s | * | 0x%04X | %s' %
++                             (name, option['length'], default))
++
++        if dsc_file:
++            fd = open(dsc_file, 'w')
++            fd.write('\n'.join(dsc_lines))
++            fd.close()
++
++        return dsc_lines
++
++
++class CFspDsc2Yaml():
++
++    def __init__(self):
++        self._Hdr_key_list = ['EMBED', 'STRUCT']
++        self._Bsf_key_list = ['NAME', 'HELP', 'TYPE', 'PAGE', 'PAGES', 'OPTION',
++                              'CONDITION', 'ORDER', 'MARKER', 'SUBT', 'FIELD', 'FIND']
++        self.gen_cfg_data = None
++        self.cfg_reg_exp = re.compile(r"^([_a-zA-Z0-9$\(\)]+)\s*\|\s*(0x[0-9A-F]+|\*)\s*\|"
++                                      + r"\s*(\d+|0x[0-9a-fA-F]+)\s*\|\s*(.+)")
++        self.bsf_reg_exp = re.compile(r"(%s):{(.+?)}(?:$|\s+)" % '|'.join(self._Bsf_key_list))
++        self.hdr_reg_exp = re.compile(r"(%s):{(.+?)}" % '|'.join(self._Hdr_key_list))
++        self.prefix = ''
++        self.unused_idx = 0
++        self.offset = 0
++        self.base_offset = 0
++
++    def load_config_data_from_dsc(self, file_name):
++        """
++        Load and parse a DSC CFGDATA file.
++        """
++        gen_cfg_data = CGenCfgOpt('FSP')
++        if file_name.endswith('.dsc'):
++            # if gen_cfg_data.ParseDscFileYaml(file_name, '') != 0:
++            if gen_cfg_data.ParseDscFile(file_name, '') != 0:
++                raise Exception('DSC file parsing error !')
++            if gen_cfg_data.CreateVarDict() != 0:
++                raise Exception('DSC variable creation error !')
++        else:
++            raise Exception('Unsupported file "%s" !' % file_name)
++        gen_cfg_data.UpdateDefaultValue()
++        self.gen_cfg_data = gen_cfg_data
++
++    def print_dsc_line(self):
++        """
++        Debug function to print all DSC lines.
++        """
++        for line in self.gen_cfg_data._DscLines:
++            print(line)
++
++    def format_value(self, field, text, indent=''):
++        """
++        Format a CFGDATA item into YAML format.
++        """
++        if(not text.startswith('!expand')) and (': ' in text):
++            tgt = ':' if field == 'option' else '- '
++            text = text.replace(': ', tgt)
++        lines = text.splitlines()
++        if len(lines) == 1 and field != 'help':
++            return text
++        else:
++            return '>\n   ' + '\n   '.join([indent + i.lstrip() for i in lines])
++
++    def reformat_pages(self, val):
++        # Convert XXX:YYY into XXX::YYY format for page definition
++        parts = val.split(',')
++        if len(parts) <= 1:
++            return val
++
++        new_val = []
++        for each in parts:
++            nodes = each.split(':')
++            if len(nodes) == 2:
++                each = '%s::%s' % (nodes[0], nodes[1])
++            new_val.append(each)
++        ret = ','.join(new_val)
++        return ret
++
++    def reformat_struct_value(self, utype, val):
++        # Convert DSC UINT16/32/64 array into new format by
++        # adding prefix 0:0[WDQ] to provide hint to the array format
++        if utype in ['UINT16', 'UINT32', 'UINT64']:
++            if val and val[0] == '{' and val[-1] == '}':
++                if utype == 'UINT16':
++                    unit = 'W'
++                elif utype == 'UINT32':
++                    unit = 'D'
++                else:
++                    unit = 'Q'
++                val = '{ 0:0%s, %s }' % (unit, val[1:-1])
++        return val
++
++    def process_config(self, cfg):
++        if 'page' in cfg:
++            cfg['page'] = self.reformat_pages(cfg['page'])
++
++        if 'struct' in cfg:
++            cfg['value'] = self.reformat_struct_value(cfg['struct'], cfg['value'])
++
++    def parse_dsc_line(self, dsc_line, config_dict, init_dict, include):
++        """
++        Parse a line in DSC and update the config dictionary accordingly.
++        """
++        init_dict.clear()
++        match = re.match(r'g(CfgData|\w+FspPkgTokenSpaceGuid)\.(.+)', dsc_line)
++        if match:
++            match = self.cfg_reg_exp.match(match.group(2))
++            if not match:
++                return False
++            config_dict['cname'] = self.prefix + match.group(1)
++            value = match.group(4).strip()
++            length = match.group(3).strip()
++            config_dict['length'] = length
++            config_dict['value'] = value
++            if match.group(2) == '*':
++                self.offset += int(length, 0)
++            else:
++                org_offset = int(match.group(2), 0)
++                if org_offset == 0:
++                    self.base_offset = self.offset
++                offset = org_offset + self.base_offset
++                if self.offset != offset:
++                    if offset > self.offset:
++                        init_dict['padding'] = offset - self.offset
++                self.offset = offset + int(length, 0)
++            return True
++
++        match = re.match(r"^\s*#\s+!([<>])\s+include\s+(.+)", dsc_line)
++        if match and len(config_dict) == 0:
++            # !include should not be inside a config field
++            # if so, do not convert include into YAML
++            init_dict = dict(config_dict)
++            config_dict.clear()
++            config_dict['cname'] = '$ACTION'
++            if match.group(1) == '<':
++                config_dict['include'] = match.group(2)
++            else:
++                config_dict['include'] = ''
++            return True
++
++        match = re.match(r"^\s*#\s+(!BSF|!HDR)\s+(.+)", dsc_line)
++        if not match:
++            return False
++
++        remaining = match.group(2)
++        if match.group(1) == '!BSF':
++            result = self.bsf_reg_exp.findall(remaining)
++            if not result:
++                return False
++
++            for each in result:
++                key = each[0].lower()
++                val = each[1]
++                if key == 'field':
++                    name = each[1]
++                    if ':' not in name:
++                        raise Exception('Incorrect bit field format !')
++                    parts = name.split(':')
++                    config_dict['length'] = parts[1]
++                    config_dict['cname'] = '@' + parts[0]
++                    return True
++                elif key in ['pages', 'page', 'find']:
++                    init_dict = dict(config_dict)
++                    config_dict.clear()
++                    config_dict['cname'] = '$ACTION'
++                    if key == 'find':
++                        config_dict['find'] = val
++                    else:
++                        config_dict['page'] = val
++                    return True
++                elif key == 'subt':
++                    config_dict.clear()
++                    parts = each[1].split(':')
++                    tmp_name = parts[0][:-5]
++                    if tmp_name == 'CFGHDR':
++                        cfg_tag = '_$FFF_'
++                        sval = '!expand { %s_TMPL : [ ' % tmp_name + '%s, %s, ' % (parts[1], cfg_tag) \
++                               + ', '.join(parts[2:]) + ' ] }'
++                    else:
++                        sval = '!expand { %s_TMPL : [ ' % tmp_name + ', '.join(parts[1:]) + ' ] }'
++                    config_dict.clear()
++                    config_dict['cname'] = tmp_name
++                    config_dict['expand'] = sval
++                    return True
++                else:
++                    if key in ['name', 'help', 'option'] and val.startswith('+'):
++                        val = config_dict[key] + '\n' + val[1:]
++                    if val.strip() == '':
++                        val = "''"
++                    config_dict[key] = val
++
++        else:
++            match = self.hdr_reg_exp.match(remaining)
++            if not match:
++                return False
++            key = match.group(1)
++            remaining = match.group(2)
++            if key == 'EMBED':
++                parts = remaining.split(':')
++                names = parts[0].split(',')
++                if parts[-1] == 'END':
++                    prefix = '>'
++                else:
++                    prefix = '<'
++                skip = False
++                if parts[1].startswith('TAG_'):
++                    tag_txt = '%s:%s' % (names[0], parts[1])
++                else:
++                    tag_txt = names[0]
++                    if parts[2] in ['START', 'END']:
++                        if names[0] == 'PCIE_RP_PIN_CTRL[]':
++                            skip = True
++                        else:
++                            tag_txt = '%s:%s' % (names[0], parts[1])
++                if not skip:
++                    config_dict.clear()
++                    config_dict['cname'] = prefix + tag_txt
++                    return True
++
++            if key == 'STRUCT':
++                text = remaining.strip()
++                config_dict[key.lower()] = text
++
++        return False
++
++    def process_template_lines(self, lines):
++        """
++        Process a line in DSC template section.
++        """
++        template_name = ''
++        bsf_temp_dict = OrderedDict()
++        temp_file_dict = OrderedDict()
++        include_file = ['.']
++
++        for line in lines:
++            match = re.match(r"^\s*#\s+!([<>])\s+include\s+(.+)", line)
++            if match:
++                if match.group(1) == '<':
++                    include_file.append(match.group(2))
++                else:
++                    include_file.pop()
++
++            match = re.match(r"^\s*#\s+(!BSF)\s+DEFT:{(.+?):(START|END)}", line)
++            if match:
++                if match.group(3) == 'START' and not template_name:
++                    template_name = match.group(2).strip()
++                    temp_file_dict[template_name] = list(include_file)
++                    bsf_temp_dict[template_name] = []
++                if match.group(3) == 'END' and (template_name == match.group(2).strip()) \
++                   and template_name:
++                    template_name = ''
++            else:
++                if template_name:
++                    bsf_temp_dict[template_name].append(line)
++        return bsf_temp_dict, temp_file_dict
++
++    def process_option_lines(self, lines):
++        """
++        Process a line in DSC config section.
++        """
++        cfgs = []
++        struct_end = False
++        config_dict = dict()
++        init_dict = dict()
++        include = ['']
++        for line in lines:
++            ret = self.parse_dsc_line(line, config_dict, init_dict, include)
++            if ret:
++                if 'padding' in init_dict:
++                    num = init_dict['padding']
++                    init_dict.clear()
++                    padding_dict = {}
++                    cfgs.append(padding_dict)
++                    padding_dict['cname'] = 'UnusedUpdSpace%d' % self.unused_idx
++                    padding_dict['length'] = '0x%x' % num
++                    padding_dict['value'] = '{ 0 }'
++                    self.unused_idx += 1
++
++                if cfgs and cfgs[-1]['cname'][0] != '@' and config_dict['cname'][0] == '@':
++                    # it is a bit field, mark the previous one as virtual
++                    cname = cfgs[-1]['cname']
++                    new_cfg = dict(cfgs[-1])
++                    new_cfg['cname'] = '@$STRUCT'
++                    cfgs[-1].clear()
++                    cfgs[-1]['cname'] = cname
++                    cfgs.append(new_cfg)
++
++                if cfgs and cfgs[-1]['cname'] == 'CFGHDR' and config_dict['cname'][0] == '<':
++                    # swap CfgHeader and the CFG_DATA order
++                    if ':' in config_dict['cname']:
++                        # replace the real TAG for CFG_DATA
++                        cfgs[-1]['expand'] = cfgs[-1]['expand'].replace(
++                            '_$FFF_', '0x%s' %
++                            config_dict['cname'].split(':')[1][4:])
++                    cfgs.insert(-1, config_dict)
++                else:
++                    self.process_config(config_dict)
++                    if struct_end:
++                        struct_end = False
++                        cfgs.insert(-1, config_dict)
++                    else:
++                        cfgs.append(config_dict)
++                        if config_dict['cname'][0] == '>':
++                            struct_end = True
++
++                config_dict = dict(init_dict)
++        return cfgs
++
++    def variable_fixup(self, each):
++        """
++        Fix up some variable definitions for SBL.
++        """
++        key = each
++        val = self.gen_cfg_data._MacroDict[each]
++        return key, val
++
++    def template_fixup(self, tmp_name, tmp_list):
++        """
++        Fix up some special config templates for SBL
++        """
++        return
++
++    def config_fixup(self, cfg_list):
++        """
++        Fix up some special config items for SBL.
++        """
++
++        # Insert FSPT_UPD/FSPM_UPD/FSPS_UPD tag so as to create C strcture
++        idxs = []
++        for idx, cfg in enumerate(cfg_list):
++            if cfg['cname'].startswith('<FSP_UPD_HEADER'):
++                idxs.append(idx)
++
++        if len(idxs) != 3:
++            return
++
++        # Handle insert backwards so that the index does not change in the loop
++        fsp_comp = 'SMT'
++        idx_comp = 0
++        for idx in idxs[::-1]:
++            # Add current FSP?_UPD start tag
++            cfgfig_dict = {}
++            cfgfig_dict['cname'] = '<FSP%s_UPD' % fsp_comp[idx_comp]
++            cfg_list.insert(idx, cfgfig_dict)
++            if idx_comp < 2:
++                # Add previous FSP?_UPD end tag
++                cfgfig_dict = {}
++                cfgfig_dict['cname'] = '>FSP%s_UPD' % fsp_comp[idx_comp + 1]
++                cfg_list.insert(idx, cfgfig_dict)
++            idx_comp += 1
++
++        # Add final FSPS_UPD end tag
++        cfgfig_dict = {}
++        cfgfig_dict['cname'] = '>FSP%s_UPD' % fsp_comp[0]
++        cfg_list.append(cfgfig_dict)
++
++        return
++
++    def get_section_range(self, section_name):
++        """
++        Extract line number range from config file for a given section name.
++        """
++        start = -1
++        end = -1
++        for idx, line in enumerate(self.gen_cfg_data._DscLines):
++            if start < 0 and line.startswith('[%s]' % section_name):
++                start = idx
++            elif start >= 0 and line.startswith('['):
++                end = idx
++                break
++        if start == -1:
++            start = 0
++        if end == -1:
++            end = len(self.gen_cfg_data._DscLines)
++        return start, end
++
++    def normalize_file_name(self, file, is_temp=False):
++        """
++        Normalize file name convention so that it is consistent.
++        """
++        if file.endswith('.dsc'):
++            file = file[:-4] + '.yaml'
++        dir_name = os.path.dirname(file)
++        base_name = os.path.basename(file)
++        if is_temp:
++            if 'Template_' not in file:
++                base_name = base_name.replace('Template', 'Template_')
++        else:
++            if 'CfgData_' not in file:
++                base_name = base_name.replace('CfgData', 'CfgData_')
++        if dir_name:
++            path = dir_name + '/' + base_name
++        else:
++            path = base_name
++        return path
++
++    def output_variable(self):
++        """
++        Output variable block into a line list.
++        """
++        lines = []
++        for each in self.gen_cfg_data._MacroDict:
++            key, value = self.variable_fixup(each)
++            lines.append('%-30s : %s' % (key, value))
++        return lines
++
++    def output_template(self):
++        """
++        Output template block into a line list.
++        """
++        self.offset = 0
++        self.base_offset = 0
++        start, end = self.get_section_range('PcdsDynamicVpd.Tmp')
++        bsf_temp_dict, temp_file_dict = self.process_template_lines(self.gen_cfg_data._DscLines[start:end])
++        template_dict = dict()
++        lines = []
++        file_lines = {}
++        last_file = '.'
++        file_lines[last_file] = []
++
++        for tmp_name in temp_file_dict:
++            temp_file_dict[tmp_name][-1] = self.normalize_file_name(temp_file_dict[tmp_name][-1], True)
++            if len(temp_file_dict[tmp_name]) > 1:
++                temp_file_dict[tmp_name][-2] = self.normalize_file_name(temp_file_dict[tmp_name][-2], True)
++
++        for tmp_name in bsf_temp_dict:
++            file = temp_file_dict[tmp_name][-1]
++            if last_file != file and len(temp_file_dict[tmp_name]) > 1:
++                inc_file = temp_file_dict[tmp_name][-2]
++                file_lines[inc_file].extend(['', '- !include %s' % temp_file_dict[tmp_name][-1], ''])
++            last_file = file
++            if file not in file_lines:
++                file_lines[file] = []
++            lines = file_lines[file]
++            text = bsf_temp_dict[tmp_name]
++            tmp_list = self.process_option_lines(text)
++            self.template_fixup(tmp_name, tmp_list)
++            template_dict[tmp_name] = tmp_list
++            lines.append('%s: >' % tmp_name)
++            lines.extend(self.output_dict(tmp_list, False)['.'])
++            lines.append('\n')
++        return file_lines
++
++    def output_config(self):
++        """
++        Output config block into a line list.
++        """
++        self.offset = 0
++        self.base_offset = 0
++        start, end = self.get_section_range('PcdsDynamicVpd.Upd')
++        cfgs = self.process_option_lines(self.gen_cfg_data._DscLines[start:end])
++        self.config_fixup(cfgs)
++        file_lines = self.output_dict(cfgs, True)
++        return file_lines
++
++    def output_dict(self, cfgs, is_configs):
++        """
++        Output one config item into a line list.
++        """
++        file_lines = {}
++        level = 0
++        file = '.'
++        for each in cfgs:
++            if 'length' in each and int(each['length'], 0) == 0:
++                continue
++
++            if 'include' in each:
++                if each['include']:
++                    each['include'] = self.normalize_file_name(each['include'])
++                    file_lines[file].extend(['', '- !include %s' % each['include'], ''])
++                    file = each['include']
++                else:
++                    file = '.'
++                continue
++
++            if file not in file_lines:
++                file_lines[file] = []
++
++            lines = file_lines[file]
++            name = each['cname']
++
++            prefix = name[0]
++            if prefix == '<':
++                level += 1
++
++            padding = '  ' * level
++            if prefix not in '<>@':
++                padding += '  '
++            else:
++                name = name[1:]
++                if prefix == '@':
++                    padding += '    '
++
++            if ':' in name:
++                parts = name.split(':')
++                name = parts[0]
++
++            padding = padding[2:] if is_configs else padding
++
++            if prefix != '>':
++                if 'expand' in each:
++                    lines.append('%s- %s' % (padding, each['expand']))
++                else:
++                    lines.append('%s- %-12s :' % (padding, name))
++
++            for field in each:
++                if field in ['cname', 'expand', 'include']:
++                    continue
++                value_str = self.format_value(field, each[field], padding + ' ' * 16)
++                full_line = '  %s  %-12s : %s' % (padding, field, value_str)
++                lines.extend(full_line.splitlines())
++
++            if prefix == '>':
++                level -= 1
++                if level == 0:
++                    lines.append('')
++
++        return file_lines
++
++
++def bsf_to_dsc(bsf_file, dsc_file):
++    fsp_dsc = CFspBsf2Dsc(bsf_file)
++    dsc_lines = fsp_dsc.get_dsc_lines()
++    fd = open(dsc_file, 'w')
++    fd.write('\n'.join(dsc_lines))
++    fd.close()
++    return
++
++
++def dsc_to_yaml(dsc_file, yaml_file):
++    dsc2yaml = CFspDsc2Yaml()
++    dsc2yaml.load_config_data_from_dsc(dsc_file)
++
++    cfgs = {}
++    for cfg in ['Template', 'Option']:
++        if cfg == 'Template':
++            file_lines = dsc2yaml.output_template()
++        else:
++            file_lines = dsc2yaml.output_config()
++        for file in file_lines:
++            lines = file_lines[file]
++            if file == '.':
++                cfgs[cfg] = lines
++            else:
++                if('/' in file or '\\' in file):
++                    continue
++                file = os.path.basename(file)
++                fo = open(os.path.join(file), 'w')
++                fo.write(__copyright_tmp__ % (cfg, date.today().year) + '\n\n')
++                for line in lines:
++                    fo.write(line + '\n')
++                fo.close()
++
++    variables = dsc2yaml.output_variable()
++    fo = open(yaml_file, 'w')
++    fo.write(__copyright_tmp__ % ('Default', date.today().year))
++    if len(variables) > 0:
++        fo.write('\n\nvariable:\n')
++        for line in variables:
++            fo.write('  ' + line + '\n')
++
++    fo.write('\n\ntemplate:\n')
++    for line in cfgs['Template']:
++        fo.write('  ' + line + '\n')
++
++    fo.write('\n\nconfigs:\n')
++    for line in cfgs['Option']:
++        fo.write('  ' + line + '\n')
++
++    fo.close()
++
++
++def get_fsp_name_from_path(bsf_file):
++    name = ''
++    parts = bsf_file.split(os.sep)
++    for part in parts:
++        if part.endswith('FspBinPkg'):
++            name = part[:-9]
++            break
++    if not name:
++        raise Exception('Could not get FSP name from file path!')
++    return name
++
++
++def usage():
++    print('\n'.join([
++          "FspDscBsf2Yaml Version 0.10",
++          "Usage:",
++          "    FspDscBsf2Yaml  BsfFile|DscFile  YamlFile"
++          ]))
++
++
++def main():
++    #
++    # Parse the options and args
++    #
++    argc = len(sys.argv)
++    if argc < 3:
++        usage()
++        return 1
++
++    bsf_file = sys.argv[1]
++    yaml_file = sys.argv[2]
++    if os.path.isdir(yaml_file):
++        yaml_file = os.path.join(yaml_file, get_fsp_name_from_path(bsf_file) + '.yaml')
++
++    if bsf_file.endswith('.dsc'):
++        dsc_file = bsf_file
++        bsf_file = ''
++    else:
++        dsc_file = os.path.splitext(yaml_file)[0] + '.dsc'
++        bsf_to_dsc(bsf_file, dsc_file)
++
++    dsc_to_yaml(dsc_file, yaml_file)
++
++    print("'%s' was created successfully!" % yaml_file)
++
++    return 0
++
++
++if __name__ == '__main__':
++    sys.exit(main())
+diff --git a/IntelFsp2Pkg/Tools/GenCfgOpt.py b/IntelFsp2Pkg/Tools/GenCfgOpt.py
+index a0b8bba81e..efecae2a54 100644
+--- a/IntelFsp2Pkg/Tools/GenCfgOpt.py
++++ b/IntelFsp2Pkg/Tools/GenCfgOpt.py
+@@ -283,10 +283,10 @@ class CLogicalExpression:
+         return Result
+ 
+ class CGenCfgOpt:
+-    def __init__(self):
++    def __init__(self, Mode = ''):
+         self.Debug          = False
+         self.Error          = ''
+-
++        self.Mode           = Mode
+         self._GlobalDataDef = """
+ GlobalDataDef
+     SKUID = 0, "DEFAULT"
+@@ -300,18 +300,20 @@ List &EN_DIS
+ EndList
+ 
+ """
+-
+-        self._BsfKeyList    = ['FIND','NAME','HELP','TYPE','PAGE','OPTION','ORDER']
++        self._BsfKeyList    = ['FIND','NAME','HELP','TYPE','PAGE', 'PAGES', 'BLOCK', 'OPTION','CONDITION','ORDER', 'MARKER', 'SUBT']
+         self._HdrKeyList    = ['HEADER','STRUCT', 'EMBED', 'COMMENT']
+         self._BuidinOption  = {'$EN_DIS' : 'EN_DIS'}
+ 
+         self._MacroDict   = {}
++        self._VarDict     = {}
+         self._PcdsDict    = {}
+         self._CfgBlkDict  = {}
+         self._CfgPageDict = {}
++        self._BsfTempDict = {}
+         self._CfgItemList = []
++        self._DscLines    = []
+         self._DscFile     = ''
+-        self._FvDir       = ''
++
+         self._MapVer      = 0
+         self._DscTime     = 0
+ 
+@@ -351,7 +353,7 @@ EndList
+             print ("INFO : Eval Ifdef [%s] : %s" % (Macro, Result))
+         return  Result
+ 
+-    def ExpandMacros (self, Input):
++    def ExpandMacros (self, Input, Preserve = False):
+         Line = Input
+         Match = re.findall("\$\(\w+\)", Input)
+         if Match:
+@@ -362,7 +364,8 @@ EndList
+               else:
+                   if self.Debug:
+                       print ("WARN : %s is not defined" % Each)
+-                  Line = Line.replace(Each, Each[2:-1])
++                  if not Preserve:
++                      Line = Line.replace(Each, Each[2:-1])
+         return Line
+ 
+     def ExpandPcds (self, Input):
+@@ -386,6 +389,70 @@ EndList
+             print ("INFO : Eval Express [%s] : %s" % (Expr, Result))
+         return Result
+ 
++    def ValueToByteArray (self, ValueStr, Length):
++        Match = re.match("\{\s*FILE:(.+)\}", ValueStr)
++        if Match:
++          FileList = Match.group(1).split(',')
++          Result  = bytearray()
++          for File in FileList:
++            File = File.strip()
++            BinPath = os.path.join(os.path.dirname(self._DscFile), File)
++            Result.extend(bytearray(open(BinPath, 'rb').read()))
++        else:
++            try:
++                Result  = bytearray(self.ValueToList(ValueStr, Length))
++            except ValueError as e:
++                raise Exception ("Bytes in '%s' must be in range 0~255 !" % ValueStr)
++        if len(Result) < Length:
++            Result.extend(b'\x00' * (Length - len(Result)))
++        elif len(Result) > Length:
++            raise Exception ("Value '%s' is too big to fit into %d bytes !" % (ValueStr, Length))
++
++        return Result[:Length]
++
++    def ValueToList (self, ValueStr, Length):
++        if ValueStr[0] == '{':
++            Result = []
++            BinList = ValueStr[1:-1].split(',')
++            InBitField     = False
++            LastInBitField = False
++            Value          = 0
++            BitLen         = 0
++            for Element in BinList:
++                InBitField = False
++                Each = Element.strip()
++                if len(Each) == 0:
++                    pass
++                else:
++                    if Each[0] in ['"', "'"]:
++                        Result.extend(list(bytearray(Each[1:-1], 'utf-8')))
++                    elif ':' in Each:
++                        Match    = re.match("(.+):(\d+)b", Each)
++                        if Match is None:
++                            raise Exception("Invald value list format '%s' !" % Each)
++                        InBitField = True
++                        CurrentBitLen = int(Match.group(2))
++                        CurrentValue  = ((self.EvaluateExpress(Match.group(1)) & (1<<CurrentBitLen) - 1)) << BitLen
++                    else:
++                        Result.append(self.EvaluateExpress(Each.strip()))
++                if InBitField:
++                    Value  += CurrentValue
++                    BitLen += CurrentBitLen
++                if LastInBitField and ((not InBitField) or (Element == BinList[-1])):
++                    if BitLen % 8 != 0:
++                        raise Exception("Invald bit field length!")
++                    Result.extend(Val2Bytes(Value, BitLen // 8))
++                    Value  = 0
++                    BitLen = 0
++                LastInBitField = InBitField
++        elif ValueStr.startswith("'") and ValueStr.endswith("'"):
++            Result = Str2Bytes (ValueStr, Length)
++        elif ValueStr.startswith('"') and ValueStr.endswith('"'):
++            Result = Str2Bytes (ValueStr, Length)
++        else:
++            Result = Val2Bytes (self.EvaluateExpress(ValueStr), Length)
++        return Result
++
+     def FormatListValue(self, ConfigDict):
+         Struct = ConfigDict['struct']
+         if Struct not in ['UINT8','UINT16','UINT32','UINT64']:
+@@ -424,28 +491,53 @@ EndList
+         self._DscFile     = DscFile
+         self._FvDir       = FvDir
+ 
++        self._DscLines    = []
++        self._BsfTempDict = {}
++
+         # Initial DSC time is parent DSC time.
+         self._DscTime     = os.path.getmtime(DscFile)
+ 
++        CfgDict = {}
++
+         IsDefSect       = False
+         IsPcdSect       = False
+         IsUpdSect       = False
+         IsVpdSect       = False
++        IsTmpSect       = False
++
++        TemplateName    = ''
+ 
+         IfStack         = []
+         ElifStack       = []
+         Error           = 0
+         ConfigDict      = {}
+ 
+-        DscFd        = open(DscFile, "r")
+-        DscLines     = DscFd.readlines()
+-        DscFd.close()
++
++        if type(DscFile) is list:
++            # it is DSC lines already
++            DscLines       = DscFile
++            self._DscFile  = '.'
++        else:
++            DscFd        = open(DscFile, "r")
++            DscLines     = DscFd.readlines()
++            DscFd.close()
++            self._DscFile = DscFile
++
++        SkipLines = 0
+ 
+         MaxAlign = 32   #Default align to 32, but if there are 64 bit unit, align to 64
+         SizeAlign = 0   #record the struct max align
+         Base = 0        #Starting offset of sub-structure.
++
+         while len(DscLines):
+             DscLine  = DscLines.pop(0).strip()
++            if SkipLines == 0:
++              self._DscLines.append (DscLine)
++            else:
++              SkipLines = SkipLines - 1
++            if len(DscLine) == 0:
++              continue
++
+             Handle   = False
+             Match    = re.match("^\[(.+)\]", DscLine)
+             if Match is not None:
+@@ -453,11 +545,15 @@ EndList
+                 IsPcdSect = False
+                 IsVpdSect = False
+                 IsUpdSect = False
+-                if  Match.group(1).lower() == "Defines".lower():
++                IsTmpSect = False
++                SectionName = Match.group(1).lower()
++                if  SectionName == "Defines".lower():
+                     IsDefSect = True
+-                if  (Match.group(1).lower() == "PcdsFeatureFlag".lower() or Match.group(1).lower() == "PcdsFixedAtBuild".lower()):
++                if  (SectionName == "PcdsFeatureFlag".lower() or SectionName == "PcdsFixedAtBuild".lower()):
+                     IsPcdSect = True
+-                elif Match.group(1).lower() == "PcdsDynamicVpd.Upd".lower():
++                elif SectionName == "PcdsDynamicVpd.Tmp".lower():
++                    IsTmpSect = True
++                elif SectionName == "PcdsDynamicVpd.Upd".lower():
+                     ConfigDict = {}
+                     ConfigDict['header']  = 'ON'
+                     ConfigDict['region']  = 'UPD'
+@@ -465,90 +561,98 @@ EndList
+                     ConfigDict['page']    = ''
+                     ConfigDict['name']    = ''
+                     ConfigDict['find']    = ''
++                    ConfigDict['marker']  = ''
+                     ConfigDict['struct']  = ''
+                     ConfigDict['embed']   = ''
+                     ConfigDict['comment'] = ''
+                     ConfigDict['subreg']  = []
++                    ConfigDict['condition']  = ''
++                    ConfigDict['option']  = ''
+                     IsUpdSect = True
+                     Offset    = 0
+             else:
+-                if IsDefSect or IsPcdSect or IsUpdSect or IsVpdSect:
+-                    if re.match("^!else($|\s+#.+)", DscLine):
++                if IsDefSect or IsPcdSect or IsUpdSect or IsVpdSect or IsTmpSect:
++
++                    Match = False if DscLine[0] != '!' else True
++                    if Match:
++                        Match = re.match("^!(else|endif|ifdef|ifndef|if|elseif|include)\s*(.+)?$", DscLine.split("#")[0])
++                    Keyword   = Match.group(1) if Match else ''
++                    Remaining = Match.group(2) if Match else ''
++                    Remaining = '' if Remaining is None else Remaining.strip()
++
++                    if Keyword in ['if', 'elseif', 'ifdef', 'ifndef', 'include'] and not Remaining:
++                        raise Exception ("ERROR: Expression is expected after '!if' or !elseif' for line '%s'" % DscLine)
++
++                    if Keyword == 'else':
+                         if IfStack:
+                             IfStack[-1] = not IfStack[-1]
+                         else:
+-                            print("ERROR: No paired '!if' found for '!else' for line '%s'" % DscLine)
+-                            raise SystemExit
+-                    elif re.match("^!endif($|\s+#.+)", DscLine):
++                            raise Exception ("ERROR: No paired '!if' found for '!else' for line '%s'" % DscLine)
++                    elif Keyword == 'endif':
+                         if IfStack:
+                             IfStack.pop()
+                             Level = ElifStack.pop()
+                             if Level > 0:
+                                 del IfStack[-Level:]
+                         else:
+-                            print("ERROR: No paired '!if' found for '!endif' for line '%s'" % DscLine)
+-                            raise SystemExit
+-                    else:
+-                        Result = False
+-                        Match = re.match("!(ifdef|ifndef)\s+(.+)", DscLine)
+-                        if Match:
+-                            Result = self.EvaulateIfdef (Match.group(2))
+-                            if Match.group(1) == 'ifndef':
+-                                Result = not Result
+-                            IfStack.append(Result)
++                            raise Exception ("ERROR: No paired '!if' found for '!endif' for line '%s'" % DscLine)
++                    elif Keyword == 'ifdef' or Keyword == 'ifndef':
++                        Result = self.EvaulateIfdef (Remaining)
++                        if Keyword == 'ifndef':
++                            Result = not Result
++                        IfStack.append(Result)
++                        ElifStack.append(0)
++                    elif Keyword == 'if' or Keyword == 'elseif':
++                        Result = self.EvaluateExpress(Remaining)
++                        if Keyword == "if":
+                             ElifStack.append(0)
++                            IfStack.append(Result)
++                        else:   #elseif
++                            if IfStack:
++                                IfStack[-1] = not IfStack[-1]
++                                IfStack.append(Result)
++                                ElifStack[-1] = ElifStack[-1] + 1
++                            else:
++                                raise Exception ("ERROR: No paired '!if' found for '!elif' for line '%s'" % DscLine)
++                    else:
++                        if IfStack:
++                            Handle = reduce(lambda x,y: x and y, IfStack)
+                         else:
+-                            Match  = re.match("!(if|elseif)\s+(.+)", DscLine.split("#")[0])
++                            Handle = True
++                        if Handle:
++                            Match = re.match("!include\s+(.+)", DscLine)
+                             if Match:
+-                                Result = self.EvaluateExpress(Match.group(2))
+-                                if Match.group(1) == "if":
+-                                    ElifStack.append(0)
+-                                    IfStack.append(Result)
+-                                else:   #elseif
+-                                    if IfStack:
+-                                        IfStack[-1] = not IfStack[-1]
+-                                        IfStack.append(Result)
+-                                        ElifStack[-1] = ElifStack[-1] + 1
+-                                    else:
+-                                        print("ERROR: No paired '!if' found for '!elif' for line '%s'" % DscLine)
+-                                        raise SystemExit
+-                            else:
+-                                if IfStack:
+-                                    Handle = reduce(lambda x,y: x and y, IfStack)
++                                IncludeFilePath = Match.group(1)
++                                IncludeFilePath = self.ExpandMacros(IncludeFilePath)
++                                PackagesPath = os.getenv("PACKAGES_PATH")
++                                if PackagesPath:
++                                  for PackagePath in PackagesPath.split(os.pathsep):
++                                      IncludeFilePathAbs = os.path.join(os.path.normpath(PackagePath), os.path.normpath(IncludeFilePath))
++                                      if os.path.exists(IncludeFilePathAbs):
++                                          IncludeDsc  = open(IncludeFilePathAbs, "r")
++                                          break
+                                 else:
+-                                    Handle = True
+-                                if Handle:
+-                                    Match = re.match("!include\s+(.+)", DscLine)
+-                                    if Match:
+-                                        IncludeFilePath = Match.group(1)
+-                                        IncludeFilePath = self.ExpandMacros(IncludeFilePath)
+-                                        PackagesPath = os.getenv("PACKAGES_PATH")
+-                                        if PackagesPath:
+-                                          for PackagePath in PackagesPath.split(os.pathsep):
+-                                              IncludeFilePathAbs = os.path.join(os.path.normpath(PackagePath), os.path.normpath(IncludeFilePath))
+-                                              if os.path.exists(IncludeFilePathAbs):
+-                                                  IncludeDsc  = open(IncludeFilePathAbs, "r")
+-                                                  break
+-                                        else:
+-                                          IncludeDsc  = open(IncludeFilePath, "r")
+-                                        if IncludeDsc == None:
+-                                            print("ERROR: Cannot open file '%s'" % IncludeFilePath)
+-                                            raise SystemExit
+-
+-                                        # Update DscTime when newer DSC time found.
+-                                        CurrentDscTime = os.path.getmtime(os.path.realpath(IncludeDsc.name))
+-                                        if CurrentDscTime > self._DscTime:
+-                                            self._DscTime = CurrentDscTime
+-
+-                                        NewDscLines = IncludeDsc.readlines()
+-                                        IncludeDsc.close()
+-                                        DscLines = NewDscLines + DscLines
+-                                        Offset = 0
+-                                    else:
+-                                        if DscLine.startswith('!'):
+-                                            print("ERROR: Unrecognized directive for line '%s'" % DscLine)
+-                                            raise SystemExit
++                                  IncludeDsc  = open(IncludeFilePath, "r")
++                                if IncludeDsc == None:
++                                    print("ERROR: Cannot open file '%s'" % IncludeFilePath)
++                                    raise SystemExit
++
++                                # Update DscTime when newer DSC time found.
++                                CurrentDscTime = os.path.getmtime(os.path.realpath(IncludeDsc.name))
++                                if CurrentDscTime > self._DscTime:
++                                    self._DscTime = CurrentDscTime
++
++                                NewDscLines = IncludeDsc.readlines()
++                                IncludeDsc.close()
++                                DscLines = NewDscLines + DscLines
++                                del self._DscLines[-1]
++                                Offset = 0
++                            else:
++                                if DscLine.startswith('!'):
++                                    print("ERROR: Unrecognized directive for line '%s'" % DscLine)
++                                    raise SystemExit
+             if not Handle:
++                del self._DscLines[-1]
+                 continue
+ 
+             if IsDefSect:
+@@ -556,7 +660,7 @@ EndList
+                 #DEFINE FSP_T_UPD_TOOL_GUID = 34686CA3-34F9-4901-B82A-BA630F0714C6
+                 #DEFINE FSP_M_UPD_TOOL_GUID = 39A250DB-E465-4DD1-A2AC-E2BD3C0E2385
+                 #DEFINE FSP_S_UPD_TOOL_GUID = CAE3605B-5B34-4C85-B3D7-27D54273C40F
+-                Match = re.match("^\s*(?:DEFINE\s+)*(\w+)\s*=\s*([/$()-.\w]+)", DscLine)
++                Match = re.match("^\s*(?:DEFINE\s+)*(\w+)\s*=\s*(.+)", DscLine)
+                 if Match:
+                     self._MacroDict[Match.group(1)] = self.ExpandMacros(Match.group(2))
+                     if self.Debug:
+@@ -575,6 +679,23 @@ EndList
+                         if Match:
+                             self._PcdsDict[Match.group(1)] = Match.group(2)
+                         i += 1
++
++            elif IsTmpSect:
++                # !BSF DEFT:{GPIO_TMPL:START}
++                Match = re.match("^\s*#\s+(!BSF)\s+DEFT:{(.+?):(START|END)}", DscLine)
++                if Match:
++                    if Match.group(3) == 'START' and not TemplateName:
++                        TemplateName = Match.group(2).strip()
++                        self._BsfTempDict[TemplateName] = []
++                    if Match.group(3) == 'END' and (TemplateName == Match.group(2).strip()) and TemplateName:
++                        TemplateName = ''
++                else:
++                    if TemplateName:
++                        Match = re.match("^!include\s*(.+)?$", DscLine)
++                        if Match:
++                            continue
++                        self._BsfTempDict[TemplateName].append(DscLine)
++
+             else:
+                 Match = re.match("^\s*#\s+(!BSF|@Bsf|!HDR)\s+(.+)", DscLine)
+                 if Match:
+@@ -630,9 +751,9 @@ EndList
+                 Match = re.match("^\s*#\s*@ValidRange\s*(.+)\s*\|\s*(.+)\s*-\s*(.+)\s*", DscLine)
+                 if Match:
+                     if "0x" in Match.group(2) or "0x" in Match.group(3):
+-                       ConfigDict['type'] = "EditNum, HEX, (%s,%s)" % (Match.group(2), Match.group(3))
++                        ConfigDict['type'] = "EditNum, HEX, (%s,%s)" % (Match.group(2), Match.group(3))
+                     else:
+-                       ConfigDict['type'] = "EditNum, DEC, (%s,%s)" % (Match.group(2), Match.group(3))
++                        ConfigDict['type'] = "EditNum, DEC, (%s,%s)" % (Match.group(2), Match.group(3))
+ 
+                 Match = re.match("^\s*##\s+(.+)", DscLine)
+                 if Match:
+@@ -748,6 +869,7 @@ EndList
+                     ConfigDict['struct'] = ''
+                     ConfigDict['embed']  = ''
+                     ConfigDict['comment'] = ''
++                    ConfigDict['marker'] = ''
+                     ConfigDict['order']  = -1
+                     ConfigDict['subreg'] = []
+                     ConfigDict['option'] = ''
+@@ -786,9 +908,8 @@ EndList
+         bitsvalue = bitsvalue[::-1]
+         bitslen   = len(bitsvalue)
+         if start > bitslen or end > bitslen:
+-            print ("Invalid bits offset [%d,%d] for %s" % (start, end, subitem['name']))
+-            raise SystemExit
+-        return hex(int(bitsvalue[start:end][::-1], 2))
++            raise Exception ("Invalid bits offset [%d,%d] %d for %s" % (start, end, bitslen, subitem['name']))
++        return '0x%X' % (int(bitsvalue[start:end][::-1], 2))
+ 
+     def UpdateSubRegionDefaultValue (self):
+         Error = 0
+@@ -888,63 +1009,142 @@ EndList
+             TxtFd.close()
+         return 0
+ 
+-    def ProcessMultilines (self, String, MaxCharLength):
+-            Multilines = ''
+-            StringLength = len(String)
+-            CurrentStringStart = 0
+-            StringOffset = 0
+-            BreakLineDict = []
+-            if len(String) <= MaxCharLength:
+-                while (StringOffset < StringLength):
+-                    if StringOffset >= 1:
+-                        if String[StringOffset - 1] == '\\' and String[StringOffset] == 'n':
+-                            BreakLineDict.append (StringOffset + 1)
+-                    StringOffset += 1
+-                if BreakLineDict != []:
+-                    for Each in BreakLineDict:
+-                        Multilines += "  %s\n" % String[CurrentStringStart:Each].lstrip()
+-                        CurrentStringStart = Each
+-                    if StringLength - CurrentStringStart > 0:
+-                        Multilines += "  %s\n" % String[CurrentStringStart:].lstrip()
++    def CreateVarDict (self):
++        Error = 0
++        self._VarDict = {}
++        if len(self._CfgItemList) > 0:
++            Item = self._CfgItemList[-1]
++            self._VarDict['_LENGTH_'] = '%d' % (Item['offset'] + Item['length'])
++        for Item in self._CfgItemList:
++            Embed = Item['embed']
++            Match = re.match("^(\w+):(\w+):(START|END)", Embed)
++            if Match:
++                StructName = Match.group(1)
++                VarName = '_%s_%s_' % (Match.group(3), StructName)
++                if Match.group(3) == 'END':
++                    self._VarDict[VarName] = Item['offset'] + Item['length']
++                    self._VarDict['_LENGTH_%s_' % StructName] = \
++                        self._VarDict['_END_%s_' % StructName] - self._VarDict['_START_%s_' % StructName]
++                    if Match.group(2).startswith('TAG_'):
++                        if (self.Mode != 'FSP') and (self._VarDict['_LENGTH_%s_' % StructName] % 4):
++                            raise Exception("Size of structure '%s' is %d, not DWORD aligned !" % (StructName, self._VarDict['_LENGTH_%s_' % StructName]))
++                        self._VarDict['_TAG_%s_' % StructName] = int (Match.group(2)[4:], 16) & 0xFFF
+                 else:
+-                    Multilines = "  %s\n" % String
++                    self._VarDict[VarName] = Item['offset']
++            if Item['marker']:
++                self._VarDict['_OFFSET_%s_' % Item['marker'].strip()] = Item['offset']
++        return Error
++
++    def UpdateBsfBitUnit (self, Item):
++        BitTotal  = 0
++        BitOffset = 0
++        StartIdx  = 0
++        Unit      = None
++        UnitDec   = {1:'BYTE', 2:'WORD', 4:'DWORD', 8:'QWORD'}
++        for Idx, SubItem in enumerate(Item['subreg']):
++            if Unit is None:
++                Unit  = SubItem['bitunit']
++            BitLength = SubItem['bitlength']
++            BitTotal  += BitLength
++            BitOffset += BitLength
++
++            if BitOffset > 64 or BitOffset > Unit * 8:
++                break
++
++            if BitOffset == Unit * 8:
++                for SubIdx in range (StartIdx, Idx + 1):
++                    Item['subreg'][SubIdx]['bitunit'] = Unit
++                BitOffset = 0
++                StartIdx  = Idx + 1
++                Unit      = None
++
++        if BitOffset > 0:
++            raise Exception ("Bit fields cannot fit into %s for '%s.%s' !" % (UnitDec[Unit], Item['cname'], SubItem['cname']))
++
++        ExpectedTotal = Item['length'] * 8
++        if Item['length'] * 8 != BitTotal:
++            raise Exception ("Bit fields total length (%d) does not match length (%d) of '%s' !" % (BitTotal, ExpectedTotal, Item['cname']))
++
++    def UpdateDefaultValue (self):
++        Error = 0
++        for Idx, Item in enumerate(self._CfgItemList):
++            if len(Item['subreg']) == 0:
++                Value = Item['value']
++                if (len(Value) > 0) and (Value[0] == '{' or Value[0] == "'" or Value[0] == '"'):
++                    # {XXX} or 'XXX' strings
++                    self.FormatListValue(self._CfgItemList[Idx])
++                else:
++                  Match = re.match("(0x[0-9a-fA-F]+|[0-9]+)", Value)
++                  if not Match:
++                    NumValue = self.EvaluateExpress (Value)
++                    Item['value'] = '0x%X' % NumValue
+             else:
+-                NewLineStart = 0
+-                NewLineCount = 0
+-                FoundSpaceChar = False
+-                while (StringOffset < StringLength):
+-                    if StringOffset >= 1:
+-                        if NewLineCount >= MaxCharLength - 1:
+-                            if String[StringOffset] == ' ' and StringLength - StringOffset > 10:
+-                                BreakLineDict.append (NewLineStart + NewLineCount)
+-                                NewLineStart = NewLineStart + NewLineCount
+-                                NewLineCount = 0
+-                                FoundSpaceChar = True
+-                            elif StringOffset == StringLength - 1 and FoundSpaceChar == False:
+-                                BreakLineDict.append (0)
+-                        if String[StringOffset - 1] == '\\' and String[StringOffset] == 'n':
+-                            BreakLineDict.append (StringOffset + 1)
+-                            NewLineStart = StringOffset + 1
++                ValArray = self.ValueToByteArray (Item['value'], Item['length'])
++                for SubItem in Item['subreg']:
++                    SubItem['value']   = self.GetBsfBitFields(SubItem, ValArray)
++                self.UpdateBsfBitUnit (Item)
++        return Error
++
++    def ProcessMultilines (self, String, MaxCharLength):
++        Multilines = ''
++        StringLength = len(String)
++        CurrentStringStart = 0
++        StringOffset = 0
++        BreakLineDict = []
++        if len(String) <= MaxCharLength:
++            while (StringOffset < StringLength):
++                if StringOffset >= 1:
++                    if String[StringOffset - 1] == '\\' and String[StringOffset] == 'n':
++                        BreakLineDict.append (StringOffset + 1)
++                StringOffset += 1
++            if BreakLineDict != []:
++                for Each in BreakLineDict:
++                    Multilines += "  %s\n" % String[CurrentStringStart:Each].lstrip()
++                    CurrentStringStart = Each
++                if StringLength - CurrentStringStart > 0:
++                    Multilines += "  %s\n" % String[CurrentStringStart:].lstrip()
++            else:
++                Multilines = "  %s\n" % String
++        else:
++            NewLineStart = 0
++            NewLineCount = 0
++            FoundSpaceChar = False
++            while (StringOffset < StringLength):
++                if StringOffset >= 1:
++                    if NewLineCount >= MaxCharLength - 1:
++                        if String[StringOffset] == ' ' and StringLength - StringOffset > 10:
++                            BreakLineDict.append (NewLineStart + NewLineCount)
++                            NewLineStart = NewLineStart + NewLineCount
+                             NewLineCount = 0
+-                    StringOffset += 1
+-                    NewLineCount += 1
+-                if BreakLineDict != []:
+-                    BreakLineDict.sort ()
+-                    for Each in BreakLineDict:
+-                        if Each > 0:
+-                            Multilines += "  %s\n" % String[CurrentStringStart:Each].lstrip()
+-                        CurrentStringStart = Each
+-                    if StringLength - CurrentStringStart > 0:
+-                        Multilines += "  %s\n" % String[CurrentStringStart:].lstrip()
+-            return Multilines
+-
+-    def CreateField (self, Item, Name, Length, Offset, Struct, BsfName, Help, Option):
++                            FoundSpaceChar = True
++                        elif StringOffset == StringLength - 1 and FoundSpaceChar == False:
++                            BreakLineDict.append (0)
++                    if String[StringOffset - 1] == '\\' and String[StringOffset] == 'n':
++                        BreakLineDict.append (StringOffset + 1)
++                        NewLineStart = StringOffset + 1
++                        NewLineCount = 0
++                StringOffset += 1
++                NewLineCount += 1
++            if BreakLineDict != []:
++                BreakLineDict.sort ()
++                for Each in BreakLineDict:
++                    if Each > 0:
++                        Multilines += "  %s\n" % String[CurrentStringStart:Each].lstrip()
++                    CurrentStringStart = Each
++                if StringLength - CurrentStringStart > 0:
++                    Multilines += "  %s\n" % String[CurrentStringStart:].lstrip()
++        return Multilines
++
++    def CreateField (self, Item, Name, Length, Offset, Struct, BsfName, Help, Option, BitsLength = None):
+         PosName    = 28
+         PosComment = 30
+         NameLine=''
+         HelpLine=''
+         OptionLine=''
+ 
++        if Length == 0 and Name == 'Dummy':
++            return '\n'
++
+         IsArray = False
+         if Length in [1,2,4,8]:
+             Type = "UINT%d" % (Length * 8)
+@@ -992,7 +1192,12 @@ EndList
+         else:
+             OffsetStr = '0x%04X' % Offset
+ 
+-        return "\n/** Offset %s%s%s%s**/\n  %s%s%s;\n" % (OffsetStr, NameLine, HelpLine, OptionLine, Type, ' ' * Space1, Name,)
++        if BitsLength is None:
++            BitsLength = ''
++        else:
++            BitsLength = ' : %d' % BitsLength
++
++        return "\n/** Offset %s%s%s%s**/\n  %s%s%s%s;\n" % (OffsetStr, NameLine, HelpLine, OptionLine, Type, ' ' * Space1, Name, BitsLength)
+ 
+     def PostProcessBody (self, TextBody):
+         NewTextBody = []
+diff --git a/IntelFsp2Pkg/Tools/Tests/ExpectedFspUpd.h b/IntelFsp2Pkg/Tools/Tests/ExpectedFspUpd.h
+new file mode 100644
+index 0000000000..be2ed8aa99
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/Tests/ExpectedFspUpd.h
+@@ -0,0 +1,16 @@
++#ifndef __FSPUPD_H__
++#define __FSPUPD_H__
++
++#include <FspEas.h>
++
++#pragma pack(1)
++
++#define FSPT_UPD_SIGNATURE               0x545F4450554D4551        /* 'QEMUPD_T' */
++
++#define FSPM_UPD_SIGNATURE               0x4D5F4450554D4551        /* 'QEMUPD_M' */
++
++#define FSPS_UPD_SIGNATURE               0x535F4450554D4551        /* 'QEMUPD_S' */
++
++#pragma pack()
++
++#endif
+diff --git a/IntelFsp2Pkg/Tools/Tests/ExpectedFspmUpd.h b/IntelFsp2Pkg/Tools/Tests/ExpectedFspmUpd.h
+new file mode 100644
+index 0000000000..97d452c44d
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/Tests/ExpectedFspmUpd.h
+@@ -0,0 +1,75 @@
++#ifndef __FSPMUPD_H__
++#define __FSPMUPD_H__
++
++#include <FspUpd.h>
++
++#pragma pack(1)
++
++
++/** Fsp M Configuration
++**/
++typedef struct {
++
++/** Offset 0x0040 - Debug Serial Port Base address
++  Debug serial port base address. This option will be used only when the 'Serial Port
++  Debug Device' option is set to 'External Device'. 0x00000000(Default).
++**/
++  UINT32                      SerialDebugPortAddress;
++
++/** Offset 0x0044 - Debug Serial Port Type
++  16550 compatible debug serial port resource type. NONE means no serial port support.
++  0x02:MMIO(Default).
++  0:NONE, 1:I/O, 2:MMIO
++**/
++  UINT8                       SerialDebugPortType;
++
++/** Offset 0x0045 - Serial Port Debug Device
++  Select active serial port device for debug. For SOC UART devices,'Debug Serial Port
++  Base' options will be ignored. 0x02:SOC UART2(Default).
++  0:SOC UART0, 1:SOC UART1, 2:SOC UART2, 3:External Device
++**/
++  UINT8                       SerialDebugPortDevice;
++
++/** Offset 0x0046 - Debug Serial Port Stride Size
++  Debug serial port register map stride size in bytes. 0x00:1, 0x02:4(Default).
++  0:1, 2:4
++**/
++  UINT8                       SerialDebugPortStrideSize;
++
++/** Offset 0x0047
++**/
++  UINT8                       UnusedUpdSpace0[49];
++
++/** Offset 0x0078
++**/
++  UINT8                       ReservedFspmUpd[4];
++} FSP_M_CONFIG;
++
++/** Fsp M UPD Configuration
++**/
++typedef struct {
++
++/** Offset 0x0000
++**/
++  FSP_UPD_HEADER              FspUpdHeader;
++
++/** Offset 0x0020
++**/
++  FSPM_ARCH_UPD               FspmArchUpd;
++
++/** Offset 0x0040
++**/
++  FSP_M_CONFIG                FspmConfig;
++
++/** Offset 0x007C
++**/
++  UINT8                       UnusedUpdSpace1[2];
++
++/** Offset 0x007E
++**/
++  UINT16                      UpdTerminator;
++} FSPM_UPD;
++
++#pragma pack()
++
++#endif
+diff --git a/IntelFsp2Pkg/Tools/Tests/ExpectedFspsUpd.h b/IntelFsp2Pkg/Tools/Tests/ExpectedFspsUpd.h
+new file mode 100644
+index 0000000000..c2b0c11bbd
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/Tests/ExpectedFspsUpd.h
+@@ -0,0 +1,73 @@
++#ifndef __FSPSUPD_H__
++#define __FSPSUPD_H__
++
++#include <FspUpd.h>
++
++#pragma pack(1)
++
++
++/** Fsp S Configuration
++**/
++typedef struct {
++
++/** Offset 0x0060 - BMP Logo Data Size
++  BMP logo data buffer size. 0x00000000(Default).
++**/
++  UINT32                      LogoSize;
++
++/** Offset 0x0064 - BMP Logo Data Pointer
++  BMP logo data pointer to a BMP format buffer. 0x00000000(Default).
++**/
++  UINT32                      LogoPtr;
++
++/** Offset 0x0068 - Graphics Configuration Data Pointer
++  Graphics configuration data used for initialization. 0x00000000(Default).
++**/
++  UINT32                      GraphicsConfigPtr;
++
++/** Offset 0x006C - PCI GFX Temporary MMIO Base
++  PCI Temporary PCI GFX Base used before full PCI enumeration. 0x80000000(Default).
++**/
++  UINT32                      PciTempResourceBase;
++
++/** Offset 0x0070
++**/
++  UINT8                       UnusedUpdSpace1[32];
++
++/** Offset 0x0090
++**/
++  UINT8                       ReservedFspsUpd;
++} FSP_S_CONFIG;
++
++/** Fsp S UPD Configuration
++**/
++typedef struct {
++
++/** Offset 0x0000
++**/
++  FSP_UPD_HEADER              FspUpdHeader;
++
++/** Offset 0x0020
++**/
++  UINT8                       UnusedUpdSpace0[32];
++
++/** Offset 0x0040
++**/
++  FSPS_ARCH_UPD               FspsArchUpd;
++
++/** Offset 0x0060
++**/
++  FSP_S_CONFIG                FspsConfig;
++
++/** Offset 0x0091
++**/
++  UINT8                       UnusedUpdSpace2[13];
++
++/** Offset 0x009E
++**/
++  UINT16                      UpdTerminator;
++} FSPS_UPD;
++
++#pragma pack()
++
++#endif
+diff --git a/IntelFsp2Pkg/Tools/Tests/ExpectedFsptUpd.h b/IntelFsp2Pkg/Tools/Tests/ExpectedFsptUpd.h
+new file mode 100644
+index 0000000000..49383e10ed
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/Tests/ExpectedFsptUpd.h
+@@ -0,0 +1,87 @@
++#ifndef __FSPTUPD_H__
++#define __FSPTUPD_H__
++
++#include <FspUpd.h>
++
++#pragma pack(1)
++
++
++/** Fsp T Common UPD
++**/
++typedef struct {
++
++/** Offset 0x0040
++**/
++  UINT8                       Revision;
++
++/** Offset 0x0041
++**/
++  UINT8                       Reserved[3];
++
++/** Offset 0x0044
++**/
++  UINT32                      MicrocodeRegionBase;
++
++/** Offset 0x0048
++**/
++  UINT32                      MicrocodeRegionLength;
++
++/** Offset 0x004C
++**/
++  UINT32                      CodeRegionBase;
++
++/** Offset 0x0050
++**/
++  UINT32                      CodeRegionLength;
++
++/** Offset 0x0054
++**/
++  UINT8                       Reserved1[12];
++} FSPT_COMMON_UPD;
++
++/** Fsp T Configuration
++**/
++typedef struct {
++
++/** Offset 0x0060 - Chicken bytes to test Hex config
++  This option shows how to present option for 4 bytes data
++**/
++  UINT32                      ChickenBytes;
++
++/** Offset 0x0064
++**/
++  UINT8                       ReservedFsptUpd1[28];
++} FSP_T_CONFIG;
++
++/** Fsp T UPD Configuration
++**/
++typedef struct {
++
++/** Offset 0x0000
++**/
++  FSP_UPD_HEADER              FspUpdHeader;
++
++/** Offset 0x0020
++**/
++  FSPT_ARCH_UPD               FsptArchUpd;
++
++/** Offset 0x0040
++**/
++  FSPT_COMMON_UPD             FsptCommonUpd;
++
++/** Offset 0x0060
++**/
++  FSP_T_CONFIG                FsptConfig;
++
++/** Offset 0x0080
++**/
++  UINT8                       UnusedUpdSpace0[48];
++
++/** Offset 0x00B0
++**/
++  UINT16                      UpdTerminator;
++} FSPT_UPD;
++
++#pragma pack()
++
++#endif
+diff --git a/IntelFsp2Pkg/Tools/Tests/ExpectedOutput.bsf b/IntelFsp2Pkg/Tools/Tests/ExpectedOutput.bsf
+new file mode 100644
+index 0000000000..8a888f4290
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/Tests/ExpectedOutput.bsf
+@@ -0,0 +1,88 @@
++GlobalDataDef
++    SKUID = 0, "DEFAULT"
++EndGlobalData
++
++
++StructDef
++
++    Find "QEMUPD_T"
++        $gQemuFspPkgTokenSpaceGuid_Revision                            1 bytes    $_DEFAULT_ = 0x01
++        Skip 87 bytes
++        $gQemuFspPkgTokenSpaceGuid_ChickenBytes                        4 bytes    $_DEFAULT_ = 0x00000000
++
++    Find "QEMUPD_M"
++        $gQemuFspPkgTokenSpaceGuid_Revision                            1 bytes    $_DEFAULT_ = 0x01
++        Skip 31 bytes
++        $gQemuFspPkgTokenSpaceGuid_StackBase                           4 bytes    $_DEFAULT_ = 0x00070000
++        $gQemuFspPkgTokenSpaceGuid_StackSize                           4 bytes    $_DEFAULT_ = 0x00010000
++        $gQemuFspPkgTokenSpaceGuid_BootLoaderTolumSize                 4 bytes    $_DEFAULT_ = 0x00000000
++        $gPlatformFspPkgTokenSpaceGuid_Bootmode                        4 bytes    $_DEFAULT_ = 0x00000000
++        Skip 8 bytes
++        $gQemuFspPkgTokenSpaceGuid_SerialDebugPortAddress              4 bytes    $_DEFAULT_ = 0x00000000
++        $gQemuFspPkgTokenSpaceGuid_SerialDebugPortType                 1 bytes    $_DEFAULT_ = 0x02
++        $gQemuFspPkgTokenSpaceGuid_SerialDebugPortDevice               1 bytes    $_DEFAULT_ = 0x02
++        $gQemuFspPkgTokenSpaceGuid_SerialDebugPortStrideSize           1 bytes    $_DEFAULT_ = 0x02
++
++    Find "QEMUPD_S"
++        $gQemuFspPkgTokenSpaceGuid_Revision                            1 bytes    $_DEFAULT_ = 0x01
++        Skip 87 bytes
++        $gQemuFspPkgTokenSpaceGuid_LogoSize                            4 bytes    $_DEFAULT_ = 0x00000000
++        $gQemuFspPkgTokenSpaceGuid_LogoPtr                             4 bytes    $_DEFAULT_ = 0x00000000
++        $gQemuFspPkgTokenSpaceGuid_GraphicsConfigPtr                   4 bytes    $_DEFAULT_ = 0x00000000
++        $gQemuFspPkgTokenSpaceGuid_PciTempResourceBase                 4 bytes    $_DEFAULT_ = 0x80000000
++
++EndStruct
++
++
++List &EN_DIS
++    Selection 0x1 , "Enabled"
++    Selection 0x0 , "Disabled"
++EndList
++
++List &gQemuFspPkgTokenSpaceGuid_SerialDebugPortType
++    Selection 0 , "NONE"
++    Selection 1 , "I/O"
++    Selection 2 , "MMIO"
++EndList
++
++List &gQemuFspPkgTokenSpaceGuid_SerialDebugPortDevice
++    Selection 0 , "SOC UART0"
++    Selection 1 , "SOC UART1"
++    Selection 2 , "SOC UART2"
++    Selection 3 , "External Device"
++EndList
++
++List &gQemuFspPkgTokenSpaceGuid_SerialDebugPortStrideSize
++    Selection 0 , "1"
++    Selection 2 , "4"
++EndList
++
++BeginInfoBlock
++    PPVer       "0.1"
++    Description "QEMU Platform"
++EndInfoBlock
++
++Page "FSP T"
++    EditNum $gQemuFspPkgTokenSpaceGuid_ChickenBytes, "Chicken bytes to test Hex config", HEX,
++        Help "This option shows how to present option for 4 bytes data"
++             "Valid range: 0x00000000 ~ 0xFFFFFFFF"
++EndPage
++
++Page "FSP MemoryInit Settings"
++    EditNum $gQemuFspPkgTokenSpaceGuid_SerialDebugPortAddress, "Debug Serial Port Base address", HEX,
++        Help "Debug serial port base address. This option will be used only when the 'Serial Port Debug Device' option is set to 'External Device'. 0x00000000(Default)."
++             "Valid range: 0x00000000 ~ 0xFFFFFFFF"
++    Combo $gQemuFspPkgTokenSpaceGuid_SerialDebugPortType, "Debug Serial Port Type", &gQemuFspPkgTokenSpaceGuid_SerialDebugPortType,
++        Help "16550 compatible debug serial port resource type. NONE means no serial port support. 0x02:MMIO(Default)."
++    Combo $gQemuFspPkgTokenSpaceGuid_SerialDebugPortDevice, "Serial Port Debug Device", &gQemuFspPkgTokenSpaceGuid_SerialDebugPortDevice,
++        Help "Select active serial port device for debug. For SOC UART devices,'Debug Serial Port Base' options will be ignored. 0x02:SOC UART2(Default)."
++    Combo $gQemuFspPkgTokenSpaceGuid_SerialDebugPortStrideSize, "Debug Serial Port Stride Size", &gQemuFspPkgTokenSpaceGuid_SerialDebugPortStrideSize,
++        Help "Debug serial port register map stride size in bytes. 0x00:1, 0x02:4(Default)."
++EndPage
++
++Page "FSP SiliconInit Settings"
++    EditNum $gQemuFspPkgTokenSpaceGuid_PciTempResourceBase, "PCI GFX Temporary MMIO Base", HEX,
++        Help "PCI Temporary PCI GFX Base used before full PCI enumeration. 0x80000000(Default)."
++             "Valid range: 0x80000000 ~ 0xDFFFFFFF"
++EndPage
++
+diff --git a/IntelFsp2Pkg/Tools/Tests/ExpectedOutput.yaml b/IntelFsp2Pkg/Tools/Tests/ExpectedOutput.yaml
+new file mode 100644
+index 0000000000..dd5ac4d20d
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/Tests/ExpectedOutput.yaml
+@@ -0,0 +1,288 @@
++variable:
++  PLATFORM_NAME                  : QemuFspPkg
++  PLATFORM_GUID                  : 1BEDB57A-7904-406e-8486-C89FC7FB39EE
++  PLATFORM_VERSION               : 0.1
++  DSC_SPECIFICATION              : 0x00010005
++  OUTPUT_DIRECTORY               : Build/QemuFspPkg
++  SUPPORTED_ARCHITECTURES        : IA32|X64
++  BUILD_TARGETS                  : DEBUG|RELEASE
++  SKUID_IDENTIFIER               : DEFAULT
++  FLASH_DEFINITION               : QemuFspPkg/QemuFspPkg.fdf
++  FSP_T_UPD_TOOL_GUID            : 34686CA3-34F9-4901-B82A-BA630F0714C6
++  FSP_V_UPD_TOOL_GUID            : 4E2F4725-734A-4399-BAF5-B4E16348EB2F
++  FSP_M_UPD_TOOL_GUID            : 39A250DB-E465-4DD1-A2AC-E2BD3C0E2385
++  FSP_S_UPD_TOOL_GUID            : CAE3605B-5B34-4C85-B3D7-27D54273C40F
++  FSP_T_UPD_FFS_GUID             : 70BCF6A5-FFB1-47D8-B1AE-EFE5508E23EA
++  FSP_V_UPD_FFS_GUID             : 0197EF5E-2FFC-4089-8E55-F70400B18146
++  FSP_M_UPD_FFS_GUID             : D5B86AEA-6AF7-40D4-8014-982301BC3D89
++  FSP_S_UPD_FFS_GUID             : E3CD9B18-998C-4F76-B65E-98B154E5446F
++  FSP_PACKAGE                    : QemuFspPkg
++  FSP_IMAGE_ID                   : 0x245053464D455124  # $QEMFSP$
++  FSP_IMAGE_REV                  : 0x00001010
++  CAR_BASE_ADDRESS               : 0x00000000
++  CAR_REGION_SIZE                : 0x00080000
++  CAR_BLD_REGION_SIZE            : 0x00070000
++  CAR_FSP_REGION_SIZE            : 0x00010000
++  FSP_ARCH                       : X64
++
++
++template:
++
++
++configs:
++  - $ACTION      :
++      page         : TMP::"FSP T", MEM::"FSP MemoryInit Settings", SIL::"FSP SiliconInit Settings"
++  - $ACTION      :
++      find         : QEMUPD_T
++  - FSPT_UPD     :
++    - FSP_UPD_HEADER :
++      - Signature    :
++          length       : 0x08
++          value        : 0x545F4450554D4551
++      - Revision     :
++          name         : FsptUpdRevision
++          length       : 0x01
++          value        : 0x01
++      - Reserved     :
++          length       : 0x17
++          value        : {0x00}
++    - FSPT_ARCH_UPD :
++      - Revision     :
++          length       : 0x01
++          value        : 0x01
++      - Reserved     :
++          length       : 0x03
++          value        : {0x00}
++      - Length       :
++          length       : 0x04
++          value        : 0x00000020
++      - FspDebugHandler :
++          length       : 0x04
++          value        : 0x00000000
++      - Reserved1    :
++          length       : 0x14
++          value        : {0x00}
++    - FSPT_COMMON_UPD :
++      - Revision     :
++          length       : 0x01
++          value        : 0x01
++      - Reserved     :
++          length       : 0x03
++          value        : {0x00}
++      - MicrocodeRegionBase :
++          length       : 0x04
++          value        : 0x00000000
++      - MicrocodeRegionLength :
++          length       : 0x04
++          value        : 0x00000000
++      - CodeRegionBase :
++          length       : 0x04
++          value        : 0x00000000
++      - CodeRegionLength :
++          length       : 0x04
++          value        : 0x00000000
++      - Reserved1    :
++          length       : 0x0C
++          value        : {0x00}
++    - FSP_T_CONFIG :
++      - $ACTION      :
++          page         : TMP
++      - ChickenBytes :
++          name         : Chicken bytes to test Hex config
++          type         : EditNum, HEX, (0x00000000,0xFFFFFFFF)
++          help         : >
++                         This option shows how to present option for 4 bytes data
++          length       : 0x04
++          value        : 0x00000000
++      - ReservedFsptUpd1 :
++          length       : 0x1C
++          value        : {0x00}
++    - UnusedUpdSpace0 :
++        length       : 0x30
++        value        : { 0 }
++    - UpdTerminator :
++        length       : 0x02
++        value        : 0x55AA
++    - $ACTION      :
++        find         : QEMUPD_M
++  
++  - FSPM_UPD     :
++    - FSP_UPD_HEADER :
++      - Signature    :
++          length       : 0x08
++          value        : 0x4D5F4450554D4551
++      - Revision     :
++          name         : FspmUpdRevision
++          length       : 0x01
++          value        : 0x01
++      - Reserved     :
++          length       : 0x17
++          value        : {0x00}
++    - FSPM_ARCH_UPD :
++      - Revision     :
++          length       : 0x01
++          value        : 0x01
++      - Reserved     :
++          length       : 0x03
++          value        : {0x00}
++      - NvsBufferPtr :
++          struct       : VOID*
++          length       : 0x04
++          value        : 0x00000000
++      - StackBase    :
++          struct       : VOID*
++          name         : StackBase
++          help         : >
++                         Stack base for FSP use. Default- 0xFEF16000
++          length       : 0x04
++          value        : $(CAR_BLD_REGION_SIZE)
++      - StackSize    :
++          name         : StackSize
++          help         : >
++                         To pass the stack size for FSP use. Bootloader can programmatically get the FSP requested StackSize by using the defaults in the FSP-M component. This is the minimum stack size expected by this revision of FSP. Default- 0x2A000
++          length       : 0x04
++          value        : $(CAR_FSP_REGION_SIZE)
++      - BootLoaderTolumSize :
++          name         : BootLoaderTolumSize
++          help         : >
++                         To pass Bootloader Tolum size.
++          length       : 0x04
++          value        : 0x00000000
++      - Bootmode     :
++          name         : Bootmode
++          help         : >
++                         To maintain Bootmode details.
++          length       : 0x04
++          value        : 0x00000000
++      - Reserved1    :
++          length       : 0x08
++          value        : {0x00}
++    - FSP_M_CONFIG :
++      - $ACTION      :
++          page         : MEM
++      - SerialDebugPortAddress :
++          name         : Debug Serial Port Base address
++          type         : EditNum, HEX, (0x00000000,0xFFFFFFFF)
++          help         : >
++                         Debug serial port base address. This option will be used only when the 'Serial Port Debug Device'
++                         option is set to 'External Device'. 0x00000000(Default).
++          length       : 0x04
++          value        : 0x00000000
++      - SerialDebugPortType :
++          name         : Debug Serial Port Type
++          type         : Combo
++          option       : 0:NONE, 1:I/O, 2:MMIO
++          help         : >
++                         16550 compatible debug serial port resource type. NONE means no serial port support. 0x02:MMIO(Default).
++          length       : 0x01
++          value        : 0x02
++      - SerialDebugPortDevice :
++          name         : Serial Port Debug Device
++          type         : Combo
++          option       : 0:SOC UART0, 1:SOC UART1, 2:SOC UART2, 3:External Device
++          help         : >
++                         Select active serial port device for debug. 
++                         For SOC UART devices,'Debug Serial Port Base' options will be ignored. 0x02:SOC UART2(Default).
++          length       : 0x01
++          value        : 0x02
++      - SerialDebugPortStrideSize :
++          name         : Debug Serial Port Stride Size
++          type         : Combo
++          option       : 0:1, 2:4
++          help         : >
++                         Debug serial port register map stride size in bytes. 0x00:1, 0x02:4(Default).
++          length       : 0x01
++          value        : 0x02
++    - ReservedFspmUpd :
++        length       : 0x04
++        value        : {0x00}
++    - UnusedUpdSpace1 :
++        length       : 0x31
++        value        : { 0 }
++    - UnusedUpdSpace2 :
++        length       : 0x2
++        value        : { 0 }
++    - UpdTerminator :
++        length       : 0x02
++        value        : 0x55AA
++    - $ACTION      :
++        find         : QEMUPD_S
++  
++  - FSPS_UPD     :
++    - FSP_UPD_HEADER :
++      - Signature    :
++          length       : 0x08
++          value        : 0x535F4450554D4551
++      - Revision     :
++          name         : FspsUpdRevision
++          length       : 0x01
++          value        : 0x01
++      - Reserved     :
++          length       : 0x17
++          value        : {0x00}
++    - FSPS_ARCH_UPD :
++      - UnusedUpdSpace3 :
++          length       : 0x20
++          value        : { 0 }
++      - Revision     :
++          length       : 0x01
++          value        : 0x01
++      - Reserved     :
++          length       : 0x03
++          value        : {0x00}
++      - Length       :
++          length       : 0x04
++          value        : 0x00000020
++      - FspEventHandler :
++          length       : 0x04
++          value        : 0x00000000
++      - EnableMultiPhaseSiliconInit :
++          length       : 0x01
++          value        : 0x00
++      - Reserved1    :
++          length       : 0x13
++          value        : {0x00}
++    - FSP_S_CONFIG :
++      - $ACTION      :
++          page         : SIL
++      - LogoSize     :
++          name         : BMP Logo Data Size
++          type         : Reserved
++          help         : >
++                         BMP logo data buffer size. 0x00000000(Default).
++          length       : 0x04
++          value        : 0x00000000
++      - LogoPtr      :
++          name         : BMP Logo Data Pointer
++          type         : Reserved
++          help         : >
++                         BMP logo data pointer to a BMP format buffer. 0x00000000(Default).
++          length       : 0x04
++          value        : 0x00000000
++      - GraphicsConfigPtr :
++          name         : Graphics Configuration Data Pointer
++          type         : Reserved
++          help         : >
++                         Graphics configuration data used for initialization. 0x00000000(Default).
++          length       : 0x04
++          value        : 0x00000000
++      - PciTempResourceBase :
++          name         : PCI GFX Temporary MMIO Base
++          type         : EditNum, HEX, (0x80000000,0xDFFFFFFF)
++          help         : >
++                         PCI Temporary PCI GFX Base used before full PCI enumeration. 0x80000000(Default).
++          length       : 0x04
++          value        : 0x80000000
++    - ReservedFspsUpd :
++        length       : 0x01
++        value        : 0x00
++    - UnusedUpdSpace4 :
++        length       : 0x20
++        value        : { 0 }
++    - UnusedUpdSpace5 :
++        length       : 0xd
++        value        : { 0 }
++    - UpdTerminator :
++        length       : 0x02
++        value        : 0x55AA
++  
+diff --git a/IntelFsp2Pkg/Tools/Tests/QemuFspPkg.dsc b/IntelFsp2Pkg/Tools/Tests/QemuFspPkg.dsc
+new file mode 100644
+index 0000000000..3801b46574
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/Tests/QemuFspPkg.dsc
+@@ -0,0 +1,469 @@
++## @file
++# FSP DSC build file for QEMU platform
++#
++# Copyright (c) 2017 - 2018, Intel Corporation. All rights reserved.<BR>
++#
++#    This program and the accompanying materials
++#    are licensed and made available under the terms and conditions of the BSD License
++#    which accompanies this distribution. The full text of the license may be found at
++#    http://opensource.org/licenses/bsd-license.php
++#
++#    THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++#    WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++##
++
++################################################################################
++#
++# Defines Section - statements that will be processed to create a Makefile.
++#
++################################################################################
++[Defines]
++  PLATFORM_NAME                  = QemuFspPkg
++  PLATFORM_GUID                  = 1BEDB57A-7904-406e-8486-C89FC7FB39EE
++  PLATFORM_VERSION               = 0.1
++  DSC_SPECIFICATION              = 0x00010005
++  OUTPUT_DIRECTORY               = Build/QemuFspPkg
++  SUPPORTED_ARCHITECTURES        = IA32|X64
++  BUILD_TARGETS                  = DEBUG|RELEASE
++  SKUID_IDENTIFIER               = DEFAULT
++  FLASH_DEFINITION               = QemuFspPkg/QemuFspPkg.fdf
++
++  #
++  # UPD tool definition
++  #
++  FSP_T_UPD_TOOL_GUID            = 34686CA3-34F9-4901-B82A-BA630F0714C6
++  FSP_V_UPD_TOOL_GUID            = 4E2F4725-734A-4399-BAF5-B4E16348EB2F
++  FSP_M_UPD_TOOL_GUID            = 39A250DB-E465-4DD1-A2AC-E2BD3C0E2385
++  FSP_S_UPD_TOOL_GUID            = CAE3605B-5B34-4C85-B3D7-27D54273C40F
++  FSP_T_UPD_FFS_GUID             = 70BCF6A5-FFB1-47D8-B1AE-EFE5508E23EA
++  FSP_V_UPD_FFS_GUID             = 0197EF5E-2FFC-4089-8E55-F70400B18146
++  FSP_M_UPD_FFS_GUID             = D5B86AEA-6AF7-40D4-8014-982301BC3D89
++  FSP_S_UPD_FFS_GUID             = E3CD9B18-998C-4F76-B65E-98B154E5446F
++
++  #
++  # Set platform specific package/folder name, same as passed from PREBUILD script.
++  # PLATFORM_PACKAGE would be the same as PLATFORM_NAME as well as package build folder
++  # DEFINE only takes effect at R9 DSC and FDF.
++  #
++  DEFINE FSP_PACKAGE                     = QemuFspPkg
++  DEFINE FSP_IMAGE_ID                    = 0x245053464D455124  # $QEMFSP$
++  DEFINE FSP_IMAGE_REV                   = 0x00001010
++
++  DEFINE CAR_BASE_ADDRESS                = 0x00000000
++  DEFINE CAR_REGION_SIZE                 = 0x00080000
++  DEFINE CAR_BLD_REGION_SIZE             = 0x00070000
++  DEFINE CAR_FSP_REGION_SIZE             = 0x00010000
++
++  DEFINE FSP_ARCH                        = X64
++
++################################################################################
++#
++# SKU Identification section - list of all SKU IDs supported by this
++#                              Platform.
++#
++################################################################################
++[SkuIds]
++  0|DEFAULT              # The entry: 0|DEFAULT is reserved and always required.
++
++################################################################################
++#
++# Library Class section - list of all Library Classes needed by this Platform.
++#
++################################################################################
++
++[LibraryClasses]
++  PeiCoreEntryPoint|MdePkg/Library/PeiCoreEntryPoint/PeiCoreEntryPoint.inf
++  PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
++  DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
++  BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
++  IoLib|MdePkg/Library/BaseIoLibIntrinsic/BaseIoLibIntrinsic.inf
++  PciLib|MdePkg/Library/BasePciLibPciExpress/BasePciLibPciExpress.inf
++  PciCf8Lib|MdePkg/Library/BasePciCf8Lib/BasePciCf8Lib.inf
++  PciExpressLib|MdePkg/Library/BasePciExpressLib/BasePciExpressLib.inf
++  BaseMemoryLib|MdePkg/Library/BaseMemoryLibRepStr/BaseMemoryLibRepStr.inf
++  PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
++  PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
++  HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
++  PeiServicesTablePointerLib|MdePkg/Library/PeiServicesTablePointerLibIdt/PeiServicesTablePointerLibIdt.inf
++  PeiServicesLib|MdePkg/Library/PeiServicesLib/PeiServicesLib.inf
++  MemoryAllocationLib|MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf
++  PeCoffGetEntryPointLib|MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
++  ReportStatusCodeLib|MdeModulePkg/Library/PeiReportStatusCodeLib/PeiReportStatusCodeLib.inf
++  CacheMaintenanceLib|MdePkg/Library/BaseCacheMaintenanceLib/BaseCacheMaintenanceLib.inf
++  PeCoffLib|MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
++  PeCoffExtraActionLib|MdePkg/Library/BasePeCoffExtraActionLibNull/BasePeCoffExtraActionLibNull.inf
++  UefiDecompressLib|MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.inf
++  SynchronizationLib|MdePkg/Library/BaseSynchronizationLib/BaseSynchronizationLib.inf
++  CpuLib|MdePkg/Library/BaseCpuLib/BaseCpuLib.inf
++  ExtractGuidedSectionLib|MdePkg/Library/PeiExtractGuidedSectionLib/PeiExtractGuidedSectionLib.inf
++  CacheLib|IntelFsp2Pkg/Library/BaseCacheLib/BaseCacheLib.inf
++  CacheAsRamLib|IntelFsp2Pkg/Library/BaseCacheAsRamLibNull/BaseCacheAsRamLibNull.inf
++  FspSwitchStackLib|IntelFsp2Pkg/Library/BaseFspSwitchStackLib/BaseFspSwitchStackLib.inf
++  FspCommonLib|IntelFsp2Pkg/Library/BaseFspCommonLib/BaseFspCommonLib.inf
++  FspPlatformLib|IntelFsp2Pkg/Library/BaseFspPlatformLib/BaseFspPlatformLib.inf
++  PlatformHookLib|MdeModulePkg/Library/BasePlatformHookLibNull/BasePlatformHookLibNull.inf
++  PerformanceLib|MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf
++  OemHookStatusCodeLib|MdeModulePkg/Library/OemHookStatusCodeLibNull/OemHookStatusCodeLibNull.inf
++  UefiCpuLib|UefiCpuPkg/Library/BaseUefiCpuLib/BaseUefiCpuLib.inf
++!if $(TARGET) == DEBUG
++  DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
++  SerialPortLib|MdeModulePkg/Library/BaseSerialPortLib16550/BaseSerialPortLib16550.inf
++!else
++  DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
++  SerialPortLib|MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
++!endif
++
++
++################################################################################
++#
++# Pcd Section - list of all EDK II PCD Entries defined by this Platform
++#
++################################################################################
++[PcdsFixedAtBuild]
++  gEfiMdeModulePkgTokenSpaceGuid.PcdShadowPeimOnS3Boot    | TRUE
++  gQemuFspPkgTokenSpaceGuid.PcdFspHeaderRevision          | 0x03
++  gQemuFspPkgTokenSpaceGuid.PcdFspImageIdString           | $(FSP_IMAGE_ID)
++  gQemuFspPkgTokenSpaceGuid.PcdFspImageRevision           | $(FSP_IMAGE_REV)
++  #
++  # FSP CAR Usages  (BL RAM | FSP RAM | FSP CODE)
++  #
++  gIntelFsp2PkgTokenSpaceGuid.PcdTemporaryRamBase         | $(CAR_BASE_ADDRESS)
++  gIntelFsp2PkgTokenSpaceGuid.PcdTemporaryRamSize         | $(CAR_REGION_SIZE)
++  gIntelFsp2PkgTokenSpaceGuid.PcdFspTemporaryRamSize      | $(CAR_FSP_REGION_SIZE)
++  gIntelFsp2PkgTokenSpaceGuid.PcdFspReservedBufferSize    | 0x0100
++
++  # This defines how much space will be used for heap in FSP temporary memory
++  # x % of FSP temporary memory will be used for heap
++  # (100 - x) % of FSP temporary memory will be used for stack
++  gIntelFsp2PkgTokenSpaceGuid.PcdFspHeapSizePercentage    | 65
++
++  # This is a platform specific global pointer used by FSP
++  gIntelFsp2PkgTokenSpaceGuid.PcdGlobalDataPointerAddress | 0xFED00148
++  gIntelFsp2PkgTokenSpaceGuid.PcdFspReservedMemoryLength  | 0x00100000
++
++!if $(TARGET) == RELEASE
++  gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel   | 0x00000000
++  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask           | 0
++!else
++  gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel   | 0x80000047
++  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask           | 0x27
++!endif
++
++[PcdsPatchableInModule]
++  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress       | 0xE0000000
++  #
++  # This entry will be patched during the build process
++  #
++  gEfiMdeModulePkgTokenSpaceGuid.PcdVpdBaseAddress        | 0x12345678
++
++!if $(TARGET) == RELEASE
++  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel        | 0
++!else
++  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel        | 0x80000047
++!endif
++
++[PcdsDynamicVpd.Upd]
++  #
++  # This section is not used by the normal build process
++  # However, FSP will use dedicated tool to handle it and generate a
++  # VPD similar binary block (User Configuration Data). This block will
++  # be accessed through a generated data structure directly rather than
++  # PCD services. This is for size consideration.
++  # Format:
++  #   gQemuFspPkgTokenSpaceGuid.Updxxxxxxxxxxxxn      | OFFSET | LENGTH | VALUE
++  # Only simple data type is supported
++  #
++
++  #
++  # Comments with !BSF will be used to generate BSF file
++  # Comments with !HDR will be used to generate H header file
++  #
++
++  # Global definitions in BSF
++  # !BSF PAGES:{TMP:"FSP T", MEM:"FSP MemoryInit Settings", SIL:"FSP SiliconInit Settings"}
++  # !BSF BLOCK:{NAME:"QEMU Platform", VER:"0.1"}
++
++  # !BSF FIND:{QEMUPD_T}
++  # !HDR COMMENT:{FSP_UPD_HEADR:FSP UPD Header}
++  # !HDR EMBED:{FSP_UPD_HEADER:FspUpdHeader:START}
++  # FsptUpdSignature: {QEMUPD_T}
++  gQemuFspPkgTokenSpaceGuid.Signature                   | 0x0000 | 0x08 | 0x545F4450554D4551
++  # !BSF NAME:{FsptUpdRevision}
++  gQemuFspPkgTokenSpaceGuid.Revision                    | 0x0008 | 0x01 | 0x01
++  # !HDR EMBED:{FSP_UPD_HEADER:FspUpdHeader:END}
++  gQemuFspPkgTokenSpaceGuid.Reserved                    | 0x0009 | 0x17 | {0x00}
++
++  # !HDR COMMENT:{FSPT_ARCH_UPD:FSPT_ARCH_UPD}
++  # !HDR EMBED:{FSPT_ARCH_UPD:FsptArchUpd:START}
++  gQemuFspPkgTokenSpaceGuid.Revision                    | 0x0020 | 0x01 | 0x01
++  gQemuFspPkgTokenSpaceGuid.Reserved                    | 0x0021 | 0x03 | {0x00}
++  gQemuFspPkgTokenSpaceGuid.Length                      | 0x0024 | 0x04 | 0x00000020
++  gQemuFspPkgTokenSpaceGuid.FspDebugHandler             | 0x0028 | 0x04 | 0x00000000
++  # !HDR EMBED:{FSPT_ARCH_UPD:FsptArchUpd:END}
++  gQemuFspPkgTokenSpaceGuid.Reserved1                   | 0x002C | 0x14 | {0x00}
++
++  # !HDR COMMENT:{FSPT_COMMON_UPD:Fsp T Common UPD}
++  # !HDR EMBED:{FSPT_COMMON_UPD:FsptCommonUpd:START}
++  gQemuFspPkgTokenSpaceGuid.Revision                    | 0x0040 | 0x01 | 0x01
++  gQemuFspPkgTokenSpaceGuid.Reserved                    | 0x0041 | 0x03 | {0x00}
++
++  # Base address of the microcode region.
++  gQemuFspPkgTokenSpaceGuid.MicrocodeRegionBase         | 0x0044 | 0x04 | 0x00000000
++
++  # Length of the microcode region.
++  gQemuFspPkgTokenSpaceGuid.MicrocodeRegionLength       | 0x0048 | 0x04 | 0x00000000
++
++  # Base address of the cacheable flash region.
++  gQemuFspPkgTokenSpaceGuid.CodeRegionBase              | 0x004C | 0x04 | 0x00000000
++
++  # Length of the cacheable flash region.
++  gQemuFspPkgTokenSpaceGuid.CodeRegionLength            | 0x0050 | 0x04 | 0x00000000
++
++  # !HDR EMBED:{FSPT_COMMON_UPD:FsptCommonUpd:END}
++  gQemuFspPkgTokenSpaceGuid.Reserved1                   | 0x0054 | 0x0C | {0x00}
++
++  # !HDR COMMENT:{FSP_T_CONFIG:Fsp T Configuration}
++  # !HDR EMBED:{FSP_T_CONFIG:FsptConfig:START}
++  # !BSF PAGE:{TMP}
++  # !BSF NAME:{Chicken bytes to test Hex config}
++  # !BSF TYPE:{EditNum, HEX, (0x00000000,0xFFFFFFFF)}
++  # !BSF HELP:{This option shows how to present option for 4 bytes data}
++  gQemuFspPkgTokenSpaceGuid.ChickenBytes                | 0x0060 | 0x04 | 0x00000000
++
++  # !HDR EMBED:{FSP_T_CONFIG:FsptConfig:END}
++  gQemuFspPkgTokenSpaceGuid.ReservedFsptUpd1            | 0x0064 | 0x1C | {0x00}
++
++  # Note please keep "UpdTerminator" at the end of each UPD region.
++  # The tool will use this field to determine the actual end of the UPD data
++  # structure.
++  gQemuFspPkgTokenSpaceGuid.UpdTerminator               | 0x00B0 | 0x02 | 0x55AA
++
++  ################################################################################
++  #
++  # UPDs consumed in FspMemoryInit Api
++  #
++  ################################################################################
++  # !BSF FIND:{QEMUPD_M}
++  # !HDR COMMENT:{FSP_UPD_HEADER:FSP UPD Header}
++  # !HDR EMBED:{FSP_UPD_HEADER:FspUpdHeader:START}
++  # FspmUpdSignature: {QEMUPD_M}
++  gQemuFspPkgTokenSpaceGuid.Signature                   | 0x0000 | 0x08 | 0x4D5F4450554D4551
++  # !BSF NAME:{FspmUpdRevision}
++  gQemuFspPkgTokenSpaceGuid.Revision                    | 0x0008 | 0x01 | 0x01
++  # !HDR EMBED:{FSP_UPD_HEADER:FspUpdHeader:END}
++  gQemuFspPkgTokenSpaceGuid.Reserved                    | 0x0009 | 0x17 | {0x00}
++
++  # !HDR COMMENT:{FSPM_ARCH_UPD:Fsp M Architectural UPD}
++  # !HDR EMBED:{FSPM_ARCH_UPD:FspmArchUpd:START}
++
++  gQemuFspPkgTokenSpaceGuid.Revision                    | 0x0020 | 0x01 | 0x01
++
++  gQemuFspPkgTokenSpaceGuid.Reserved                    | 0x0021 | 0x03 | {0x00}
++
++  # !HDR STRUCT:{VOID*}
++  gQemuFspPkgTokenSpaceGuid.NvsBufferPtr                | 0x0024 | 0x04 | 0x00000000
++
++  # !HDR STRUCT:{VOID*}
++  # !BSF NAME:{StackBase}
++  # !BSF HELP:{Stack base for FSP use. Default: 0xFEF16000}
++  gQemuFspPkgTokenSpaceGuid.StackBase                   | 0x0028 | 0x04 | $(CAR_BLD_REGION_SIZE)
++
++  # !BSF NAME:{StackSize}
++  # !BSF HELP:{To pass the stack size for FSP use. Bootloader can programmatically get the FSP requested StackSize by using the defaults in the FSP-M component. This is the minimum stack size expected by this revision of FSP. Default: 0x2A000}
++  gQemuFspPkgTokenSpaceGuid.StackSize                   | 0x002C | 0x04 | $(CAR_FSP_REGION_SIZE)
++
++  # !BSF NAME:{BootLoaderTolumSize}
++  # !BSF HELP:{To pass Bootloader Tolum size.}
++  gQemuFspPkgTokenSpaceGuid.BootLoaderTolumSize         | 0x0030 | 0x04 | 0x00000000
++
++  # !BSF NAME:{Bootmode}
++  # !BSF HELP:{To maintain Bootmode details.}
++  gPlatformFspPkgTokenSpaceGuid.Bootmode                   | 0x0034 | 0x04 | 0x00000000
++
++  # !HDR EMBED:{FSPM_ARCH_UPD:FspmArchUpd:END}
++  gQemuFspPkgTokenSpaceGuid.Reserved1                   | 0x0038 | 0x08 | {0x00}
++
++  # !HDR COMMENT:{FSP_M_CONFIG:Fsp M Configuration}
++  # !HDR EMBED:{FSP_M_CONFIG:FspmConfig:START}
++  # !BSF PAGE:{MEM}
++  # !BSF NAME:{Debug Serial Port Base address}
++  # !BSF TYPE:{EditNum, HEX, (0x00000000,0xFFFFFFFF)}
++  # !BSF HELP:{Debug serial port base address. This option will be used only when the 'Serial Port Debug Device'}
++  # !BSF HELP:{+ option is set to 'External Device'. 0x00000000(Default).}
++  gQemuFspPkgTokenSpaceGuid.SerialDebugPortAddress      | 0x0040 | 0x04 | 0x00000000
++
++  # !BSF NAME:{Debug Serial Port Type} TYPE:{Combo}
++  # !BSF OPTION:{0:NONE, 1:I/O, 2:MMIO}
++  # !BSF HELP:{16550 compatible debug serial port resource type. NONE means no serial port support. 0x02:MMIO(Default).}
++  gQemuFspPkgTokenSpaceGuid.SerialDebugPortType         | 0x0044 | 0x01 | 0x02
++
++  # !BSF NAME:{Serial Port Debug Device} TYPE:{Combo}
++  # !BSF OPTION:{0:SOC UART0, 1:SOC UART1, 2:SOC UART2, 3:External Device}
++  # !BSF HELP:{Select active serial port device for debug. }
++  # !BSF HELP:{+For SOC UART devices,'Debug Serial Port Base' options will be ignored. 0x02:SOC UART2(Default).}
++  gQemuFspPkgTokenSpaceGuid.SerialDebugPortDevice       | 0x0045 | 0x01 | 0x02
++
++  # !BSF NAME:{Debug Serial Port Stride Size} TYPE:{Combo}
++  # !BSF OPTION:{0:1, 2:4}
++  # !BSF HELP:{Debug serial port register map stride size in bytes. 0x00:1, 0x02:4(Default).}
++  gQemuFspPkgTokenSpaceGuid.SerialDebugPortStrideSize   | 0x0046 | 0x01 | 0x02
++
++
++  # !HDR EMBED:{FSP_M_CONFIG:FspmConfig:END}
++  gQemuFspPkgTokenSpaceGuid.ReservedFspmUpd             | 0x0078 | 0x04 | {0x00}
++
++
++  # Note please keep "UpdTerminator" at the end of each UPD region.
++  # The tool will use this field to determine the actual end of the UPD data
++  # structure.
++  gQemuFspPkgTokenSpaceGuid.UpdTerminator               | 0x007E | 0x02 | 0x55AA
++
++  ################################################################################
++  #
++  # UPDs consumed in FspSiliconInit Api
++  #
++  ################################################################################
++  # !BSF FIND:{QEMUPD_S}
++  # !HDR COMMENT:{FSP_UPD_HEADER:FSP UPD Header}
++  # !HDR EMBED:{FSP_UPD_HEADER:FspUpdHeader:START}
++  # FspsUpdSignature: {QEMUPD_S}
++  gQemuFspPkgTokenSpaceGuid.Signature                   | 0x0000 | 0x08 | 0x535F4450554D4551
++  # !BSF NAME:{FspsUpdRevision}
++  gQemuFspPkgTokenSpaceGuid.Revision                    | 0x0008 | 0x01 | 0x01
++  # !HDR EMBED:{FSP_UPD_HEADER:FspUpdHeader:END}
++  gQemuFspPkgTokenSpaceGuid.Reserved                    | 0x0009 | 0x17 | {0x00}
++
++  # !HDR COMMENT:{FSPS_ARCH_UPD:FSPS_ARCH_UPD}
++  # !HDR EMBED:{FSPS_ARCH_UPD:FspsArchUpd:START}
++  gQemuFspPkgTokenSpaceGuid.Revision                    | 0x0040 | 0x01 | 0x01
++  gQemuFspPkgTokenSpaceGuid.Reserved                    | 0x0041 | 0x03 | {0x00}
++  gQemuFspPkgTokenSpaceGuid.Length                      | 0x0044 | 0x04 | 0x00000020
++  gQemuFspPkgTokenSpaceGuid.FspEventHandler             | 0x0048 | 0x04 | 0x00000000
++  gQemuFspPkgTokenSpaceGuid.EnableMultiPhaseSiliconInit | 0x004C | 0x01 | 0x00
++  # !HDR EMBED:{FSPS_ARCH_UPD:FspsArchUpd:END}
++  gQemuFspPkgTokenSpaceGuid.Reserved1                   | 0x004D | 0x13 | {0x00}
++
++  # !HDR COMMENT:{FSP_S_CONFIG:Fsp S Configuration}
++  # !HDR EMBED:{FSP_S_CONFIG:FspsConfig:START}
++  # !BSF PAGE:{SIL}
++
++  # !BSF NAME:{BMP Logo Data Size}
++  # !BSF TYPE:{Reserved}
++  # !BSF HELP:{BMP logo data buffer size. 0x00000000(Default).}
++  gQemuFspPkgTokenSpaceGuid.LogoSize                    | 0x0060 | 0x04 | 0x00000000
++
++  # !BSF NAME:{BMP Logo Data Pointer}
++  # !BSF TYPE:{Reserved}
++  # !BSF HELP:{BMP logo data pointer to a BMP format buffer. 0x00000000(Default).}
++  gQemuFspPkgTokenSpaceGuid.LogoPtr                     | 0x0064 | 0x04 | 0x00000000
++
++  # !BSF NAME:{Graphics Configuration Data Pointer}
++  # !BSF TYPE:{Reserved}
++  # !BSF HELP:{Graphics configuration data used for initialization. 0x00000000(Default).}
++  gQemuFspPkgTokenSpaceGuid.GraphicsConfigPtr           | 0x0068 | 0x04 | 0x00000000
++
++  # !BSF NAME:{PCI GFX Temporary MMIO Base}
++  # !BSF TYPE:{EditNum, HEX, (0x80000000,0xDFFFFFFF)}
++  # !BSF HELP:{PCI Temporary PCI GFX Base used before full PCI enumeration. 0x80000000(Default).}
++  gQemuFspPkgTokenSpaceGuid.PciTempResourceBase         | 0x006C | 0x04 | 0x80000000
++
++  # !HDR EMBED:{FSP_S_CONFIG:FspsConfig:END}
++  gQemuFspPkgTokenSpaceGuid.ReservedFspsUpd             | 0x0090 | 0x01 | 0x00
++
++  # Note please keep "UpdTerminator" at the end of each UPD region.
++  # The tool will use this field to determine the actual end of the UPD data
++  # structure.
++  gQemuFspPkgTokenSpaceGuid.UpdTerminator               | 0x009E | 0x02 | 0x55AA
++
++###################################################################################################
++#
++# Components Section - list of the modules and components that will be processed by compilation
++#                      tools and the EDK II tools to generate PE32/PE32+/Coff image files.
++#
++# Note: The EDK II DSC file is not used to specify how compiled binary images get placed
++#       into firmware volume images. This section is just a list of modules to compile from
++#       source into UEFI-compliant binaries.
++#       It is the FDF file that contains information on combining binary files into firmware
++#       volume images, whose concept is beyond UEFI and is described in PI specification.
++#       Binary modules do not need to be listed in this section, as they should be
++#       specified in the FDF file. For example: Shell binary (Shell_Full.efi), FAT binary (Fat.efi),
++#       Logo (Logo.bmp), and etc.
++#       There may also be modules listed in this section that are not required in the FDF file,
++#       When a module listed here is excluded from FDF file, then UEFI-compliant binary will be
++#       generated for it, but the binary will not be put into any firmware volume.
++#
++###################################################################################################
++[Components.IA32]
++  #
++  # FSP Binary Components
++  #
++  $(FSP_PACKAGE)/FspHeader/FspHeader.inf
++
++  #
++  # SEC
++  #
++  IntelFsp2Pkg/FspSecCore/FspSecCoreT.inf {
++    <LibraryClasses>
++      FspSecPlatformLib|$(FSP_PACKAGE)/Library/PlatformSecLib/Vtf0PlatformSecTLib.inf
++  }
++
++[Components.$(FSP_ARCH)]
++  IntelFsp2Pkg/FspSecCore/FspSecCoreV.inf {
++    <LibraryClasses>
++      FspSecPlatformLib|$(FSP_PACKAGE)/Library/PlatformSecLib/Vtf0PlatformSecVLib.inf
++  }
++
++  IntelFsp2Pkg/FspSecCore/FspSecCoreM.inf {
++    <LibraryClasses>
++      FspSecPlatformLib|$(FSP_PACKAGE)/Library/PlatformSecLib/Vtf0PlatformSecMLib.inf
++  }
++
++  IntelFsp2Pkg/FspSecCore/FspSecCoreS.inf {
++    <LibraryClasses>
++      FspSecPlatformLib|$(FSP_PACKAGE)/Library/PlatformSecLib/Vtf0PlatformSecSLib.inf
++  }
++
++  #
++  # PEI Core
++  #
++  MdeModulePkg/Core/Pei/PeiMain.inf
++
++  #
++  # PCD
++  #
++  MdeModulePkg/Universal/PCD/Pei/Pcd.inf {
++    <LibraryClasses>
++      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
++      PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
++  }
++
++  $(FSP_PACKAGE)/FspvInit/FspvInit.inf
++  $(FSP_PACKAGE)/FspmInit/FspmInit.inf
++  $(FSP_PACKAGE)/FspsInit/FspsInit.inf
++  $(FSP_PACKAGE)/QemuVideo/QemuVideo.inf
++  MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf {
++    <LibraryClasses>
++      DebugAgentLib|MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf
++      ResetSystemLib|MdeModulePkg/Library/BaseResetSystemLibNull/BaseResetSystemLibNull.inf
++  }
++  IntelFsp2Pkg/FspNotifyPhase/FspNotifyPhasePeim.inf
++
++###################################################################################################
++#
++# BuildOptions Section - Define the module specific tool chain flags that should be used as
++#                        the default flags for a module. These flags are appended to any
++#                        standard flags that are defined by the build process. They can be
++#                        applied for any modules or only those modules with the specific
++#                        module style (EDK or EDKII) specified in [Components] section.
++#
++###################################################################################################
++[BuildOptions]
++# Append build options for EDK and EDKII drivers (= is Append, == is Replace)
++  # Enable link-time optimization when building with GCC49
++  *_GCC49_IA32_CC_FLAGS = -flto
++  *_GCC49_IA32_DLINK_FLAGS = -flto
++  *_GCC5_IA32_CC_FLAGS = -fno-pic
++  *_GCC5_IA32_DLINK_FLAGS = -no-pie
++  *_GCC5_IA32_ASLCC_FLAGS = -fno-pic
++  *_GCC5_IA32_ASLDLINK_FLAGS = -no-pie
+diff --git a/IntelFsp2Pkg/Tools/Tests/test_yaml.py b/IntelFsp2Pkg/Tools/Tests/test_yaml.py
+new file mode 100644
+index 0000000000..19c3e31a3d
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/Tests/test_yaml.py
+@@ -0,0 +1,90 @@
++# @file
++#  Split a file into two pieces at the request offset.
++#
++#  Copyright (c) 2021, Intel Corporation. All rights reserved.<BR>
++#
++#  SPDX-License-Identifier: BSD-2-Clause-Patent
++#
++##
++
++# Import Modules
++import unittest
++import tempfile
++import os
++import shutil
++import struct as st
++import filecmp
++
++import os, sys
++currentdir = os.path.dirname(os.path.realpath(__file__))
++parentdir = os.path.dirname(currentdir)
++sys.path.append(parentdir)
++import FspDscBsf2Yaml
++
++YamlHeaderLineLength = 10
++HdrFileHeaderLineLength = 32
++BsfFileHeaderLineLength = 19
++
++def GenFileWithoutHdr(inputfile, numLineToStrip):
++    yaml_file = open(inputfile, "r")
++    lines = yaml_file.readlines()
++    yaml_file.close()
++    del lines[:numLineToStrip]
++
++    noHdrOutputFileName = "no-header-" + inputfile
++    stripped_file = open(noHdrOutputFileName, "w")
++    for line in lines:
++        stripped_file.write(line)
++    stripped_file.close()
++    return noHdrOutputFileName
++
++class TestFspScripts(unittest.TestCase):
++    def test_generateYaml_fromDsc(self):
++        # Generate YAML
++        cmd = '{} {} {} {}'.format(
++            'python',
++            '..\FspDscBsf2Yaml.py',
++            'QemuFspPkg.dsc',
++            "Output.yaml")
++        os.system(cmd)
++        noHdrOutputFileName = GenFileWithoutHdr("Output.yaml", YamlHeaderLineLength)
++        self.assertTrue(filecmp.cmp(noHdrOutputFileName,
++                  'ExpectedOutput.yaml'))
++
++    def test_generateHeader_fromDsc(self):
++        # Generate HEADER
++        cmd = '{} {} HEADER {} {} {}'.format(
++            'python',
++            '..\GenCfgOpt.py',
++            'QemuFspPkg.dsc',
++            '.',
++            "")
++        os.system(cmd)
++        noHdrOutputFileName = GenFileWithoutHdr("FspmUpd.h", HdrFileHeaderLineLength)
++        self.assertTrue(filecmp.cmp(noHdrOutputFileName,
++                  'ExpectedFspmUpd.h'))
++        noHdrOutputFileName = GenFileWithoutHdr("FspsUpd.h", HdrFileHeaderLineLength)
++        self.assertTrue(filecmp.cmp(noHdrOutputFileName,
++                  'ExpectedFspsUpd.h'))
++        noHdrOutputFileName = GenFileWithoutHdr("FsptUpd.h", HdrFileHeaderLineLength)
++        self.assertTrue(filecmp.cmp(noHdrOutputFileName,
++                  'ExpectedFsptUpd.h'))
++        noHdrOutputFileName = GenFileWithoutHdr("FspUpd.h", HdrFileHeaderLineLength)
++        self.assertTrue(filecmp.cmp(noHdrOutputFileName,
++                  'ExpectedFspUpd.h'))
++
++    def test_generateBsf_fromDsc(self):
++        # Generate BSF
++        cmd = '{} {} GENBSF {} {} {}'.format(
++            'python',
++            '..\GenCfgOpt.py',
++            'QemuFspPkg.dsc',
++            '.',
++            "Output.bsf")
++        os.system(cmd)
++        noHdrOutputFileName = GenFileWithoutHdr("Output.bsf", BsfFileHeaderLineLength)
++        self.assertTrue(filecmp.cmp(noHdrOutputFileName,
++                  'ExpectedOutput.bsf'))
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/IntelFsp2Pkg/Tools/UserManuals/FspDscBsf2YamlUserManual.md b/IntelFsp2Pkg/Tools/UserManuals/FspDscBsf2YamlUserManual.md
+new file mode 100644
+index 0000000000..e739ffc25e
+--- /dev/null
++++ b/IntelFsp2Pkg/Tools/UserManuals/FspDscBsf2YamlUserManual.md
+@@ -0,0 +1,39 @@
++#Name
++**FspDscBsf2Yaml.py** The python script that generates YAML file for
++the Boot Settings from an EDK II Platform Description (**DSC**) file
++or from a Boot Settings File (**BSF**). It is created to help
++transitioning FSP Updateable Product Data (**UPD**) file format to
++new standardized YAML format so that it can be configured through
++open source tools.
++
++#Synopsis
++```
++FspDscBsf2Yaml DscFile|BsfFile  YamlFile
++```
++
++#Description
++**FspDscBsf2Yaml.py** is a script that generates configuration options from an
++**EDK II Platform Description (DSC)** file or **a Boot Settings File (BSF)** file.
++
++It generates a **YAML file** that can be used by the **Config Editor** to provide
++a graphical user interface for manipulating settings in the UPD regions.
++
++The following sections explain the usage of this script.
++
++## 1. FspDscBsf2Yaml.py DscFile YamlFile
++
++The **DscFile** option is an input DSC file.
++
++The **YamlFile** option is an output YAML file.
++
++The script takes the FSP DSC file consisting BSF syntax and generates a YAML
++output file describing the boot settings.
++
++## 2. FspDscBsf2Yaml.py BsfFile YamlFile
++
++The **BsfFile** option is an input BSF file.
++
++The **YamlFile** option is an output YAML file.
++
++The script generates a YAML output file from a BSF file. The BSF file
++can be generated using GenCfgOpt tool.
+-- 
+2.28.0.windows.1
+

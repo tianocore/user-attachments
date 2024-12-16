@@ -1,0 +1,35 @@
+From f778a7dab939f8db0dee8db1a97da22b9a2f235a Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 27 Dec 2022 17:20:11 +0530
+Subject: [PATCH] MdeModulePkg/Bus/Pci/NvmExpressPei: Fix DEADCODE Coverity
+ issue
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4220
+
+The code can reach line 65 only through the else path above at line 53.
+The else path already has the same NULL check at line 55 and hence the
+duplicate code lines are totally redundant which can be deleted.
+
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/NvmExpressPei/NvmExpressPeiS3.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressPei/NvmExpressPeiS3.c b/MdeModulePkg/Bus/Pci/NvmExpressPei/NvmExpressPeiS3.c
+index d704c62eaa..1d03d49640 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressPei/NvmExpressPeiS3.c
++++ b/MdeModulePkg/Bus/Pci/NvmExpressPei/NvmExpressPeiS3.c
+@@ -62,10 +62,6 @@ NvmeS3SkipThisController (
+     }
+   }
+ 
+-  if (S3InitDevices == NULL) {
+-    return Skip;
+-  }
+-
+   //
+   // Only need to initialize the controllers that exist in the device list.
+   //
+-- 
+2.36.1.windows.1
+

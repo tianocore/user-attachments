@@ -1,0 +1,47 @@
+From 77b52279cead1e4b6f733ac28c162bec2b1a4ad6 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 12:27:04 +0530
+Subject: [PATCH 1/1] NetworkPkg/Library/DxeHttpIoLib: Fix NULL_RETURNS
+ Coverity issue
+
+The function HttpIoSendChunkedTransfer does not check if the
+ContentLengthHeader after call to HttpFindHeader is not NULL and
+starts setting
+
+        ContentLengthHeader->FieldName  = NULL;
+        ContentLengthHeader->FieldValue = NULL;
+
+which will lead to CRASH if ContentLengthHeader is NULL.
+
+Hence, for safety add ContentLengthHeader NULL pointer check before
+setting further field values.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4265
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c b/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c
+index 509a13cbdabf..bb6d3af43ff3 100644
+--- a/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c
++++ b/NetworkPkg/Library/DxeHttpIoLib/DxeHttpIoLib.c
+@@ -541,8 +541,10 @@ HttpIoSendChunkedTransfer (
+         // Override content-length to Transfer-Encoding.
+         //
+         ContentLengthHeader             = HttpFindHeader (RequestMessage->HeaderCount, NewHeaders, HTTP_HEADER_CONTENT_LENGTH);
+-        ContentLengthHeader->FieldName  = NULL;
+-        ContentLengthHeader->FieldValue = NULL;
++        if (ContentLengthHeader != NULL) {
++          ContentLengthHeader->FieldName  = NULL;
++          ContentLengthHeader->FieldValue = NULL;
++        }
+       } else {
+         ContentLengthHeader = NewHeaders + RequestMessage->HeaderCount;
+       }
+-- 
+2.36.1.windows.1
+

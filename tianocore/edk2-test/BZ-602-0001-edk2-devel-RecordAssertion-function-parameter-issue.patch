@@ -1,0 +1,938 @@
+From 781bc6ed0b79781bb708439c1aef80360276c0fe Mon Sep 17 00:00:00 2001
+From: ArvinX Chen <arvinx.chen@intel.com>
+Date: Mon, 23 Nov 2020 14:08:19 +0800
+Subject: [PATCH] [edk2-devel] RecordAssertion function parameter issue.
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3082
+
+Correct "RecordAssertion" function argument issue to make SCT tool more stable.
+
+Cc: G Edhaya Chandran <Edhaya.Chandran@arm.com>
+Cc: Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>
+Cc: Eric Jin <eric.jin@intel.com>
+Cc: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../ProtocolHandlerBBTestFunction_3.c         |  8 +++----
+ .../EfiCompliantBBTestPlatform_uefi.c         |  2 +-
+ .../AcpiTableProtocolBBTestFunction.c         |  2 +-
+ .../BlackBoxTest/BlockIo2BBTestFunction.c     |  3 ++-
+ .../ComponentName2BBTestFunction.c            |  6 ++---
+ .../ConfigKeywordHandlerBBTestFunction.c      |  2 +-
+ .../DevicePathFromTextBBTestCoverage.c        |  5 ++--
+ .../DevicePathUtilitiesBBTestConformance.c    | 15 ++++++++----
+ .../DriverDiagnostics2BBTestFunction.c        |  4 ++--
+ .../EraseBlockBBTestConformance.c             |  8 +++----
+ .../GraphicsOutputBBTestFunction.c            |  8 ++++---
+ .../BlackBoxTest/HIIFontBBTestConformance.c   |  3 +--
+ .../BlackBoxTest/HIIFontExBBTestConformance.c |  3 +--
+ .../BlackBoxTest/HIIImageBBTestConformance.c  |  4 ++--
+ .../HIIImageExBBTestConformance.c             |  4 ++--
+ .../BlackBoxTest/HIIStringBBTestConformance.c |  3 +--
+ .../BlackBoxTest/Hash2BBTestConformance.c     | 23 ++++++++-----------
+ .../IPsecConfigBBTestConformance.c            |  8 +++----
+ .../NVMEPassThruBBTestConformance.c           |  2 +-
+ .../BlackBoxTest/NVMEPassThruBBTestFunction.c |  6 ++---
+ .../BlackBoxTest/PciIoBBTestFunction_1.c      |  5 ++--
+ .../BlackBoxTest/PxeBaseCodeBBTestFunction.c  |  2 +-
+ .../RegularExpressionBBTestConformance.c      |  2 +-
+ .../SimpleFileSystemBBTestFunction.c          |  2 +-
+ .../SimpleFileSystemExBBTestFunction_OpenEx.c | 10 ++++----
+ .../SimpleNetworkBBTestConformance.c          |  2 +-
+ .../UFSDeviceConfigBBTestConformance.c        |  6 ++---
+ .../VariableServicesBBTestConformance.c       |  6 +++--
+ .../BlackBoxTest/BlockIo2BBTestFunction.c     |  3 ++-
+ .../ComponentName2BBTestFunction.c            |  6 ++---
+ .../DriverDiagnostics2BBTestFunction.c        |  4 ++--
+ .../GraphicsOutputBBTestFunction.c            |  8 ++++---
+ .../BlackBoxTest/PxeBaseCodeBBTestFunction.c  |  2 +-
+ .../SimpleFileSystemBBTestFunction.c          |  2 +-
+ .../SimpleFileSystemExBBTestFunction_OpenEx.c | 10 ++++----
+ .../SimpleNetworkBBTestConformance.c          |  2 +-
+ 36 files changed, 98 insertions(+), 93 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/ProtocolHandlerServices/BlackBoxTest/ProtocolHandlerBBTestFunction_3.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/ProtocolHandlerServices/BlackBoxTest/ProtocolHandlerBBTestFunction_3.c
+index 8ad31f7f..94288b23 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/ProtocolHandlerServices/BlackBoxTest/ProtocolHandlerBBTestFunction_3.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/ProtocolHandlerServices/BlackBoxTest/ProtocolHandlerBBTestFunction_3.c
+@@ -11672,7 +11672,6 @@ BBTestOpenProtocolInformationInterfaceTestCheckPoint1 (
+                      L"%a:%d:TPL - %d",
+                      __FILE__,
+                      (UINTN)__LINE__,
+-                     EntryCount,
+                      TplArray[Index]
+                      );
+       //
+@@ -11825,7 +11824,6 @@ BBTestOpenProtocolInformationInterfaceTestCheckPoint1 (
+                    L"%a:%d:TPL - %d",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   EntryCount,
+                    TplArray[Index]
+                    );
+     //
+@@ -15398,11 +15396,11 @@ BBTestConnectControllerInterfaceTestCheckPoint14 (
+                    EFI_TEST_ASSERTION_FAILED,
+                    gTestGenericFailureGuid,
+                    L"GetPlatformOverrideDriverImages - build environment",
+-                   L"%a:%d:Status - %r, NoHandles - %d",
++                   L"%a:%d:Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Status
+-                     );
++                   );
+     goto Done;
+   }
+ 
+@@ -15699,7 +15697,7 @@ BBTestConnectControllerInterfaceTestCheckPoint15 (
+                    EFI_TEST_ASSERTION_FAILED,
+                    gTestGenericFailureGuid,
+                    L"GetPlatformOverrideDriverImages - build environment",
+-                   L"%a:%d:Status - %r, NoHandles - %d",
++                   L"%a:%d:Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Status
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/BlackBoxTest/EfiCompliantBBTestPlatform_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/BlackBoxTest/EfiCompliantBBTestPlatform_uefi.c
+index be06d139..1ee50a3f 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/BlackBoxTest/EfiCompliantBBTestPlatform_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/BlackBoxTest/EfiCompliantBBTestPlatform_uefi.c
+@@ -1017,7 +1017,7 @@ CheckConsoleProtocols (
+                  AssertionType,
+                  gEfiCompliantBbTestPlatformAssertionGuid001,
+                  L"UEFI Compliant - Console protocols must be implemented",
+-                 L"%a:%d:Text Input - %s, Text Output - %s, Text InputEx",
++                 L"%a:%d:Text Input - %s, Text Output - %s, Text InputEx - %s",
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  ValueA ? L"Yes" : L"No",
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ACPITable/BlackBoxTest/AcpiTableProtocolBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ACPITable/BlackBoxTest/AcpiTableProtocolBBTestFunction.c
+index e1f5ccee..51ce391d 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ACPITable/BlackBoxTest/AcpiTableProtocolBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ACPITable/BlackBoxTest/AcpiTableProtocolBBTestFunction.c
+@@ -303,7 +303,7 @@ BBTestInstallAcpiTableFunctionTestCheckpoint1 (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 ); 
++                 );
+ 
+   if (EFI_SUCCESS == Status) {
+     Status = AcpiTable->UninstallAcpiTable (
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
+index 8ccbfaf2..551f4671 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
+@@ -4686,7 +4686,8 @@ BBTestFushBlocksExFunctionAutoTestCheckpoint1(
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    4,
+-                   EFI_SUCCESS
++                   EFI_SUCCESS,
++                   BlockIo2TokenBuffer[IndexI].TransactionStatus
+                    );
+     
+     Status = gtBS->SetTimer (TimerEvent, TimerCancel, 0);
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTestFunction.c
+index 9d5d9ffc..3b653498 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTestFunction.c
+@@ -766,10 +766,10 @@ BBTestGetControllerNameFuncTestCheckpoint2 (
+                          AssertionType,
+                          gComponentName2BBTestFunctionAssertionGuid003,
+                          L"Please Use Native RFC3066 which is preferable in UEFI 2.X\nCOMPONENT_NAME2_PROTOCOL.GetControllerName - GetControllerName() returns EFI_SUCCESS support language",
+-                         L"%a:%d: Language - %c%c%c, ControllerIndex - %d, ChildIndex - %d, ControllerName - %s, Status - %r",
+-		                 __FILE__,
++                         L"%a:%d: Language - %c%c%c%c, ControllerIndex - %d, ChildIndex - %d, ControllerName - %s, Status - %r",
++                         __FILE__,
+                          (UINTN)__LINE__,
+-                         Lang,
++                         Lang[0],Lang[1],Lang[2],Lang[3],
+                          Index,
+                          ChildIndex,
+                          (ControllerName == NULL) ? L"(NULL)" : ControllerName,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ConfigKeywordHandler/BlackBoxTest/ConfigKeywordHandlerBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ConfigKeywordHandler/BlackBoxTest/ConfigKeywordHandlerBBTestFunction.c
+index 3f44cefa..9061f597 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ConfigKeywordHandler/BlackBoxTest/ConfigKeywordHandlerBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ConfigKeywordHandler/BlackBoxTest/ConfigKeywordHandlerBBTestFunction.c
+@@ -447,7 +447,7 @@ BBTestGetDataFunctionTest (
+                  (UINTN)__LINE__,
+                  Status,
+                  ProgressErr
+-                 );  
++                 );
+ 
+   Status = ConfigKeywordHandler->GetData (ConfigKeywordHandler, L"NAMESPACE=x-UEFI-ns&", KeywordString2, &Progress, &ProgressErr, &Results2);
+   if (Status != EFI_SUCCESS || ProgressErr != KEYWORD_HANDLER_NO_ERROR || Progress != KeywordString2 + SctStrLen(KeywordString2)) {
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBoxTest/DevicePathFromTextBBTestCoverage.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBoxTest/DevicePathFromTextBBTestCoverage.c
+index 5058dc4a..9a7b908a 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBoxTest/DevicePathFromTextBBTestCoverage.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBoxTest/DevicePathFromTextBBTestCoverage.c
+@@ -2233,7 +2233,8 @@ DevicePathFromTextConvertTextToDeviceNodeCoverageTest (
+                 L"EFI_DEVICE_PATH_FROM_TEXT_PROTOCOL - ConvertDeviceNodeToText must correctly recover the converting ConvertTextToDeviceNode has acted on the device node string",
+                 L"%a:%d, Convert MemoryMapped(%d,0x123456789ABCDEF,0xFEDCBA9876543210)",
+                 __FILE__,
+-                (UINTN)__LINE__
++                (UINTN)__LINE__,
++                EfiMaxMemoryType
+                 );
+ 
+   //
+@@ -3414,7 +3415,7 @@ DevicePathFromTextConvertTextToDeviceNodeCoverageTest (
+                 L"%a:%d, Convert SD(0)",
+                 __FILE__,
+                 (UINTN)__LINE__
+-                );  
++                );
+ 
+   //
+   // Bluetooth(001320F5FA77) 
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathUtilities/BlackBoxTest/DevicePathUtilitiesBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathUtilities/BlackBoxTest/DevicePathUtilitiesBBTestConformance.c
+index d8d237a6..32122a78 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathUtilities/BlackBoxTest/DevicePathUtilitiesBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathUtilities/BlackBoxTest/DevicePathUtilitiesBBTestConformance.c
+@@ -90,7 +90,8 @@ DevicePathUtilitiesCreateDeviceNodeConformanceTest (
+                 L"EFI_DEVICE_PATH_UTILITIES_PROTOCOL - CreatDeviceNode should not succeed with invalid NodeLength set",
+                 L"%a:%d:Status - %r",
+                 __FILE__,
+-                (UINTN)__LINE__
++                (UINTN)__LINE__,
++                Status
+                 );
+ 
+   return EFI_SUCCESS;
+@@ -284,7 +285,8 @@ DevicePathUtilitiesAppendDevicePathConformanceTest (
+                 L"EFI_DEVICE_PATH_UTILITIES_PROTOCOL - SctAppendDevicePath should ignore Src1 when it is set NULL",
+                 L"%a:%d:Status - %r",
+                 __FILE__,
+-                (UINTN)__LINE__
++                (UINTN)__LINE__,
++                Status
+                 );
+ 
+   //
+@@ -326,7 +328,8 @@ DevicePathUtilitiesAppendDevicePathConformanceTest (
+                 L"EFI_DEVICE_PATH_UTILITIES_PROTOCOL - SctAppendDevicePath should ignore Src2 when it is set NULL",
+                 L"%a:%d:Status - %r",
+                 __FILE__,
+-                (UINTN)__LINE__
++                (UINTN)__LINE__,
++                Status
+                 );
+ 
+   pDevicePath1    = DevicePathUtilities->AppendDevicePath (NULL, NULL);
+@@ -417,7 +420,8 @@ DevicePathUtilitiesAppendDevicePathInstanceConformanceTest (
+                 L"EFI_DEVICE_PATH_UTILITIES_PROTOCOL - AppendDevicePathInstance should not succeed with DevicePathInstance set to be NULL",
+                 L"%a:%d:Status - %r",
+                 __FILE__,
+-                (UINTN)__LINE__
++                (UINTN)__LINE__,
++                Status
+                 );
+ 
+   return EFI_SUCCESS;
+@@ -473,7 +477,8 @@ DevicePathUtilitiesGetNextDevicePathInstanceConformanceTest (
+                 L"EFI_DEVICE_PATH_UTILITIES_PROTOCOL - GetNextDevicePathInstance should not succeed with DevicePathInstance set to be NULL",
+                 L"%a:%d:Status - %r",
+                 __FILE__,
+-                (UINTN)__LINE__
++                (UINTN)__LINE__,
++                Status
+                 );
+ 
+   return EFI_SUCCESS;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTestFunction.c
+index 94c0d85f..80b24b2c 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTestFunction.c
+@@ -685,10 +685,10 @@ BBTestRunDiagnosticsFuncTestCheckpoint2 (
+                          AssertionType,
+                          gFunctionAssertionGuid002,
+                          L"Please Use Native RFC3066 which is preferable in UEFI 2.X\nEFI_DRIVER_DIAGNOSTICS2_PROTOCOL.RunDiagnostics - RunDiagnostics() returns EFI_SUCCESS with supported language",
+-                         L"%a:%d: Language - %c%c%c, ControllerIndex - %d, ChildIndex - %d, ControllerName - %s, Status - %r",
++                         L"%a:%d: Language - %c%c%c%c, ControllerIndex - %d, ChildIndex - %d, ControllerName - %s, Status - %r",
+                          __FILE__,
+                          (UINTN)__LINE__,
+-                         Lang,
++                         Lang[0],Lang[1],Lang[2],Lang[3],
+                          Index,
+                          ChildIndex,
+                          (ControllerName == NULL) ? L"(NULL)" : ControllerName,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/EraseBlock/BlackBoxTest/EraseBlockBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/EraseBlock/BlackBoxTest/EraseBlockBBTestConformance.c
+index a6156b98..c49db682 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/EraseBlock/BlackBoxTest/EraseBlockBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/EraseBlock/BlackBoxTest/EraseBlockBBTestConformance.c
+@@ -193,7 +193,7 @@ BBTestEraseBlocksConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     );      
++                     );
+ 
+     } else {
+       Status = EraseBlock->EraseBlocks(EraseBlock, MediaId + 1, 0, &Token, EraseSize);
+@@ -211,7 +211,7 @@ BBTestEraseBlocksConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     );  
++                     );
+ 
+       Status = EraseBlock->EraseBlocks(EraseBlock, MediaId + 1, LastBlock + 1, &Token, EraseSize);
+       if (Status == EFI_MEDIA_CHANGED)
+@@ -228,7 +228,7 @@ BBTestEraseBlocksConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     );  
++                     );
+ 
+       Status = EraseBlock->EraseBlocks(EraseBlock, MediaId + 1, LastBlock - 10, &Token, EraseSize + 1);
+       if (Status == EFI_MEDIA_CHANGED)
+@@ -245,7 +245,7 @@ BBTestEraseBlocksConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     );  
++                     );
+ 
+       Status = EraseBlock->EraseBlocks(EraseBlock, MediaId, LastBlock + 1, &Token, EraseSize);
+       if (Status == EFI_INVALID_PARAMETER)
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTestFunction.c
+index f1936755..edde3117 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTestFunction.c
+@@ -172,7 +172,7 @@ Returns:
+                      AssertionType,
+                      gEfiGraphicsOutputQueryModeBBTestFunctionAssertionGuid,
+                      L"EFI_GRAPHICS_OUTPUT_PROTOCOL.QueryMode - SetMode() then QueryMode(), compare Info structure",
+-                     L"%a:%d: Status",
++                     L"%a:%d: Status - %r",
+                      (UINTN) __FILE__,
+                      (UINTN) (UINTN)__LINE__,
+                      Status
+@@ -753,7 +753,8 @@ Returns:
+                      L"%a:%d:Status:%r, Expected:%r",
+                      (UINTN) __FILE__,
+                      (UINTN) (UINTN)__LINE__,
+-                     (UINTN) Status
++                     (UINTN) Status,
++                     EFI_SUCCESS
+                      );
+       return Status;
+     }
+@@ -1474,7 +1475,8 @@ Returns:
+                      L"%a:%d:Status:%r, Expected:%r",
+                      (UINTN) __FILE__,
+                      (UINTN) (UINTN)__LINE__,
+-                     (UINTN) Status
++                     (UINTN) Status,
++                     EFI_SUCCESS
+                      );
+       continue;
+     }
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFont/BlackBoxTest/HIIFontBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFont/BlackBoxTest/HIIFontBBTestConformance.c
+index 911c4a5c..e437f002 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFont/BlackBoxTest/HIIFontBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFont/BlackBoxTest/HIIFontBBTestConformance.c
+@@ -602,8 +602,7 @@ BBTestStringIdToImageConformanceTestCheckpoint1 (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
+-
++                 );
+   //
+   // Call StringIdToImage with StringId not in PackageList, EFI_NOT_FOUND should be returned.
+   //
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HIIFontExBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HIIFontExBBTestConformance.c
+index d99ceb01..929bae16 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HIIFontExBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HIIFontExBBTestConformance.c
+@@ -646,8 +646,7 @@ BBTestStringIdToImageExConformanceTestCheckpoint1 (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
+-
++                 );
+   //
+   // Call StringIdToImageEx with StringId not in PackageList, EFI_NOT_FOUND should be returned.
+   //
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIIImageBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIIImageBBTestConformance.c
+index 20b24bc5..7b738c69 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIIImageBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIIImageBBTestConformance.c
+@@ -2333,7 +2333,7 @@ BBTestDrawImageIdConformanceTestCheckpoint1(
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );    
++                 );
+ 
+   //
+   // Call DrawImageId with PackageList been NULL
+@@ -2362,7 +2362,7 @@ BBTestDrawImageIdConformanceTestCheckpoint1(
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+ 
+   //
+   // Call DrawImageId with invalid ImageId
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HIIImageExBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HIIImageExBBTestConformance.c
+index b469bb8c..dc97bfac 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HIIImageExBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HIIImageExBBTestConformance.c
+@@ -2030,7 +2030,7 @@ BBTestDrawImageIdExConformanceTestCheckpoint1(
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );    
++                 );
+ 
+   //
+   // Call DrawImageIdEx with PackageList been NULL
+@@ -2059,7 +2059,7 @@ BBTestDrawImageIdExConformanceTestCheckpoint1(
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+ 
+   //
+   // Call DrawImageIdEx with invalid ImageId
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HIIStringBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HIIStringBBTestConformance.c
+index ca9ed0b7..07ff28e1 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HIIStringBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HIIStringBBTestConformance.c
+@@ -607,8 +607,7 @@ BBTestGetStringConformanceTestCheckpoint1 (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
+-
++                 );
+   //
+   // Remove the PackageList from the HII database
+   //
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Hash2/BlackBoxTest/Hash2BBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Hash2/BlackBoxTest/Hash2BBTestConformance.c
+index a6ae34ee..494e3451 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Hash2/BlackBoxTest/Hash2BBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Hash2/BlackBoxTest/Hash2BBTestConformance.c
+@@ -299,7 +299,7 @@ BBTestHashInitConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     ); 
++                     );
+  
+ 
+       Status = Hash2->HashInit (Hash2, &gHashAlgorithmGuids[Index]);
+@@ -320,8 +320,7 @@ BBTestHashInitConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     ); 
+-
++                     );
+     }
+   }
+   
+@@ -384,7 +383,7 @@ BBTestHashUpdateConformanceTest (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+ 
+   for (Index = 0; Index < 6; Index++) {
+     Status = Hash2->GetHashSize (Hash2, &gHashAlgorithmGuids[Index], &HashSize);
+@@ -407,7 +406,7 @@ BBTestHashUpdateConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     ); 
++                     );
+  
+ 
+       Status = Hash2->HashInit (Hash2, &gHashAlgorithmGuids[Index]);
+@@ -428,8 +427,7 @@ BBTestHashUpdateConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     ); 
+-
++                     );
+     }
+   }
+ 
+@@ -492,7 +490,7 @@ BBTestHashFinalConformanceTest (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+ 
+   for (Index = 0; Index < 6; Index++) {
+     Status = Hash2->GetHashSize (Hash2, &gHashAlgorithmGuids[Index], &HashSize);
+@@ -513,7 +511,7 @@ BBTestHashFinalConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     ); 
++                     );
+ 
+       Status = Hash2->HashInit (Hash2, &gHashAlgorithmGuids[Index]);
+       Status = Hash2->HashUpdate (Hash2, Message, MessageSize);
+@@ -533,7 +531,7 @@ BBTestHashFinalConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     ); 
++                     );
+  
+ 
+       Status= Hash2->HashInit (Hash2, &gHashAlgorithmGuids[Index]);
+@@ -554,7 +552,7 @@ BBTestHashFinalConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     ); 
++                     );
+       
+       Status = Hash2->HashFinal (Hash2,  (EFI_HASH2_OUTPUT *) Hash2Out);
+       Status = Hash2->HashFinal (Hash2, (EFI_HASH2_OUTPUT*) Hash2Out);;
+@@ -572,8 +570,7 @@ BBTestHashFinalConformanceTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      Status
+-                     ); 
+-
++                     );
+     }
+   }
+ 
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/IPsecConfig/BlackBoxTest/IPsecConfigBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/IPsecConfig/BlackBoxTest/IPsecConfigBBTestConformance.c
+index cac04b66..da910ff2 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/IPsecConfig/BlackBoxTest/IPsecConfigBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/IPsecConfig/BlackBoxTest/IPsecConfigBBTestConformance.c
+@@ -693,7 +693,7 @@ BBTestGetDataConformanceTestCheckpoint3 (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+ 
+   //
+   //  Clean Environment: Call IPsec->SetData with the same DataType(0)/Selector.  
+@@ -902,7 +902,7 @@ BBTestGetDataConformanceTestCheckpoint4 (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+ 
+   //
+   //  Clean Environment: Call IPsec->SetData with the same DataType(1)/Selector.  
+@@ -1066,7 +1066,7 @@ BBTestGetDataConformanceTestCheckpoint4 (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+ 
+   //
+   //  Clean Environment: Call IPsec->SetData with the same DataType(1)/Selector.  
+@@ -1244,7 +1244,7 @@ BBTestGetDataConformanceTestCheckpoint5 (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+ 
+   //
+   //  Clean Environment: Call IPsec->SetData with the same DataType(2)/Selector.  
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/NVMEPassThru/BlackBoxTest/NVMEPassThruBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/NVMEPassThru/BlackBoxTest/NVMEPassThruBBTestConformance.c
+index cb237c00..c89e1f09 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/NVMEPassThru/BlackBoxTest/NVMEPassThruBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/NVMEPassThru/BlackBoxTest/NVMEPassThruBBTestConformance.c
+@@ -405,7 +405,7 @@ BBTestPassThruConformanceTest (
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    EFI_UNSUPPORTED
+-                   ); 
++                   );
+     return EFI_UNSUPPORTED; 
+   }
+   
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/NVMEPassThru/BlackBoxTest/NVMEPassThruBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/NVMEPassThru/BlackBoxTest/NVMEPassThruBBTestFunction.c
+index d4f942e3..5c5a7fc9 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/NVMEPassThru/BlackBoxTest/NVMEPassThruBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/NVMEPassThru/BlackBoxTest/NVMEPassThruBBTestFunction.c
+@@ -351,7 +351,7 @@ BBTestPassThruFunctionTest (
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      EFI_UNSUPPORTED
+-                     ); 
++                     );
+       return EFI_UNSUPPORTED; 
+     }
+   	
+@@ -390,9 +390,7 @@ BBTestPassThruFunctionTest (
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Status
+-                   );  
+-
+-
++                   );
+     //
+     // Create Event
+     //
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PciIo/BlackBoxTest/PciIoBBTestFunction_1.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PciIo/BlackBoxTest/PciIoBBTestFunction_1.c
+index d65ece24..457a9108 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PciIo/BlackBoxTest/PciIoBBTestFunction_1.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PciIo/BlackBoxTest/PciIoBBTestFunction_1.c
+@@ -4480,7 +4480,7 @@ IoWrite_Func (
+       //
+       //then read out the data in destination address range.
+       //
+-      PciIo->Io.Read (
++      Status = PciIo->Io.Read (
+                   PciIo,
+                   PciIoWidth,
+                   BarIndex,
+@@ -4508,7 +4508,8 @@ IoWrite_Func (
+                      L"EFI_PCI_IO_PROTOCOL.Io.Write - the data read must equal with the data written",
+                      L"%a:%d:Status - %r",
+                      __FILE__,
+-                     (UINTN)__LINE__
++                     (UINTN)__LINE__,
++                     Status
+                      );
+       //
+       //write the data using EfiPciIoWidthFifoUintX.
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PxeBaseCode/BlackBoxTest/PxeBaseCodeBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PxeBaseCode/BlackBoxTest/PxeBaseCodeBBTestFunction.c
+index c1ea0d49..1f2f5305 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PxeBaseCode/BlackBoxTest/PxeBaseCodeBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PxeBaseCode/BlackBoxTest/PxeBaseCodeBBTestFunction.c
+@@ -1252,7 +1252,7 @@ BBTestNewStopFunctionTest (
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Status
+-                   );    
++                   );
+   }
+ 
+   //
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RegularExpression/BlackBoxTest/RegularExpressionBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RegularExpression/BlackBoxTest/RegularExpressionBBTestConformance.c
+index e00d0c7f..01d68299 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RegularExpression/BlackBoxTest/RegularExpressionBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RegularExpression/BlackBoxTest/RegularExpressionBBTestConformance.c
+@@ -193,7 +193,7 @@ BBTestGetInfoConformanceTestCheckpoint1 (
+                  (UINTN)__LINE__,
+                  Status,
+                  SyntaxTypeListSize
+-               );  
++               );
+   
+   //
+   // REGULAR_EXPRESSION_PROTOCOL.GetInfo() with SyntaxTypeListSize = NULL.
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestFunction.c
+index ed0d8743..f269b7be 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestFunction.c
+@@ -1608,7 +1608,7 @@ BBTestReadOnlyTestCheckPoints (
+                    AssertionType,
+                    gReadOnlyFileSystemBBTestAssertionGuid005,
+                    L"ReadOnly System: Dir SetInfo should return EFI_WRITE_PROTECTED",
+-                   L"%a:%d: Status - %r",
++                   L"%a:%d: Status1 - %r Status2 - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Status1,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
+index c2bf9b4f..526ad906 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
+@@ -1155,7 +1155,7 @@ BBTestOpenExBasicTestCheckpoint1_Test1_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid027,
+                      L"OpenEx() Basic Test - checkpoint1 ----Test1----Async",
+-                     L"%a:%d: FileIoEntity->Tpl, Status - %r, File Name - %",
++                     L"%a:%d: FileIoEntity->Tpl - %d, Status - %r, File Name - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -2152,7 +2152,7 @@ BBTestOpenExBasicTestCheckpoint1_Test3_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid039,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: FileIoEntity->Tpl - %d,Status - %r,FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -2656,7 +2656,7 @@ BBTestOpenExBasicTestCheckpoint1_Test4_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid043,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async -- Test4----Open File",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: FileIoEntity->Tpl - %d,Status - %r,FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -3302,7 +3302,7 @@ BBTestOpenExBasicTestCheckpoint1_Test5_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid047,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async -- Test5---Open File",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: FileIoEntity->Tpl - %d,Status - %r,FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -10216,7 +10216,7 @@ BBTestOpenExBasicTestCheckpoint2_Test5_Sync (
+                    FileIoEntity->StatusAsync,
+                    FileIoEntity->OpenMode,
+                    FileIoEntity->Name
+-                   ); 
++                   );
+     if (FileIoEntity->OpenMode == EFI_FILE_MODE_READ){
+       DirHandle2->Open (
+               DirHandle2,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c
+index 09b47ee6..1b4a0d34 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c
+@@ -1945,7 +1945,7 @@ BBTestTransmitConformanceTest (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  StatusBuf[1]
+-                 );  
++                 );
+ 
+   StandardLib->RecordAssertion (
+                  StandardLib,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTest/UFSDeviceConfigBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTest/UFSDeviceConfigBBTestConformance.c
+index 4c8f7c58..b50fc63b 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTest/UFSDeviceConfigBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTest/UFSDeviceConfigBBTestConformance.c
+@@ -81,7 +81,7 @@ BBTestRwUfsDescriptorConfTest (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+   
+   Status = UFSDeviceConfig->RwUfsDescriptor(UFSDeviceConfig, TRUE, 0, 0, 0, &Descriptor, NULL);
+   if (Status == EFI_INVALID_PARAMETER) 
+@@ -159,7 +159,7 @@ BBTestRwUfsFlagConfTest (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+   
+   Status = UFSDeviceConfig->RwUfsFlag(UFSDeviceConfig, TRUE, 1, NULL);
+   if (Status == EFI_INVALID_PARAMETER) 
+@@ -237,7 +237,7 @@ BBTestRwUfsAttributeConfTest (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  Status
+-                 );  
++                 );
+   
+   Status = UFSDeviceConfig->RwUfsAttribute(UFSDeviceConfig, TRUE, 0, 0, 0, &Attribute, NULL);
+   if (Status == EFI_INVALID_PARAMETER) 
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTestConformance.c
+index e2182c5c..fb966a87 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTestConformance.c
+@@ -3653,8 +3653,10 @@ HardwareErrorRecordConfTest (
+                      L"RT.SetVariable - Retrive the Hardware Error Record variables, check the name of them",
+                      L"%a:%d:Status - %r, Expected - %r",
+                      __FILE__,
+-                     (UINTN)__LINE__
+-                     );  
++                     (UINTN)__LINE__,
++                     Status,
++                     EFI_SUCCESS
++                     );
+ 
+ 
+   if (AssertionType == EFI_TEST_ASSERTION_FAILED)
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
+index 634246fc..21cf40f9 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
+@@ -4688,7 +4688,8 @@ BBTestFushBlocksExFunctionAutoTestCheckpoint1(
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    4,
+-                   EFI_SUCCESS
++                   EFI_SUCCESS,
++                   BlockIo2TokenBuffer[IndexI].TransactionStatus
+                    );
+     
+     Status = gtBS->SetTimer (TimerEvent, TimerCancel, 0);
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTestFunction.c
+index 7b0cc6fc..000ad8f2 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTestFunction.c
+@@ -718,10 +718,10 @@ BBTestGetControllerNameFuncTestCheckpoint2 (
+                          AssertionType,
+                          gComponentName2BBTestFunctionAssertionGuid003,
+                          L"Please Use Native RFC3066 which is preferable in UEFI 2.X\nCOMPONENT_NAME2_PROTOCOL.GetControllerName - GetControllerName() returns EFI_SUCCESS support language",
+-                         L"%a:%d: Language - %c%c%c, ControllerIndex - %d, ChildIndex - %d, ControllerName - %s, Status - %r",
+-		                 __FILE__,
++                         L"%a:%d: Language - %c%c%c%c, ControllerIndex - %d, ChildIndex - %d, ControllerName - %s, Status - %r",
++                         __FILE__,
+                          (UINTN)__LINE__,
+-                         Lang,
++                         Lang[0],Lang[1],Lang[2],Lang[3],
+                          Index,
+                          ChildIndex,
+                          (ControllerName == NULL) ? L"(NULL)" : ControllerName,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTestFunction.c
+index 4b4988ec..3d1c6ffe 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTestFunction.c
+@@ -660,10 +660,10 @@ BBTestRunDiagnosticsFuncTestCheckpoint2 (
+                          AssertionType,
+                          gFunctionAssertionGuid002,
+                          L"Please Use Native RFC3066 which is preferable in UEFI 2.X\nEFI_DRIVER_DIAGNOSTICS2_PROTOCOL.RunDiagnostics - RunDiagnostics() returns EFI_SUCCESS with supported language",
+-                         L"%a:%d: Language - %c%c%c, ControllerIndex - %d, ChildIndex - %d, ControllerName - %s, Status - %r",
++                         L"%a:%d: Language - %c%c%c%c, ControllerIndex - %d, ChildIndex - %d, ControllerName - %s, Status - %r",
+                          __FILE__,
+                          (UINTN)__LINE__,
+-                         Lang,
++                         Lang[0],Lang[1],Lang[2],Lang[3],
+                          Index,
+                          ChildIndex,
+                          (ControllerName == NULL) ? L"(NULL)" : ControllerName,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTestFunction.c
+index d182ea69..9c3d2bad 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTestFunction.c
+@@ -171,7 +171,7 @@ Returns:
+                      AssertionType,
+                      gEfiGraphicsOutputQueryModeBBTestFunctionAssertionGuid,
+                      L"EFI_GRAPHICS_OUTPUT_PROTOCOL.QueryMode - SetMode() then QueryMode(), compare Info structure",
+-                     L"%a:%d: Status",
++                     L"%a:%d: Status - %r",
+                      (UINTN) __FILE__,
+                      (UINTN) (UINTN)__LINE__,
+                      Status
+@@ -752,7 +752,8 @@ Returns:
+                      L"%a:%d:Status:%r, Expected:%r",
+                      (UINTN) __FILE__,
+                      (UINTN) (UINTN)__LINE__,
+-                     (UINTN) Status
++                     (UINTN) Status,
++                     EFI_SUCCESS
+                      );
+       return Status;
+     }
+@@ -1473,7 +1474,8 @@ Returns:
+                      L"%a:%d:Status:%r, Expected:%r",
+                      (UINTN) __FILE__,
+                      (UINTN) (UINTN)__LINE__,
+-                     (UINTN) Status
++                     (UINTN) Status,
++                     EFI_SUCCESS
+                      );
+       continue;
+     }
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/PxeBaseCode/BlackBoxTest/PxeBaseCodeBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/PxeBaseCode/BlackBoxTest/PxeBaseCodeBBTestFunction.c
+index 27994144..51ac332c 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/PxeBaseCode/BlackBoxTest/PxeBaseCodeBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/PxeBaseCode/BlackBoxTest/PxeBaseCodeBBTestFunction.c
+@@ -1252,7 +1252,7 @@ BBTestNewStopFunctionTest (
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Status
+-                   );    
++                   );
+   }
+ 
+   //
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestFunction.c
+index ed0d8743..21629c76 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestFunction.c
+@@ -1608,7 +1608,7 @@ BBTestReadOnlyTestCheckPoints (
+                    AssertionType,
+                    gReadOnlyFileSystemBBTestAssertionGuid005,
+                    L"ReadOnly System: Dir SetInfo should return EFI_WRITE_PROTECTED",
+-                   L"%a:%d: Status - %r",
++                   L"%a:%d: Status1 - %r, Status2 - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Status1,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
+index 70ec88f1..aaa34ef9 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
+@@ -1155,7 +1155,7 @@ BBTestOpenExBasicTestCheckpoint1_Test1_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid027,
+                      L"OpenEx() Basic Test - checkpoint1 ----Test1----Async",
+-                     L"%a:%d: FileIoEntity->Tpl, Status - %r, File Name - %",
++                     L"%a:%d: FileIoEntity->Tpl - %d, Status - %r, File Name - %",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -2152,7 +2152,7 @@ BBTestOpenExBasicTestCheckpoint1_Test3_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid039,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: FileIoEntity->Tpl - %d,Status - %r,FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -2656,7 +2656,7 @@ BBTestOpenExBasicTestCheckpoint1_Test4_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid043,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async -- Test4----Open File",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: FileIoEntity->Tpl - %d,Status - %r,FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -3302,7 +3302,7 @@ BBTestOpenExBasicTestCheckpoint1_Test5_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid047,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async -- Test5---Open File",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: FileIoEntity->Tpl - %d,Status - %r,FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -10216,7 +10216,7 @@ BBTestOpenExBasicTestCheckpoint2_Test5_Sync (
+                    FileIoEntity->StatusAsync,
+                    FileIoEntity->OpenMode,
+                    FileIoEntity->Name
+-                   ); 
++                   );
+     if (FileIoEntity->OpenMode == EFI_FILE_MODE_READ){
+       DirHandle2->Open (
+               DirHandle2,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c
+index 682076ea..175fe11e 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c
+@@ -1945,7 +1945,7 @@ BBTestTransmitConformanceTest (
+                  __FILE__,
+                  (UINTN)__LINE__,
+                  StatusBuf[1]
+-                 );  
++                 );
+ 
+   StandardLib->RecordAssertion (
+                  StandardLib,
+-- 
+2.28.0.windows.1
+

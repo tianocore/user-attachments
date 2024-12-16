@@ -1,0 +1,45 @@
+From 60cdd5380b9190419562d42ab956f37a3d246d1e Mon Sep 17 00:00:00 2001
+From: Eric Dong <eric.dong@intel.com>
+Date: Fri, 16 Nov 2018 16:14:30 +0800
+Subject: [Patch 1/3] SecurityPkg/SecurityPkg.dec: Change default value.
+
+For safe concern, change BlockSID default policy.
+
+Change-Id: Iee592dc6d040a36647b61c6e8784e9f7db266626
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Eric Dong <eric.dong@intel.com>
+---
+ SecurityPkg/Include/Library/Tcg2PhysicalPresenceLib.h | 3 ++-
+ SecurityPkg/SecurityPkg.dec                           | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/SecurityPkg/Include/Library/Tcg2PhysicalPresenceLib.h b/SecurityPkg/Include/Library/Tcg2PhysicalPresenceLib.h
+index e08719003d..d8aedf1e4c 100644
+--- a/SecurityPkg/Include/Library/Tcg2PhysicalPresenceLib.h
++++ b/SecurityPkg/Include/Library/Tcg2PhysicalPresenceLib.h
+@@ -57,7 +57,8 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ // Default value
+ //
+ #define TCG2_BIOS_STORAGE_MANAGEMENT_FLAG_DEFAULT (TCG2_BIOS_STORAGE_MANAGEMENT_FLAG_PP_REQUIRED_FOR_ENABLE_BLOCK_SID | \
+-                                                   TCG2_BIOS_STORAGE_MANAGEMENT_FLAG_PP_REQUIRED_FOR_DISABLE_BLOCK_SID)
++                                                   TCG2_BIOS_STORAGE_MANAGEMENT_FLAG_PP_REQUIRED_FOR_DISABLE_BLOCK_SID |\
++                                                   TCG2_BIOS_STORAGE_MANAGEMENT_FLAG_ENABLE_BLOCK_SID)
+ 
+ /**
+   Check and execute the pending TPM request.
+diff --git a/SecurityPkg/SecurityPkg.dec b/SecurityPkg/SecurityPkg.dec
+index 8d64b4fefe..edb31a1456 100644
+--- a/SecurityPkg/SecurityPkg.dec
++++ b/SecurityPkg/SecurityPkg.dec
+@@ -428,7 +428,7 @@
+   # PCD can be configured for different settings in different scenarios
+   # Default setting is TCG2_BIOS_TPM_MANAGEMENT_FLAG_DEFAULT | TCG2_BIOS_STORAGE_MANAGEMENT_FLAG_DEFAULT
+   # @Prompt Initial setting of TCG2 Persistent Firmware Management Flags
+-  gEfiSecurityPkgTokenSpaceGuid.PcdTcg2PhysicalPresenceFlags|0x300E2|UINT32|0x0001001B
++  gEfiSecurityPkgTokenSpaceGuid.PcdTcg2PhysicalPresenceFlags|0x700E2|UINT32|0x0001001B
+ 
+   ## Indicate current TPM2 Interrupt Number reported by _CRS control method.<BR><BR>
+   # TPM2 Interrupt feature is disabled If the pcd is set to 0.<BR>
+-- 
+2.15.0.windows.1
+

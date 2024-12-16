@@ -1,0 +1,128 @@
+From 893c4854896a5b9c44231c26746566c5d404850f Mon Sep 17 00:00:00 2001
+From: Divneil Rai Wadhawan <divneil.r.wadhawan@intel.com>
+Date: Tue, 22 Sep 2020 06:43:05 +0530
+Subject: [PATCH] sign-efi-sig-list: add support of multiple SHA algos for
+ signing
+
+o As per the existing UEFI spec, only SHA256 algorithm is allowed
+  in signing scheme.
+
+o With the proposed change in UEFI spec, digest algorithm can be
+  selected from SHA256, SHA384, SHA512
+
+o The support has been added to select any digest algorithm. The
+  default algorithm remains the same as SHA256
+
+Signed-off-by: Divneil Rai Wadhawan <divneil.r.wadhawan@intel.com>
+---
+ include/openssl_sign.h |  4 ++--
+ lib/openssl_sign.c     |  8 ++++----
+ sign-efi-sig-list.c    | 17 +++++++++++++++--
+ 3 files changed, 21 insertions(+), 8 deletions(-)
+
+diff --git a/include/openssl_sign.h b/include/openssl_sign.h
+index 136ad75..81e5d23 100644
+--- a/include/openssl_sign.h
++++ b/include/openssl_sign.h
+@@ -2,9 +2,9 @@
+ 
+ int
+ sign_efi_var(char *payload, int payload_size, char *keyfile, char *certfile,
+-	     unsigned char **sig, int *sigsize, char *engine);
++	     unsigned char **sig, int *sigsize, char *engine, char *digest);
+ int
+ sign_efi_var_ssl(char *payload, int payload_size, EVP_PKEY *pkey, X509 *cert,
+-		 unsigned char **sig, int *sigsize);
++		 unsigned char **sig, int *sigsize, char *digest);
+ EVP_PKEY *
+ read_private_key(char *engine, char *keyfile);
+diff --git a/lib/openssl_sign.c b/lib/openssl_sign.c
+index 714ce1a..ac1148d 100644
+--- a/lib/openssl_sign.c
++++ b/lib/openssl_sign.c
+@@ -13,13 +13,13 @@
+ 
+ int
+ sign_efi_var_ssl(char *payload, int payload_size, EVP_PKEY *pkey, X509 *cert,
+-		 unsigned char **sig, int *sigsize)
++		 unsigned char **sig, int *sigsize, char *digest)
+ {
+ 	BIO *bio_data = BIO_new_mem_buf(payload, payload_size);
+ 	PKCS7 *p7;
+ 
+ 	p7 = PKCS7_sign(NULL, NULL, NULL, bio_data, PKCS7_BINARY|PKCS7_PARTIAL|PKCS7_DETACHED|PKCS7_NOATTR);
+-	const EVP_MD *md = EVP_get_digestbyname("SHA256");
++	const EVP_MD *md = EVP_get_digestbyname(digest);
+ 	PKCS7_sign_add_signer(p7, cert, pkey, md, PKCS7_BINARY|PKCS7_DETACHED|PKCS7_NOATTR);
+ 	PKCS7_final(p7, bio_data, PKCS7_BINARY|PKCS7_DETACHED|PKCS7_NOATTR);
+ 
+@@ -33,7 +33,7 @@ sign_efi_var_ssl(char *payload, int payload_size, EVP_PKEY *pkey, X509 *cert,
+ 
+ int
+ sign_efi_var(char *payload, int payload_size, char *keyfile, char *certfile,
+-	     unsigned char **sig, int *sigsize, char *engine)
++	     unsigned char **sig, int *sigsize, char *engine, char *digest)
+ {
+ 	int ret;
+ 
+@@ -67,7 +67,7 @@ sign_efi_var(char *payload, int payload_size, char *keyfile, char *certfile,
+ 		return 1;
+ 	}
+ 	ret = sign_efi_var_ssl(payload, payload_size, pkey, cert,
+-			       sig, sigsize);
++			       sig, sigsize, digest);
+ 	EVP_PKEY_free(pkey);
+ 	X509_free(cert);
+ 
+diff --git a/sign-efi-sig-list.c b/sign-efi-sig-list.c
+index 94bd7d4..1941e78 100644
+--- a/sign-efi-sig-list.c
++++ b/sign-efi-sig-list.c
+@@ -31,7 +31,7 @@
+ static void
+ usage(const char *progname)
+ {
+-	printf("Usage: %s [-r] [-m] [-a] [-g <guid>] [-o] [-t <timestamp>] [-i <infile>] [-c <crt file>] [-k <key file>] [-e <engine>] <var> <efi sig list file> <output file>\n", progname);
++	printf("Usage: %s [-r] [-m] [-a] [-g <guid>] [-o] [-t <timestamp>] [-i <infile>] [-c <crt file>] [-k <key file>] [-e <engine>] [-sha<algorithm>] <var> <efi sig list file> <output file>\n", progname);
+ }
+ 
+ static void
+@@ -65,6 +65,7 @@ main(int argc, char *argv[])
+ {
+ 	char *certfile = NULL, *efifile, *keyfile = NULL, *outfile,
+ 		*str, *signedinput = NULL, *timestampstr = NULL;
++	char *digest = "SHA256";
+ 	void *out;
+ 	const char *progname = argv[0];
+ 	char *engine = NULL;
+@@ -130,6 +131,18 @@ main(int argc, char *argv[])
+ 			engine = argv[2];
+ 			argv += 2;
+ 			argc -= 2;
++		} else if (strcmp("-sha256", argv[1]) == 0) {
++			argv += 1;
++			argc -= 1;
++			digest = "SHA256";
++		} else if (strcmp("-sha384", argv[1]) == 0) {
++			argv += 1;
++			argc -= 1;
++			digest = "SHA384";
++		} else if (strcmp("-sha512", argv[1]) == 0) {
++			argv += 1;
++			argc -= 1;
++			digest = "SHA512";
+ 		} else  {
+ 			break;
+ 		}
+@@ -249,7 +262,7 @@ main(int argc, char *argv[])
+ 			exit(1);
+ 		}
+ 		if (sign_efi_var(signbuf, signbuflen, keyfile, certfile,
+-				 &sigbuf, &sigsize, engine))
++				 &sigbuf, &sigsize, engine, digest))
+ 			exit(1);
+ 	}
+ 	printf("Signature of size %d\n", sigsize);
+-- 
+2.17.1
+

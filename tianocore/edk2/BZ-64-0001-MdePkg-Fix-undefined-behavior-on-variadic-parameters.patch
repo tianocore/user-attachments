@@ -1,0 +1,46 @@
+From: Sergey Temerkhanov <s.temerkhanov@gmail.com>
+Date: 5/16/2017 10:56:30 AM
+Subject: [edk2] [PATCH] MdePkg: Fix undefined behavior on variadic parameters
+
+Fix undefined behavior by avoiding parameter type promotion
+
+Signed-off-by: Sergey Temerkhanov <s.temerkhanov@gmail.com>
+---
+ MdePkg/Include/Library/UefiLib.h | 2 +-
+ MdePkg/Library/UefiLib/UefiLib.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MdePkg/Include/Library/UefiLib.h b/MdePkg/Include/Library/UefiLib.h
+index 0b14792..4e4697c 100644
+--- a/MdePkg/Include/Library/UefiLib.h
++++ b/MdePkg/Include/Library/UefiLib.h
+@@ -818,7 +818,7 @@ CHAR8 *
+ EFIAPI
+ GetBestLanguage (
+   IN CONST CHAR8  *SupportedLanguages, 
+-  IN BOOLEAN      Iso639Language,
++  IN UINTN      Iso639Language,
+   ...
+   );
+ 
+diff --git a/MdePkg/Library/UefiLib/UefiLib.c b/MdePkg/Library/UefiLib/UefiLib.c
+index a7eee01..74528ec 100644
+--- a/MdePkg/Library/UefiLib/UefiLib.c
++++ b/MdePkg/Library/UefiLib/UefiLib.c
+@@ -1514,7 +1514,7 @@ CHAR8 *
+ EFIAPI
+ GetBestLanguage (
+   IN CONST CHAR8  *SupportedLanguages, 
+-  IN BOOLEAN      Iso639Language,
++  IN UINTN      Iso639Language,
+   ...
+   )
+ {
+-- 
+2.7.4
+
+_______________________________________________
+edk2-devel mailing list
+edk2-devel@lists.01.org
+https://lists.01.org/mailman/listinfo/edk2-devel
+GitPatchExtractor 1.1

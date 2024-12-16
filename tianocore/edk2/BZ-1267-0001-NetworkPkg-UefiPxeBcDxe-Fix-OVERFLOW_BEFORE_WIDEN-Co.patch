@@ -1,0 +1,38 @@
+From 80816d25d89a5453afeb52bfc092bf24a40d6cf7 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:13:44 +0530
+Subject: [PATCH 1/1] NetworkPkg/UefiPxeBcDxe: Fix OVERFLOW_BEFORE_WIDEN
+ Coverity issue
+
+The "TICKS_PER_SECOND * DadXmits.DupAddrDetectTransmits" is a
+potentially overflowing expression with type "unsigned int" (32 bits,
+unsigned) evaluated using 32-bit arithmetic, and then used in a
+context that expects an expression of type "UINT64" (64 bits, unsigned).
+
+To avoid overflow, cast "TICKS_PER_SECOND" to type "UINT64".
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4272
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/UefiPxeBcDxe/PxeBcDhcp6.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/NetworkPkg/UefiPxeBcDxe/PxeBcDhcp6.c b/NetworkPkg/UefiPxeBcDxe/PxeBcDhcp6.c
+index 425e0cf8061d..56820cba0309 100644
+--- a/NetworkPkg/UefiPxeBcDxe/PxeBcDhcp6.c
++++ b/NetworkPkg/UefiPxeBcDxe/PxeBcDhcp6.c
+@@ -2327,7 +2327,7 @@ PxeBcDhcp6Sarr (
+       return Status;
+     }
+ 
+-    GetMappingTimeOut = TICKS_PER_SECOND * DadXmits.DupAddrDetectTransmits + PXEBC_DAD_ADDITIONAL_DELAY;
++    GetMappingTimeOut = (UINT64)TICKS_PER_SECOND * DadXmits.DupAddrDetectTransmits + PXEBC_DAD_ADDITIONAL_DELAY;
+     Status            = gBS->SetTimer (Timer, TimerRelative, GetMappingTimeOut);
+     if (EFI_ERROR (Status)) {
+       gBS->CloseEvent (Timer);
+-- 
+2.36.1.windows.1
+

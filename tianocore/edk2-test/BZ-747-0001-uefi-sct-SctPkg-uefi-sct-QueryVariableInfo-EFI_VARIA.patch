@@ -1,0 +1,36 @@
+From 50ab5307306ea40ce6f155789fbacab3b3a74205 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Wed, 30 Jun 2021 16:43:30 +0200
+Subject: [PATCH edk2-test 1/1] uefi-sct/SctPkg: uefi-sct:
+ QueryVariableInfo(EFI_VARIABLE_NON_VOLATILE)
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3469
+
+The Self Certification Test (SCT) II Case Specification, 2017 requires
+in 5.2.1.4.5. that QueryVariableInfo() shall fail for
+
+    attributes = EFI_VARIABLE_NON_VOLATILE.
+
+Add EFI_VARIABLE_NON_VOLATILE to tested values in function
+QueryVariableInfoConfTestSub5().
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../BlackBoxTest/VariableServicesBBTestConformance.c             | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTestConformance.c
+index e2182c5cca7b..731a3cadeac2 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTestConformance.c
+@@ -3399,6 +3399,7 @@ QueryVariableInfoConfTestSub5 (
+ {
+   EFI_STATUS            Status;
+   UINT32                InvalidAttributes[] = {
++                          EFI_VARIABLE_NON_VOLATILE,
+                           EFI_VARIABLE_RUNTIME_ACCESS,
+                           EFI_VARIABLE_NON_VOLATILE|EFI_VARIABLE_RUNTIME_ACCESS,
+                           0
+-- 
+2.30.2
+

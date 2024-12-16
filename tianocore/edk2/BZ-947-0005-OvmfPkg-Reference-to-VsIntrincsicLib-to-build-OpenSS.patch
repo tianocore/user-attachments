@@ -1,0 +1,64 @@
+From f51e8ad9e93b510ac97018c11d84e45af7c6f74e Mon Sep 17 00:00:00 2001
+From: Vineel Kovvuri <vineelko@microsoft.com>
+Date: Thu, 24 Feb 2022 22:03:35 -0800
+Subject: [PATCH 5/6] OvmfPkg:  Reference to VsIntrincsicLib to build OpenSSL
+ lib on Windows
+
+This dependency is needed to build openssl lib under Windows
+and adds implementation for _allmul and _allshr instrinsics.
+
+It is taken from Project Mu:
+https://github.com/microsoft/mu_basecore/commit/b55b341f56257484c86e744c93b113a8a1e03d6
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3679
+
+Cc: Ard Biesheuvel <ardb+tianocore@kernel.org>
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Yi Li <Yi1.li@intel.com>
+Signed-off-by: Vineel Kovvuri <vineelko@microsoft.com>
+---
+ OvmfPkg/OvmfPkgIa32.dsc    | 8 ++++++++
+ OvmfPkg/OvmfPkgIa32X64.dsc | 8 ++++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/OvmfPkg/OvmfPkgIa32.dsc b/OvmfPkg/OvmfPkgIa32.dsc
+index 85abed24c1..c512813b27 100644
+--- a/OvmfPkg/OvmfPkgIa32.dsc
++++ b/OvmfPkg/OvmfPkgIa32.dsc
+@@ -231,6 +231,14 @@
+ 
+ !include OvmfPkg/OvmfTpmLibs.dsc.inc
+ 
++!if $(TOOL_CHAIN_TAG) == "VS2019"
++[LibraryClasses.IA32.UEFI_DRIVER]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++
++[LibraryClasses.common.PEIM]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++!endif
++
+ [LibraryClasses.common]
+   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+   VmgExitLib|UefiCpuPkg/Library/VmgExitLibNull/VmgExitLibNull.inf
+diff --git a/OvmfPkg/OvmfPkgIa32X64.dsc b/OvmfPkg/OvmfPkgIa32X64.dsc
+index a9c1daecc1..32f8a07269 100644
+--- a/OvmfPkg/OvmfPkgIa32X64.dsc
++++ b/OvmfPkg/OvmfPkgIa32X64.dsc
+@@ -235,6 +235,14 @@
+ 
+ !include OvmfPkg/OvmfTpmLibs.dsc.inc
+ 
++!if $(TOOL_CHAIN_TAG) == "VS2019"
++[LibraryClasses.IA32.UEFI_DRIVER]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++
++[LibraryClasses.common.PEIM]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++!endif
++
+ [LibraryClasses.common]
+   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+   VmgExitLib|UefiCpuPkg/Library/VmgExitLibNull/VmgExitLibNull.inf
+-- 
+2.33.0.vfs.0.0
+

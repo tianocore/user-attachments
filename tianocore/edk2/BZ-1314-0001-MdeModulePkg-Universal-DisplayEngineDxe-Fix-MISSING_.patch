@@ -1,0 +1,44 @@
+From a0990ad02b44dfffb38c0b2ac51d06b75686d715 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Fri, 27 Jan 2023 12:58:34 +0530
+Subject: [PATCH 1/2] MdeModulePkg/Universal/DisplayEngineDxe: Fix
+ MISSING_BREAK Coverity issue
+
+The function ReadString has a switch-case on Key.ScanCode in which
+
+case CHAR_BACKSPACE: falls through to
+default:
+
+While this may be intentional, it is not evident to any general code
+reader as well as any static analyzer tool. Just adding
+
+    // No break; here as this is an intentional fallthrough.
+
+as comment in between makes any reader as well as Coverity happy.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4292
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/DisplayEngineDxe/InputHandler.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/DisplayEngineDxe/InputHandler.c b/MdeModulePkg/Universal/DisplayEngineDxe/InputHandler.c
+index f70feeb55f..2876f2b728 100644
+--- a/MdeModulePkg/Universal/DisplayEngineDxe/InputHandler.c
++++ b/MdeModulePkg/Universal/DisplayEngineDxe/InputHandler.c
+@@ -248,6 +248,10 @@ ReadString (
+           CurrentCursor--;
+         }
+ 
++        //
++        // No break; here as this is an intentional fallthrough.
++        //
++
+       default:
+         //
+         // If it is the beginning of the string, don't worry about checking maximum limits
+-- 
+2.36.1.windows.1
+

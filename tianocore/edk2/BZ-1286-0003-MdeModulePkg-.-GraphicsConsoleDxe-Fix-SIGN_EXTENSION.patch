@@ -1,0 +1,43 @@
+From 2747eee66f50bdf454f74c14019f8ad6a929993e Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:47:59 +0530
+Subject: [PATCH 3/3] MdeModulePkg/.../GraphicsConsoleDxe: Fix SIGN_EXTENSION
+ Coverity issue
+
+Full pathname - MdeModulePkg/Universal/Console/GraphicsConsoleDxe
+
+As per Coverity reports,
+
+"Blt->Height" with type "UINT16" (16 bits, unsigned) is promoted
+in the operation "Blt->Width * Blt->Height" to type "int" (32 bits,
+signed), then sign-extended to type "unsigned long long" (64 bits,
+unsigned). If "Blt->Width * Blt->Height" is greater than 0x7FFFFFFF,
+the upper bits of the result will all be 1.
+
+To avoid any SIGN_EXTENSION, typecast the intermediate result after
+the "Blt->Width * Blt->Height" operation with UINT32.
+
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4291
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c      | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c b/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
+index ceb75b4aa954..bddd0d05b4b6 100644
+--- a/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
++++ b/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
+@@ -1844,7 +1844,7 @@ DrawUnicodeWeightAtCursorN (
+ 
+     UgaDraw = Private->UgaDraw;
+ 
+-    Blt->Image.Bitmap = AllocateZeroPool (Blt->Width * Blt->Height * sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL));
++    Blt->Image.Bitmap = AllocateZeroPool (((UINT32)(Blt->Width * Blt->Height)) * sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL));
+     if (Blt->Image.Bitmap == NULL) {
+       FreePool (Blt);
+       FreePool (String);
+-- 
+2.36.1.windows.1
+

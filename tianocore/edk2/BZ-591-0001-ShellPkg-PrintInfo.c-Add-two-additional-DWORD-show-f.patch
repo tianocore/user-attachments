@@ -1,0 +1,42 @@
+From 602b3514eaae784b1983fb43f1b85217d8048745 Mon Sep 17 00:00:00 2001
+Message-Id: <602b3514eaae784b1983fb43f1b85217d8048745.1603951995.git.zhuenze@byosoft.com.cn>
+From: Enze Zhu <zhuenze@byosoft.com.cn>
+Date: Thu, 29 Oct 2020 14:09:21 +0800
+Subject: [PATCH] ShellPkg/PrintInfo.c:Add two additional DWORD show for smbios
+ 3.3.0 type17
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=2952
+
+In MdePkg/SmBios.h,there are two additional DWORD added
+for type 17,but these two DWORD do not show in SmbiosView,
+So add them.
+
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Signed-off-by: Enze Zhu <zhuenze@byosoft.com.cn>
+Reviewed-by: Liming Gao <liming.gao@intel.com>
+---
+ .../UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c      | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+index 7517465ddd..4dd029d6b4 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+@@ -795,6 +795,13 @@ SmbiosPrintStructure (
+         PRINT_STRUCT_VALUE_LH (Struct, Type17, LogicalSize);
+       }
+     }
++    //
++    // Add for smbios 3.3.0
++    //
++    if (AE_SMBIOS_VERSION (0x3, 0x3) && (Struct->Hdr->Length > 0x54)) {
++      PRINT_STRUCT_VALUE_H (Struct, Type17, ExtendedSpeed);
++      PRINT_STRUCT_VALUE_H (Struct, Type17, ExtendedConfiguredMemorySpeed);
++    }
+     break;
+ 
+   //
+-- 
+2.27.0.windows.1
+

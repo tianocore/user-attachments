@@ -1,0 +1,102 @@
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
+index ecc03705..b3fa36df 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTestFunction.c
+@@ -29,7 +29,7 @@ Abstract:
+ #include "BlockIo2BBTestMain.h"
+ 
+ #define BIO2ENTITY_SIGNATURE         EFI_SIGNATURE_32('b','i','o','2')
+-
++#define SIZE_4GB                     0x0000000100000000ULL
+ 
+ //
+ // record every Block IO 2 Async call status
+@@ -308,6 +308,7 @@ BlockIo2AsyncReadData (
+     // Put failure execution into fail List
+     //
+     SctInsertTailList (&ReadFailListHead, &BlockIo2Entity->ListEntry);
++    FreeAlignedPool (BlockIo2Entity->Buffer);
+     BlockIo2Entity->Buffer = NULL;
+   }
+ 
+@@ -1437,7 +1438,7 @@ BBTestReadBlocksExFunctionAutoTestCheckpoint1(
+   BlockIO2_Task                        *BlockIo2Entity = NULL;
+   UINTN                                WaitIndex;
+   SCT_LIST_ENTRY                       *ListEntry = NULL;
+-  
++  UINTN                                AlignedAddress;
+   //
+   // Initialize variable
+   //
+@@ -1486,6 +1487,16 @@ BBTestReadBlocksExFunctionAutoTestCheckpoint1(
+                         );
+         if (BufferAsync == NULL) {
+           goto END_WAIT;
++        } else {
++          //
++          // Not support DmaAbove4G, exit blockIo2->ReadBlocksEx when address above 4GB.
++          //
++          AlignedAddress = (UINTN) BufferAsync;
++          if (AlignedAddress > SIZE_4GB) {
++            SctPrint (L"above 4GB break, AlignedAddress:0x%016lx\n\n", AlignedAddress);
++            FreeAlignedPool(BufferAsync);
++            goto END_WAIT;
++          }
+         }
+ 
+         //
+@@ -2027,7 +2038,8 @@ BBTestReadBlocksExFunctionAutoTestCheckpoint3(
+   BlockIO2_Task                        *BlockIo2Entity = NULL;
+   EFI_BLOCK_IO2_TOKEN                  BatchReadToken;
+   BOOLEAN                              MemoryAllocFail = FALSE;
+-  
++  UINTN                                AlignedAddress;
++
+   //
+   // Initialize variable
+   //
+@@ -2132,6 +2144,19 @@ BBTestReadBlocksExFunctionAutoTestCheckpoint3(
+         if (BlockIo2Entity->Buffer == NULL){
+           MemoryAllocFail = TRUE;
+           goto END;
++        }  else {
++          //
++          // Not support DmaAbove4G, exit blockIo2->ReadBlocksEx when address above 4GB.
++          //
++          AlignedAddress = (UINTN) BlockIo2Entity->Buffer;
++          if (AlignedAddress > SIZE_4GB) {
++            SctPrint (L"above 4GB break, BlockIo2Entity->Buffer:0x%016lx, AlignedAddress:0x%016lx\n\n",
++              BlockIo2Entity->Buffer, AlignedAddress);
++            FreeAlignedPool (BlockIo2Entity->Buffer);
++            SctRemoveEntryList (&BlockIo2Entity->ListEntry);
++            gtBS->FreePool(BlockIo2Entity);
++            break;
++          }
+         }
+       }//end of loop of Lba - LBA
+     }//end of loop of BufferSize - IndexI
+@@ -2342,6 +2367,7 @@ BBTestReadBlocksExFunctionAutoTestCheckpoint4(
+   UINTN                                WaitIndex;
+   SCT_LIST_ENTRY                       *ListEntry = NULL;
+   SCT_LIST_ENTRY                       *ListEntrySync = NULL;
++  UINTN                                AlignedAddress;
+ 
+   //
+   // Initialize variable
+@@ -2392,6 +2418,16 @@ BBTestReadBlocksExFunctionAutoTestCheckpoint4(
+                         );
+         if (BufferAsync == NULL) {
+           goto END_WAIT;
++        } else {
++          //
++          // Not support DmaAbove4G, exit blockIo2->ReadBlocksEx when address above 4GB.
++          //
++          AlignedAddress = (UINTN) BufferAsync;
++          if (AlignedAddress > SIZE_4GB) {
++            SctPrint (L"above 4GB break, AlignedAddress:0x%016lx\n\n", AlignedAddress);
++            FreeAlignedPool(BufferAsync);
++            goto END_WAIT;
++          }
+         }
+ 
+         //

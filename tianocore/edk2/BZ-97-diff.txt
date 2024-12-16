@@ -1,0 +1,141 @@
+diff --git a/EdkCompatibilityPkg/Foundation/Library/Smm/SmmScriptLib/PiSmmS3SaveState.h b/EdkCompatibilityPkg/Foundation/Library/Smm/SmmScriptLib/PiSmmS3SaveState.h
+old mode 100644
+new mode 100755
+index 3c29165..7f09c3e
+--- a/EdkCompatibilityPkg/Foundation/Library/Smm/SmmScriptLib/PiSmmS3SaveState.h
++++ b/EdkCompatibilityPkg/Foundation/Library/Smm/SmmScriptLib/PiSmmS3SaveState.h
+@@ -47,7 +47,7 @@ typedef
+ EFI_STATUS
+ (EFIAPI *EFI_S3_SAVE_STATE_WRITE)(
+    IN CONST EFI_S3_SAVE_STATE_PROTOCOL         *This,
+-   IN       UINT16                              OpCode,
++   IN       UINTN                              OpCode,
+    ...
+ );
+ 
+@@ -93,7 +93,7 @@ EFI_STATUS
+    IN CONST EFI_S3_SAVE_STATE_PROTOCOL         *This,
+    IN       BOOLEAN                             BeforeOrAfter,
+    IN OUT   EFI_S3_BOOT_SCRIPT_POSITION         *Position       OPTIONAL,
+-   IN       UINT16                              OpCode,
++   IN       UINTN                               OpCode,
+    ...
+ );
+ 
+diff --git a/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/InternalS3SaveState.h b/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/InternalS3SaveState.h
+old mode 100644
+new mode 100755
+index 2cc638a..b4c3ee3
+--- a/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/InternalS3SaveState.h
++++ b/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/InternalS3SaveState.h
+@@ -75,7 +75,7 @@ EFI_STATUS
+ EFIAPI
+ BootScriptWrite (
+   IN CONST EFI_S3_SAVE_STATE_PROTOCOL      *This,
+-  IN       UINT16                           OpCode,
++  IN       UINTN                           OpCode,
+   ...
+   );
+ /**
+@@ -112,7 +112,7 @@ BootScriptInsert (
+   IN CONST EFI_S3_SAVE_STATE_PROTOCOL    *This,
+   IN       BOOLEAN                          BeforeOrAfter,
+   IN OUT   EFI_S3_BOOT_SCRIPT_POSITION     *Position OPTIONAL,
+-  IN       UINT16                           OpCode,
++  IN       UINTN                           OpCode,
+   ...
+   );
+ /**
+diff --git a/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/S3SaveState.c b/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/S3SaveState.c
+old mode 100644
+new mode 100755
+index efc0ef9..a37ec90
+--- a/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/S3SaveState.c
++++ b/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/S3SaveState.c
+@@ -542,7 +542,7 @@ EFI_STATUS
+ EFIAPI
+ BootScriptWrite (
+   IN CONST EFI_S3_SAVE_STATE_PROTOCOL      *This,
+-  IN       UINT16                           OpCode,
++  IN       UINTN                           OpCode,
+   ...
+   )
+ {
+@@ -697,7 +697,7 @@ BootScriptInsert (
+   IN CONST EFI_S3_SAVE_STATE_PROTOCOL     *This,
+   IN       BOOLEAN                        BeforeOrAfter,
+   IN OUT   EFI_S3_BOOT_SCRIPT_POSITION    *Position OPTIONAL,
+-  IN       UINT16                         OpCode,
++  IN       UINTN                          OpCode,
+   ...
+   )
+ {
+diff --git a/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c b/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
+old mode 100644
+new mode 100755
+index 71a6fd2..83dedc0
+--- a/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
++++ b/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
+@@ -1611,7 +1611,7 @@ CHAR8 *
+ EFIAPI
+ VariableGetBestLanguage (
+   IN CONST CHAR8  *SupportedLanguages,
+-  IN BOOLEAN      Iso639Language,
++  IN UINTN        Iso639Language,
+   ...
+   )
+ {
+diff --git a/MdePkg/Include/Library/UefiLib.h b/MdePkg/Include/Library/UefiLib.h
+old mode 100644
+new mode 100755
+index 0b14792..4e4697c
+--- a/MdePkg/Include/Library/UefiLib.h
++++ b/MdePkg/Include/Library/UefiLib.h
+@@ -818,7 +818,7 @@ CHAR8 *
+ EFIAPI
+ GetBestLanguage (
+   IN CONST CHAR8  *SupportedLanguages, 
+-  IN BOOLEAN      Iso639Language,
++  IN UINTN      Iso639Language,
+   ...
+   );
+ 
+diff --git a/MdePkg/Include/Protocol/S3SaveState.h b/MdePkg/Include/Protocol/S3SaveState.h
+old mode 100644
+new mode 100755
+index 5a72dd8..d9621e3
+--- a/MdePkg/Include/Protocol/S3SaveState.h
++++ b/MdePkg/Include/Protocol/S3SaveState.h
+@@ -52,7 +52,7 @@ typedef
+ EFI_STATUS
+ (EFIAPI *EFI_S3_SAVE_STATE_WRITE)(
+    IN CONST EFI_S3_SAVE_STATE_PROTOCOL  *This,
+-   IN       UINT16                      OpCode,
++   IN       UINTN                      OpCode,
+    ...
+ );
+ 
+@@ -98,7 +98,7 @@ EFI_STATUS
+    IN CONST EFI_S3_SAVE_STATE_PROTOCOL  *This,
+    IN       BOOLEAN                     BeforeOrAfter,
+    IN OUT   EFI_S3_BOOT_SCRIPT_POSITION *Position       OPTIONAL,
+-   IN       UINT16                      OpCode,
++   IN       UINTN                       OpCode,
+    ...
+ );
+ 
+diff --git a/MdePkg/Library/UefiLib/UefiLib.c b/MdePkg/Library/UefiLib/UefiLib.c
+old mode 100644
+new mode 100755
+index a7eee01..74528ec
+--- a/MdePkg/Library/UefiLib/UefiLib.c
++++ b/MdePkg/Library/UefiLib/UefiLib.c
+@@ -1514,7 +1514,7 @@ CHAR8 *
+ EFIAPI
+ GetBestLanguage (
+   IN CONST CHAR8  *SupportedLanguages, 
+-  IN BOOLEAN      Iso639Language,
++  IN UINTN      Iso639Language,
+   ...
+   )
+ {

@@ -1,0 +1,16 @@
+
+Dead code function in file: ShellPkg/Application/Shell/ShellProtocol.c
+InternalShellProtocolDebugPrintMessage, line 114
+UpdateFileName, line 2274
+
+Dead code function in file: ShellPkg/Application/Shell/ShellParametersProtocol.c
+RemoveFileTag, line 638
+
+Dead code function in file: ShellPkg/Application/Shell/Shell.c
+IsValidCommandName, line 2765
+
+Inf redundant definition in file: ShellPkg/DynamicCommand/DpDynamicCommand/DpDynamicCommand.inf
+PerformanceLib, line 57
+
+Inf redundant definition in file: ShellPkg/DynamicCommand/DpDynamicCommand/DpApp.inf
+PerformanceLib, line 56

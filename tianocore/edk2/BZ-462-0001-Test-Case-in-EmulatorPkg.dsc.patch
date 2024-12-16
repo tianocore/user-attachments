@@ -1,0 +1,24 @@
+From e5fd316304f9e787efd21a197a5820c08c4de02a Mon Sep 17 00:00:00 2001
+From: Liming Gao <liming.gao@intel.com>
+Date: Thu, 20 Feb 2020 23:48:00 +0800
+Subject: [Patch] Test Case in EmulatorPkg.dsc
+
+Signed-off-by: Liming Gao <liming.gao@intel.com>
+---
+ EmulatorPkg/EmulatorPkg.dsc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/EmulatorPkg/EmulatorPkg.dsc b/EmulatorPkg/EmulatorPkg.dsc
+index 1fc924ae5a..ba8d18b5cb 100644
+--- a/EmulatorPkg/EmulatorPkg.dsc
++++ b/EmulatorPkg/EmulatorPkg.dsc
+@@ -435,3 +435,6 @@
+   GCC:DEBUG_CLANGPDB_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
+   GCC:NOOPT_CLANGPDB_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
+ !endif
++
++  *_*_*_LZMAF86_PATH        = LzmaF86CompressPlatform
++
+-- 
+2.13.0.windows.1
+

@@ -1,0 +1,447 @@
+From e91c41d391bf5dd1659e117175514bf9afedfd78 Mon Sep 17 00:00:00 2001
+From: Imran Desai <imran.desai@intel.com>
+Date: Thu, 11 Apr 2019 16:11:21 -0700
+Subject: [PATCH 1/4] sm3_enabling: Augment crypt interface with calls into
+ openssl to calculate sm3 digest prior to exercising TPM2 calls for PCR extend
+
+---
+ MdePkg/Include/Protocol/Hash.h                |   5 +
+ OvmfPkg/OvmfPkgX64.dsc                        |   2 +
+ SecurityPkg/Include/Library/HashLib.h         |   1 +
+ .../HashInstanceLibSm3/HashInstanceLibSm3.c   | 155 ++++++++++++++++++
+ .../HashInstanceLibSm3/HashInstanceLibSm3.inf |  46 ++++++
+ .../HashInstanceLibSm3/HashInstanceLibSm3.uni |  21 +++
+ 6 files changed, 230 insertions(+)
+ create mode 100644 SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.c
+ create mode 100644 SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+ create mode 100644 SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.uni
+
+diff --git a/MdePkg/Include/Protocol/Hash.h b/MdePkg/Include/Protocol/Hash.h
+index 931d7916ef..8abf1a4fa3 100644
+--- a/MdePkg/Include/Protocol/Hash.h
++++ b/MdePkg/Include/Protocol/Hash.h
+@@ -48,6 +48,11 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+     0xcaa4381e, 0x750c, 0x4770, {0xb8, 0x70, 0x7a, 0x23, 0xb4, 0xe4, 0x21, 0x30 } \
+   }
+ 
++#define EFI_HASH_ALGORITHM_SM3_256_GUID \
++  { \
++    0x251C7818, 0x0DBF, 0xE619, { 0x7F, 0xC2, 0xD6, 0xAC, 0x43, 0x42, 0x7D, 0xA3 } \
++  }
++
+ #define EFI_HASH_ALGORTIHM_MD5_GUID \
+   { \
+     0xaf7c79c, 0x65b5, 0x4319, {0xb0, 0xae, 0x44, 0xec, 0x48, 0x4e, 0x4a, 0xd7 } \
+diff --git a/OvmfPkg/OvmfPkgX64.dsc b/OvmfPkg/OvmfPkgX64.dsc
+index a0f87f74da..83131a37f7 100644
+--- a/OvmfPkg/OvmfPkgX64.dsc
++++ b/OvmfPkg/OvmfPkgX64.dsc
+@@ -635,6 +635,7 @@
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+   }
+ !if $(TPM2_CONFIG_ENABLE) == TRUE
+   SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDxe.inf
+@@ -945,5 +946,6 @@
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+   }
+ !endif
+diff --git a/SecurityPkg/Include/Library/HashLib.h b/SecurityPkg/Include/Library/HashLib.h
+index 63f0839878..24b4c425d7 100644
+--- a/SecurityPkg/Include/Library/HashLib.h
++++ b/SecurityPkg/Include/Library/HashLib.h
+@@ -137,6 +137,7 @@ EFI_STATUS
+ #define HASH_ALGORITHM_SHA256_GUID  EFI_HASH_ALGORITHM_SHA256_GUID
+ #define HASH_ALGORITHM_SHA384_GUID  EFI_HASH_ALGORITHM_SHA384_GUID
+ #define HASH_ALGORITHM_SHA512_GUID  EFI_HASH_ALGORITHM_SHA512_GUID
++#define HASH_ALGORITHM_SM3_256_GUID  EFI_HASH_ALGORITHM_SM3_256_GUID
+ 
+ typedef struct {
+   EFI_GUID                           HashGuid;
+diff --git a/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.c b/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.c
+new file mode 100644
+index 0000000000..504475ca19
+--- /dev/null
++++ b/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.c
+@@ -0,0 +1,155 @@
++/** @file
++  This library is BaseCrypto SM3 hash instance.
++  It can be registered to BaseCrypto router, to serve as hash engine.
++
++Copyright (c) 2013 - 2018, Intel Corporation. All rights reserved. <BR>
++This program and the accompanying materials
++are licensed and made available under the terms and conditions of the BSD License
++which accompanies this distribution.  The full text of the license may be found at
++http://opensource.org/licenses/bsd-license.php
++
++THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++
++#include <PiPei.h>
++#include <Library/BaseLib.h>
++#include <Library/BaseMemoryLib.h>
++#include <Library/Tpm2CommandLib.h>
++#include <Library/DebugLib.h>
++#include <Library/BaseCryptLib.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Library/HashLib.h>
++
++/**
++  The function set SM3 to digest list.
++
++  @param DigestList   digest list
++  @param Sm3Digest SM3 digest
++**/
++VOID
++Tpm2SetSm3ToDigestList (
++  IN TPML_DIGEST_VALUES *DigestList,
++  IN UINT8              *Sm3Digest
++  )
++{
++  DigestList->count = 1;
++  DigestList->digests[0].hashAlg = TPM_ALG_SM3_256;
++  CopyMem (
++    DigestList->digests[0].digest.sm3_256,
++    Sm3Digest,
++    SM3_256_DIGEST_SIZE
++    );
++}
++
++/**
++  Start hash sequence.
++
++  @param HashHandle Hash handle.
++
++  @retval EFI_SUCCESS          Hash sequence start and HandleHandle returned.
++  @retval EFI_OUT_OF_RESOURCES No enough resource to start hash.
++**/
++EFI_STATUS
++EFIAPI
++Sm3HashInit (
++  OUT HASH_HANDLE    *HashHandle
++  )
++{
++  VOID     *Sm3Ctx;
++  UINTN    CtxSize;
++
++  CtxSize = Sm3GetContextSize ();
++  Sm3Ctx = AllocatePool (CtxSize);
++  ASSERT (Sm3Ctx != NULL);
++
++  Sm3Init (Sm3Ctx);
++
++  *HashHandle = (HASH_HANDLE)Sm3Ctx;
++
++  return EFI_SUCCESS;
++}
++
++/**
++  Update hash sequence data.
++
++  @param HashHandle    Hash handle.
++  @param DataToHash    Data to be hashed.
++  @param DataToHashLen Data size.
++
++  @retval EFI_SUCCESS     Hash sequence updated.
++**/
++EFI_STATUS
++EFIAPI
++Sm3HashUpdate (
++  IN HASH_HANDLE    HashHandle,
++  IN VOID           *DataToHash,
++  IN UINTN          DataToHashLen
++  )
++{
++  VOID     *Sm3Ctx;
++
++  Sm3Ctx = (VOID *)HashHandle;
++  Sm3Update (Sm3Ctx, DataToHash, DataToHashLen);
++
++  return EFI_SUCCESS;
++}
++
++/**
++  Complete hash sequence complete.
++
++  @param HashHandle    Hash handle.
++  @param DigestList    Digest list.
++
++  @retval EFI_SUCCESS     Hash sequence complete and DigestList is returned.
++**/
++EFI_STATUS
++EFIAPI
++Sm3HashFinal (
++  IN HASH_HANDLE         HashHandle,
++  OUT TPML_DIGEST_VALUES *DigestList
++  )
++{
++  UINT8         Digest[SM3_256_DIGEST_SIZE];
++  VOID          *Sm3Ctx;
++
++  Sm3Ctx = (VOID *)HashHandle;
++  Sm3Final (Sm3Ctx, Digest);
++
++  FreePool (Sm3Ctx);
++
++  Tpm2SetSm3ToDigestList (DigestList, Digest);
++
++  return EFI_SUCCESS;
++}
++
++HASH_INTERFACE  mSm3InternalHashInstance = {
++  HASH_ALGORITHM_SM3_256_GUID,
++  Sm3HashInit,
++  Sm3HashUpdate,
++  Sm3HashFinal,
++};
++
++/**
++  The function register SM3 instance.
++
++  @retval EFI_SUCCESS   SM3 instance is registered, or system dose not support register SM3 instance
++**/
++EFI_STATUS
++EFIAPI
++HashInstanceLibSm3Constructor (
++  VOID
++  )
++{
++  EFI_STATUS  Status;
++
++  Status = RegisterHashInterfaceLib (&mSm3InternalHashInstance);
++  if ((Status == EFI_SUCCESS) || (Status == EFI_UNSUPPORTED)) {
++    //
++    // Unsupported means platform policy does not need this instance enabled.
++    //
++    return EFI_SUCCESS;
++  }
++  return Status;
++}
+diff --git a/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf b/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+new file mode 100644
+index 0000000000..b2c68b7842
+--- /dev/null
++++ b/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+@@ -0,0 +1,46 @@
++## @file
++#  Provides BaseCrypto SM3 hash service
++#
++#  This library can be registered to BaseCrypto router, to serve as hash engine.
++#
++# Copyright (c) 2013 - 2018, Intel Corporation. All rights reserved.<BR>
++# This program and the accompanying materials
++# are licensed and made available under the terms and conditions of the BSD License
++# which accompanies this distribution. The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++##
++
++[Defines]
++  INF_VERSION                    = 0x00010005
++  BASE_NAME                      = HashInstanceLibSm3
++  MODULE_UNI_FILE                = HashInstanceLibSm3.uni
++  FILE_GUID                      = C5865D5D-9ACE-39FB-DC7C-0511891D40F9
++  MODULE_TYPE                    = BASE
++  VERSION_STRING                 = 1.0
++  LIBRARY_CLASS                  = NULL
++  CONSTRUCTOR                    = HashInstanceLibSm3Constructor
++
++#
++# The following information is for reference only and not required by the build tools.
++#
++#  VALID_ARCHITECTURES           = IA32 X64
++#
++
++[Sources]
++  HashInstanceLibSm3.c
++
++[Packages]
++  MdePkg/MdePkg.dec
++  SecurityPkg/SecurityPkg.dec
++  CryptoPkg/CryptoPkg.dec
++
++[LibraryClasses]
++  BaseLib
++  BaseMemoryLib
++  DebugLib
++  Tpm2CommandLib
++  MemoryAllocationLib
++  BaseCryptLib
+diff --git a/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.uni b/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.uni
+new file mode 100644
+index 0000000000..8d985feeac
+--- /dev/null
++++ b/SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.uni
+@@ -0,0 +1,21 @@
++// /** @file
++// Provides BaseCrypto SM3 hash service
++//
++// This library can be registered to BaseCrypto router, to serve as hash engine.
++//
++// Copyright (c) 2013 - 2014, Intel Corporation. All rights reserved.<BR>
++//
++// This program and the accompanying materials
++// are licensed and made available under the terms and conditions of the BSD License
++// which accompanies this distribution. The full text of the license may be found at
++// http://opensource.org/licenses/bsd-license.php
++// THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++// WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++//
++// **/
++
++
++#string STR_MODULE_ABSTRACT             #language en-US "Provides BaseCrypto SM3 hash service"
++
++#string STR_MODULE_DESCRIPTION          #language en-US "This library can be registered to BaseCrypto router, to serve as hash engine."
++
+-- 
+2.17.0
+
+
+From 6a3e577a1a83530571c35fc9e2703866b2b93dc1 Mon Sep 17 00:00:00 2001
+From: Imran Desai <imran.desai@intel.com>
+Date: Mon, 15 Apr 2019 11:14:00 -0700
+Subject: [PATCH 2/4] sm3-enabling: Add SM3 TCG algorithm registry value to the
+ PcdTpm2HashMask
+
+---
+ SecurityPkg/SecurityPkg.dec | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/SecurityPkg/SecurityPkg.dec b/SecurityPkg/SecurityPkg.dec
+index 6e4c4c3a02..cde8996463 100644
+--- a/SecurityPkg/SecurityPkg.dec
++++ b/SecurityPkg/SecurityPkg.dec
+@@ -438,9 +438,10 @@
+   #    BIT1  -  SHA256.<BR>
+   #    BIT2  -  SHA384.<BR>
+   #    BIT3  -  SHA512.<BR>
++  #    BIT4  -  SM3_256.<BR>
+   # @Prompt Hash mask for TPM 2.0
+-  # @ValidRange 0x80000001 | 0x00000000 - 0x0000000F
+-  gEfiSecurityPkgTokenSpaceGuid.PcdTpm2HashMask|0x0000000F|UINT32|0x00010010
++  # @ValidRange 0x80000001 | 0x00000000 - 0x0000001F
++  gEfiSecurityPkgTokenSpaceGuid.PcdTpm2HashMask|0x0000001F|UINT32|0x00010010
+ 
+   ## This PCD indicated final BIOS supported Hash mask.
+   #    Bios may choose to register a subset of PcdTpm2HashMask.
+-- 
+2.17.0
+
+
+From ad796fcf058e20a1e61a8edb90e048f3ff1935aa Mon Sep 17 00:00:00 2001
+From: Imran Desai <imran.desai@intel.com>
+Date: Tue, 16 Apr 2019 10:59:28 -0700
+Subject: [PATCH 3/4] sm3-enabling: Add SM3 guid reference in the TPM2 hash
+ mask  structure in HashLibBaseCryptoRouterCommon.c
+
+---
+ .../HashLibBaseCryptoRouter/HashLibBaseCryptoRouterCommon.c      | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/SecurityPkg/Library/HashLibBaseCryptoRouter/HashLibBaseCryptoRouterCommon.c b/SecurityPkg/Library/HashLibBaseCryptoRouter/HashLibBaseCryptoRouterCommon.c
+index 7f3bdab530..aec874a9e0 100644
+--- a/SecurityPkg/Library/HashLibBaseCryptoRouter/HashLibBaseCryptoRouterCommon.c
++++ b/SecurityPkg/Library/HashLibBaseCryptoRouter/HashLibBaseCryptoRouterCommon.c
+@@ -25,6 +25,7 @@ TPM2_HASH_MASK mTpm2HashMask[] = {
+   {HASH_ALGORITHM_SHA256_GUID,       HASH_ALG_SHA256},
+   {HASH_ALGORITHM_SHA384_GUID,       HASH_ALG_SHA384},
+   {HASH_ALGORITHM_SHA512_GUID,       HASH_ALG_SHA512},
++  {HASH_ALGORITHM_SM3_256_GUID,      HASH_ALG_SM3_256},
+ };
+ 
+ /**
+-- 
+2.17.0
+
+
+From 9d7e5cbe5d4fd09b2649c1043c3475e6eaa53bbd Mon Sep 17 00:00:00 2001
+From: Imran Desai <imran.desai@intel.com>
+Date: Thu, 9 May 2019 14:09:04 -0700
+Subject: [PATCH 4/4] sm3-enabling: Add SM3 hashinstance library information to
+ all OvmfPkg and SecurityPkg
+
+---
+ OvmfPkg/OvmfPkgIa32.dsc     | 2 ++
+ OvmfPkg/OvmfPkgIa32X64.dsc  | 2 ++
+ SecurityPkg/SecurityPkg.dsc | 3 +++
+ 3 files changed, 7 insertions(+)
+
+diff --git a/OvmfPkg/OvmfPkgIa32.dsc b/OvmfPkg/OvmfPkgIa32.dsc
+index 36a0f87258..e4ec1a65b8 100644
+--- a/OvmfPkg/OvmfPkgIa32.dsc
++++ b/OvmfPkg/OvmfPkgIa32.dsc
+@@ -628,6 +628,7 @@
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+   }
+ !if $(TPM2_CONFIG_ENABLE) == TRUE
+   SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDxe.inf
+@@ -937,5 +938,6 @@
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+   }
+ !endif
+diff --git a/OvmfPkg/OvmfPkgIa32X64.dsc b/OvmfPkg/OvmfPkgIa32X64.dsc
+index 9b341e17d7..c5a1948255 100644
+--- a/OvmfPkg/OvmfPkgIa32X64.dsc
++++ b/OvmfPkg/OvmfPkgIa32X64.dsc
+@@ -636,6 +636,7 @@
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+   }
+ !if $(TPM2_CONFIG_ENABLE) == TRUE
+   SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDxe.inf
+@@ -947,5 +948,6 @@
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+   }
+ !endif
+diff --git a/SecurityPkg/SecurityPkg.dsc b/SecurityPkg/SecurityPkg.dsc
+index a2ee0528f0..044319ab5e 100644
+--- a/SecurityPkg/SecurityPkg.dsc
++++ b/SecurityPkg/SecurityPkg.dsc
+@@ -222,6 +222,7 @@
+   SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+   SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+   SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++  SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+ 
+   SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigPei.inf {
+     <LibraryClasses>
+@@ -236,6 +237,7 @@
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+   }
+ 
+   SecurityPkg/Tcg/Tcg2Dxe/Tcg2Dxe.inf {
+@@ -246,6 +248,7 @@
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+       PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
+   }
+   SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDxe.inf {
+-- 
+2.17.0
+

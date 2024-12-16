@@ -1,0 +1,77 @@
+SecCoreStartupWithStack(0xFFFCC000, 0x818000)
+Register PPI Notify: DCD0BE23-9586-40F4-B643-06522CED4EDE
+Install PPI: 8C8CE578-8A3D-4F1C-9935-896185C32DD3
+Install PPI: 5473C07A-3DCB-4DCA-BD6F-1E9689E7349A
+The 0th FV start address is 0x00000820000, size is 0x000E0000, handle is 0x820000
+Register PPI Notify: 49EDB1C1-BF21-4761-BB12-EB0031AABB39
+Register PPI Notify: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38
+Install PPI: B9E0ABFE-5979-4914-977F-6DEE78C278A6
+Install PPI: DBE23AA9-A345-4B97-85B6-B226F1617389
+Loading PEIM at 0x0000082B780 EntryPoint=0x0000082E7F9 PcdPeim.efi
+Install PPI: 06E81C58-4AD7-44BC-8390-F10265F72480
+Install PPI: 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+Install PPI: 4D8B155B-C059-4C8F-8926-06FD4331DB8A
+Install PPI: A60C6B59-E459-425D-9C69-0BCC9CB27D81
+Loading PEIM at 0x0000082FFC0 EntryPoint=0x00000831395 ReportStatusCodeRouterPei.efi
+Install PPI: 0065D394-9951-4144-82A3-0AFC8579C251
+Install PPI: 229832D3-7A30-4B36-B827-F40CB7D45436
+Loading PEIM at 0x00000831F40 EntryPoint=0x0000083318A StatusCodeHandlerPei.efi
+Loading PEIM at 0x00000833E40 EntryPoint=0x00000837BDE PlatformPei.efi
+Select Item: 0x0
+FW CFG Signature: 0x554D4551
+Select Item: 0x1
+FW CFG Revision: 0x3
+QemuFwCfg interface (DMA) is supported.
+Platform PEIM Loaded
+CMOS:
+00: 47 00 34 00 20 00 05 03 08 17 26 02 00 80 00 00
+10: 00 00 00 00 06 80 02 FF FF 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+30: FF FF 20 00 00 BF 00 20 30 00 00 00 00 12 00 00
+40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+50: 00 00 00 00 00 00 00 00 00 00 00 00 40 03 00 07
+60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Select Item: 0x19
+Select Item: 0x28
+Install PPI: 7408D748-FC8C-4EE6-9288-C4BEC092A410
+Select Item: 0x19
+Select Item: 0x19
+GetFirstNonAddress: Pci64Base=0x800000000 Pci64Size=0x800000000
+Select Item: 0x5
+MaxCpuCountInitialization: QEMU reports 8 processor(s)
+PublishPeiMemory: mPhysMemAddressWidth=36 PeiMemoryCap=65800 KB
+PeiInstallPeiMemory MemoryBegin 0xBBFBE000, MemoryLength 0x4042000
+QemuInitializeRam called
+Reserved variable store memory: 0xBFFE0000; size: 128kb
+Platform PEI Firmware Volume Initialization
+Install PPI: 49EDB1C1-BF21-4761-BB12-EB0031AABB39
+Notify: PPI Guid: 49EDB1C1-BF21-4761-BB12-EB0031AABB39, Peim notify entry point: 826922
+The 1th FV start address is 0x00000900000, size is 0x00A00000, handle is 0x900000
+Select Item: 0x19
+Select Item: 0x19
+Select Item: 0x19
+Select Item: 0x25
+Register PPI Notify: EE16160A-E8BE-47A6-820A-C6900DB0250A
+Temp Stack : BaseAddress=0x814000 Length=0x4000
+Temp Heap  : BaseAddress=0x810000 Length=0x4000
+Total temporary memory:    32768 bytes.
+  temporary memory stack ever used: 16384 bytes.
+  temporary memory heap used:       7808 bytes.
+Old Stack size 16384, New stack size 131072
+Stack Hob: BaseAddress=0xBBFBE000 Length=0x20000
+Heap Offset = 0xBB7CE000 Stack Offset = 0xBB7C6000
+TemporaryRamMigration(0x810000, 0xBBFDA000, 0x8000)
+Loading PEIM at 0x000BFFD3000 EntryPoint=0x000BFFDBA45 PeiCore.efi
+Reinstall PPI: 8C8CE578-8A3D-4F1C-9935-896185C32DD3
+Reinstall PPI: 5473C07A-3DCB-4DCA-BD6F-1E9689E7349A
+Reinstall PPI: B9E0ABFE-5979-4914-977F-6DEE78C278A6
+Install PPI: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+Loading PEIM at 0x000BFFCF000 EntryPoint=0x000BFFD1941 DxeIpl.efi
+Install PPI: 1A36E4E7-FAB6-476A-8E75-695A0576FDD7
+Install PPI: 0AE8CE5D-E448-4437-A8D7-EBF5F194F731
+Loading PEIM at 0x000BFFCB000 EntryPoint=0x000BFFCD304 S3Resume2Pei.efi
+Install PPI: 6D582DBC-DB85-4514-8FCC-5ADF6227B147
+Loading PEIM at 0x000BFFC3000 EntryPoint=0x000BFFC7189 CpuMpPei.efi
+AP Loop Mode is 1
+WakeupBufferStart = 9F000, WakeupBufferSize = 1000

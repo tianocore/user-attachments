@@ -1,0 +1,38 @@
+From fd319fa32d236a2ab051418760965985f910e448 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:09:01 +0530
+Subject: [PATCH 2/3] UefiCpuPkg/PiSmmCpuDxeSmm: Fix OVERFLOW_BEFORE_WIDEN
+ Coverity issue
+
+The "CpuStatus->MaxThreadCount * CpuStatus->MaxCoreCount" is a
+potentially overflowing expression with type "unsigned int" (32 bits,
+unsigned) evaluated using 32-bit arithmetic, and then used in a context
+that expects an expression of type "UINTN" (64 bits, unsigned).
+
+To avoid overflow, cast "CpuStatus->MaxThreadCount" to type "UINTN".
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4267
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c b/UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c
+index 90c5df8a372c..6b478f736df9 100644
+--- a/UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c
++++ b/UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c
+@@ -452,7 +452,7 @@ ProgramProcessorRegister (
+             //
+             // First Notify ALL THREADS in current package that this thread is ready.
+             //
+-            for (ProcessorIndex = 0; ProcessorIndex < CpuStatus->MaxThreadCount * CpuStatus->MaxCoreCount; ProcessorIndex++) {
++            for (ProcessorIndex = 0; ProcessorIndex < (UINTN)CpuStatus->MaxThreadCount * CpuStatus->MaxCoreCount; ProcessorIndex++) {
+               S3ReleaseSemaphore (&SemaphorePtr[FirstThread + ProcessorIndex]);
+             }
+ 
+-- 
+2.36.1.windows.1
+

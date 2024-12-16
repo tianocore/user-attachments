@@ -1,0 +1,22 @@
+diff --git a/MdePkg/Library/UefiLib/UefiLib.c b/MdePkg/Library/UefiLib/UefiLib.c
+index 835218f982..b6a33a0a48 100644
+--- a/MdePkg/Library/UefiLib/UefiLib.c
++++ b/MdePkg/Library/UefiLib/UefiLib.c
+@@ -839,7 +839,7 @@ LookupUnicodeString2 (
+       SupportedLanguages += 3;
+     }
+   } else {
+-    Found = !IsLanguageSupported(Language, SupportedLanguages);
++    Found = !IsLanguageSupported(SupportedLanguages, Language);
+   }
+ 
+ 
+@@ -1133,7 +1133,7 @@ AddUnicodeString2 (
+       SupportedLanguages += 3;
+     }
+   } else {
+-    Found = !IsLanguageSupported(Language, SupportedLanguages);
++    Found = !IsLanguageSupported(SupportedLanguages, Language);
+   }
+   //
+   // If Language is not a member of SupportedLanguages, then return EFI_UNSUPPORTED

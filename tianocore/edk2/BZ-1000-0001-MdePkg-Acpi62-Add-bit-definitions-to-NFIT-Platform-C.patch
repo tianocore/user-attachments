@@ -1,0 +1,72 @@
+From 9805590180aef20febb4346fe3afb7fa80b90ee3 Mon Sep 17 00:00:00 2001
+From: Miki Shindo <miki.shindo@intel.com>
+Date: Wed, 29 Jun 2022 14:48:31 -0700
+Subject: [PATCH] MdePkg/Acpi62: Add bit definitions to NFIT Platform
+ Capabilities Structure
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3915
+
+This commit adds each capability bit definition
+for NFIT Platform Capabilities Structure.
+The type has been added since ACPI Specification Version 6.2A.
+
+Signed-off-by: Miki Shindo <miki.shindo@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ MdePkg/Include/IndustryStandard/Acpi62.h | 4 ++++
+ MdePkg/Include/IndustryStandard/Acpi63.h | 4 ++++
+ MdePkg/Include/IndustryStandard/Acpi64.h | 4 ++++
+ 3 files changed, 12 insertions(+)
+
+diff --git a/MdePkg/Include/IndustryStandard/Acpi62.h b/MdePkg/Include/IndustryStandard/Acpi62.h
+index 836e986ee5..e27775a85a 100644
+--- a/MdePkg/Include/IndustryStandard/Acpi62.h
++++ b/MdePkg/Include/IndustryStandard/Acpi62.h
+@@ -1651,6 +1651,10 @@ typedef struct {
+   UINT8     Reserved_12[4];
+ } EFI_ACPI_6_2_NFIT_PLATFORM_CAPABILITIES_STRUCTURE;
+ 
++#define EFI_ACPI_6_2_NFIT_PLATFORM_CAPABILITY_CPU_CACHE_FLUSH_TO_NVDIMM_DURABILITY_ON_POWER_LOSS          BIT0
++#define EFI_ACPI_6_2_NFIT_PLATFORM_CAPABILITY_MEMORY_CONTROLLER_FLUSH_TO_NVDIMM_DURABILITY_ON_POWER_LOSS  BIT1
++#define EFI_ACPI_6_2_NFIT_PLATFORM_CAPABILITY_BYTE_ADDRESSABLE_PERSISTENT_MEMORY_HARDWARE_MIRRORING       BIT2
++
+ ///
+ /// Secure DEVices Table (SDEV)
+ ///
+diff --git a/MdePkg/Include/IndustryStandard/Acpi63.h b/MdePkg/Include/IndustryStandard/Acpi63.h
+index 15a30d8808..10bdf5fe5a 100644
+--- a/MdePkg/Include/IndustryStandard/Acpi63.h
++++ b/MdePkg/Include/IndustryStandard/Acpi63.h
+@@ -1615,6 +1615,10 @@ typedef struct {
+   UINT8     Reserved_12[4];
+ } EFI_ACPI_6_3_NFIT_PLATFORM_CAPABILITIES_STRUCTURE;
+ 
++#define EFI_ACPI_6_3_NFIT_PLATFORM_CAPABILITY_CPU_CACHE_FLUSH_TO_NVDIMM_DURABILITY_ON_POWER_LOSS          BIT0
++#define EFI_ACPI_6_3_NFIT_PLATFORM_CAPABILITY_MEMORY_CONTROLLER_FLUSH_TO_NVDIMM_DURABILITY_ON_POWER_LOSS  BIT1
++#define EFI_ACPI_6_3_NFIT_PLATFORM_CAPABILITY_BYTE_ADDRESSABLE_PERSISTENT_MEMORY_HARDWARE_MIRRORING       BIT2
++
+ ///
+ /// Secure DEVices Table (SDEV)
+ ///
+diff --git a/MdePkg/Include/IndustryStandard/Acpi64.h b/MdePkg/Include/IndustryStandard/Acpi64.h
+index c1d8b14c44..fe5ebfac2b 100644
+--- a/MdePkg/Include/IndustryStandard/Acpi64.h
++++ b/MdePkg/Include/IndustryStandard/Acpi64.h
+@@ -1664,6 +1664,10 @@ typedef struct {
+   UINT8     Reserved_12[4];
+ } EFI_ACPI_6_4_NFIT_PLATFORM_CAPABILITIES_STRUCTURE;
+ 
++#define EFI_ACPI_6_4_NFIT_PLATFORM_CAPABILITY_CPU_CACHE_FLUSH_TO_NVDIMM_DURABILITY_ON_POWER_LOSS          BIT0
++#define EFI_ACPI_6_4_NFIT_PLATFORM_CAPABILITY_MEMORY_CONTROLLER_FLUSH_TO_NVDIMM_DURABILITY_ON_POWER_LOSS  BIT1
++#define EFI_ACPI_6_4_NFIT_PLATFORM_CAPABILITY_BYTE_ADDRESSABLE_PERSISTENT_MEMORY_HARDWARE_MIRRORING       BIT2
++
+ ///
+ /// Secure DEVices Table (SDEV)
+ ///
+-- 
+2.27.0.windows.1
+

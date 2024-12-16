@@ -1,0 +1,66 @@
+From 304935362af8b4706ee01679d9caf1cfdf5dc72b Mon Sep 17 00:00:00 2001
+From: Mikhail Krichanov <krichanov@ispras.ru>
+Date: Thu, 21 Oct 2021 11:53:53 +0300
+Subject: [PATCH] Compilation fix for clang-13.
+
+---
+ MdePkg/Include/Library/DebugLib.h | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/MdePkg/Include/Library/DebugLib.h b/MdePkg/Include/Library/DebugLib.h
+index 4cacd4b8..7785e99d 100644
+--- a/MdePkg/Include/Library/DebugLib.h
++++ b/MdePkg/Include/Library/DebugLib.h
+@@ -370,7 +370,10 @@ UnitTestDebugAssert (
+       }                             \
+     } while (FALSE)
+ #else
+-  #define ASSERT(Expression)
++  #define ASSERT(Expression)       \
++    do {                           \
++      (VOID) (Expression);         \
++    } while (FALSE)
+ #endif
+
+ /**
+@@ -392,6 +395,14 @@ UnitTestDebugAssert (
+         _DEBUG (Expression);       \
+       }                            \
+     } while (FALSE)
++#elif defined(__GNUC__) || defined(__clang__)
++  #define DEBUG(Expression)                                \
++    do {                                                   \
++      _Pragma("GCC diagnostic push")                       \
++      _Pragma("GCC diagnostic ignored \"-Wunused-value\"") \
++      (VOID) Expression;                                   \
++      _Pragma("GCC diagnostic pop")                        \
++    } while (FALSE)
+ #else
+   #define DEBUG(Expression)
+ #endif
+@@ -419,7 +430,10 @@ UnitTestDebugAssert (
+       }                                                                                  \
+     } while (FALSE)
+ #else
+-  #define ASSERT_EFI_ERROR(StatusParameter)
++  #define ASSERT_EFI_ERROR(StatusParameter)                                             \
++    do {                                                                                \
++      (VOID) (StatusParameter);                                                         \
++    } while (FALSE)
+ #endif
+
+ /**
+@@ -446,7 +460,10 @@ UnitTestDebugAssert (
+       }                                                                 \
+     } while (FALSE)
+ #else
+-  #define ASSERT_RETURN_ERROR(StatusParameter)
++  #define ASSERT_RETURN_ERROR(StatusParameter)                          \
++    do {                                                                \
++      (VOID) (StatusParameter);                                         \
++    } while (FALSE)
+ #endif
+
+ /**
+--
+2.20.1

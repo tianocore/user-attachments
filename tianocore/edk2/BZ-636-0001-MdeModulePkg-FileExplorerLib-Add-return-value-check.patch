@@ -1,0 +1,55 @@
+From 8b29511f2aed86d685c4fb50bf0f1a66fce3535b Mon Sep 17 00:00:00 2001
+From: Wenyi Xie <xiewenyi2@huawei.com>
+Date: Mon, 11 Jan 2021 19:59:44 +0800
+Subject: [PATCH EDK2 v1 1/1] MdeModulePkg/FileExplorerLib: Add return value check
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3113
+According to FAT specification, the length of file path
+should not larger than 260. When the length exceed 260,
+function FatLocateOFile will return EFI_INVALID_PARAMETER
+and the parameter FileHandle will be NULL. Then on the
+top-level function，an exception happens when the NULL
+pointer is passed and be used.
+So adding return value check after calling
+LibGetFileHandleFromMenu, if return value is not success,
+stop calling LibFindFiles.
+
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+Signed-off-by: Wenyi Xie <xiewenyi2@huawei.com>
+---
+ MdeModulePkg/Library/FileExplorerLib/FileExplorer.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/MdeModulePkg/Library/FileExplorerLib/FileExplorer.c b/MdeModulePkg/Library/FileExplorerLib/FileExplorer.c
+index 13a214b06af9..03630a29bc3b 100644
+--- a/MdeModulePkg/Library/FileExplorerLib/FileExplorer.c
++++ b/MdeModulePkg/Library/FileExplorerLib/FileExplorer.c
+@@ -1408,12 +1408,14 @@ LibUpdateFileExplorer (
+   if (NewFileContext->IsDir) {
+     RemoveEntryList (&NewMenuEntry->Link);
+     LibFreeMenu (gFileExplorerPrivate.FsOptionMenu);
+-    LibGetFileHandleFromMenu (NewMenuEntry, &FileHandle);
+-    Status = LibFindFiles (FileHandle, NewFileContext->FileName, NewFileContext->DeviceHandle);
++    Status = LibGetFileHandleFromMenu (NewMenuEntry, &FileHandle);
+     if (!EFI_ERROR (Status)) {
+-      LibUpdateFileExplorePage ();
+-    } else {
+-      LibFreeMenu (gFileExplorerPrivate.FsOptionMenu);
++      Status = LibFindFiles (FileHandle, NewFileContext->FileName, NewFileContext->DeviceHandle);
++      if (!EFI_ERROR (Status)) {
++        LibUpdateFileExplorePage ();
++      } else {
++        LibFreeMenu (gFileExplorerPrivate.FsOptionMenu);
++      }
+     }
+     LibDestroyMenuEntry (NewMenuEntry);
+   }
+-- 
+2.20.1.windows.1
+

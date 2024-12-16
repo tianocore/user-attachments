@@ -1,0 +1,1336 @@
+From 5c2853218d1e38a93e34e6f52855be3eb6cb1d70 Mon Sep 17 00:00:00 2001
+From: Hao Wu <hao.a.wu@intel.com>
+Date: Tue, 17 Apr 2018 15:37:09 +0800
+Subject: [PATCH] MdePkg/IndustryStandard/Ipmi: Update IPMI header files
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=814
+
+This commit updates the IPMI related header files.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Hao Wu <hao.a.wu@intel.com>
+---
+ MdePkg/Include/IndustryStandard/Ipmi.h                      |  34 +++-
+ MdePkg/Include/IndustryStandard/IpmiFruInformationStorage.h |  66 ++++++++
+ MdePkg/Include/IndustryStandard/IpmiNetFnApp.h              | 269 ++++++++++++++++++++++++++++++-
+ MdePkg/Include/IndustryStandard/IpmiNetFnChassis.h          |  83 +++++++++-
+ MdePkg/Include/IndustryStandard/IpmiNetFnStorage.h          | 272 +++++++++++++++++++++++++++-----
+ MdePkg/Include/IndustryStandard/IpmiNetFnTransport.h        | 122 +++++++++++++-
+ 6 files changed, 788 insertions(+), 58 deletions(-)
+
+diff --git a/MdePkg/Include/IndustryStandard/Ipmi.h b/MdePkg/Include/IndustryStandard/Ipmi.h
+index fd3a1d2a8f..3362191e30 100644
+--- a/MdePkg/Include/IndustryStandard/Ipmi.h
++++ b/MdePkg/Include/IndustryStandard/Ipmi.h
+@@ -1,10 +1,11 @@
+ /** @file
+   IPMI 2.0 definitions from the IPMI Specification Version 2.0, Revision 1.1.
++  IPMI Platform Management FRU Information Storage Definition v1.0 Revision 1.3.
+ 
+   See IPMI specification, Appendix G, Command Assignments
+   and Appendix H, Sub-function Assignments.
+ 
+-  Copyright (c) 1999 - 2015, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 1999 - 2018, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -26,4 +27,35 @@
+ #include <IndustryStandard/IpmiNetFnTransport.h>
+ #include <IndustryStandard/IpmiNetFnGroupExtension.h>
+ 
++#include <IndustryStandard/IpmiFruInformationStorage.h>
++
++//
++// Generic Completion Codes definitions
++//
++#define IPMI_COMP_CODE_NORMAL                           0x00
++#define IPMI_COMP_CODE_NODE_BUSY                        0xC0
++#define IPMI_COMP_CODE_INVALID_COMMAND                  0xC1
++#define IPMI_COMP_CODE_INVALID_FOR_GIVEN_LUN            0xC2
++#define IPMI_COMP_CODE_TIMEOUT                          0xC3
++#define IPMI_COMP_CODE_OUT_OF_SPACE                     0xC4
++#define IPMI_COMP_CODE_RESERVATION_CANCELED_OR_INVALID  0xC5
++#define IPMI_COMP_CODE_REQUEST_DATA_TRUNCATED           0xC6
++#define IPMI_COMP_CODE_INVALID_REQUEST_DATA_LENGTH      0xC7
++#define IPMI_COMP_CODE_REQUEST_EXCEED_LIMIT             0xC8
++#define IPMI_COMP_CODE_OUT_OF_RANGE                     0xC9
++#define IPMI_COMP_CODE_CANNOT_RETURN                    0xCA
++#define IPMI_COMP_CODE_NOT_PRESENT                      0xCB
++#define IPMI_COMP_CODE_INVALID_DATA_FIELD               0xCC
++#define IPMI_COMP_CODE_COMMAND_ILLEGAL                  0xCD
++#define IPMI_COMP_CODE_CMD_RESP_NOT_PROVIDED            0xCE
++#define IPMI_COMP_CODE_FAIL_DUP_REQUEST                 0xCF
++#define IPMI_COMP_CODE_SDR_REP_IN_UPDATE_MODE           0xD0
++#define IPMI_COMP_CODE_DEV_IN_FW_UPDATE_MODE            0xD1
++#define IPMI_COMP_CODE_BMC_INIT_IN_PROGRESS             0xD2
++#define IPMI_COMP_CODE_DEST_UNAVAILABLE                 0xD3
++#define IPMI_COMP_CODE_INSUFFICIENT_PRIVILEGE           0xD4
++#define IPMI_COMP_CODE_UNSUPPORTED_IN_PRESENT_STATE     0xD5
++#define IPMI_COMP_CODE_SUBFUNCTION_DISABLED             0xD6
++#define IPMI_COMP_CODE_UNSPECIFIED                      0xFF
++
+ #endif
+diff --git a/MdePkg/Include/IndustryStandard/IpmiFruInformationStorage.h b/MdePkg/Include/IndustryStandard/IpmiFruInformationStorage.h
+new file mode 100644
+index 0000000000..096f4d34e6
+--- /dev/null
++++ b/MdePkg/Include/IndustryStandard/IpmiFruInformationStorage.h
+@@ -0,0 +1,66 @@
++/** @file
++  IPMI Platform Management FRU Information Storage Definitions
++
++  This file contains the definitions for:
++    Common Header Format (Chapter 8)
++    MultiRecord Header (Section 16.1)
++
++  Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++  @par Revision Reference:
++    - IPMI Platform Management FRU Information Storage Definition v1.0 Revision
++      1.3, Dated March 24, 2015.
++      https://www.intel.com/content/dam/www/public/us/en/documents/specification-updates/ipmi-platform-mgt-fru-info-storage-def-v1-0-rev-1-3-spec-update.pdf
++**/
++
++#ifndef _IPMI_FRU_INFORMATION_STORAGE_H_
++#define _IPMI_FRU_INFORMATION_STORAGE_H_
++
++#pragma pack(1)
++
++//
++//  Structure definition for FRU Common Header
++//
++typedef struct {
++  UINT8    FormatVersionNumber:4;
++  UINT8    Reserved:4;
++  UINT8    InternalUseStartingOffset;
++  UINT8    ChassisInfoStartingOffset;
++  UINT8    BoardAreaStartingOffset;
++  UINT8    ProductInfoStartingOffset;
++  UINT8    MultiRecInfoStartingOffset;
++  UINT8    Pad;
++  UINT8    Checksum;
++} IPMI_FRU_COMMON_HEADER;
++
++//
++//  Structure definition for FRU MultiRecord Header
++//
++typedef struct {
++  UINT8    RecordTypeId;
++  UINT8    RecordFormatVersion:4;
++  UINT8    Reserved:3;
++  UINT8    EndofList:1;
++  UINT8    RecordLength;
++  UINT8    RecordChecksum;
++  UINT8    HeaderChecksum;
++} IPMI_FRU_MULTI_RECORD_HEADER;
++
++//
++//  TBD
++//
++typedef struct {
++  UINT8       RecordCheckSum;
++  UINT8       SubRecordId;
++  EFI_GUID    Uuid;
++} IPMI_SYSTEM_UUID_SUB_RECORD_WITH_CHECKSUM;
++
++#pragma pack()
++#endif
+diff --git a/MdePkg/Include/IndustryStandard/IpmiNetFnApp.h b/MdePkg/Include/IndustryStandard/IpmiNetFnApp.h
+index 31f9e839ea..3b144c4c44 100644
+--- a/MdePkg/Include/IndustryStandard/IpmiNetFnApp.h
++++ b/MdePkg/Include/IndustryStandard/IpmiNetFnApp.h
+@@ -11,7 +11,7 @@
+   See IPMI specification, Appendix G, Command Assignments
+   and Appendix H, Sub-function Assignments.
+ 
+-  Copyright (c) 1999 - 2015, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 1999 - 2018, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -128,6 +128,43 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Set ACPI Power State" command to follow here
+ //
++
++//
++//  Definitions for System Power State
++//
++// Working
++#define IPMI_SYSTEM_POWER_STATE_S0_G0        0x0
++#define IPMI_SYSTEM_POWER_STATE_S1           0x1
++#define IPMI_SYSTEM_POWER_STATE_S2           0x2
++#define IPMI_SYSTEM_POWER_STATE_S3           0x3
++#define IPMI_SYSTEM_POWER_STATE_S4           0x4
++// Soft off
++#define IPMI_SYSTEM_POWER_STATE_S5_G2        0x5
++// Sent when message source cannot differentiate between S4 and S5
++#define IPMI_SYSTEM_POWER_STATE_S4_S5        0x6
++// Mechanical off
++#define IPMI_SYSTEM_POWER_STATE_G3           0x7
++// Sleeping - cannot differentiate between S1-S3
++#define IPMI_SYSTEM_POWER_STATE_SLEEPING     0x8
++// Sleeping - cannot differentiate between S1-S4
++#define IPMI_SYSTEM_POWER_STATE_G1_SLEEPING  0x9
++// S5 entered by override
++#define IPMI_SYSTEM_POWER_STATE_OVERRIDE     0xA
++#define IPMI_SYSTEM_POWER_STATE_LEGACY_ON    0x20
++#define IPMI_SYSTEM_POWER_STATE_LEGACY_OFF   0x21
++#define IPMI_SYSTEM_POWER_STATE_UNKNOWN      0x2A
++#define IPMI_SYSTEM_POWER_STATE_NO_CHANGE    0x7F
++
++//
++//  Definitions for Device Power State
++//
++#define IPMI_DEVICE_POWER_STATE_D0           0x0
++#define IPMI_DEVICE_POWER_STATE_D1           0x1
++#define IPMI_DEVICE_POWER_STATE_D2           0x2
++#define IPMI_DEVICE_POWER_STATE_D3           0x3
++#define IPMI_DEVICE_POWER_STATE_UNKNOWN      0x2A
++#define IPMI_DEVICE_POWER_STATE_NO_CHANGE    0x7F
++
+ typedef struct {
+   UINT8  AcpiSystemPowerState  : 7;
+   UINT8  AcpiSystemStateChange : 1;
+@@ -170,7 +207,25 @@ typedef struct {
+ #define IPMI_APP_RESET_WATCHDOG_TIMER  0x22
+ 
+ //
+-//  Constants and Structure definitions for "Reset WatchDog Timer" command to follow here
++//  Definitions for Set WatchDog Timer command
++//
++#define IPMI_APP_SET_WATCHDOG_TIMER  0x24
++
++//
++//  Constants and Structure definitions for "Set WatchDog Timer" command to follow here
++//
++
++//
++// Definitions for watchdog timer use 
++//
++#define IPMI_WATCHDOG_TIMER_BIOS_FRB2  0x1
++#define IPMI_WATCHDOG_TIMER_BIOS_POST  0x2
++#define IPMI_WATCHDOG_TIMER_OS_LOADER  0x3
++#define IPMI_WATCHDOG_TIMER_SMS        0x4
++#define IPMI_WATCHDOG_TIMER_OEM        0x5
++
++//
++//  Structure definition for timer Use
+ //
+ typedef struct {
+   UINT8 TimerUse : 3;
+@@ -180,16 +235,43 @@ typedef struct {
+ } IPMI_WATCHDOG_TIMER_USE;
+ 
+ //
+-//  Definitions for Set WatchDog Timer command
++//  Definitions for watchdog timeout action
+ //
+-#define IPMI_APP_SET_WATCHDOG_TIMER  0x24
++#define IPMI_WATCHDOG_TIMER_ACTION_NO_ACTION    0x0
++#define IPMI_WATCHDOG_TIMER_ACTION_HARD_RESET   0x1
++#define IPMI_WATCHDOG_TIMER_ACTION_POWER_DONW   0x2
++#define IPMI_WATCHDOG_TIMER_ACTION_POWER_CYCLE  0x3
+ 
+ //
+-//  Constants and Structure definitions for "Set WatchDog Timer" command to follow here
++//  Definitions for watchdog pre-timeout interrupt
++//
++#define IPMI_WATCHDOG_PRE_TIMEOUT_INTERRUPT_NONE       0x0
++#define IPMI_WATCHDOG_PRE_TIMEOUT_INTERRUPT_SMI        0x1
++#define IPMI_WATCHDOG_PRE_TIMEOUT_INTERRUPT_NMI        0x2
++#define IPMI_WATCHDOG_PRE_TIMEOUT_INTERRUPT_MESSAGING  0x3
++
++//
++//  Structure definitions for Timer Actions
+ //
+ typedef struct {
++  UINT8  TimeoutAction : 3;
++  UINT8  Reserved1 : 1;
++  UINT8  PreTimeoutInterrupt : 3;
++  UINT8  Reserved2 : 1;
++} IPMI_WATCHDOG_TIMER_ACTIONS;
++
++//
++//  Bit definitions for Timer use expiration flags
++//
++#define IPMI_WATCHDOG_TIMER_EXPIRATION_FLAG_BIOS_FRB2  BIT1
++#define IPMI_WATCHDOG_TIMER_EXPIRATION_FLAG_BIOS_POST  BIT2
++#define IPMI_WATCHDOG_TIMER_EXPIRATION_FLAG_OS_LOAD    BIT3
++#define IPMI_WATCHDOG_TIMER_EXPIRATION_FLAG_SMS_OS     BIT4
++#define IPMI_WATCHDOG_TIMER_EXPIRATION_FLAG_OEM        BIT5
++
++typedef struct {
+   IPMI_WATCHDOG_TIMER_USE         TimerUse;
+-  UINT8                           TimerActions;
++  IPMI_WATCHDOG_TIMER_ACTIONS     TimerActions;
+   UINT8                           PretimeoutInterval;
+   UINT8                           TimerUseExpirationFlagsClear;
+   UINT16                          InitialCountdownValue;
+@@ -206,7 +288,7 @@ typedef struct {
+ typedef struct {
+   UINT8                           CompletionCode;
+   IPMI_WATCHDOG_TIMER_USE         TimerUse;
+-  UINT8                           TimerActions;
++  IPMI_WATCHDOG_TIMER_ACTIONS     TimerActions;
+   UINT8                           PretimeoutInterval;
+   UINT8                           TimerUseExpirationFlagsClear;
+   UINT16                          InitialCountdownValue;
+@@ -225,6 +307,16 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Set BMC Global Enables " command to follow here
+ //
++typedef struct {
++  UINT8  EnableReceiveMessageQueueInterrupt : 1;
++  UINT8  EnableEventMessageBufferFullInterrupt : 1;
++  UINT8  EnableEventMessageBuffer : 1;
++  UINT8  EnableSystemEventLogging : 1;
++  UINT8  Reserved : 1;
++  UINT8  Oem0Enable : 1;
++  UINT8  Oem1Enable : 1;
++  UINT8  Oem2Enable : 1;
++} IPMI_SET_BMC_GLOBAL_ENABLES_REQUEST;
+ 
+ //
+ //  Definitions for Get BMC Global Enables command
+@@ -234,6 +326,17 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get BMC Global Enables " command to follow here
+ //
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ReceiveMessageQueueInterrupt : 1;
++  UINT8  EventMessageBufferFullInterrupt : 1;
++  UINT8  EventMessageBuffer : 1;
++  UINT8  SystemEventLogging : 1;
++  UINT8  Reserved : 1;
++  UINT8  Oem0Enable : 1;
++  UINT8  Oem1Enable : 1;
++  UINT8  Oem2Enable : 1;
++} IPMI_GET_BMC_GLOBAL_ENABLES_RESPONSE;
+ 
+ //
+ //  Definitions for Clear Message Flags command
+@@ -243,6 +346,16 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Clear Message Flags" command to follow here
+ //
++typedef struct {
++  UINT8  ClearReceiveMessageQueue : 1;
++  UINT8  ClearEventMessageBuffer : 1;
++  UINT8  Reserved0 : 1;
++  UINT8  ClearWatchdogPerTimeoutInterruptFlag : 1;
++  UINT8  Reserved : 1;
++  UINT8  ClearOem0Enable : 1;
++  UINT8  ClearOem1Enable : 1;
++  UINT8  ClearOem2Enable : 1;
++} IPMI_CLEAR_MESSAGE_FLAGS_REQUEST;
+ 
+ //
+ //  Definitions for Get Message Flags command
+@@ -252,6 +365,17 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get Message Flags" command to follow here
+ //
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ReceiveMessageAvailable : 1;
++  UINT8  EventMessageBufferFull : 1;
++  UINT8  Reserved0 : 1;
++  UINT8  WatchdogPerTimeoutInterruptOccurred : 1;
++  UINT8  Reserved : 1;
++  UINT8  Oem0DataAvailable : 1;
++  UINT8  Oem1DataAvailable : 1;
++  UINT8  Oem2DataAvailable : 1;
++} IPMI_GET_MESSAGE_FLAGS_RESPONSE;
+ 
+ //
+ //  Definitions for Enable Message Channel Receive command
+@@ -270,6 +394,12 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get Message" command to follow here
+ //
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ChannelNumber : 4;
++  UINT8  InferredPrivilegeLevel : 4;
++  UINT8  MessageData[0];
++} IPMI_GET_MESSAGE_RESPONSE;
+ 
+ //
+ //  Definitions for Send Message command
+@@ -279,6 +409,19 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Send Message" command to follow here
+ //
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ChannelNumber : 4;
++  UINT8  Authentication : 1;
++  UINT8  Encryption : 1;
++  UINT8  Tracking : 2;
++  UINT8  MessageData[0];
++} IPMI_SEND_MESSAGE_REQUEST;
++
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ResponseData[0];
++} IPMI_SEND_MESSAGE_RESPONSE;
+ 
+ //
+ //  Definitions for Read Event Message Buffer command
+@@ -387,6 +530,21 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get Channel Access" command to follow here
+ //
++
++//
++//  Definitions for channel access memory type in Get Channel Access command request
++//
++#define IPMI_CHANNEL_ACCESS_MEMORY_TYPE_NON_VOLATILE              0x1
++#define IPMI_CHANNEL_ACCESS_MEMORY_TYPE_PRESENT_VOLATILE_SETTING  0x2
++
++//
++//  Definitions for channel access modes in Get Channel Access command response
++//
++#define IPMI_CHANNEL_ACCESS_MODES_DISABLED          0x0
++#define IPMI_CHANNEL_ACCESS_MODES_PRE_BOOT_ONLY     0x1
++#define IPMI_CHANNEL_ACCESS_MODES_ALWAYS_AVAILABLE  0x2
++#define IPMI_CHANNEL_ACCESS_MODES_SHARED            0x3
++
+ typedef struct {
+   UINT8  ChannelNo : 4;
+   UINT8  Reserve1 : 4;
+@@ -413,6 +571,38 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get Channel Info" command to follow here
+ //
++
++//
++//  Definitions for channel media type
++//
++// IPMB (I2C)
++#define IPMI_CHANNEL_MEDIA_TYPE_IPMB              0x1
++// ICMB v1.0
++#define IPMI_CHANNEL_MEDIA_TYPE_ICMB_1_0          0x2
++// ICMB v0.9
++#define IPMI_CHANNEL_MEDIA_TYPE_ICMB_0_9          0x3
++// 802.3 LAN
++#define IPMI_CHANNEL_MEDIA_TYPE_802_3_LAN         0x4
++// Asynch. Serial/Modem (RS-232)
++#define IPMI_CHANNEL_MEDIA_TYPE_RS_232            0x5
++// Other LAN
++#define IPMI_CHANNEL_MEDIA_TYPE_OTHER_LAN         0x6
++// PCI SMBus
++#define IPMI_CHANNEL_MEDIA_TYPE_PCI_SM_BUS        0x7
++// SMBus v1.0/1.1
++#define IPMI_CHANNEL_MEDIA_TYPE_SM_BUS_V1         0x8
++// SMBus v2.0
++#define IPMI_CHANNEL_MEDIA_TYPE_SM_BUS_V2         0x9
++// USB 1.x
++#define IPMI_CHANNEL_MEDIA_TYPE_USB1              0xA
++// USB 2.x
++#define IPMI_CHANNEL_MEDIA_TYPE_USB2              0xB
++// System Interface (KCS, SMIC, or BT)
++#define IPMI_CHANNEL_MEDIA_TYPE_SYSTEM_INTERFACE  0xC
++// OEM
++#define IPMI_CHANNEL_MEDIA_TYPE_OEM_START         0x60
++#define IPMI_CHANNEL_MEDIA_TYPE_OEM_END           0x7F
++
+ typedef struct {
+   UINT8   CompletionCode;
+   UINT8   ChannelNo : 4;
+@@ -453,6 +643,27 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get User Access" command to follow here
+ //
++typedef struct {
++  UINT8   ChannelNo : 4;
++  UINT8   Reserved1 : 4;
++  UINT8   UserId : 6;
++  UINT8   Reserved2 : 2;
++} IPMI_GET_USER_ACCESS_REQUEST;
++
++typedef struct {
++  UINT8   CompletionCode;
++  UINT8   MaxUserId : 6;
++  UINT8   Reserved1 : 2;
++  UINT8   CurrentUserId : 6;
++  UINT8   UserIdEnableStatus : 2;
++  UINT8   FixedUserId : 6;
++  UINT8   Reserved2 : 2;
++  UINT8   UserPrivilegeLimit : 4;
++  UINT8   EnableIpmiMessaging : 1;
++  UINT8   EnableUserLinkAuthetication : 1;
++  UINT8   UserAccessAvailable : 1;
++  UINT8   Reserved3 : 1;
++} IPMI_GET_USER_ACCESS_RESPONSE;
+ 
+ //
+ //  Definitions for Set User Name command
+@@ -462,6 +673,11 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Set User Name" command to follow here
+ //
++typedef struct {
++  UINT8  UserId : 6;
++  UINT8  Reserved : 2;
++  UINT8  UserName[16];
++} IPMI_SET_USER_NAME_REQUEST;
+ 
+ //
+ //  Definitions for Get User Name command
+@@ -471,6 +687,15 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get User Name" command to follow here
+ //
++typedef struct {
++  UINT8  UserId : 6;
++  UINT8  Reserved : 2;
++} IPMI_GET_USER_NAME_REQUEST;
++
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  UserName[16];
++} IPMI_GET_USER_NAME_RESPONSE;
+ 
+ //
+ //  Definitions for Set User Password command
+@@ -482,6 +707,29 @@ typedef struct {
+ //
+ 
+ //
++//  Definitions for Set User password command operation type
++//
++#define IPMI_SET_USER_PASSWORD_OPERATION_TYPE_DISABLE_USER   0x0
++#define IPMI_SET_USER_PASSWORD_OPERATION_TYPE_ENABLE_USER    0x1
++#define IPMI_SET_USER_PASSWORD_OPERATION_TYPE_SET_PASSWORD   0x2
++#define IPMI_SET_USER_PASSWORD_OPERATION_TYPE_TEST_PASSWORD  0x3
++
++//
++//  Definitions for Set user password command password size
++//
++#define IPMI_SET_USER_PASSWORD_PASSWORD_SIZE_16  0x0
++#define IPMI_SET_USER_PASSWORD_PASSWORD_SIZE_20  0x1
++
++typedef struct {
++  UINT8   UserId : 6;
++  UINT8   Reserved1 : 1;
++  UINT8   PasswordSize : 1;
++  UINT8   Operation : 2;
++  UINT8   Reserved2 : 6;
++  UINT8   PasswordData[0];  // 16 or 20 bytes, depending on the 'PasswordSize' field
++} IPMI_SET_USER_PASSWORD_REQUEST;
++
++//
+ //  Below is Definitions for RMCP+ Support and Payload Commands (Chapter 24)
+ //
+ 
+@@ -619,5 +867,12 @@ typedef struct {
+ //  Constants and Structure definitions for "Get System Interface Capabilities" command to follow here
+ //
+ 
++//
++//  Definitions for Get System Interface Capabilities command SSIF transaction support
++//
++#define IPMI_GET_SYSTEM_INTERFACE_CAPABILITIES_SSIF_TRANSACTION_SUPPORT_SINGLE_PARTITION_RW             0x0
++#define IPMI_GET_SYSTEM_INTERFACE_CAPABILITIES_SSIF_TRANSACTION_SUPPORT_MULTI_PARTITION_RW              0x1
++#define IPMI_GET_SYSTEM_INTERFACE_CAPABILITIES_SSIF_TRANSACTION_SUPPORT_MULTI_PARTITION_RW_WITH_MIDDLE  0x2
++
+ #pragma pack()
+ #endif
+diff --git a/MdePkg/Include/IndustryStandard/IpmiNetFnChassis.h b/MdePkg/Include/IndustryStandard/IpmiNetFnChassis.h
+index b549dc4366..b20dfafe96 100644
+--- a/MdePkg/Include/IndustryStandard/IpmiNetFnChassis.h
++++ b/MdePkg/Include/IndustryStandard/IpmiNetFnChassis.h
+@@ -7,7 +7,7 @@
+   See IPMI specification, Appendix G, Command Assignments
+   and Appendix H, Sub-function Assignments.
+ 
+-  Copyright (c) 1999 - 2015, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 1999 - 2018, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -38,6 +38,15 @@
+ //
+ //  Constants and Structure definitions for "Get Chassis Capabilities" command to follow here
+ //
++typedef struct {
++  UINT8   CompletionCode;
++  UINT8   CapabilitiesFlags;
++  UINT8   ChassisFruInfoDeviceAddress;
++  UINT8   ChassisSDRDeviceAddress;
++  UINT8   ChassisSELDeviceAddress;
++  UINT8   ChassisSystemManagementDeviceAddress;
++  UINT8   ChassisBridgeDeviceAddress;
++} IPMI_GET_CHASSIS_CAPABILITIES_RESPONSE;
+ 
+ //
+ //  Definitions for Get Chassis Status command
+@@ -47,6 +56,13 @@
+ //
+ //  Constants and Structure definitions for "Get Chassis Status" command to follow here
+ //
++typedef struct {
++  UINT8   CompletionCode;
++  UINT8   CurrentPowerState;
++  UINT8   LastPowerEvent;
++  UINT8   MiscChassisState;
++  UINT8   FrontPanelButtonCapabilities;
++} IPMI_GET_CHASSIS_STATUS_RESPONSE;
+ 
+ //
+ //  Definitions for Chassis Control command
+@@ -56,6 +72,10 @@
+ //
+ //  Constants and Structure definitions for "Chassis Control" command to follow here
+ //
++typedef struct {
++  UINT8   ChassisControl:4;
++  UINT8   Reserved:4;
++} IPMI_CHASSIS_CONTROL_REQUEST;
+ 
+ //
+ //  Definitions for Chassis Reset command
+@@ -92,6 +112,15 @@
+ //
+ //  Constants and Structure definitions for "Set Power Restore Policy" command to follow here
+ //
++typedef struct {
++  UINT8   PowerRestorePolicy:3;
++  UINT8   Reserved:5;
++} IPMI_SET_POWER_RESTORE_POLICY_REQUEST;
++
++typedef struct {
++  UINT8   CompletionCode;
++  UINT8   PowerRestorePolicySupport;
++} IPMI_SET_POWER_RESTORE_POLICY_RESPONSE;
+ 
+ //
+ //  Definitions for Get System Restart Cause command
+@@ -138,7 +167,7 @@ typedef struct {
+ } IPMI_SET_BOOT_OPTIONS_REQUEST;
+ 
+ //
+-//  Definitions for Get System BOOT options command
++//  Definitions for Get System Boot options command
+ //
+ #define IPMI_CHASSIS_GET_SYSTEM_BOOT_OPTIONS 0x09
+ 
+@@ -172,6 +201,21 @@ typedef struct {
+ } IPMI_BOOT_INITIATOR;
+ 
+ //
++// Definitions for boot option parameter selector
++//
++#define IPMI_BOOT_OPTIONS_PARAMETER_SELECTOR_SET_IN_PROGRESS             0x0
++#define IPMI_BOOT_OPTIONS_PARAMETER_SELECTOR_SERVICE_PARTITION_SELECTOR  0x1
++#define IPMI_BOOT_OPTIONS_PARAMETER_SELECTOR_SERVICE_PARTITION_SCAN      0x2
++#define IPMI_BOOT_OPTIONS_PARAMETER_SELECTOR_BMC_BOOT_FLAG               0x3
++#define IPMI_BOOT_OPTIONS_PARAMETER_BOOT_INFO_ACK                        0x4
++#define IPMI_BOOT_OPTIONS_PARAMETER_BOOT_FLAGS                           0x5
++#define IPMI_BOOT_OPTIONS_PARAMETER_BOOT_INITIATOR_INFO                  0x6
++#define IPMI_BOOT_OPTIONS_PARAMETER_BOOT_INITIATOR_MAILBOX               0x7
++#define IPMI_BOOT_OPTIONS_PARAMETER_BOOT_INITIATOR_MAILBOX               0x7
++#define IPMI_BOOT_OPTIONS_PARAMETER_OEM_BEGIN                            0x60
++#define IPMI_BOOT_OPTIONS_PARAMETER_OEM_END                              0x7F
++
++//
+ // Response Parameters for IPMI Get Boot Options
+ //
+ typedef struct {
+@@ -199,13 +243,37 @@ typedef struct {
+   UINT8   BootInitiatorAcknowledgeData;
+ } IPMI_BOOT_OPTIONS_RESPONSE_PARAMETER_4;
+ 
++//
++//  Definitions for the 'Boot device selector' field of Boot Option Parameters #5
++//
++#define IPMI_BOOT_DEVICE_SELECTOR_NO_OVERRIDE           0x0
++#define IPMI_BOOT_DEVICE_SELECTOR_PXE                   0x1
++#define IPMI_BOOT_DEVICE_SELECTOR_HARDDRIVE             0x2
++#define IPMI_BOOT_DEVICE_SELECTOR_HARDDRIVE_SAFE_MODE   0x3
++#define IPMI_BOOT_DEVICE_SELECTOR_DIAGNOSTIC_PARTITION  0x4
++#define IPMI_BOOT_DEVICE_SELECTOR_CD_DVD                0x5
++#define IPMI_BOOT_DEVICE_SELECTOR_BIOS_SETUP            0x6
++#define IPMI_BOOT_DEVICE_SELECTOR_REMOTE_FLOPPY         0x7
++#define IPMI_BOOT_DEVICE_SELECTOR_REMOTE_CD_DVD         0x8
++#define IPMI_BOOT_DEVICE_SELECTOR_PRIMARY_REMOTE_MEDIA  0x9
++#define IPMI_BOOT_DEVICE_SELECTOR_REMOTE_HARDDRIVE      0xB
++#define IPMI_BOOT_DEVICE_SELECTOR_FLOPPY                0xF
++
+ #define BOOT_OPTION_HANDLED_BY_BIOS 0x01
+ 
++//
++//  Constant definitions for the 'BIOS Mux Control Override' field of Boot Option Parameters #5
++//
++#define BIOS_MUX_CONTROL_OVERRIDE_RECOMMEND_SETTING    0x00
++#define BIOS_MUX_CONTROL_OVERRIDE_FORCE_TO_BMC         0x01
++#define BIOS_MUX_CONTROL_OVERRIDE_FORCE_TO_SYSTEM      0x02
++
+ typedef struct {
+   //
+   // Data 1
+   //
+-  UINT8   Reserved0:6;
++  UINT8   Reserved0:5;
++  UINT8   BiosBootType:1;
+   UINT8   PersistentOptions:1;
+   UINT8   BootFlagValid:1;
+   //
+@@ -217,8 +285,8 @@ typedef struct {
+   UINT8   LockKeyboard:1;
+   UINT8   CmosClear:1;
+   //
+-  //
+   // Data 3
++  //
+   UINT8   ConsoleRedirection:2;
+   UINT8   LockSleep:1;
+   UINT8   UserPasswordBypass:1;
+@@ -228,9 +296,14 @@ typedef struct {
+   //
+   // Data 4
+   //
+-  UINT8   BiosMuxControlOverride:2;
++  UINT8   BiosMuxControlOverride:3;
+   UINT8   BiosSharedModeOverride:1;
+   UINT8   Reserved1:4;
++  //
++  // Data 5
++  //
++  UINT8   DeviceInstanceSelector:5;
++  UINT8   Reserved2:3;
+ } IPMI_BOOT_OPTIONS_RESPONSE_PARAMETER_5;
+ 
+ typedef struct {
+diff --git a/MdePkg/Include/IndustryStandard/IpmiNetFnStorage.h b/MdePkg/Include/IndustryStandard/IpmiNetFnStorage.h
+index 7abcd4a3be..1b1d237374 100644
+--- a/MdePkg/Include/IndustryStandard/IpmiNetFnStorage.h
++++ b/MdePkg/Include/IndustryStandard/IpmiNetFnStorage.h
+@@ -10,7 +10,7 @@
+   See IPMI specification, Appendix G, Command Assignments
+   and Appendix H, Sub-function Assignments.
+ 
+-  Copyright (c) 1999 - 2015, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 1999 - 2018, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -45,14 +45,23 @@
+ //
+ //  Constants and Structure definitions for "Get Fru Inventory Area Info" command to follow here
+ //
++typedef struct {
++  UINT8  DeviceId;
++} IPMI_GET_FRU_INVENTORY_AREA_INFO_REQUEST;
++
++typedef struct {
++  UINT8   CompletionCode;
++  UINT16  InventoryAreaSize;
++  UINT8   AccessType;
++} IPMI_GET_FRU_INVENTORY_AREA_INFO_RESPONSE;
+ 
+ //
+-//  Definitions for Get Fru Data command
++//  Definitions for Read Fru Data command
+ //
+ #define IPMI_STORAGE_READ_FRU_DATA 0x11
+ 
+ //
+-//  Constants and Structure definitions for "Get Fru Data" command to follow here
++//  Constants and Structure definitions for "Read Fru Data" command to follow here
+ //
+ typedef struct {
+   UINT8   FruDeviceId;
+@@ -64,6 +73,18 @@ typedef struct {
+   UINT8                Count;
+ } IPMI_FRU_READ_COMMAND;
+ 
++typedef struct {
++  UINT8   DeviceId;
++  UINT16  InventoryOffset;
++  UINT8   CountToRead;
++} IPMI_READ_FRU_DATA_REQUEST;
++
++typedef struct {
++  UINT8   CompletionCode;
++  UINT8   CountReturned;
++  UINT8   Data[0];
++} IPMI_READ_FRU_DATA_RESPONSE;
++
+ //
+ //  Definitions for Write Fru Data command
+ //
+@@ -77,6 +98,17 @@ typedef struct {
+   UINT8                FruData[16];
+ } IPMI_FRU_WRITE_COMMAND;
+ 
++typedef struct {
++  UINT8   DeviceId;
++  UINT16  InventoryOffset;
++  UINT8   Data[0];
++} IPMI_WRITE_FRU_DATA_REQUEST;
++
++typedef struct {
++  UINT8   CompletionCode;
++  UINT8   CountWritten;
++} IPMI_WRITE_FRU_DATA_RESPONSE;
++
+ //
+ //  Below is Definitions for SDR Repository (Chapter 33)
+ //
+@@ -122,6 +154,10 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Reserve SDR Repository" command to follow here
+ //
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ReservationId[2];  // Reservation ID. LS byte first.
++} IPMI_RESERVE_SDR_REPOSITORY_RESPONSE;
+ 
+ //
+ //  Definitions for Get SDR command
+@@ -253,27 +289,25 @@ typedef struct {
+ } IPMI_SDR_RECORD_STRUCT_11;
+ 
+ typedef struct {
+-  UINT16              NextRecordId;       //1
+-  UINT16              RecordId;           //3
+-  UINT8               Version;            //5
+-  UINT8               RecordType;         //6
+-  UINT8               RecordLength;       //7
+-  UINT8               ManufacturerId[3];  //8
++  UINT16              RecordId;           //1
++  UINT8               Version;            //3
++  UINT8               RecordType;         //4
++  UINT8               RecordLength;       //5
++  UINT8               ManufacturerId[3];  //6
+   UINT8               StringChars[20];
+ } IPMI_SDR_RECORD_STRUCT_C0;
+ 
+ typedef struct {
+-  UINT16              NextRecordId;       //1
+-  UINT16              RecordId;           //3
+-  UINT8               Version;            //5
+-  UINT8               RecordType;         //6
+-  UINT8               RecordLength;       //7
++  UINT16              RecordId;           //1
++  UINT8               Version;            //3
++  UINT8               RecordType;         //4
++  UINT8               RecordLength;       //5
+ } IPMI_SDR_RECORD_STRUCT_HEADER;
+ 
+ typedef union {
+-  IPMI_SDR_RECORD_STRUCT_1  SensorType1;
+-  IPMI_SDR_RECORD_STRUCT_2  SensorType2;
+-  IPMI_SDR_RECORD_STRUCT_11 SensorType11;
++  IPMI_SDR_RECORD_STRUCT_1        SensorType1;
++  IPMI_SDR_RECORD_STRUCT_2        SensorType2;
++  IPMI_SDR_RECORD_STRUCT_11       SensorType11;
+   IPMI_SDR_RECORD_STRUCT_C0       SensorTypeC0;
+   IPMI_SDR_RECORD_STRUCT_HEADER   SensorHeader;
+ } IPMI_SENSOR_RECORD_STRUCT;
+@@ -285,6 +319,12 @@ typedef struct {
+   UINT8       BytesToRead;
+ } IPMI_GET_SDR_REQUEST;
+ 
++typedef struct {
++  UINT8                        CompletionCode;
++  UINT16                       NextRecordId;
++  IPMI_SENSOR_RECORD_STRUCT    RecordData;
++} IPMI_GET_SDR_RESPONSE;
++
+ //
+ //  Definitions for Add SDR command
+ //
+@@ -378,6 +418,12 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get SEL Info" command to follow here
+ //
++#define IPMI_GET_SEL_INFO_OPERATION_SUPPORT_GET_SEL_ALLOCATION_INFO_CMD    BIT0
++#define IPMI_GET_SEL_INFO_OPERATION_SUPPORT_RESERVE_SEL_CMD                BIT1
++#define IPMI_GET_SEL_INFO_OPERATION_SUPPORT_PARTIAL_ADD_SEL_ENTRY_CMD      BIT2
++#define IPMI_GET_SEL_INFO_OPERATION_SUPPORT_DELETE_SEL_CMD                 BIT3
++#define IPMI_GET_SEL_INFO_OPERATION_SUPPORT_OVERFLOW_FLAG                  BIT7
++
+ typedef struct {
+   UINT8   CompletionCode;
+   UINT8   Version;              // Version of SEL
+@@ -405,6 +451,10 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Reserve SEL" command to follow here
+ //
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ReservationId[2];  // Reservation ID. LS byte first.
++} IPMI_RESERVE_SEL_RESPONSE;
+ 
+ //
+ //  Definitions for Get SEL Entry command
+@@ -414,6 +464,38 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get SEL Entry" command to follow here
+ //
++
++//
++//  Below is Definitions for SEL Record Formats (Chapter 32)
++//
++typedef struct {
++  UINT16  RecordId;
++  UINT8   RecordType;
++  UINT32  TimeStamp;
++  UINT16  GeneratorId;
++  UINT8   EvMRevision;
++  UINT8   SensorType;
++  UINT8   SensorNumber;
++  UINT8   EventDirType;
++  UINT8   OEMEvData1;
++  UINT8   OEMEvData2;
++  UINT8   OEMEvData3;
++} IPMI_SEL_EVENT_RECORD_DATA;
++
++typedef struct {
++  UINT16  RecordId;
++  UINT8   RecordType;  // C0h-DFh = OEM system event record
++  UINT32  TimeStamp;
++  UINT8   ManufacturerId[3];
++  UINT8   OEMDefined[6];
++} IPMI_TIMESTAMPED_OEM_SEL_RECORD_DATA;
++
++typedef struct {
++  UINT16  RecordId;
++  UINT8   RecordType;  // E0h-FFh = OEM system event record
++  UINT8   OEMDefined[13];
++} IPMI_NON_TIMESTAMPED_OEM_SEL_RECORD_DATA;
++
+ typedef struct {
+   UINT8 ReserveId[2]; // Reservation ID, LS Byte First
+   UINT8 SelRecID[2];  // Sel Record ID, LS Byte First
+@@ -421,6 +503,12 @@ typedef struct {
+   UINT8 BytesToRead;  // Bytes to be Read, 0xFF for entire record
+ } IPMI_GET_SEL_ENTRY_REQUEST;
+ 
++typedef struct {
++  UINT8                       CompletionCode;
++  UINT16                      NextSelRecordId; // Next SEL Record ID, LS Byte first
++  IPMI_SEL_EVENT_RECORD_DATA  RecordData;
++} IPMI_GET_SEL_ENTRY_RESPONSE;
++
+ //
+ //  Definitions for Add SEL Entry command
+ //
+@@ -429,6 +517,14 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Add SEL Entry" command to follow here
+ //
++typedef struct {
++  IPMI_SEL_EVENT_RECORD_DATA  RecordData;
++} IPMI_ADD_SEL_ENTRY_REQUEST;
++
++typedef struct {
++  UINT8   CompletionCode;
++  UINT16  RecordId;  // Record ID for added record, LS Byte first
++} IPMI_ADD_SEL_ENTRY_RESPONSE;
+ 
+ //
+ //  Definitions for Partial Add SEL Entry command
+@@ -438,6 +534,18 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Partial Add SEL Entry" command to follow here
+ //
++typedef struct {
++  UINT16  ReservationId;
++  UINT16  RecordId;
++  UINT8   OffsetIntoRecord;
++  UINT8   InProgress;
++  UINT8   RecordData[0];
++} IPMI_PARTIAL_ADD_SEL_ENTRY_REQUEST;
++
++typedef struct {
++  UINT8   CompletionCode;
++  UINT16  RecordId;
++} IPMI_PARTIAL_ADD_SEL_ENTRY_RESPONSE;
+ 
+ //
+ //  Definitions for Delete SEL Entry command
+@@ -450,7 +558,15 @@ typedef struct {
+ typedef struct {
+   UINT8 ReserveId[2];       // Reservation ID, LS byte first
+   UINT8 RecordToDelete[2];  // Record to Delete, LS Byte First
+-} IPMI_DELETE_SEL_REQUEST;
++} IPMI_DELETE_SEL_ENTRY_REQUEST;
++
++#define IPMI_DELETE_SEL_ENTRY_RESPONSE_TYPE_UNSUPPORTED     0x80
++#define IPMI_DELETE_SEL_ENTRY_RESPONSE_ERASE_IN_PROGRESS    0x81
++
++typedef struct {
++  UINT8   CompletionCode;
++  UINT16  RecordId;  // Record ID added. LS byte first
++} IPMI_DELETE_SEL_ENTRY_RESPONSE;
+ 
+ //
+ //  Definitions for Clear SEL command
+@@ -460,6 +576,12 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Clear SEL" command to follow here
+ //
++#define IPMI_CLEAR_SEL_REQUEST_C_CHAR_ASCII        0x43
++#define IPMI_CLEAR_SEL_REQUEST_L_CHAR_ASCII        0x4C
++#define IPMI_CLEAR_SEL_REQUEST_R_CHAR_ASCII        0x52
++#define IPMI_CLEAR_SEL_REQUEST_INITIALIZE_ERASE    0xAA
++#define IPMI_CLEAR_SEL_REQUEST_GET_ERASE_STATUS    0x00
++
+ typedef struct {
+   UINT8 Reserve[2]; // Reserve ID, LSB first
+   UINT8 AscC;       // Ascii for 'C' (0x43)
+@@ -468,6 +590,14 @@ typedef struct {
+   UINT8 Erase;      // 0xAA, Initiate Erase, 0x00 Get Erase Status
+ } IPMI_CLEAR_SEL_REQUEST;
+ 
++#define IPMI_CLEAR_SEL_RESPONSE_ERASURE_IN_PROGRESS    0x00
++#define IPMI_CLEAR_SEL_RESPONSE_ERASURE_COMPLETED      0x01
++
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ErasureProgress;
++} IPMI_CLEAR_SEL_RESPONSE;
++
+ //
+ //  Definitions for Get SEL Time command
+ //
+@@ -476,6 +606,10 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get SEL Time" command to follow here
+ //
++typedef struct {
++  UINT8   CompletionCode;
++  UINT32  Timestamp;  // Present Timestamp clock reading. LS byte first.
++} IPMI_GET_SEL_TIME_RESPONSE;
+ 
+ //
+ //  Definitions for Set SEL Time command
+@@ -485,6 +619,9 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Set SEL Time" command to follow here
+ //
++typedef struct {
++  UINT32  Timestamp;
++} IPMI_SET_SEL_TIME_REQUEST;
+ 
+ //
+ //  Definitions for Get Auxillary Log Status command
+@@ -504,39 +641,88 @@ typedef struct {
+ //  Constants and Structure definitions for "Set Auxillary Log Status" command to follow here
+ //
+ 
+-#define IPMI_COMPLETE_SEL_RECORD 0xFF
++//
++//  Definitions for Get SEL Time UTC Offset command
++//
++#define IPMI_STORAGE_GET_SEL_TIME_UTC_OFFSET   0x5C
+ 
+ //
+-//  Below is Definitions for SEL Record Formats (Chapter 32)
++//  Constants and Structure definitions for "Get SEL Time UTC Offset" command to follow here
+ //
+ typedef struct {
+-  UINT16  RecordId;
+-  UINT8   RecordType;
+-  UINT32  TimeStamp;
+-  UINT16  GeneratorId;
+-  UINT8   EvMRevision;
+-  UINT8   SensorType;
+-  UINT8   SensorNumber;
+-  UINT8   EventDirType;
+-  UINT8   OEMEvData1;
+-  UINT8   OEMEvData2;
+-  UINT8   OEMEvData3;
+-} IPMI_SEL_EVENT_RECORD_DATA;
++  UINT8  CompletionCode;
++  //
++  // 16-bit, 2s-complement signed integer for the offset in minutes from UTC to SEL Time.
++  // LS-byte first. (ranges from -1440 to 1440)
++  //
++  INT16  UtcOffset;
++} IPMI_GET_SEL_TIME_UTC_OFFSET_RESPONSE;
+ 
+-#define IPMI_SEL_SYSTEM_RECORD                     0x02
++//
++//  Definitions for Set SEL Time UTC Offset command
++//
++#define IPMI_STORAGE_SET_SEL_TIME_UTC_OFFSET   0x5D
+ 
+-#define IPMI_EVM_REVISION                          0x04
+-#define IPMI_BIOS_ID                               0x18
+-#define IPMI_FORMAT_REV                            0x00
+-#define IPMI_FORMAT_REV1                           0x01
+-#define IPMI_SOFTWARE_ID                           0x01
+-#define IPMI_PLATFORM_VAL_ID                       0x01
+-#define IPMI_GENERATOR_ID(i,f)                     ((i << 1) | (f << 1) | IPMI_SOFTWARE_ID)
++//
++//  Constants and Structure definitions for "Set SEL Time UTC Offset" command to follow here
++//
+ 
+-#define IPMI_SENSOR_TYPE_EVENT_CODE_DISCRETE       0x6F
++#define IPMI_COMPLETE_SEL_RECORD 0xFF
+ 
+-#define IPMI_OEM_SPECIFIC_DATA                     0x02
+-#define IPMI_SENSOR_SPECIFIC_DATA                  0x03
++#define IPMI_SEL_SYSTEM_RECORD                          0x02
++#define IPMI_SEL_OEM_TIME_STAMP_RECORD_START            0xC0
++#define IPMI_SEL_OEM_TIME_STAMP_RECORD_END              0xDF
++#define IPMI_SEL_OEM_NO_TIME_STAMP_RECORD_START         0xE0
++#define IPMI_SEL_OEM_NO_TIME_STAMP_RECORD_END           0xFF
++
++#define IPMI_SEL_EVENT_DIR(EventDirType)                (EventDirType >> 7)
++#define IPMI_SEL_EVENT_DIR_ASSERTION_EVENT              0x00
++#define IPMI_SEL_EVENT_DIR_DEASSERTION_EVENT            0x01
++
++#define IPMI_SEL_EVENT_TYPE(EventDirType)               (EventDirType & 0x7F)
++//
++// Event/Reading Type Code Ranges (Chapter 42)
++//
++#define IPMI_SEL_EVENT_TYPE_UNSPECIFIED                 0x00
++#define IPMI_SEL_EVENT_TYPE_THRESHOLD                   0x01
++#define IPMI_SEL_EVENT_TYPE_GENERIC_START               0x02
++#define IPMI_SEL_EVENT_TYPE_GENERIC_END                 0x0C
++#define IPMI_SEL_EVENT_TYPE_SENSOR_SPECIFIC             0x6F
++#define IPMI_SEL_EVENT_TYPE_OEM_START                   0x70
++#define IPMI_SEL_EVENT_TYPE_OEM_END                     0x7F
++
++#define SOFTWARE_ID_FROM_GENERATOR_ID(GeneratorId)      ((GeneratorId & 0xFF) >> 1)
++//
++// System Software IDs definitions (Section 5.5)
++//
++#define IPMI_SWID_BIOS_RANGE_START                      0x00
++#define IPMI_SWID_BIOS_RANGE_END                        0x0F
++#define IPMI_SWID_SMI_HANDLER_RANGE_START               0x10
++#define IPMI_SWID_SMI_HANDLER_RANGE_END                 0x1F
++#define IPMI_SWID_SMS_RANGE_START                       0x20
++#define IPMI_SWID_SMS_RANGE_END                         0x2F
++#define IPMI_SWID_OEM_RANGE_START                       0x30
++#define IPMI_SWID_OEM_RANGE_END                         0x3F
++#define IPMI_SWID_REMOTE_CONSOLE_RANGE_START            0x40
++#define IPMI_SWID_REMOTE_CONSOLE_RANGE_END              0x46
++#define IPMI_SWID_TERMINAL_REMOTE_CONSOLE_ID            0x47
++
++#define SLAVE_ADDRESS_FROM_GENERATOR_ID(GeneratorId)    ((GeneratorId & 0xFF) >> 1)
++#define LUN_FROM_GENERATOR_ID(GeneratorId)              ((GeneratorId >> 8) & 0x03)
++#define CHANNEL_NUMBER_FROM_GENERATOR_ID(GeneratorId)   ((GeneratorId >> 12) & 0x0F)
++
++#define IPMI_EVM_REVISION                               0x04
++#define IPMI_BIOS_ID                                    0x18
++#define IPMI_FORMAT_REV                                 0x00
++#define IPMI_FORMAT_REV1                                0x01
++#define IPMI_SOFTWARE_ID                                0x01
++#define IPMI_PLATFORM_VAL_ID                            0x01
++#define IPMI_GENERATOR_ID(i,f)                          ((i << 1) | (f << 1) | IPMI_SOFTWARE_ID)
++
++#define IPMI_SENSOR_TYPE_EVENT_CODE_DISCRETE            0x6F
++
++#define IPMI_OEM_SPECIFIC_DATA                          0x02
++#define IPMI_SENSOR_SPECIFIC_DATA                       0x03
+ 
+ #pragma pack()
+ #endif
+diff --git a/MdePkg/Include/IndustryStandard/IpmiNetFnTransport.h b/MdePkg/Include/IndustryStandard/IpmiNetFnTransport.h
+index 1e9bbe2755..28ede2f63a 100644
+--- a/MdePkg/Include/IndustryStandard/IpmiNetFnTransport.h
++++ b/MdePkg/Include/IndustryStandard/IpmiNetFnTransport.h
+@@ -10,7 +10,7 @@
+   See IPMI specification, Appendix G, Command Assignments
+   and Appendix H, Sub-function Assignments.
+ 
+-  Copyright (c) 1999 - 2015, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 1999 - 2018, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -65,7 +65,22 @@ typedef enum {
+   IpmiLanCommunityString,
+   IpmiLanReserved3,
+   IpmiLanDestinationType,
+-  IpmiLanDestinationAddress
++  IpmiLanDestinationAddress,
++  IpmiIpv4OrIpv6Support = 0x32,
++  IpmiIpv4OrIpv6AddressEnable,
++  IpmiIpv6HdrStatTrafficClass,
++  IpmiIpv6HdrStatHopLimit,
++  IpmiIpv6HdrFlowLabel,
++  IpmiIpv6Status,
++  IpmiIpv6StaticAddress,
++  IpmiIpv6DhcpStaticDuidLen,
++  IpmiIpv6DhcpStaticDuid,
++  IpmiIpv6DhcpAddress,
++  IpmiIpv6DhcpDynamicDuidLen,
++  IpmiIpv6DhcpDynamicDuid,
++  IpmiIpv6RouterConfig = 0x40,
++  IpmiIpv6StaticRouter1IpAddr,
++  IpmiIpv6DynamicRouterIpAddr = 0x4a
+ } IPMI_LAN_OPTION_TYPE;
+ 
+ //
+@@ -183,6 +198,32 @@ typedef union {
+   IPMI_LAN_DEST_ADDRESS              IpmiLanDestAddress;
+ } IPMI_LAN_OPTIONS;
+ 
++typedef struct {
++  UINT8  SetSelector;
++  UINT8  AddressSourceType : 4;
++  UINT8  Reserved : 3;
++  UINT8  EnableStatus : 1;
++  UINT8  Ipv6Address[16];
++  UINT8  AddressPrefixLen;
++  UINT8  AddressStatus;
++} IPMI_LAN_IPV6_STATIC_ADDRESS;
++
++//
++//  Set in progress parameter
++//
++typedef struct {
++  UINT8  SetInProgress:2;
++  UINT8  Reserved:6;
++} IPMI_LAN_SET_IN_PROGRESS;
++
++
++typedef struct {
++  UINT8  ChannelNo : 4;
++  UINT8  Reserved : 4;
++  UINT8  ParameterSelector;
++  UINT8  ParameterData[0];
++} IPMI_SET_LAN_CONFIGURATION_PARAMETERS_COMMAND_REQUEST;
++
+ //
+ //  Definitions for Get Lan Configuration Parameters command
+ //
+@@ -191,6 +232,20 @@ typedef union {
+ //
+ //  Constants and Structure definitions for "Get Lan Configuration Parameters" command to follow here
+ //
++typedef struct {
++  UINT8  ChannelNo : 4;
++  UINT8  Reserved : 3;
++  UINT8  GetParameter : 1;
++  UINT8  ParameterSelector;
++  UINT8  SetSelector;
++  UINT8  BlockSelector;
++} IPMI_GET_LAN_CONFIGURATION_PARAMETERS_REQUEST;
++
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ParameterRevision;
++  UINT8  ParameterData[0];
++} IPMI_GET_LAN_CONFIGURATION_PARAMETERS_RESPONSE;
+ 
+ //
+ //  Definitions for Suspend BMC ARPs command
+@@ -434,6 +489,26 @@ typedef union {
+ //
+ //  Constants and Structure definitions for "Set Serial/Modem Mux" command to follow here
+ //
++
++//
++// Set Serial/Modem Mux command request return status
++//
++#define IPMI_MUX_SETTING_REQUEST_REJECTED  0x00
++#define IPMI_MUX_SETTING_REQUEST_ACCEPTED  0x01
++
++//
++//  Definitions for serial multiplex settings
++//
++#define IPMI_MUX_SETTING_GET_MUX_SETTING              0x0
++#define IPMI_MUX_SETTING_REQUEST_MUX_TO_SYSTEM        0x1
++#define IPMI_MUX_SETTING_REQUEST_MUX_TO_BMC           0x2
++#define IPMI_MUX_SETTING_FORCE_MUX_TO_SYSTEM          0x3
++#define IPMI_MUX_SETTING_FORCE_MUX_TO_BMC             0x4
++#define IPMI_MUX_SETTING_BLOCK_REQUEST_MUX_TO_SYSTEM  0x5
++#define IPMI_MUX_SETTING_ALLOW_REQUEST_MUX_TO_SYSTEM  0x6
++#define IPMI_MUX_SETTING_BLOCK_REQUEST_MUX_TO_BMC     0x7
++#define IPMI_MUX_SETTING_ALLOW_REQUEST_MUX_TO_BMC     0x8
++
+ typedef struct {
+   UINT8 ChannelNo : 4;
+   UINT8 Reserved1 : 4;
+@@ -442,6 +517,7 @@ typedef struct {
+ } IPMI_SET_SERIAL_MODEM_MUX_COMMAND_REQUEST;
+ 
+ typedef struct {
++  UINT8 CompletionCode;
+   UINT8 MuxSetToBmc : 1;
+   UINT8 CommandStatus : 1;
+   UINT8 MessagingSessionActive : 1;
+@@ -544,6 +620,13 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "SOL activating" command to follow here
+ //
++typedef struct {
++  UINT8  SessionState : 4;
++  UINT8  Reserved : 4;
++  UINT8  PayloadInstance;
++  UINT8  FormatVersionMajor; // 1
++  UINT8  FormatVersionMinor; // 0
++} IPMI_SOL_ACTIVATING_REQUEST;
+ 
+ //
+ //  Definitions for Set SOL Configuration Parameters command
+@@ -555,6 +638,26 @@ typedef struct {
+ //
+ 
+ //
++// SOL Configuration Parameters selector
++//
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SET_IN_PROGRESS       0
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SOL_ENABLE            1
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SOL_AUTHENTICATION    2
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SOL_CHARACTER_PARAM   3
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SOL_RETRY             4
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SOL_NV_BIT_RATE       5
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SOL_VOLATILE_BIT_RATE 6
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SOL_PAYLOAD_CHANNEL   7
++#define IPMI_SOL_CONFIGURATION_PARAMETER_SOL_PAYLOAD_PORT      8
++
++typedef struct {
++  UINT8  ChannelNumber : 4;
++  UINT8  Reserved : 4;
++  UINT8  ParameterSelector;
++  UINT8  ParameterData[0];
++} IPMI_SET_SOL_CONFIGURATION_PARAMETERS_REQUEST;
++
++//
+ //  Definitions for Get SOL Configuration Parameters command
+ //
+ #define IPMI_TRANSPORT_GET_SOL_CONFIG_PARAM  0x22
+@@ -562,5 +665,20 @@ typedef struct {
+ //
+ //  Constants and Structure definitions for "Get SOL Configuration Parameters" command to follow here
+ //
++typedef struct {
++  UINT8  ChannelNumber : 4;
++  UINT8  Reserved : 3;
++  UINT8  GetParameter : 1;
++  UINT8  ParameterSelector;
++  UINT8  SetSelector;
++  UINT8  BlockSelector;
++} IPMI_GET_SOL_CONFIGURATION_PARAMETERS_REQUEST;
++
++typedef struct {
++  UINT8  CompletionCode;
++  UINT8  ParameterRevision;
++  UINT8  ParameterData[0];
++} IPMI_GET_SOL_CONFIGURATION_PARAMETERS_RESPONSE;
++
+ #pragma pack()
+ #endif
+-- 
+2.12.0.windows.1
+

@@ -1,0 +1,98 @@
+Subject: [edk2] [PATCH] MdeModulePkg/Bus: Enable using device address when programming BARs
+
+Some SoCs require to use device address when BARs are programmed:
+https://bugzilla.tianocore.org/show_bug.cgi?id=948
+
+Cc: Ruiyu Ni <ruiyu.ni@intel.com>
+Cc: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Roman Bacik <roman.bacik@broadcom.com>
+---
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf        | 1 +
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c | 8 +++++---
+ MdeModulePkg/MdeModulePkg.dec                       | 3 +++
+ MdeModulePkg/MdeModulePkg.dsc                       | 1 +
+ 4 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf b/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+index 97608bfcf245..1368e5068574 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+@@ -110,6 +110,7 @@
+   gEfiMdeModulePkgTokenSpaceGuid.PcdAriSupport                  ## CONSUMES
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMrIovSupport                ## CONSUMES
+   gEfiMdeModulePkgTokenSpaceGuid.PcdPciDisableBusEnumeration    ## SOMETIMES_CONSUMES
++  gEfiMdeModulePkgTokenSpaceGuid.PcdUseDeviceAddress        ## CONSUMES
+ 
+ [UserExtensions.TianoCore."ExtraFiles"]
+   PciBusDxeExtra.uni
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
+index 2f713fcee95e..a23bd1e258ef 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
+@@ -1269,6 +1269,7 @@ ProgramBar (
+   EFI_PCI_IO_PROTOCOL *PciIo;
+   UINT64              Address;
+   UINT32              Address32;
++  BOOLEAN             UseDeviceAddress;
+ 
+   ASSERT (Node->Bar < PCI_MAX_BAR);
+ 
+@@ -1282,8 +1283,9 @@ ProgramBar (
+ 
+   Address = 0;
+   PciIo   = &(Node->PciDev->PciIo);
++  UseDeviceAddress = FeaturePcdGet (PcdUseDeviceAddress);
+ 
+-  Address = Base + Node->Offset;
++  Address = UseDeviceAddress? Node->Offset: Base + Node->Offset;
+ 
+   //
+   // Indicate pci bus driver has allocated
+@@ -1308,7 +1310,7 @@ ProgramBar (
+                  &Address
+                  );
+ 
+-    Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    Node->PciDev->PciBar[Node->Bar].BaseAddress = UseDeviceAddress? Base + Address: Address;
+ 
+     break;
+ 
+@@ -1335,7 +1337,7 @@ ProgramBar (
+                  &Address32
+                  );
+ 
+-    Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    Node->PciDev->PciBar[Node->Bar].BaseAddress = UseDeviceAddress? Base + Address: Address;
+ 
+     break;
+ 
+diff --git a/MdeModulePkg/MdeModulePkg.dec b/MdeModulePkg/MdeModulePkg.dec
+index cc397185f7b9..58425ee0d57f 100644
+--- a/MdeModulePkg/MdeModulePkg.dec
++++ b/MdeModulePkg/MdeModulePkg.dec
+@@ -1005,6 +1005,9 @@
+   # @Prompt Enable UEFI Stack Guard.
+   gEfiMdeModulePkgTokenSpaceGuid.PcdCpuStackGuard|FALSE|BOOLEAN|0x30001055
+ 
++  ## Indicates if the device address should be used for BAR programming
++  gEfiMdeModulePkgTokenSpaceGuid.PcdUseDeviceAddress|FALSE|BOOLEAN|0x30001056
++
+ [PcdsFixedAtBuild, PcdsPatchableInModule]
+   ## Dynamic type PCD can be registered callback function for Pcd setting action.
+   #  PcdMaxPeiPcdCallBackNumberPerPcdEntry indicates the maximum number of callback function
+diff --git a/MdeModulePkg/MdeModulePkg.dsc b/MdeModulePkg/MdeModulePkg.dsc
+index ec24a50c7d0a..39b397cb13d9 100644
+--- a/MdeModulePkg/MdeModulePkg.dsc
++++ b/MdeModulePkg/MdeModulePkg.dsc
+@@ -200,6 +200,7 @@
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxSizeNonPopulateCapsule|0x0
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxSizePopulateCapsule|0x0
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxPeiPerformanceLogEntries|28
++  gEfiMdeModulePkgTokenSpaceGuid.PcdUseDeviceAddress|FALSE
+ 
+ [PcdsFixedAtBuild.IPF]
+   gEfiMdePkgTokenSpaceGuid.PcdIoBlockBaseAddressForIpf|0x0ffffc000000
+-- 
+1.9.1
+

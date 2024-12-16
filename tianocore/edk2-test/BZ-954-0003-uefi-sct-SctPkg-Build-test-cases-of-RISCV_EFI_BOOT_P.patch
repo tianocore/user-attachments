@@ -1,0 +1,40 @@
+From 09156a64c938a318145d7b4e20d03bf1c5e4aea2 Mon Sep 17 00:00:00 2001
+From: Sunil V L <sunilvl@ventanamicro.com>
+Date: Thu, 3 Mar 2022 19:11:05 +0530
+Subject: [RFC V1 3/5] uefi-sct/SctPkg: Build test cases of
+ RISCV_EFI_BOOT_PROTOCOL
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3837
+
+This patch enables building test cases of RISCV_EFI_BOOT_PROTOCOL
+as part of SCT build.
+
+Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+---
+ uefi-sct/SctPkg/UEFI/UEFI.dec     | 1 +
+ uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/uefi-sct/SctPkg/UEFI/UEFI.dec b/uefi-sct/SctPkg/UEFI/UEFI.dec
+index e8f04e96..8f9578a1 100644
+--- a/uefi-sct/SctPkg/UEFI/UEFI.dec
++++ b/uefi-sct/SctPkg/UEFI/UEFI.dec
+@@ -193,3 +193,4 @@
+   gBlackBoxEfiPartitionInfoProtocolGuid = { 0x8cf2f62c, 0xbc9b, 0x4821, {0x80, 0x8d, 0xec, 0x9e, 0xc4, 0x21, 0xa1, 0xa0 }}
+   gBlackBoxEfiUFSDeviceConfigProtocolGuid = { 0xb81bfab0, 0xeb3, 0x4cf9, { 0x84, 0x65, 0x7f, 0xa9, 0x86, 0x36, 0x16, 0x64 }}
+   gBlackBoxEfiResetNotificationProtocolGuid = { 0x9da34ae0, 0xeaf9, 0x4bbf, { 0x8e, 0xc3, 0xfd, 0x60, 0x22, 0x6c, 0x44, 0xbe }}
++  gBlackBoxEfiRiscVBootProtocolGuid = { 0xccd15fec, 0x6f73, 0x4eec, { 0x83, 0x95, 0x3e, 0x69, 0xe4, 0xb9, 0x40, 0xbf }}
+diff --git a/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc b/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
+index 5b3e5307..c0c273c2 100644
+--- a/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
++++ b/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
+@@ -498,3 +498,6 @@ SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTest
+ 
+ [Components.IA32, Components.X64]
+ SctPkg/TestCase/UEFI/EFI/Generic/ExeMode/BlackBoxTest/ExeModeBBTest.inf
++
++[Components.RISCV64]
++SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTest.inf
+-- 
+2.25.1
+

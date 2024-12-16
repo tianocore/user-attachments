@@ -1,0 +1,58 @@
+From e4bc00b055ef782f3e2b271da2d11abfc594e1c7 Mon Sep 17 00:00:00 2001
+From: Ruiyu Ni <ruiyu.ni@intel.com>
+Date: Thu, 8 Mar 2018 14:34:15 +0800
+Subject: [PATCH] MdeModulePkg/HiiImage: Fix stack overflow when corrupted BMP
+ is parsed
+
+For 4bit BMP, there are only 2^4 = 16 colors in the palette.
+But when a corrupted BMP contains more than 16 colors in the palette,
+today's implementation wrongly copies all colors to the local
+PaletteValue[16] array which causes stack overflow.
+
+The similar issue also exists in the logic to handle 8bit BMP.
+
+The patch fixes the issue by only copies the first 16 or 256 colors
+in the palette depending on the BMP type.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Ruiyu Ni <ruiyu.ni@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+---
+ MdeModulePkg/Universal/HiiDatabaseDxe/Image.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/Image.c b/MdeModulePkg/Universal/HiiDatabaseDxe/Image.c
+index 431a5b8454..6dd1d650dd 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/Image.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/Image.c
+@@ -2,7 +2,7 @@
+ Implementation for EFI_HII_IMAGE_PROTOCOL.
+ 
+ 
+-Copyright (c) 2007 - 2017, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2007 - 2018, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+ which accompanies this distribution.  The full text of the license may be found at
+@@ -369,7 +369,7 @@ Output4bitPixel (
+   PaletteNum = (UINT16)(Palette->PaletteSize / sizeof (EFI_HII_RGB_PIXEL));
+ 
+   ZeroMem (PaletteValue, sizeof (PaletteValue));
+-  CopyRgbToGopPixel (PaletteValue, Palette->PaletteValue, PaletteNum);
++  CopyRgbToGopPixel (PaletteValue, Palette->PaletteValue, MIN (PaletteNum, ARRAY_SIZE (PaletteValue)));
+   FreePool (Palette);
+ 
+   //
+@@ -446,7 +446,7 @@ Output8bitPixel (
+   CopyMem (Palette, PaletteInfo, PaletteSize);
+   PaletteNum = (UINT16)(Palette->PaletteSize / sizeof (EFI_HII_RGB_PIXEL));
+   ZeroMem (PaletteValue, sizeof (PaletteValue));
+-  CopyRgbToGopPixel (PaletteValue, Palette->PaletteValue, PaletteNum);
++  CopyRgbToGopPixel (PaletteValue, Palette->PaletteValue, MIN (PaletteNum, ARRAY_SIZE (PaletteValue)));
+   FreePool (Palette);
+ 
+   //
+-- 
+2.16.1.windows.1
+

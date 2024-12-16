@@ -1,0 +1,71 @@
+From 7f0d394e774b5fa767ff98818adbf4929b746a5d Mon Sep 17 00:00:00 2001
+From: Ryan Afranji <afranji@google.com>
+Date: Wed, 23 Nov 2022 22:18:08 +0000
+Subject: [PATCH] OvmfPkg: Fix Instruction Pointer Incrementation by #VE MMIO
+ Handler
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This patch removes an errant instruction pointer increment. This led to
+incorrect functionality and opened the door for the instruction pointer
+to be exploited.
+
+For context, TD disallowed instructions executed by a TD are handled in
+various ways by the #VE handler such as making a corresponding TDCALL or
+inserting a NOP. After handling this instruction, the guest’s
+instruction pointer needs to be incremented to the start of the next
+instruction so that it can resume execution. The #VE handler is
+responsible for incrementing the guest’s instruction pointer.0x2028
+This #VE MMIO handler parses through each byte of the instruction to
+handle the MMIO call and determine the amount the guest’s instruction
+pointer should be incremented. According to the Intel SDM Vol. 2A Figure
+2-1, instruction encodings follow the order of Instruction Prefixes
+(optional), REX prefixes (optional), Opcode, and then other fields. This
+handler begins with a loop to parse the first portion of the instruction
+(Instruction and REX prefixes). This loop breaks once the current byte
+being parsed is no longer a prefix; therefore, this byte should be the
+beginning of the opcode according to the Intel SDM. The problem occurs
+here because the instruction pointer is incremented immediately after
+parsing the prefixes. This skips parsing the first byte of the opcode.
+This causes incorrect parsing functionality because the code is
+expecting to the first byte of the opcode but uses the value in the byte
+following it. This results in the MMIO instruction being handled
+incorrectly and the guest instruction pointer pointing to the wrong byte
+once the guest resumes execution. The guest’s instruction pointer
+pointing to the wrong byte is exploitable so this patch solves this
+vulnerability.
+
+The comment was deleted because it is misleading. The instruction
+pointer at this part of the code is pointing to the first byte of the
+opcode. The instruction may have just one additional byte to increment
+to (and also parse). It does have at least two more bytes need to parse
+(the first byte of the opcode and the aforementioned byte) but “We need
+to have at least 2 more bytes for this instruction” seems to imply the
+instruction pointer should be incremented at least two more times.
+
+Signed-off-by: Ryan Afranji <afranji@google.com>
+---
+ OvmfPkg/Library/CcExitLib/CcExitVeHandler.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/OvmfPkg/Library/CcExitLib/CcExitVeHandler.c b/OvmfPkg/Library/CcExitLib/CcExitVeHandler.c
+index 081af7e12a..c35f65a649 100644
+--- a/OvmfPkg/Library/CcExitLib/CcExitVeHandler.c
++++ b/OvmfPkg/Library/CcExitLib/CcExitVeHandler.c
+@@ -354,12 +354,8 @@ MmioExit (
+     }
+   } while (TRUE);
+ 
+-  //
+-  // We need to have at least 2 more bytes for this instruction
+-  //
+   TDX_DECODER_BUG_ON (((UINT64)Rip - Regs->Rip) > 13);
+ 
+-  OpCode = *Rip++;
+   //
+   // Two-byte opecode, get next byte
+   //
+-- 
+2.38.1.584.g0f3c55d4c2-goog
+

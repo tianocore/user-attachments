@@ -1,0 +1,52 @@
+From 633872f263ad0a9af86487a23ae25f93027a5360 Mon Sep 17 00:00:00 2001
+From: Phillip Tennen <phillip@axleos.com>
+Date: Fri, 5 Apr 2024 05:59:16 -0700
+Subject: [PATCH v2 1/1] OvmfPkg: OVMF supports USB mouses
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4747
+
+UsbMouseDxe was missing from the OVMF build description, so=20
+the Simple Pointer Protocol wasn't usable from within QEMU.
+
+Here's an example of someone getting tripped up by this:
+https://forum.osdev.org/viewtopic.php?f=1&t=31572.
+
+Signed-off-by: Phillip Tennen <phillip@axleos.com>
+Reviewed-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+v2:
+	fix formatting problems leading to the patch not being applicable
+	move both insertions below UsbKbDxe
+	update commit message
+---
+ OvmfPkg/OvmfPkgX64.dsc | 1 +
+ OvmfPkg/OvmfPkgX64.fdf | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/OvmfPkg/OvmfPkgX64.dsc b/OvmfPkg/OvmfPkgX64.dsc
+index 56c920168d25..b775db6e0919 100644
+--- a/OvmfPkg/OvmfPkgX64.dsc
++++ b/OvmfPkg/OvmfPkgX64.dsc
+@@ -952,6 +952,7 @@ [Components]
+   MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf
+   MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
+   MdeModulePkg/Bus/Usb/UsbKbDxe/UsbKbDxe.inf
++  MdeModulePkg/Bus/Usb/UsbMouseDxe/UsbMouseDxe.inf
+   MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
+ 
+ !include OvmfPkg/Include/Dsc/ShellComponents.dsc.inc
+diff --git a/OvmfPkg/OvmfPkgX64.fdf b/OvmfPkg/OvmfPkgX64.fdf
+index eb3fb90cb8b6..bfe201a352d0 100644
+--- a/OvmfPkg/OvmfPkgX64.fdf
++++ b/OvmfPkg/OvmfPkgX64.fdf
+@@ -342,6 +342,7 @@ [FV.DXEFV]
+ INF  MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf
+ INF  MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
+ INF  MdeModulePkg/Bus/Usb/UsbKbDxe/UsbKbDxe.inf
++INF  MdeModulePkg/Bus/Usb/UsbMouseDxe/UsbMouseDxe.inf
+ INF  MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
+ 
+ INF  OvmfPkg/QemuVideoDxe/QemuVideoDxe.inf
+-- 
+2.43.0
+

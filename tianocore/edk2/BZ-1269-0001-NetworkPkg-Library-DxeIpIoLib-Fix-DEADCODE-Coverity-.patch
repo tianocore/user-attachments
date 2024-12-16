@@ -1,0 +1,38 @@
+From b3850259c3339e444f3816fd7b26586f25df4593 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:19:58 +0530
+Subject: [PATCH 1/1] NetworkPkg/Library/DxeIpIoLib: Fix DEADCODE Coverity
+ issue
+
+In the function IpIoCreateSndEntry, the code flow can reach at label
+ON_ERROR from 3 points above with OverrideData still at value NULL.
+So the check "if (OverrideData != NULL)" can never succeed and hence
+it can be safely deleted.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4274
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Library/DxeIpIoLib/DxeIpIoLib.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/NetworkPkg/Library/DxeIpIoLib/DxeIpIoLib.c b/NetworkPkg/Library/DxeIpIoLib/DxeIpIoLib.c
+index d53411b64a8b..f6aa69874775 100644
+--- a/NetworkPkg/Library/DxeIpIoLib/DxeIpIoLib.c
++++ b/NetworkPkg/Library/DxeIpIoLib/DxeIpIoLib.c
+@@ -765,10 +765,6 @@ IpIoCreateSndEntry (
+ 
+ ON_ERROR:
+ 
+-  if (OverrideData != NULL) {
+-    FreePool (OverrideData);
+-  }
+-
+   if (TxData != NULL) {
+     FreePool (TxData);
+   }
+-- 
+2.36.1.windows.1
+

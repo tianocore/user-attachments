@@ -1,0 +1,13 @@
+diff --git a/BaseTools/Source/Python/Workspace/DscBuildData.py b/BaseTools/Source/Python/Workspace/DscBuildData.py
+index 476c7edaf9..02fcad3d26 100644
+--- a/BaseTools/Source/Python/Workspace/DscBuildData.py
++++ b/BaseTools/Source/Python/Workspace/DscBuildData.py
+@@ -102,7 +102,7 @@ $(APPFILE): $(OBJECTS)
+ 
+ PcdGccMakefile = '''
+ MAKEROOT ?= $(EDK_TOOLS_PATH)/Source/C
+-LIBS = -lCommon
++# LIBS = -lCommon #MU_CHANGE - Bugzilla 2586
+ '''
+ 
+ variablePattern = re.compile(r'[\t\s]*0[xX][a-fA-F0-9]+$')

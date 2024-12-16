@@ -1,0 +1,123 @@
+From 661812a7ab20f93e5929507d0bdd761270e789a3 Mon Sep 17 00:00:00 2001
+Message-Id: <661812a7ab20f93e5929507d0bdd761270e789a3.1603706303.git.zhuyanming@byosoft.com.cn>
+From: Yanming Zhu <zhuyanming@byosoft.com.cn>
+Date: Mon, 26 Oct 2020 17:27:05 +0800
+Subject: [PATCH] =?UTF-8?q?MdeModulePkg=EF=BC=9Afix=20memory=20wasting=20i?=
+ =?UTF-8?q?ssue?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2964
+
+Use GuidHob instead of AllocatePool.
+In PEI phase, variable is read only.
+So, GuidHob can be used to cache the variable data
+for the following usage.
+This GuidHob is the private GUID hob for PcdPei.
+So I add one internal guid for this guidhob.
+GuidHob data include VariableGuid, VariableName and VariableBuffer.
+One GuidHob is for one EFI variable.
+
+Signed-off-by: Yanming Zhu <zhuyanming@byosoft.com.cn>
+---
+ MdeModulePkg/Universal/PCD/Pei/Service.c | 34 ++++++++++++++++--------
+ MdeModulePkg/Universal/PCD/Pei/Service.h | 14 +++++++++-
+ 2 files changed, 36 insertions(+), 12 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/PCD/Pei/Service.c b/MdeModulePkg/Universal/PCD/Pei/Service.c
+index 5b037353ad..38ed4546d6 100644
+--- a/MdeModulePkg/Universal/PCD/Pei/Service.c
++++ b/MdeModulePkg/Universal/PCD/Pei/Service.c
+@@ -472,9 +472,12 @@ GetHiiVariable (
+   OUT UINTN               *VariableSize
+   )
+ {
+-  UINTN      Size;
+-  EFI_STATUS Status;
+-  VOID       *Buffer;
++  UINTN                           Size;
++  EFI_STATUS                      Status;
++  TEST_DATA                       TestData;
++  EFI_HOB_GUID_TYPE               *GuidHob;
++  TEST_DATA                       *DataPtr;
++  UINT32                          DataSize;
+   EFI_PEI_READ_ONLY_VARIABLE2_PPI *VariablePpi;
+ 
+   Status = PeiServicesLocatePpi (&gEfiPeiReadOnlyVariable2PpiGuid, 0, NULL, (VOID **) &VariablePpi);
+@@ -489,23 +492,32 @@ GetHiiVariable (
+                           &Size,
+                           NULL
+                           );
+-
+   if (Status == EFI_BUFFER_TOO_SMALL) {
+-    Status = PeiServicesAllocatePool (Size, &Buffer);
+-    ASSERT_EFI_ERROR (Status);
+-
++    //Status = PeiServicesAllocatePool (Size, &Buffer);
++    //create guid hob
++    BuildGuidDataHob (
++        (EFI_GUID *)VariableGuid,
++        &TestData,
++        sizeof (TestData)
++        );
++     // find guid hob
++    GuidHob = GetFirstGuidHob ((EFI_GUID *)VariableGuid);
++    if (GuidHob != NULL) {
++      DataPtr  = GET_GUID_HOB_DATA (GuidHob);
++      DataSize = GET_GUID_HOB_DATA_SIZE (GuidHob);
++    }
+     Status = VariablePpi->GetVariable (
+                               VariablePpi,
+                               (UINT16 *) VariableName,
+                               (EFI_GUID *) VariableGuid,
+                               NULL,
+-                              &Size,
+-                              Buffer
++                              &DataSize,
++                              DataPtr
+                               );
+     ASSERT_EFI_ERROR (Status);
+ 
+-    *VariableSize = Size;
+-    *VariableData = Buffer;
++    *VariableSize = DataSize;
++    *VariableData = DataPtr;
+ 
+     return EFI_SUCCESS;
+   }
+diff --git a/MdeModulePkg/Universal/PCD/Pei/Service.h b/MdeModulePkg/Universal/PCD/Pei/Service.h
+index 547094fe8a..2fa57a768e 100644
+--- a/MdeModulePkg/Universal/PCD/Pei/Service.h
++++ b/MdeModulePkg/Universal/PCD/Pei/Service.h
+@@ -26,7 +26,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ #include <Library/PcdLib.h>
+ #include <Library/BaseMemoryLib.h>
+ #include <Library/MemoryAllocationLib.h>
+-
+ //
+ // Please make sure the PCD Serivce PEIM Version is consistent with
+ // the version of the generated PEIM PCD Database by build tool.
+@@ -40,6 +39,19 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+   #error "Please make sure the version of PCD PEIM Service and the generated PCD PEI Database match."
+ #endif
+ 
++/**
++  GuidHob can be used to cache the variable data for the following usage.
++  This GuidHob is the private GUID hob for PcdPei
++  One GuidHob will be for one EFI variable.
++
++  This structure contains three members:VariableGuid,VariableName,VariableBuffer.
++**/
++typedef struct  {
++  IN  CONST EFI_GUID      *VariableGuid;
++  IN  UINT16              *VariableName;
++  VOID                    *VariableBuffer;
++} TEST_DATA;
++
+ /**
+   Retrieve additional information associated with a PCD token in the default token space.
+ 
+-- 
+2.28.0.windows.1
+

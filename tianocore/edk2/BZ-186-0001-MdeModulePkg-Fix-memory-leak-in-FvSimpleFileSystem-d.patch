@@ -1,0 +1,40 @@
+From 3f19ff149bc5e3fce4f0d868de07ddb95c123d70 Mon Sep 17 00:00:00 2001
+Message-Id: <3f19ff149bc5e3fce4f0d868de07ddb95c123d70.1532547558.git.vladimir.olovyannikov@broadcom.com>
+From: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
+Date: Wed, 25 Jul 2018 12:28:17 -0700
+Subject: [edk2] [PATCH v1] MdeModulePkg: Fix memory leak in FvSimpleFileSystem driver
+
+FvSimpleFileSystem on read always allocates a FileBuffer, and never frees
+it. This causes memory leaks. It is especially bad for reading scripts
+line-by-line. In some cases memory leak can exceed 1GB.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Vladimir Olovyannikiov <vladimir.olovyannikov@broadcom.com>
+---
+ .../Universal/FvSimpleFileSystemDxe/FvSimpleFileSystem.c       | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystem.c b/MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystem.c
+index 746f2ced708a..fde208594737 100644
+--- a/MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystem.c
++++ b/MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystem.c
+@@ -704,6 +704,7 @@ FvSimpleFileSystemRead (
+ 
+     Status = FvFsReadFile (File->Instance->FvProtocol, File->FvFileInfo, &FileSize, &FileBuffer);
+     if (EFI_ERROR (Status)) {
++      FreePool (FileBuffer);
+       return EFI_DEVICE_ERROR;
+     }
+ 
+@@ -714,6 +715,8 @@ FvSimpleFileSystemRead (
+     CopyMem (Buffer, (UINT8*)FileBuffer + File->Position, *BufferSize);
+     File->Position += *BufferSize;
+ 
++    FreePool (FileBuffer);
++
+     return EFI_SUCCESS;
+   }
+ }
+-- 
+2.18.0
+

@@ -1,0 +1,39 @@
+From 2f94e752bbd1644ce4ef8fe68568f7f3ff0dafe8 Mon Sep 17 00:00:00 2001
+From: Vineel Kovvuri <vineelko@microsoft.com>
+Date: Thu, 24 Feb 2022 22:00:45 -0800
+Subject: [PATCH 2/6] CryptoPkg: Reference to VsIntrincsicLib to build OpenSSL
+ lib on Windows
+
+This dependency is needed to build openssl lib under Windows
+and adds implementation for _allmul and _allshr instrinsics.
+
+It is taken from Project Mu:
+https://github.com/microsoft/mu_basecore/commit/b55b341f56257484c86e744c93b113a8a1e03d6
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3679
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Yi Li <Yi1.li@intel.com>
+Signed-off-by: Vineel Kovvuri <vineelko@microsoft.com>
+---
+ CryptoPkg/CryptoPkg.dsc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/CryptoPkg/CryptoPkg.dsc b/CryptoPkg/CryptoPkg.dsc
+index 0aa72ed878..9a01554f19 100644
+--- a/CryptoPkg/CryptoPkg.dsc
++++ b/CryptoPkg/CryptoPkg.dsc
+@@ -67,6 +67,9 @@
+   HashApiLib|CryptoPkg/Library/BaseHashApiLib/BaseHashApiLib.inf
+   RngLib|MdePkg/Library/BaseRngLibNull/BaseRngLibNull.inf
+ 
++[LibraryClasses.IA32]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++
+ [LibraryClasses.ARM, LibraryClasses.AARCH64]
+   #
+   # It is not possible to prevent the ARM compiler for generic intrinsic functions.
+-- 
+2.33.0.vfs.0.0
+

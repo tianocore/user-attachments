@@ -1,0 +1,1610 @@
+﻿Left base folder: E:\Work\Review\EIP_555747_v4\EIP_555747_v4\ORG
+Right base folder: E:\Work\Review\EIP_555747_v4\EIP_555747_v4\MOD
+*** NetworkPkg\HttpBootDxe\HttpBootClient.c	2020-05-07 22:54:46.000000000 +05-30
+--- NetworkPkg\HttpBootDxe\HttpBootClient.c	2020-08-09 21:03:01.000000000 +05-30
+***************
+*** 1,6 ****
+--- 1,13 ----
++ //***********************************************************************
++ //*                                                                     *
++ //*   Copyright (c) 1985-2020, American Megatrends International LLC.   *
++ //*                                                                     *
++ //*      All rights reserved. Subject to AMI licensing agreement.       *
++ //*                                                                     *
++ //***********************************************************************
+  /** @file
+    Implementation of the boot file download function.
+  
+  Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
+  (C) Copyright 2016 Hewlett Packard Enterprise Development LP<BR>
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+***************
+*** 45,57 ****
+      Node->Ipv4.Header.Type    = MESSAGING_DEVICE_PATH;
+      Node->Ipv4.Header.SubType = MSG_IPv4_DP;
+      SetDevicePathNodeLength (Node, sizeof (IPv4_DEVICE_PATH));
+      CopyMem (&Node->Ipv4.LocalIpAddress, &Private->StationIp, sizeof (EFI_IPv4_ADDRESS));
+      Node->Ipv4.RemotePort      = Private->Port;
+      Node->Ipv4.Protocol        = EFI_IP_PROTO_TCP;
+!     Node->Ipv4.StaticIpAddress = FALSE;
+      CopyMem (&Node->Ipv4.GatewayIpAddress, &Private->GatewayIp, sizeof (EFI_IPv4_ADDRESS));
+      CopyMem (&Node->Ipv4.SubnetMask, &Private->SubnetMask, sizeof (EFI_IPv4_ADDRESS));
+    } else {
+      Node = AllocateZeroPool (sizeof (IPv6_DEVICE_PATH));
+      if (Node == NULL) {
+        return EFI_OUT_OF_RESOURCES;
+--- 52,67 ----
+      Node->Ipv4.Header.Type    = MESSAGING_DEVICE_PATH;
+      Node->Ipv4.Header.SubType = MSG_IPv4_DP;
+      SetDevicePathNodeLength (Node, sizeof (IPv4_DEVICE_PATH));
+      CopyMem (&Node->Ipv4.LocalIpAddress, &Private->StationIp, sizeof (EFI_IPv4_ADDRESS));
+      Node->Ipv4.RemotePort      = Private->Port;
+      Node->Ipv4.Protocol        = EFI_IP_PROTO_TCP;
+!     if (Private->UsingStatic)
+!         Node->Ipv4.StaticIpAddress =TRUE;
+!     else
+!         Node->Ipv4.StaticIpAddress = FALSE;
+      CopyMem (&Node->Ipv4.GatewayIpAddress, &Private->GatewayIp, sizeof (EFI_IPv4_ADDRESS));
+      CopyMem (&Node->Ipv4.SubnetMask, &Private->SubnetMask, sizeof (EFI_IPv4_ADDRESS));
+    } else {
+      Node = AllocateZeroPool (sizeof (IPv6_DEVICE_PATH));
+      if (Node == NULL) {
+        return EFI_OUT_OF_RESOURCES;
+***************
+*** 325,374 ****
+    EFI_DHCP6_PACKET_OPTION         *Option;
+    EFI_IPv6_ADDRESS                IpAddr;
+    CHAR8                           *HostName;
+    UINTN                           HostNameSize;
+    CHAR16                          *HostNameStr;
+    EFI_STATUS                      Status;
+! 
+    ASSERT (Private != NULL);
+!   ASSERT (Private->SelectIndex != 0);
+!   SelectIndex = Private->SelectIndex - 1;
+!   ASSERT (SelectIndex < HTTP_BOOT_OFFER_MAX_NUM);
+! 
+    DnsServerIndex = 0;
+  
+    Status   = EFI_SUCCESS;
+    HostName = NULL;
+    //
+    // SelectOffer contains the IP address configuration and name server configuration.
+    // HttpOffer contains the boot file URL.
+    //
+!   SelectOffer = &Private->OfferBuffer[SelectIndex].Dhcp6;
+!   if (Private->FilePathUri == NULL) {
+!     //
+!     // In Corporate environment, we need a HttpOffer.
+!     //
+!     if ((SelectOffer->OfferType == HttpOfferTypeDhcpIpUri) ||
+!         (SelectOffer->OfferType == HttpOfferTypeDhcpIpUriDns) ||
+!         (SelectOffer->OfferType == HttpOfferTypeDhcpNameUriDns)) {
+!       HttpOffer = SelectOffer;
+!     } else {
+!       ASSERT (Private->SelectProxyType != HttpOfferTypeMax);
+!       ProxyIndex = Private->OfferIndex[Private->SelectProxyType][0];
+!       HttpOffer = &Private->OfferBuffer[ProxyIndex].Dhcp6;
+!     }
+!     Private->BootFileUriParser = HttpOffer->UriParser;
+!     Private->BootFileUri = (CHAR8*) HttpOffer->OptList[HTTP_BOOT_DHCP6_IDX_BOOT_FILE_URL]->Data;
+!   } else {
+!     //
+!     // In Home environment the BootFileUri comes from the FilePath.
+!     //
+!     Private->BootFileUriParser = Private->FilePathUriParser;
+!     Private->BootFileUri = Private->FilePathUri;
+!   }
+! 
+    //
+    // Check the URI scheme.
+    //
+    Status = HttpBootCheckUriScheme (Private->BootFileUri);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((EFI_D_ERROR, "HttpBootDhcp6ExtractUriInfo: %r.\n", Status));
+--- 335,397 ----
+    EFI_DHCP6_PACKET_OPTION         *Option;
+    EFI_IPv6_ADDRESS                IpAddr;
+    CHAR8                           *HostName;
+    UINTN                           HostNameSize;
+    CHAR16                          *HostNameStr;
+    EFI_STATUS                      Status;
+!   EFI_IPv6_ADDRESS                *Dns;
+!   UINTN                           DataSize;
+!  
+    ASSERT (Private != NULL);
+!   if (!Private->UsingStatic){
+!       ASSERT (Private->SelectIndex != 0);
+!       SelectIndex = Private->SelectIndex - 1;
+!       ASSERT (SelectIndex < HTTP_BOOT_OFFER_MAX_NUM);
+!   }
+    DnsServerIndex = 0;
++   DataSize = 0;
+  
+    Status   = EFI_SUCCESS;
+    HostName = NULL;
++   Dns = NULL;
++   if (Private->UsingStatic){
++   	    //Static HttpBoot supports Home Environment Only.
++         // In Home environment the BootFileUri comes from the FilePath.
++         //
++         Private->BootFileUriParser = Private->FilePathUriParser;
++         Private->BootFileUri = Private->FilePathUri;
++   }else{
++         Dns = NULL;
+    //
+    // SelectOffer contains the IP address configuration and name server configuration.
+    // HttpOffer contains the boot file URL.
+    //
+!       SelectOffer = &Private->OfferBuffer[SelectIndex].Dhcp6;
+!       if (Private->FilePathUri == NULL ) {
+!         //
+!         // In Corporate environment, we need a HttpOffer.
+!         //
+!         if ((SelectOffer->OfferType == HttpOfferTypeDhcpIpUri) ||
+!             (SelectOffer->OfferType == HttpOfferTypeDhcpIpUriDns) ||
+!             (SelectOffer->OfferType == HttpOfferTypeDhcpNameUriDns)) {
+!           HttpOffer = SelectOffer;
+!         } else {
+!           ASSERT (Private->SelectProxyType != HttpOfferTypeMax);
+!           ProxyIndex = Private->OfferIndex[Private->SelectProxyType][0];
+!           HttpOffer = &Private->OfferBuffer[ProxyIndex].Dhcp6;
+!         }
+!         Private->BootFileUriParser = HttpOffer->UriParser;
+!         Private->BootFileUri = (CHAR8*) HttpOffer->OptList[HTTP_BOOT_DHCP6_IDX_BOOT_FILE_URL]->Data;
+!       } else {
+!         //
+!         // In Home environment the BootFileUri comes from the FilePath.
+!         //
+!         Private->BootFileUriParser = Private->FilePathUriParser;
+!         Private->BootFileUri = Private->FilePathUri;
+!       }
+!   }
+    //
+    // Check the URI scheme.
+    //
+    Status = HttpBootCheckUriScheme (Private->BootFileUri);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((EFI_D_ERROR, "HttpBootDhcp6ExtractUriInfo: %r.\n", Status));
+***************
+*** 391,403 ****
+    //
+    // Register the IPv6 gateway address to the network device.
+    //
+    Status = HttpBootSetIp6Gateway (Private);
+    if (EFI_ERROR (Status)) {
+      return Status;
+!   }
+  
+    if ((SelectOffer->OfferType == HttpOfferTypeDhcpNameUriDns) ||
+        (SelectOffer->OfferType == HttpOfferTypeDhcpDns) ||
+        (SelectOffer->OfferType == HttpOfferTypeDhcpIpUriDns)) {
+      Option = SelectOffer->OptList[HTTP_BOOT_DHCP6_IDX_DNS_SERVER];
+      ASSERT (Option != NULL);
+--- 414,450 ----
+    //
+    // Register the IPv6 gateway address to the network device.
+    //
+    Status = HttpBootSetIp6Gateway (Private);
+    if (EFI_ERROR (Status)) {
+      return Status;
+!   } 
+!   if (Private->UsingStatic){
+!          if( Private->DnsServerIp != NULL ){
+!       //
+!       // Configure the default DNS server if server assigned.
+!       //
+! 
+!           DataSize = Private->DnsServerCount * sizeof (EFI_IPv6_ADDRESS);
+!           Dns = AllocateZeroPool(DataSize);
+!           for (DnsServerIndex = 0;DnsServerIndex < Private->DnsServerCount;DnsServerIndex++)
+!               CopyMem(&Dns[DnsServerIndex],&Private->DnsServerIp[DnsServerIndex].v6,sizeof(EFI_IPv6_ADDRESS));         
+!           Status = HttpBootSetIp6Dns (
+!                      Private,
+!                      DataSize,
+!                      Dns
+!                      );
+!           FreePool(Dns);
+!           if (EFI_ERROR (Status)) {
+!               goto Error;
+!           }
+!         }
+! 
+!       goto StaticBoot;
+!   }
+! 
+  
+    if ((SelectOffer->OfferType == HttpOfferTypeDhcpNameUriDns) ||
+        (SelectOffer->OfferType == HttpOfferTypeDhcpDns) ||
+        (SelectOffer->OfferType == HttpOfferTypeDhcpIpUriDns)) {
+      Option = SelectOffer->OptList[HTTP_BOOT_DHCP6_IDX_DNS_SERVER];
+      ASSERT (Option != NULL);
+***************
+*** 430,441 ****
+--- 477,489 ----
+    }
+  
+    //
+    // Extract the HTTP server Ip from URL. This is used to Check route table
+    // whether can send message to HTTP Server Ip through the GateWay.
+    //
++   StaticBoot:
+    Status = HttpUrlGetIp6 (
+               Private->BootFileUri,
+               Private->BootFileUriParser,
+               &IpAddr
+               );
+  
+***************
+*** 523,546 ****
+  EFI_STATUS
+  HttpBootDiscoverBootInfo (
+    IN OUT HTTP_BOOT_PRIVATE_DATA   *Private
+    )
+  {
+    EFI_STATUS              Status;
+  
+    //
+    // Start D.O.R.A/S.A.R.R exchange to acquire station ip address and
+    // other Http boot information.
+    //
+    Status = HttpBootDhcp (Private);
+    if (EFI_ERROR (Status)) {
+      return Status;
+    }
+  
+    if (!Private->UsingIpv6) {
+!     Status = HttpBootDhcp4ExtractUriInfo (Private);
+    } else {
+      Status = HttpBootDhcp6ExtractUriInfo (Private);
+    }
+  
+    return Status;
+  }
+--- 571,639 ----
+  EFI_STATUS
+  HttpBootDiscoverBootInfo (
+    IN OUT HTTP_BOOT_PRIVATE_DATA   *Private
+    )
+  {
+    EFI_STATUS              Status;
++   EFI_IPv4_ADDRESS        *Dns;
++   UINTN                   DataSize = 0;
++   UINT8                   DnsServerIndex = 0;
+  
++   Dns = NULL;
+    //
+    // Start D.O.R.A/S.A.R.R exchange to acquire station ip address and
+    // other Http boot information.
+    //
+    Status = HttpBootDhcp (Private);
+    if (EFI_ERROR (Status)) {
+      return Status;
+    }
+  
+    if (!Private->UsingIpv6) {
+!       if (!Private->UsingStatic){
+!           Status = HttpBootDhcp4ExtractUriInfo (Private);
+!       }
+!       else{
+!         Private->BootFileUriParser = Private->FilePathUriParser;
+!         Private->BootFileUri = Private->FilePathUri;
+!         
+!         if (Private->DnsServerIp != NULL){
+!             DataSize = Private->DnsServerCount * sizeof(EFI_IPv4_ADDRESS);
+!             Dns = AllocateZeroPool(DataSize);
+!             for (DnsServerIndex = 0;DnsServerIndex < Private->DnsServerCount;DnsServerIndex++)
+!                 CopyMem(&Dns[DnsServerIndex],&(Private->DnsServerIp[DnsServerIndex].v4),sizeof(EFI_IPv4_ADDRESS));
+!             
+!             Status = HttpBootRegisterIp4Dns (
+!                        Private,
+!                        DataSize,
+!                        Dns
+!                        );
+!             
+!             FreePool (Dns);
+!             if (EFI_ERROR (Status)) {
+!               FreePool (Private->DnsServerIp);
+!               Private->DnsServerIp = NULL;
+!               return Status;
+!             }
+!         }
+!         //
+!         // Extract the port from URL, and use default HTTP port 80 if not provided.
+!         //
+!         Status = HttpUrlGetPort (
+!                      Private->BootFileUri,
+!                      Private->BootFileUriParser,
+!                      &Private->Port
+!                      );
+!         if (EFI_ERROR (Status) || Private->Port == 0) {
+!             Private ->Port = 80;
+!         }
+!         //
+!         // Update the device path to include the IP and boot URI information.
+!         //
+!         Status = HttpBootUpdateDevicePath (Private);
+!       }
+    } else {
+      Status = HttpBootDhcp6ExtractUriInfo (Private);
+    }
+  
+    return Status;
+  }
+*** NetworkPkg\HttpBootDxe\HttpBootConfig.c	2020-05-07 22:54:46.000000000 +05-30
+--- NetworkPkg\HttpBootDxe\HttpBootConfig.c	2020-08-04 15:28:06.000000000 +05-30
+***************
+*** 1,6 ****
+--- 1,13 ----
++ //***********************************************************************
++ //*                                                                     *
++ //*   Copyright (c) 1985-2020, American Megatrends International LLC.   *
++ //*                                                                     *
++ //*      All rights reserved. Subject to AMI licensing agreement.       *
++ //*                                                                     *
++ //***********************************************************************
+  /** @file
+    Helper functions for configuring or getting the parameters relating to HTTP Boot.
+  
+  Copyright (c) 2016 - 2018, Intel Corporation. All rights reserved.<BR>
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+  
+***************
+*** 36,72 ****
+    EFI_DEVICE_PATH_PROTOCOL          *NewDevicePath;
+    UINTN                             Length;
+    CHAR8                             AsciiUri[URI_STR_MAX_SIZE];
+    EFI_STATUS                        Status;
+    UINTN                             Index;
+    EFI_BOOT_MANAGER_LOAD_OPTION      NewOption;
+! 
+    NewDevicePath = NULL;
+    Node          = NULL;
+    TmpDevicePath = NULL;
+  
+    if (StrLen (Description) == 0) {
+      return EFI_INVALID_PARAMETER;
+    }
+  
+    //
+    // Convert the scheme to all lower case.
+    //
+    for (Index = 0; Index < StrLen (Uri); Index++) {
+!     if (Uri[Index] == L':') {
+!       break;
+!     }
+      if (Uri[Index] >= L'A' && Uri[Index] <= L'Z') {
+        Uri[Index] -= (CHAR16)(L'A' - L'a');
+      }
+    }
+  
+    //
+!   // Only accept empty URI, or http and https URI.
+    //
+!   if ((StrLen (Uri) != 0) && (StrnCmp (Uri, L"http://", 7) != 0) && (StrnCmp (Uri, L"https://", 8) != 0)) {
+      return EFI_INVALID_PARAMETER;
+    }
+  
+    //
+    // Create a new device path by appending the IP node and URI node to
+    // the driver's parent device path
+--- 43,93 ----
+    EFI_DEVICE_PATH_PROTOCOL          *NewDevicePath;
+    UINTN                             Length;
+    CHAR8                             AsciiUri[URI_STR_MAX_SIZE];
+    EFI_STATUS                        Status;
+    UINTN                             Index;
+    EFI_BOOT_MANAGER_LOAD_OPTION      NewOption;
+!   EFI_IP_ADDRESS                    LocalIp;
+!   EFI_IP_ADDRESS                    SubnetMask;
+!   EFI_IP_ADDRESS                    GatewayIp;
+!   CHAR16                            DebugString[URI_STR_MAX_SIZE];
+!   CHAR8                             *AsciiUri2;
+!   
+!   AsciiUri2     = NULL;
+    NewDevicePath = NULL;
+    Node          = NULL;
+    TmpDevicePath = NULL;
+  
+    if (StrLen (Description) == 0) {
+      return EFI_INVALID_PARAMETER;
+    }
+  
+    //
+    // Convert the scheme to all lower case.
+    //
+    for (Index = 0; Index < StrLen (Uri); Index++) {
+!       if (Uri[Index] == L'/' && Uri[Index + 1] == L'/') {
+!         break;
+!       }
+! 
+      if (Uri[Index] >= L'A' && Uri[Index] <= L'Z') {
+        Uri[Index] -= (CHAR16)(L'A' - L'a');
+      }
+    }
+  
+    //
+!   // Only accept empty URI, or http , https URI and Static URI.
+    //
+! 
+!   if ((StrLen (Uri) != 0) && StrStr(Uri,L"static")){
+!       Private->UsingStatic = TRUE;
+!   }
+!   else{
+!       Private->UsingStatic = FALSE;
+!   }
+!   if ((StrLen (Uri) != 0) && (StrnCmp (Uri, L"http://", 7) != 0) && (StrnCmp (Uri, L"https://", 8) != 0)&& EFI_ERROR(HttpBootCheckStaticUri(Uri)) {
+      return EFI_INVALID_PARAMETER;
+    }
+  
+    //
+    // Create a new device path by appending the IP node and URI node to
+    // the driver's parent device path
+***************
+*** 77,107 ****
+--- 98,159 ----
+        Status = EFI_OUT_OF_RESOURCES;
+        goto ON_EXIT;
+      }
+      Node->Ipv4.Header.Type    = MESSAGING_DEVICE_PATH;
+      Node->Ipv4.Header.SubType = MSG_IPv4_DP;
+      SetDevicePathNodeLength (Node, sizeof (IPv4_DEVICE_PATH));
++     if (Private->UsingStatic){
++         Status = VerifyIpv4Address(Uri,&LocalIp,&SubnetMask,&GatewayIp,DebugString);
++         if (EFI_ERROR(Status))
++             return Status;
++         CopyMem (&Node->Ipv4.LocalIpAddress, &LocalIp.v4, sizeof (EFI_IPv4_ADDRESS));
++         Node->Ipv4.RemotePort      = Private->Port;
++         Node->Ipv4.Protocol        = EFI_IP_PROTO_TCP;
++         Node->Ipv4.StaticIpAddress = TRUE;
++         CopyMem (&Node->Ipv4.GatewayIpAddress, &GatewayIp.v4, sizeof (EFI_IPv4_ADDRESS));
++         CopyMem (&Node->Ipv4.SubnetMask, &SubnetMask.v4, sizeof (EFI_IPv4_ADDRESS));
++     }
+    } else {
+      Node = AllocateZeroPool (sizeof (IPv6_DEVICE_PATH));
+      if (Node == NULL) {
+        Status = EFI_OUT_OF_RESOURCES;
+        goto ON_EXIT;
+      }
+      Node->Ipv6.Header.Type     = MESSAGING_DEVICE_PATH;
+      Node->Ipv6.Header.SubType  = MSG_IPv6_DP;
+      SetDevicePathNodeLength (Node, sizeof (IPv6_DEVICE_PATH));
++     if (Private->UsingStatic){
++         Status = VerifyIpv6Address (Uri,&LocalIp,&GatewayIp,DebugString);
++         if (EFI_ERROR(Status))
++             return Status;
++         Node->Ipv6.PrefixLength    = IP6_PREFIX_LENGTH;
++         Node->Ipv6.RemotePort      = Private->Port;
++         Node->Ipv6.Protocol        = EFI_IP_PROTO_TCP; 
++         Node->Ipv6.IpAddressOrigin = 0x03;
++         CopyMem (&Node->Ipv6.LocalIpAddress, &LocalIp.v6 , sizeof (EFI_IPv6_ADDRESS));
++         CopyMem (&Node->Ipv6.GatewayIpAddress, &GatewayIp.v6, sizeof (EFI_IPv6_ADDRESS));
++     }
+    }
+    TmpDevicePath = AppendDevicePathNode (Private->ParentDevicePath, (EFI_DEVICE_PATH_PROTOCOL*) Node);
+    FreePool (Node);
+    if (TmpDevicePath == NULL) {
+      return EFI_OUT_OF_RESOURCES;
+    }
+    //
+    // Update the URI node with the input boot file URI.
+    //
+    UnicodeStrToAsciiStrS (Uri, AsciiUri, sizeof (AsciiUri));
++   //Extract Bootfile uri from Static Uri.
++   if ((Private->UsingStatic  && (AsciiStrStr(AsciiUri,"dns") == NULL))||( AsciiStrStr(AsciiUri,"dhcp"))){
++     AsciiUri2 = AsciiStrStr (AsciiUri ,"http");
++     if (AsciiUri2 != NULL){
++         for (Index =0;AsciiUri2[Index] != ')' && AsciiUri2[Index] != '\0'  ;Index++);
++         AsciiUri2[Index] = '\0';
++         AsciiStrCpy(AsciiUri,AsciiUri2);
++    }
++   }
+    Length = sizeof (EFI_DEVICE_PATH_PROTOCOL) + AsciiStrSize (AsciiUri);
+    Node = AllocatePool (Length);
+    if (Node == NULL) {
+      Status = EFI_OUT_OF_RESOURCES;
+      FreePool (TmpDevicePath);
+      goto ON_EXIT;
+***************
+*** 483,494 ****
+--- 535,551 ----
+          return EFI_OUT_OF_RESOURCES;
+        }
+  
+        UnicodeStrToAsciiStrS (Uri, AsciiUri, UriLen);
+  
+        Status = HttpBootCheckUriScheme (AsciiUri);
++       if (Status == EFI_INVALID_PARAMETER){
++           Status = HttpBootCheckStaticUri(Uri);
++           if (Status == EFI_UNSUPPORTED)
++               return EFI_INVALID_PARAMETER;
++       }
+  
+        if (Status == EFI_INVALID_PARAMETER) {
+  
+          DEBUG ((EFI_D_ERROR, "HttpBootFormCallback: %r.\n", Status));
+  
+          CreatePopUp (
+*** NetworkPkg\HttpBootDxe\HttpBootDxe.h	2020-05-07 22:54:46.000000000 +05-30
+--- NetworkPkg\HttpBootDxe\HttpBootDxe.h	2020-08-09 21:00:21.000000000 +05-30
+***************
+*** 1,6 ****
+--- 1,13 ----
++ //***********************************************************************
++ //*                                                                     *
++ //*   Copyright (c) 1985-2020, American Megatrends International LLC.   *
++ //*                                                                     *
++ //*      All rights reserved. Subject to AMI licensing agreement.       *
++ //*                                                                     *
++ //***********************************************************************
+  /** @file
+    UEFI HTTP boot driver's private data structure and interfaces declaration.
+  
+  Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
+  (C) Copyright 2016 Hewlett Packard Enterprise Development LP<BR>
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+***************
+*** 254,265 ****
+--- 261,273 ----
+    UINT32                                    SelectIndex;
+    UINT32                                    SelectProxyType;
+    HTTP_BOOT_DHCP_PACKET_CACHE               OfferBuffer[HTTP_BOOT_OFFER_MAX_NUM];
+    UINT32                                    OfferNum;
+    UINT32                                    OfferCount[HttpOfferTypeMax];
+    UINT32                                    OfferIndex[HttpOfferTypeMax][HTTP_BOOT_OFFER_MAX_NUM];
++   BOOLEAN                                   UsingStatic;
+  };
+  
+  #define HTTP_BOOT_PRIVATE_DATA_SIGNATURE          SIGNATURE_32 ('H', 'B', 'P', 'D')
+  #define HTTP_BOOT_VIRTUAL_NIC_SIGNATURE           SIGNATURE_32 ('H', 'B', 'V', 'N')
+  #define HTTP_BOOT_PRIVATE_DATA_FROM_LOADFILE(a)   CR (a, HTTP_BOOT_PRIVATE_DATA, LoadFile, HTTP_BOOT_PRIVATE_DATA_SIGNATURE)
+  #define HTTP_BOOT_PRIVATE_DATA_FROM_ID(a)         CR (a, HTTP_BOOT_PRIVATE_DATA, Id, HTTP_BOOT_PRIVATE_DATA_SIGNATURE)
+***************
+*** 518,524 ****
+--- 526,665 ----
+  HttpBootIp6DxeDriverBindingStop (
+    IN EFI_DRIVER_BINDING_PROTOCOL  *This,
+    IN EFI_HANDLE                   ControllerHandle,
+    IN UINTN                        NumberOfChildren,
+    IN EFI_HANDLE                   *ChildHandleBuffer OPTIONAL
+    );
++ /**
++   Configure Static Ip Address using Ipconfig2 Protocol
++ 
++   @param[in]  Private             Pointer to HTTP boot driver private data.
++ **/
++ EFI_STATUS 
++ StaticHttpBoot(HTTP_BOOT_PRIVATE_DATA        *Private);
++ /**
++   Get the IPv4 Address and Ipv6 Address   from the Input Devicepath.
++ 
++ 
++   @param[in]   FilePath         Pointer to the device path which contains IPV4 and IPV6 path node.
++ 
++   @retval EFI_SUCCESS            The IPV4 Address and IPV6 Address successfully assigned to Private variable  
++           EFI_INVALID_PARAMETER   If FilePath is Null
++           EFI_NOT_FOUND          If IPV4Address can't be found
++ **/
++ EFI_STATUS
++ HttpBootParseIpAddress (
++   IN     EFI_DEVICE_PATH_PROTOCOL     *FilePath,
++   IN HTTP_BOOT_PRIVATE_DATA         *Private
++   );
++ /******
++   Get the IPv6Address,GatewayIp6Address using Http Uri given by user,
++   IPV6(LocalIp6Address,Tcp,static or dhcp,gatewayip6Address)/Dns(IP1,IP2,...,IPn)/Uri(_http://DomainName/xxx.efi)
++ 
++   @param[in]  Buffer                  URI string of the boot file.
++   @param[out] LocalIp                 Ipv6 LocalIp Address is updated statically based on Uri
++   @param[out] GatewayIp               Ipv6  GatewayIp is updated statically based on Uri
++   @Param[out] String                  The Error Message.
++   
++   @retval EFI_SUCCESS                 IP Address is translated from String.
++   @retval EFI_INVALID_PARAMETER    	  Url is not supported http and https
++           EFI_UNSUPPORTED             If IP Address is Invalid and Static Uri is invalid
++ *******/
++ EFI_STATUS
++ VerifyIpv6Address (
++       IN   CHAR16			 *Buffer,
++       OUT  EFI_IP_ADDRESS 	 *LocalIp,
++       OUT  EFI_IP_ADDRESS 	 *GatewayIp,
++       OUT  CHAR16 			 *String  
++ 	  );
++ /*********
++   Get the IPv4Address,subnetMask,GatewayIp using Http Uri given by user,
++   IPV4(ClientAddress,protocol,static or Dhcp,gatewayip,subnetMask)/Dns(DnsIP1,DnsIP2...,IPn)/Uri(_http://DomainName/xxx.efi)
++ 
++   @param[in]  Uri                   The URI string of the boot file.
++   @param[out] LocalIP       	    Ipv4 LocalP is updated statically based on Uri
++   @param[out] SubnetMask            Ipv4 SubnetMask is updated statically based on Uri
++   @param[out] GatewayIp             Ipv4  GatewayIp is updated statically based on Uri
++   @Param[out] String                The Error Message.
++   
++   @retval EFI_SUCCESS               IP Address is translated from String.
++   @retval EFI_INVALID_PARAMETER     Url is not supported http and https
++           EFI_UNSUPPORTED           If IP Addrress and static Uri is invalid
++ ********/
++ EFI_STATUS
++ VerifyIpv4Address (
++         IN   CHAR16 			*Buffer,
++ 		OUT  EFI_IP_ADDRESS     *LocalIp,
++         OUT  EFI_IP_ADDRESS 	*SubnetMask,
++         OUT  EFI_IP_ADDRESS 	*GatewayIp,
++         OUT  CHAR16				*String 
++ 		);
++ /******
++ This function checks static Uri given by user.
++ 
++ @param[in]  Buffer               The URI string of the boot file.
++ 
++ @retval EFI_SUCCESS                Uri and static IP address are valid. 
++         EFI_UNSUPPORTED            Static Uri is invalid Format.
++ 		EFI_INVALID_PARAMETER      Url is not supported http and https.
++ *******/
++ EFI_STATUS 
++ HttpBootCheckStaticUri(IN CHAR16 *Uri);
++ /**
++   Configure Static IPv6 Address using Ip6config Protocol
++ 
++   @param[in]  Private             Pointer to HTTP boot driver private data.
++ **/
++ EFI_STATUS StaticHttpIPv6Boot (HTTP_BOOT_PRIVATE_DATA        *Private);
++ 
++ /**
++   This function will register the IPv4 gateway address to the network device.
++ 
++   @param[in]  Private             The pointer to HTTP_BOOT_PRIVATE_DATA.
++ 
++   @retval     EFI_SUCCESS         The new IP configuration has been configured successfully.
++   @retval     Others              Failed to configure the address.
++ 
++ **/
++ EFI_STATUS
++ HttpBootRegisterIp4Gateway (
++   IN HTTP_BOOT_PRIVATE_DATA         *Private
++   );
++ /**
++   This function will switch the IP4 configuration policy to Static.
++ 
++   @param[in]  Private             Pointer to HTTP boot driver private data.
++ 
++   @retval     EFI_SUCCESS         The policy is already configured to static.
++   @retval     Others              Other error as indicated..
++ 
++ **/
++ EFI_STATUS
++ HttpBootSetIp4Policy (
++   IN HTTP_BOOT_PRIVATE_DATA         *Private
++   );
++ /**
++   Checks the HttpBoot Mode is static or Dhcp  from the Input Devicepath.
++   And Update Private variable private->usingstatic
++ 
++ 
++   @param[in]   FilePath         Pointer to the device path which contains a IPV4 and IPv6 device path node.
++ 
++   @retval EFI_SUCCESS            The IPV4 Address  and IPv6 Address are successfully assigned to Private variable  
++           EFI_INVALID_PARAMETER   If FilePath is Null
++ **/
++ EFI_STATUS
++ HttpBootCheckBootType (IN     EFI_DEVICE_PATH_PROTOCOL     *FilePath,IN HTTP_BOOT_PRIVATE_DATA         *Private);
++ /**
++   Get the IPv4 and IPv6 Dns Address from Input Uri
++ 
++ 
++   @param[in]   Uri               Input Uri from Filepath
++   @param[in]   UsingIPv6         Specifies the type of IP addresses.
++   @param[in]   Private           The pointer to the driver's private data.
++ 
++   @retval EFI_SUCCESS            The IPV4 Address  and IPv6 Address are successfully assigned to HTTP boot driver private data. 
++           EFI_INVALID_PARAMETER   If Uri is not a valid Static Devicepath URI
++ **/
++ EFI_STATUS
++ HttpBootParseDnsIp(IN CHAR8  *Uri,BOOLEAN UsingIpv6,IN HTTP_BOOT_PRIVATE_DATA         *Private);
+  #endif
+*** NetworkPkg\HttpBootDxe\HttpBootDxe.inf	2020-05-07 22:54:46.000000000 +05-30
+--- NetworkPkg\HttpBootDxe\HttpBootDxe.inf	2020-07-24 16:19:43.000000000 +05-30
+***************
+*** 1,6 ****
+--- 1,15 ----
++ 
++ #***********************************************************************
++ #*                                                                     *
++ #*   Copyright (c) 1985-2020, American Megatrends International LLC.   *
++ #*                                                                     *
++ #*      All rights reserved. Subject to AMI licensing agreement.       *
++ #*                                                                     *
++ #***********************************************************************
++ 
+  ## @file
+  #  This modules produce the Load File Protocol for UEFI HTTP boot.
+  #
+  #  Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
+  #  SPDX-License-Identifier: BSD-2-Clause-Patent
+  #
+***************
+*** 38,49 ****
+--- 47,59 ----
+    HttpBootSupport.h
+    HttpBootSupport.c
+    HttpBootClient.h
+    HttpBootClient.c
+    HttpBootConfigVfr.vfr
+    HttpBootConfigStrings.uni
++   HttpBootStatic.c
+  
+  [LibraryClasses]
+    UefiDriverEntryPoint
+    UefiBootServicesTableLib
+    MemoryAllocationLib
+    BaseLib
+*** NetworkPkg\HttpBootDxe\HttpBootImpl.c	2020-05-07 22:54:46.000000000 +05-30
+--- NetworkPkg\HttpBootDxe\HttpBootImpl.c	2020-08-09 20:08:53.000000000 +05-30
+***************
+*** 1,6 ****
+--- 1,14 ----
++ //***********************************************************************
++ //*                                                                     *
++ //*   Copyright (c) 1985-2020, American Megatrends International LLC.   *
++ //*                                                                     *
++ //*      All rights reserved. Subject to AMI licensing agreement.       *
++ //*                                                                     *
++ //***********************************************************************
++ 
+  /** @file
+    The implementation of EFI_LOAD_FILE_PROTOCOL for UEFI HTTP boot.
+  
+  Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
+  (C) Copyright 2016 Hewlett Packard Enterprise Development LP<BR>
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+***************
+*** 119,139 ****
+  
+    Uri = NULL;
+  
+    if (Private == NULL || FilePath == NULL) {
+      return EFI_INVALID_PARAMETER;
+    }
+! 
+    //
+    // Check the URI in the input FilePath, in order to see whether it is
+    // required to boot from a new specified boot file.
+    //
+    Status = HttpBootParseFilePath (FilePath, &Uri);
+    if (EFI_ERROR (Status)) {
+      return EFI_INVALID_PARAMETER;
+!   }
+  
+    //
+    // Check whether we need to stop and restart the HTTP boot driver.
+    //
+    if (Private->Started) {
+      //
+--- 127,158 ----
+  
+    Uri = NULL;
+  
+    if (Private == NULL || FilePath == NULL) {
+      return EFI_INVALID_PARAMETER;
+    }
+!   //
+!   // Check  If HttpBoot get IP Address from user as statically or from dhcp in the input FilePath,
+    //
++   Status = HttpBootCheckBootType(FilePath,Private);
++   if (EFI_ERROR (Status)) {
++   	return EFI_INVALID_PARAMETER;
++   }
+    // Check the URI in the input FilePath, in order to see whether it is
+    // required to boot from a new specified boot file.
+    //
+    Status = HttpBootParseFilePath (FilePath, &Uri);
+    if (EFI_ERROR (Status)) {
+      return EFI_INVALID_PARAMETER;
+!   }
+!   
+!   if (Private->UsingStatic){
+!         Status = HttpBootParseDnsIp(Uri,UsingIpv6,Private);
+!         if (EFI_ERROR(Status))
+!             return Status;
+!     }
+  
+    //
+    // Check whether we need to stop and restart the HTTP boot driver.
+    //
+    if (Private->Started) {
+      //
+***************
+*** 161,173 ****
+        if (Uri != NULL) {
+          FreePool (Uri);
+        }
+        return EFI_ALREADY_STARTED;
+      }
+    }
+! 
+    //
+    // Detect whether using ipv6 or not, and set it to the private data.
+    //
+    if (UsingIpv6 && Private->Ip6Nic != NULL) {
+      Private->UsingIpv6 = TRUE;
+    } else if (!UsingIpv6 && Private->Ip4Nic != NULL) {
+--- 180,201 ----
+        if (Uri != NULL) {
+          FreePool (Uri);
+        }
+        return EFI_ALREADY_STARTED;
+      }
+    }
+!   
+!   //Check the IP Address in the input FilePath and 
+!   //update the Ip Address to Private Data
+!   //
+!   if (Private->UsingStatic){
+!       Status = HttpBootParseIpAddress (FilePath,Private); 
+!       if (EFI_ERROR (Status)) {
+!           return Status;
+!       }
+!   }
+    //
+    // Detect whether using ipv6 or not, and set it to the private data.
+    //
+    if (UsingIpv6 && Private->Ip6Nic != NULL) {
+      Private->UsingIpv6 = TRUE;
+    } else if (!UsingIpv6 && Private->Ip4Nic != NULL) {
+***************
+*** 196,215 ****
+--- 224,245 ----
+      }
+    }
+  
+    //
+    // Init the content of cached DHCP offer list.
+    //
++ if(!Private->UsingStatic){ 
+    ZeroMem (Private->OfferBuffer, sizeof (Private->OfferBuffer));
+    if (!Private->UsingIpv6) {
+      for (Index = 0; Index < HTTP_BOOT_OFFER_MAX_NUM; Index++) {
+        Private->OfferBuffer[Index].Dhcp4.Packet.Offer.Size = HTTP_CACHED_DHCP4_PACKET_MAX_SIZE;
+      }
+    } else {
+      for (Index = 0; Index < HTTP_BOOT_OFFER_MAX_NUM; Index++) {
+        Private->OfferBuffer[Index].Dhcp6.Packet.Offer.Size = HTTP_CACHED_DHCP6_PACKET_MAX_SIZE;
++     }
+      }
+    }
+  
+    if (Private->UsingIpv6) {
+      //
+      // Set Ip6 policy to Automatic to start the Ip6 router discovery.
+***************
+*** 252,274 ****
+      return EFI_NOT_STARTED;
+    }
+  
+    Status = EFI_DEVICE_ERROR;
+  
+    if (!Private->UsingIpv6) {
+!     //
+      // Start D.O.R.A process to get a IPv4 address and other boot information.
+      //
+!     Status = HttpBootDhcp4Dora (Private);
+    } else {
+!      //
+      // Start S.A.R.R process to get a IPv6 address and other boot information.
+      //
+!     Status = HttpBootDhcp6Sarr (Private);
+!   }
+! 
+    return Status;
+  }
+  
+  /**
+    Attempt to download the boot file through HTTP message exchange.
+  
+--- 282,332 ----
+      return EFI_NOT_STARTED;
+    }
+  
+    Status = EFI_DEVICE_ERROR;
+  
+    if (!Private->UsingIpv6) {
+!    
+!     if (!Private->UsingStatic) {
+! 	 //
+      // Start D.O.R.A process to get a IPv4 address and other boot information.
+      //
+!         Status = HttpBootDhcp4Dora (Private);
+!    }else{
+!       Status = HttpBootSetIp4Policy (Private);
+!       if (EFI_ERROR (Status)) {
+!         return Status;
+!       }
+!       Status = StaticHttpBoot(Private);
+!       if (EFI_ERROR (Status)) {
+!           return Status;
+!        }
+!       Status = HttpBootRegisterIp4Gateway (Private);
+!       if (EFI_ERROR (Status)) {
+!           return Status;
+!        }
+! 
+!       AsciiPrint ("\n  Station IP address is ");
+!       HttpBootShowIp4Addr (&Private->StationIp.v4);
+!       AsciiPrint ("\n");
+!     }
+!     
+    } else {
+!      
+!     if (!Private->UsingStatic){
+! 	//
+      // Start S.A.R.R process to get a IPv6 address and other boot information.
+      //
+!         Status = HttpBootDhcp6Sarr (Private);
+!     }else{
+!         Status = StaticHttpIPv6Boot (Private);
+!         AsciiPrint ("\n  Station IPv6 address is ");
+!         HttpBootShowIp6Addr (&Private->StationIp.v6);
+!         AsciiPrint ("\n");
+!     }
+!   }
+    return Status;
+  }
+  
+  /**
+    Attempt to download the boot file through HTTP message exchange.
+  
+*** 
+--- NetworkPkg\HttpBootDxe\HttpBootStatic.c	2020-08-09 21:00:09.000000000 +05-30
+***************
+*** 0 ****
+--- 1,650 ----
++ //***********************************************************************
++ //*                                                                     *
++ //*   Copyright (c) 1985-2020, American Megatrends International LLC.   *
++ //*                                                                     *
++ //*      All rights reserved. Subject to AMI licensing agreement.       *
++ //*                                                                     *
++ //***********************************************************************
++ 
++ /** @file HttpBootStatic.c   
++ Provides the Static Http Boot related functions .
++ 
++ Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
++ (C) Copyright 2016 Hewlett Packard Enterprise Development LP<BR>
++ SPDX-License-Identifier: BSD-2-Clause-Patent
++ 
++ **/
++ 
++ 
++ #include "HttpBootDxe.h"
++ #include <Library/UefiBootManagerLib.h>
++ 
++ 
++ /**
++   Get the IPv4 and IPv6 Address  from the Input Devicepath.
++ 
++ 
++   @param[in]   FilePath         Pointer to the device path which contains a IPV4 and IPV6 device path node.
++ 
++   @retval EFI_SUCCESS            The IPV4 Address  and IPv6 Address are successfully assigned to Private variable  
++           EFI_INVALID_PARAMETER   If FilePath is Null
++ **/
++ EFI_STATUS
++ HttpBootParseIpAddress (
++   IN     EFI_DEVICE_PATH_PROTOCOL     *FilePath,
++   IN HTTP_BOOT_PRIVATE_DATA         *Private
++   )
++ {
++   EFI_DEVICE_PATH_PROTOCOL  *TempDevicePath;
++   EFI_DEV_PATH                      *Node;
++ 
++   if (FilePath == NULL) {
++     return EFI_INVALID_PARAMETER;
++   }
++    
++   ZeroMem (&Private->StationIp, sizeof (EFI_IP_ADDRESS));
++   ZeroMem (&Private->SubnetMask,  sizeof (EFI_IP_ADDRESS));
++   ZeroMem (&Private->GatewayIp, sizeof (EFI_IP_ADDRESS));
++   //
++   // Extract the IPV4 address from the FilePath
++   //
++   
++   TempDevicePath = FilePath;
++   while (!IsDevicePathEnd (TempDevicePath)) {
++       
++    if ((DevicePathType (TempDevicePath) == MESSAGING_DEVICE_PATH) &&
++            (DevicePathSubType (TempDevicePath) == MSG_IPv4_DP)) {
++       Node = ( EFI_DEV_PATH *)TempDevicePath;
++       
++       CopyMem (&Private->StationIp.v4, &Node->Ipv4.LocalIpAddress, sizeof (EFI_IPv4_ADDRESS));
++       CopyMem (&Private->SubnetMask.v4, &Node->Ipv4.SubnetMask , sizeof (EFI_IPv4_ADDRESS));
++       CopyMem (&Private->GatewayIp.v4, &Node->Ipv4.GatewayIpAddress, sizeof (EFI_IPv4_ADDRESS));
++    }
++    else if ((DevicePathType (TempDevicePath) == MESSAGING_DEVICE_PATH) &&
++                 (DevicePathSubType (TempDevicePath) == MSG_IPv6_DP)) {
++          Node = (EFI_DEV_PATH *)TempDevicePath ;
++  
++          CopyMem (&Private ->StationIp.v6,&Node ->Ipv6.LocalIpAddress,sizeof (EFI_IPv6_ADDRESS));
++          CopyMem (&Private ->GatewayIp.v6,&Node ->Ipv6.GatewayIpAddress,sizeof (EFI_IPv6_ADDRESS));
++      }
++    
++     TempDevicePath = NextDevicePathNode (TempDevicePath);
++   }
++ 
++   return EFI_SUCCESS;
++ }
++ 
++ /**
++   The notify function of create event when performing a manual config.
++ 
++   @param[in]    Event        The event this notify function registered to.
++   @param[in]    Context      Pointer to the context data registered to the event.
++ 
++ **/
++ VOID
++ EFIAPI
++ IfConfigManualAddressNotify (
++   IN EFI_EVENT    Event,
++   IN VOID         *Context
++   )
++ {
++     *((BOOLEAN *) Context) = TRUE;
++ }
++ /**
++   Configure Static Ip Address using Ip4config2 Protocol
++ 
++   @param[in]  Private             Pointer to HTTP boot driver private data.
++ **/
++ EFI_STATUS 
++ StaticHttpBoot (HTTP_BOOT_PRIVATE_DATA        *Private)
++ {
++     EFI_EVENT                        MappedEvt;
++     BOOLEAN                          IsAddressOk;
++     EFI_IP4_CONFIG2_POLICY           Policy;
++     EFI_IP4_CONFIG2_MANUAL_ADDRESS   ManualAddress;
++     EFI_STATUS                       Status;
++     UINTN                            DataSize ;
++     EFI_IP4_CONFIG2_PROTOCOL         *IfCfg ;
++     EFI_EVENT                        TimeOutEvt ; 
++     //
++     // Create events & timers for asynchronous settings.
++     //
++     CopyMem (&ManualAddress.Address , &Private->StationIp.v4, sizeof (EFI_IPv4_ADDRESS));
++     CopyMem (&ManualAddress.SubnetMask , &Private ->SubnetMask.v4, sizeof (EFI_IPv4_ADDRESS));
++ 
++     
++     Status = gBS->CreateEvent (
++                     EVT_TIMER,
++                     TPL_CALLBACK,
++                     NULL,
++                     NULL,
++                     &TimeOutEvt
++                     );
++     if (EFI_ERROR(Status))
++         return Status;
++     
++     Status = gBS->CreateEvent (
++                 EVT_NOTIFY_SIGNAL,
++                 TPL_NOTIFY,
++                 IfConfigManualAddressNotify,
++                 &IsAddressOk,
++                 &MappedEvt
++                 );
++     if (EFI_ERROR(Status))
++         return Status;
++ 
++     IfCfg  = Private->Ip4Config2;  
++     Status = IfCfg->RegisterDataNotify (
++                             IfCfg,
++                             Ip4Config2DataTypeManualAddress,
++                             MappedEvt
++                             );
++     if (EFI_ERROR(Status))
++         return Status;
++     Policy = Ip4Config2PolicyStatic;
++     Status = IfCfg->SetData (
++                             IfCfg,
++                             Ip4Config2DataTypePolicy,
++                             sizeof (EFI_IP4_CONFIG2_POLICY),
++                             &Policy
++                             );
++ 							
++ if (EFI_ERROR(Status))
++         return Status;
++     DataSize = sizeof (EFI_IP4_CONFIG2_MANUAL_ADDRESS);
++     
++     Status = IfCfg->SetData (
++                           IfCfg,
++                           Ip4Config2DataTypeManualAddress,
++                           DataSize,
++                           &ManualAddress
++                           );
++     if (Status == EFI_NOT_READY) {
++         gBS->SetTimer (TimeOutEvt, TimerRelative, 50000000);
++         while (EFI_ERROR (gBS->CheckEvent (TimeOutEvt))) {
++             if (IsAddressOk) {
++                 Status = EFI_SUCCESS;
++                 break;
++       }
++     }
++     }
++ 
++     Status = IfCfg->UnregisterDataNotify (
++                  IfCfg,
++                  Ip4Config2DataTypeManualAddress,
++                  MappedEvt
++                  );
++     
++     return Status;
++ }                    
++ 
++ /**
++   The notify function of create event when performing a manual config.
++ 
++   @param[in]    Event        The event this notify function registered to.
++   @param[in]    Context      Pointer to the context data registered to the event.
++ 
++ **/
++ VOID
++ EFIAPI
++ IfConfig6ManualAddressNotify (
++   IN EFI_EVENT    Event,
++   IN VOID         *Context
++   )
++ {
++   *((BOOLEAN *) Context) = TRUE;
++ }
++ /**
++   Configure Static Ipv6 Address using Ip6config Protocol
++ 
++   @param[in]  Private             Pointer to HTTP boot driver private data.
++ **/
++ 
++ EFI_STATUS 
++ StaticHttpIPv6Boot (HTTP_BOOT_PRIVATE_DATA        *Private)
++ {
++     EFI_STATUS                       Status;
++     EFI_IP6_CONFIG_PROTOCOL          *IfCfg;
++ 	EFI_IP6_CONFIG_MANUAL_ADDRESS    CfgManAddr;
++ 	UINT32                           CurDadXmits;
++ 	UINTN                            CurDadXmitsLen;
++ 	EFI_IP6_CONFIG_POLICY            Policy;
++ 	EFI_EVENT                        TimeOutEvt;
++ 	EFI_EVENT                        MappedEvt;
++ 	BOOLEAN                          IsAddressOk;
++     
++ 	 // Set static host ip6 address list.
++ 	 //   This is a asynchronous process.
++ 	 //
++ 	CopyMem (&CfgManAddr.Address,&Private->StationIp.v6,sizeof(EFI_IPv6_ADDRESS));
++ 	CfgManAddr.PrefixLength = IP6_PREFIX_LENGTH;
++ 	CfgManAddr.IsAnycast = FALSE ;
++ 	
++ 	IsAddressOk = FALSE;
++ 	IfCfg  = Private->Ip6Config;
++ 	Status = gBS->CreateEvent (
++ 	                 EVT_TIMER,
++ 	                 TPL_CALLBACK,
++ 	                 NULL,
++ 	                 NULL,
++ 	                 &TimeOutEvt
++ 	                 );
++ 	if (EFI_ERROR(Status))
++ 	 	return Status;
++      
++     Status = gBS->CreateEvent (
++                  EVT_NOTIFY_SIGNAL,
++                  TPL_NOTIFY,
++                  IfConfig6ManualAddressNotify,
++                  &IsAddressOk,
++                  &MappedEvt
++                  );
++     if (EFI_ERROR(Status))
++     	return Status;
++ 
++ 	Status = IfCfg->RegisterDataNotify (
++ 	                     IfCfg,
++ 	                     Ip6ConfigDataTypeManualAddress,
++ 	                     MappedEvt
++ 	                     );
++ 	if (EFI_ERROR (Status)) {
++ 		return Status;
++ 	}
++ 	
++ 	Policy = Ip6ConfigPolicyManual;
++ 	Status = IfCfg->SetData (
++ 	                     IfCfg,
++ 	                     Ip6ConfigDataTypePolicy,
++ 	                     sizeof (EFI_IP6_CONFIG_POLICY),
++ 	                     &Policy
++ 	                     );
++ 	if (EFI_ERROR (Status)) {
++ 	 goto ON_EXIT;
++ 	      }
++          
++ 	Status = IfCfg->SetData (
++ 	                     IfCfg,
++ 	                     Ip6ConfigDataTypeManualAddress,
++ 	                     sizeof(EFI_IP6_CONFIG_MANUAL_ADDRESS),
++ 	                     &CfgManAddr
++ 	                     );
++          
++ 
++ 	if (Status == EFI_NOT_READY) {
++ 	//
++ 	// Get current dad transmits count.
++ 	//
++ 	CurDadXmitsLen = sizeof (EFI_IP6_CONFIG_DUP_ADDR_DETECT_TRANSMITS);
++ 	Status = IfCfg->GetData (
++ 	              IfCfg,
++ 	              Ip6ConfigDataTypeDupAddrDetectTransmits,
++ 	              &CurDadXmitsLen,
++ 	              &CurDadXmits
++ 	              );
++ 	if (EFI_ERROR (Status)) {
++ 	  goto ON_EXIT;
++ 	}
++ 
++ 	gBS->SetTimer (TimeOutEvt, TimerRelative, 50000000 + 10000000 * CurDadXmits);
++ 
++ 	while (EFI_ERROR (gBS->CheckEvent (TimeOutEvt))) {
++ 		if (IsAddressOk) {
++ 		Status = EFI_SUCCESS;
++ 		break;
++ 		}
++ 	}
++ 	}
++ 
++ 	Status = IfCfg->SetData (
++ 	                        IfCfg,
++ 	                        Ip6ConfigDataTypeGateway,
++ 	                        sizeof(EFI_IPv6_ADDRESS),
++ 	                        &Private->GatewayIp.v6
++ 	                        );
++ 	if (EFI_ERROR (Status)) {
++ 		goto ON_EXIT;
++ 	}
++ 
++ ON_EXIT:
++ 
++ 	Status = IfCfg->UnregisterDataNotify (
++ 	           IfCfg,
++ 	            Ip6ConfigDataTypeManualAddress,
++ 	            MappedEvt
++ 	            );
++ 
++ 	if (EFI_ERROR (Status)) {
++ 		return Status;
++ 	}
++ 	return Status;
++              
++ }
++ /*********
++   Get the IPv4Address,subnetMask,GatewayIp using Http Uri given by user,
++   IPV4(ClientAddress,protocol,static or Dhcp ,gatewayip,subnetMask)/Dns(DnsIP1,DnsIP2...,IPn)/Uri(_http://DomainName/xxx.efi)
++ 
++   @param[in]  Uri                   The URI string of the boot file.
++   @param[out] LocalIP       	    Ipv4 LocalP is updated statically based on Uri
++   @param[out] SubnetMask            Ipv4 SubnetMask is updated statically based on Uri
++   @param[out] GatewayIp             Ipv4  GatewayIp is updated statically based on Uri
++   @Param[out] String                The Error Message.
++   
++   @retval EFI_SUCCESS               IP Address is translated from String.
++   @retval EFI_INVALID_PARAMETER     Url is not supported http and https
++           EFI_UNSUPPORTED           If IP Addrress and static Uri is invalid
++ ********/
++ EFI_STATUS
++ VerifyIpv4Address (
++         IN   CHAR16             *Buffer,
++         OUT  EFI_IP_ADDRESS     *LocalIp,
++         OUT  EFI_IP_ADDRESS     *SubnetMask,
++         OUT  EFI_IP_ADDRESS     *GatewayIp,
++         OUT  CHAR16             *String 
++         )
++ {
++     CHAR16                        *EndPointer;
++     RETURN_STATUS                  Status;
++     EFI_IPv4_ADDRESS               Dns;
++     CHAR8                         AsciiUri[URI_STR_MAX_SIZE];
++     
++     if (StrnCmp (Buffer ,L"ipv4(",5)){
++         StrCpyS (String ,URI_STR_MAX_SIZE, L"Invalid Uri Format!");
++         return EFI_UNSUPPORTED;
++     }
++     Buffer +=StrLen(L"ipv4(");
++     Status = StrToIpv4Address (Buffer, &EndPointer,&LocalIp->v4,NULL);
++     if (RETURN_ERROR (Status)){
++         StrCpyS (String ,URI_STR_MAX_SIZE,L"Invalid LocalIP address!");
++         return EFI_UNSUPPORTED;
++     }
++     Buffer = EndPointer;
++     if (StrnCmp(Buffer,L",tcp,static,",12 ) && StrnCmp(Buffer,L",tcp,dhcp,",10 )){
++         StrCpyS (String ,URI_STR_MAX_SIZE, L"Invalid Uri Format!");
++         return EFI_UNSUPPORTED;
++     }
++     if (StrnCmp(Buffer,L",tcp,dhcp,",10))
++         Buffer +=StrLen(L",tcp,static,");
++     else 
++         Buffer +=StrLen(L",tcp,dhcp,");
++     
++     Status = StrToIpv4Address (Buffer,&EndPointer, &GatewayIp->v4,NULL);
++     if (RETURN_ERROR(Status)) {
++         StrCpyS (String ,URI_STR_MAX_SIZE,L"Invalid GatewayIP Address!");
++         return EFI_UNSUPPORTED;
++     }
++     Buffer = EndPointer + 1;
++     Status = StrToIpv4Address (Buffer,&EndPointer, &SubnetMask->v4,NULL);
++     if (RETURN_ERROR(Status)) {
++         StrCpyS (String ,URI_STR_MAX_SIZE,L"Invalid SubnetMask Address!");
++         return EFI_UNSUPPORTED;
++     }
++     Buffer = EndPointer;
++     if (StrnCmp(Buffer,L")/uri(",6) && StrnCmp(Buffer,L")/dns(",6)){
++         StrCpyS (String ,URI_STR_MAX_SIZE, L"Invalid Uri Format!");
++         return EFI_UNSUPPORTED;
++     }
++     if (!StrnCmp(Buffer,L")/dns(",6))
++     {
++         Buffer += StrLen(L")/dns(");
++         do{
++             Status  = StrToIpv4Address (Buffer,&EndPointer, &Dns,NULL);
++             if (RETURN_ERROR(Status)) {
++                StrCpyS (String ,URI_STR_MAX_SIZE,L"Invalid DnsServerIP Address!");
++                return EFI_UNSUPPORTED;
++              }
++             Buffer = EndPointer +1;
++         }while(*EndPointer == L',');   
++     }
++     if (!StrnCmp (Buffer,L"}/uri(",6)){
++         Buffer +=StrLen(L")/uri(");
++         UnicodeStrToAsciiStrS (Buffer, AsciiUri, URI_STR_MAX_SIZE);
++         Status = HttpBootCheckUriScheme (AsciiUri);
++         return Status;
++     }
++         
++     return EFI_SUCCESS;
++ }
++ 
++ /******
++   Get the IPv6Address,GatewayIp6Address using Http Uri given by user,
++   IPV6(LocalIp6Address,Tcp,static or dhcp,gatewayip6Address)/Dns(IP1,IP2,...,IPn)/Uri(_http://DomainName/xxx.efi)
++ 
++   @param[in]  Buffer                  URI string of the boot file.
++   @param[out] LocalIp                 Ipv6 LocalIp Address is updated statically based on Uri
++   @param[out] GatewayIp               Ipv6  GatewayIp is updated statically based on Uri
++   @Param[out] String                  The Error Message.
++   
++   @retval EFI_SUCCESS                 IP Address is translated from String.
++   @retval EFI_INVALID_PARAMETER    	  Url is not supported http and https
++           EFI_UNSUPPORTED             If IP Address is Invalid and Static Uri is invalid
++ *******/
++ EFI_STATUS
++ VerifyIpv6Address (
++       IN   CHAR16 			*Buffer,
++       OUT  EFI_IP_ADDRESS 	*LocalIp,
++       OUT  EFI_IP_ADDRESS 	*GatewayIp,
++       OUT  CHAR16 			*String  
++ 	  )
++ {
++     
++     CHAR16                        *EndPointer;
++     RETURN_STATUS                  Status;
++     EFI_IPv6_ADDRESS                 Dns;
++     CHAR8                         AsciiUri[URI_STR_MAX_SIZE];
++     
++     if (StrnCmp (Buffer ,L"ipv6(",5)){
++         StrCpyS (String ,URI_STR_MAX_SIZE, L"Invalid Uri Format!");
++         return EFI_UNSUPPORTED;
++     }
++     Buffer += StrLen (L"ipv6(");
++     Status = StrToIpv6Address (Buffer, &EndPointer,&LocalIp->v6,NULL);
++     if (RETURN_ERROR (Status)){
++       StrCpyS (String ,URI_STR_MAX_SIZE, L"Invalid LocalIP address!");
++       return EFI_UNSUPPORTED;
++     }
++     Buffer = EndPointer;
++     if (StrnCmp(Buffer,L",tcp,static,",12) && StrnCmp(Buffer,L",tcp,dhcp,",10)){
++       StrCpyS (String ,URI_STR_MAX_SIZE, L"Invalid Uri Format!");
++       return EFI_UNSUPPORTED;
++     }
++     if (StrnCmp(Buffer,L",tcp,dhcp,",10))
++         Buffer +=StrLen(L",tcp,static,");
++     else
++         Buffer +=StrLen(L",tcp,dhcp,");
++     
++     Status = StrToIpv6Address (Buffer,&EndPointer, &GatewayIp->v6,NULL);
++     if (RETURN_ERROR (Status) ) {
++       StrCpyS (String ,URI_STR_MAX_SIZE, L"Invalid GatewayIP Address!");
++       return EFI_UNSUPPORTED;
++     }
++     Buffer = EndPointer;
++     if (StrnCmp(Buffer,L")/uri(",6) && StrnCmp(Buffer,L")/dns(",6)){
++         StrCpyS (String ,URI_STR_MAX_SIZE, L"Invalid Uri Format!");
++         return EFI_UNSUPPORTED;
++     }
++     if (!StrnCmp(Buffer,L")/dns(",6))
++     {
++         Buffer += StrLen(L")/dns(");
++         do{
++             Status  = StrToIpv6Address (Buffer,&EndPointer, &Dns,NULL);
++             if (RETURN_ERROR(Status)) {
++                StrCpyS (String ,URI_STR_MAX_SIZE,L"Invalid DnsServerIP Address!");
++                return EFI_UNSUPPORTED;
++              }
++             Buffer = EndPointer +1;
++         }while(*EndPointer == L',');   
++     }
++     if (!StrnCmp (Buffer,L"}/uri(",6)){
++         Buffer +=StrLen(L")/uri(");
++         UnicodeStrToAsciiStrS (Buffer, AsciiUri, URI_STR_MAX_SIZE);
++         Status = HttpBootCheckUriScheme (AsciiUri);
++         return Status;
++     }
++     return EFI_SUCCESS;
++ }
++ /******
++ This function checks static Uri given by user and returns BOOLEAN(TRUE:valid Uri,FALSE:Invalid Uri)
++ 
++ @param[in]  Buffer               The URI string of the boot file.
++ 
++ @retval SUCCESS   Uri and static IP address are valid. 
++         EFI_UNSUPPORTED Static Uri is invalid Format.
++ 		EFI_INVALID_PARAMETER  Url is not supported http and https
++ *******/
++ EFI_STATUS
++ HttpBootCheckStaticUri(IN CHAR16 *Uri)
++ {
++     EFI_STATUS                      Status;
++     EFI_INPUT_KEY                   Key;
++     EFI_IP_ADDRESS                  LocalIp;
++     EFI_IP_ADDRESS                  SubnetMask;
++     EFI_IP_ADDRESS                  GatewayIp;
++     CHAR16                          ErrorMessage[URI_STR_MAX_SIZE];
++     UINTN                           Index = 0;
++     
++     if (StrLen (Uri) == 0)
++         return EFI_INVALID_PARAMETER;
++       
++     for (Index = 0; Index < StrLen (Uri); Index++) {
++         if (Uri[Index] == L'/' && Uri[Index + 1] == L'/') {
++           break;
++         }
++       if (Uri[Index] >= L'A' && Uri[Index] <= L'Z') {
++         Uri[Index] -= (CHAR16)(L'A' - L'a');
++       }
++     }
++     if (StrnCmp (Uri,L"ipv4(",5) == 0){
++         Status = VerifyIpv4Address (Uri,&LocalIp,&SubnetMask,&GatewayIp,ErrorMessage);
++         if (EFI_ERROR(Status)){
++            CreatePopUp (
++                EFI_LIGHTGRAY | EFI_BACKGROUND_BLUE,
++                &Key,
++                ErrorMessage,
++                NULL
++                );
++            return Status;
++        }
++     }else if (StrnCmp (Uri,L"ipv6(",5) == 0){
++         Status = VerifyIpv6Address (Uri,&LocalIp,&GatewayIp,ErrorMessage);
++         if (EFI_ERROR(Status)){
++             CreatePopUp (
++                EFI_LIGHTGRAY | EFI_BACKGROUND_BLUE,
++                &Key,
++                ErrorMessage,
++                NULL
++                );
++             return Status;
++         }
++     }else  if ((StrnCmp(Uri, L"http://", 7) != 0) && (StrnCmp(Uri, L"https://", 8) != 0)){
++         CreatePopUp (
++                EFI_LIGHTGRAY | EFI_BACKGROUND_BLUE,
++                &Key,
++                L"Invalid Uri",
++                NULL
++                );
++         return EFI_UNSUPPORTED;
++     }
++     return EFI_SUCCESS ;
++ }
++ /**
++   Checks the HttpBoot Mode is static or Dhcp  from the Input Devicepath.
++   And Update Private Variable Private->UsingStatic
++ 
++ 
++   @param[in]   FilePath         Pointer to the device path which contains a IPV4 and IPv6 device path node.
++ 
++   @retval EFI_SUCCESS            The IPV4 Address  and IPv6 Address are successfully assigned to Private variable  
++           EFI_INVALID_PARAMETER   If FilePath is Null
++ **/
++ EFI_STATUS
++ HttpBootCheckBootType (IN     EFI_DEVICE_PATH_PROTOCOL     *FilePath,IN HTTP_BOOT_PRIVATE_DATA         *Private)
++ {
++     EFI_DEVICE_PATH_PROTOCOL  *TempDevicePath;
++     EFI_DEV_PATH                      *Node;
++ 
++       if (FilePath == NULL) {
++         return EFI_INVALID_PARAMETER;
++       }
++       
++       TempDevicePath = FilePath;
++       while (!IsDevicePathEnd (TempDevicePath)) {
++         if ((DevicePathType (TempDevicePath) == MESSAGING_DEVICE_PATH)){
++             if (DevicePathSubType (TempDevicePath) == MSG_IPv4_DP){ 
++                 Node = (EFI_DEV_PATH *)TempDevicePath ;
++                 Private->UsingStatic = Node->Ipv4.StaticIpAddress ;
++             }else if (DevicePathSubType (TempDevicePath) == MSG_IPv6_DP){
++                 Node = (EFI_DEV_PATH *)TempDevicePath ;
++                 Private->UsingStatic =(Node->Ipv6.IpAddressOrigin == 0x03) ? TRUE : FALSE;
++             }
++         }
++         TempDevicePath = NextDevicePathNode (TempDevicePath);
++       }
++ 
++       return EFI_SUCCESS;
++ }
++ /**
++   Get the IPv4 and IPv6 Dns Address from Input Uri
++ 
++ 
++   @param[in]   Uri               Input Uri from Filepath
++   @param[in]   UsingIPv6         Specifies the type of IP addresses.
++   @param[in]   Private           The pointer to the driver's private data.
++ 
++   @retval EFI_SUCCESS            The IPV4 Address  and IPv6 Address are successfully assigned to HTTP boot driver private data. 
++           EFI_INVALID_PARAMETER   If Uri is not a valid Static Devicepath URI
++ **/
++ EFI_STATUS
++ HttpBootParseDnsIp(IN CHAR8  *Uri,BOOLEAN  UsingIpv6,IN HTTP_BOOT_PRIVATE_DATA         *Private)
++ {
++     EFI_STATUS           Status;
++     CHAR16               Uri2[URI_STR_MAX_SIZE];
++     UINT32               Index = 0;
++     UINTN                UriStrLength = 0;
++     CHAR16              *EndPointer;
++     CHAR16              *Buffer;
++     UINTN                DataSize = 0;
++     
++     if (Uri == NULL)
++         return EFI_SUCCESS;
++     AsciiStrToUnicodeStrS(Uri,Uri2,URI_STR_MAX_SIZE);
++     UriStrLength = AsciiStrLen(Uri) + 1;
++     Status = HttpBootCheckStaticUri(Uri2);
++     if (EFI_ERROR(Status))
++         return Status;
++     if (Buffer = StrStr(Uri2,L"dns("))
++     {
++         Buffer += 4;
++         DataSize = sizeof(EFI_IP_ADDRESS) ;
++         Private->DnsServerIp = AllocateZeroPool(DataSize);
++         if (UsingIpv6)
++             Status = StrToIpv6Address (Buffer,&EndPointer,&Private->DnsServerIp[Index++].v6,NULL);
++         else
++             Status = StrToIpv4Address (Buffer,&EndPointer,&Private->DnsServerIp[Index++].v4,NULL);
++         if (EFI_ERROR(Status)){
++             FreePool(Private->DnsServerIp);
++             Private->DnsServerIp = NULL;
++             return Status;
++         }
++         while(*EndPointer == L','){
++             Private->DnsServerIp = ReallocatePool(DataSize,DataSize + sizeof(EFI_IP_ADDRESS),Private->DnsServerIp);
++             if (UsingIpv6)
++                 Status = StrToIpv6Address (Buffer,&EndPointer,&Private->DnsServerIp[Index++].v6,NULL);
++             else
++                 Status = StrToIpv4Address (Buffer,&EndPointer,&Private->DnsServerIp[Index++].v4,NULL);
++             if (EFI_ERROR(Status)){
++                 FreePool(Private->DnsServerIp);
++                 Private->DnsServerIp = NULL;
++                 return Status;
++             }
++             Buffer = EndPointer + 1;
++         }while(*EndPointer == L',');
++     Private->DnsServerCount = Index;
++     if (Buffer = StrStr(Uri2,L"http")){
++         for (Index =0;Buffer[Index] != L')' && Buffer[Index] != L'\0'  ;Index++);
++         Buffer[Index] = L'\0';
++     }
++     UnicodeStrToAsciiStrS(Buffer,Uri,UriStrLength);
++     }
++     return EFI_SUCCESS;
++ }
++ 

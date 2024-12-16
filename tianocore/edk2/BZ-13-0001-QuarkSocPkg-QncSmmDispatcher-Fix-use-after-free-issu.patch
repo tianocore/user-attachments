@@ -1,0 +1,147 @@
+From 5f99a85642954697e216b53cea72ddaaad7941d3 Mon Sep 17 00:00:00 2001
+From: Michael Kinney <michael.d.kinney@intel.com>
+Date: Tue, 4 Oct 2016 10:55:24 -0700
+Subject: [Patch] QuarkSocPkg/QncSmmDispatcher: Fix use after free issue
+
+Update Quark North Cluster SMM dispatcher logic to handle
+case where an SMI handler unregisters itself.
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=51
+
+Cc: Kelly Steele <kelly.steele@intel.com>
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Michael Kinney <michael.d.kinney@intel.com>
+---
+ .../Smm/DxeSmm/QncSmmDispatcher/QNCSmm.h           |  4 +-
+ .../Smm/DxeSmm/QncSmmDispatcher/QNCSmmCore.c       | 43 +++++++++++++++++++---
+ 2 files changed, 40 insertions(+), 7 deletions(-)
+
+diff --git a/QuarkSocPkg/QuarkNorthCluster/Smm/DxeSmm/QncSmmDispatcher/QNCSmm.h b/QuarkSocPkg/QuarkNorthCluster/Smm/DxeSmm/QncSmmDispatcher/QNCSmm.h
+index 892294f..2ad1f51 100644
+--- a/QuarkSocPkg/QuarkNorthCluster/Smm/DxeSmm/QncSmmDispatcher/QNCSmm.h
++++ b/QuarkSocPkg/QuarkNorthCluster/Smm/DxeSmm/QncSmmDispatcher/QNCSmm.h
+@@ -1,7 +1,7 @@
+ /** @file
+ Prototypes and defines for the QNC SMM Dispatcher.
+ 
+-Copyright (c) 2013-2015 Intel Corporation.
++Copyright (c) 2013-2016 Intel Corporation.
+ 
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+@@ -387,6 +387,8 @@ struct _DATABASE_RECORD {
+   UINT32                Signature;
+   LIST_ENTRY            Link;
+ 
++  BOOLEAN               Processed;
++  
+   //
+   // Status and Enable bit description
+   //
+diff --git a/QuarkSocPkg/QuarkNorthCluster/Smm/DxeSmm/QncSmmDispatcher/QNCSmmCore.c b/QuarkSocPkg/QuarkNorthCluster/Smm/DxeSmm/QncSmmDispatcher/QNCSmmCore.c
+index ba8c721..f21db8a 100644
+--- a/QuarkSocPkg/QuarkNorthCluster/Smm/DxeSmm/QncSmmDispatcher/QNCSmmCore.c
++++ b/QuarkSocPkg/QuarkNorthCluster/Smm/DxeSmm/QncSmmDispatcher/QNCSmmCore.c
+@@ -2,7 +2,7 @@
+ This driver is responsible for the registration of child drivers
+ and the abstraction of the QNC SMI sources.
+ 
+-Copyright (c) 2013-2015 Intel Corporation.
++Copyright (c) 2013-2016 Intel Corporation.
+ 
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+@@ -591,6 +591,7 @@ QNCSmmCoreDispatcher (
+   BOOLEAN             ChildWasDispatched;
+ 
+   DATABASE_RECORD     *RecordInDb;
++  DATABASE_RECORD     ActiveRecordInDb;
+   LIST_ENTRY          *LinkInDb;
+   DATABASE_RECORD     *RecordToExhaust;
+   LIST_ENTRY          *LinkToExhaust;
+@@ -613,6 +614,16 @@ QNCSmmCoreDispatcher (
+   ChildWasDispatched    = FALSE;
+ 
+   //
++  // Mark all child handlers as not processed 
++  //
++  LinkInDb = GetFirstNode (&mPrivateData.CallbackDataBase);
++  while (!IsNull (&mPrivateData.CallbackDataBase, LinkInDb)) {
++    RecordInDb = DATABASE_RECORD_FROM_LINK (LinkInDb);
++    RecordInDb->Processed = FALSE;
++    LinkInDb = GetNextNode (&mPrivateData.CallbackDataBase, LinkInDb);
++  }
++  
++  //
+   // Preserve Index registers
+   //
+   SaveState ();
+@@ -633,6 +644,12 @@ QNCSmmCoreDispatcher (
+ 
+       while ((!IsNull (&mPrivateData.CallbackDataBase, LinkInDb)) && (ResetListSearch == FALSE)) {
+         RecordInDb = DATABASE_RECORD_FROM_LINK (LinkInDb);
++        //
++        // Make a copy of the record that contains an active SMI source,
++        // because un-register maybe invoked in callback function and 
++        // RecordInDb maybe released
++        //
++        CopyMem (&ActiveRecordInDb, RecordInDb, sizeof (ActiveRecordInDb));
+ 
+         //
+         // look for the first active source
+@@ -662,6 +679,13 @@ QNCSmmCoreDispatcher (
+           //
+           while (!IsNull (&mPrivateData.CallbackDataBase, LinkToExhaust)) {
+             RecordToExhaust = DATABASE_RECORD_FROM_LINK (LinkToExhaust);
++            LinkToExhaust = GetNextNode (&mPrivateData.CallbackDataBase, LinkToExhaust);
++            if (RecordToExhaust->Processed) {
++              //
++              // Record has already been processed.  Continue with next child handler.
++              //
++              continue;
++            }
+ 
+             if (CompareSources (&RecordToExhaust->SrcDesc, &ActiveSource)) {
+               //
+@@ -692,6 +716,11 @@ QNCSmmCoreDispatcher (
+                 ContextsMatch = TRUE;
+               }
+ 
++              //
++              // Mark this child handler so it will not be processed again
++              //
++              RecordToExhaust->Processed = TRUE;
++
+               if (ContextsMatch) {
+ 
+                 if (RecordToExhaust->BufferSize != 0) {
+@@ -720,11 +749,13 @@ QNCSmmCoreDispatcher (
+                   SxChildWasDispatched = TRUE;
+                 }
+               }
++              //
++              // Can not used RecordInDb after this point because Callback may have unregisted RecordInDb
++              // Restart processing of SMI handlers from thge begining of the linked list because the 
++              // state of the linked listed may have been modifed due to unregister actions in the Callback.
++              //        
++              LinkToExhaust = GetFirstNode (&mPrivateData.CallbackDataBase);
+             }
+-            //
+-            // Get next record in DB
+-            //
+-            LinkToExhaust = GetNextNode (&mPrivateData.CallbackDataBase, &RecordToExhaust->Link);
+           }
+ 
+           if (RecordInDb->ClearSource == NULL) {
+@@ -736,7 +767,7 @@ QNCSmmCoreDispatcher (
+             //
+             // This source requires special handling to clear
+             //
+-            RecordInDb->ClearSource (&ActiveSource);
++            ActiveRecordInDb.ClearSource (&ActiveSource);
+           }
+ 
+           if (ChildWasDispatched) {
+-- 
+2.6.3.windows.1
+

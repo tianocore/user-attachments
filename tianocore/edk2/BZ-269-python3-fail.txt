@@ -1,0 +1,44 @@
+build -a X64 -p OvmfPkg/OvmfPkgX64.dsc -t GCC48 -b NOOPT -n 1 \
+        -m ShellPkg/Application/Shell/Shell.inf
+Build environment: Linux-3.10.0-862.15.1.el7.x86_64-x86_64-with-redhat-7.5-Maipo
+Build start time: 00:02:02, Mar.09 2019
+
+WORKSPACE        = /.../edk2
+EDK_TOOLS_PATH   = /.../edk2/BaseTools
+CONF_PATH        = /.../edk2/Conf
+PYTHON_COMMAND   = /usr/bin/python3.4
+
+
+Architecture(s)  = X64
+Build target     = NOOPT
+Toolchain        = GCC48
+
+Active Platform          = /.../edk2/OvmfPkg/OvmfPkgX64.dsc
+Active Module            = /.../edk2/ShellPkg/Application/Shell/Shell.inf
+Flash Image Definition   = /.../edk2/OvmfPkg/OvmfPkgX64.fdf
+
+Processing meta-data ..... done!
+Generating code .. done!
+Generating makefile . done!
+Building ... /.../edk2/ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib.inf [X64]
+make[1]: Entering directory `/.../edk2/Build/OvmfX64/NOOPT_GCC48/X64/ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib'
+"gcc" -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=UefiShellNetwork1CommandsLibStrings -m64 -fno-stack-protector "-DEFIAPI=__attribute__((ms_abi))" -maccumulate-outgoing-args -mno-red-zone -Wno-address -mcmodel=small -fpie -fno-asynchronous-unwind-tables -Wno-address -O0 -mno-mmx -mno-sse -D DISABLE_NEW_DEPRECATED_INTERFACES -c -o /.../edk2/Build/OvmfX64/NOOPT_GCC48/X64/ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib/OUTPUT/./UefiShellNetwork1CommandsLib.obj -I/.../edk2/ShellPkg/Library/UefiShellNetwork1CommandsLib -I/.../edk2/Build/OvmfX64/NOOPT_GCC48/X64/ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib/DEBUG -I/.../edk2/MdePkg -I/.../edk2/MdePkg/Include -I/.../edk2/MdePkg/Include/X64 -I/.../edk2/ShellPkg -I/.../edk2/ShellPkg/Include -I/.../edk2/MdeModulePkg -I/.../edk2/MdeModulePkg/Include /.../edk2/ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib.c
+make[1]: *** read jobs pipe: Invalid argument.  Stop.
+make[1]: *** Waiting for unfinished jobs....
+make[1]: Leaving directory `/.../edk2/Build/OvmfX64/NOOPT_GCC48/X64/ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib'
+
+
+build.py...
+ : error 7000: Failed to execute command
+        make tbuild [/.../edk2/Build/OvmfX64/NOOPT_GCC48/X64/ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib]
+
+
+build.py...
+ : error F002: Failed to build module
+        /.../edk2/ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib.inf [X64, GCC48, NOOPT]
+
+- Failed -
+Build end time: 00:02:11, Mar.09 2019
+Build total time: 00:00:08
+
+make: *** [test-build] Error 1

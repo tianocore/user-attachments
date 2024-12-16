@@ -1,0 +1,115 @@
+From 581a29ed01c7ebe261b0e36618bc2fa0443b5684 Mon Sep 17 00:00:00 2001
+Message-Id: <581a29ed01c7ebe261b0e36618bc2fa0443b5684.1675184375.git.edhaya.chandran@arm.com>
+From: edhay <edhaya.chandran@arm.com>
+Date: Tue, 31 Jan 2023 22:25:36 +0530
+Subject: [PATCH] UEFI-SCT: SctPkg: Replaced the incorrect references
+ RANDOM_NAME_PROTOCOL to RANDOM_NUMBER_PROTOCOL
+
+Replaced the incorrect references RANDOM_NAME_PROTOCOL to RANDOM_NUMBER_PROTOCOL
+9 instances were replaced
+
+Please find more details in the ticket: https://bugzilla.tianocore.org/show_bug.cgi?id=4328
+
+Cc: Barton Gao <gaojie@byosoft.com.cn>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@amd.com>
+Cc: Samer El-Haj-Mahmoud <samer.el-haj-mahmoud@arm.com>
+Cc: Sunny Wang <sunny.wang@arm.com>
+
+Signed-off-by: G Edhaya Chandran<edhaya.chandran@arm.com>
+---
+ .../BlackBoxTest/RandomNumberBBTestConformance.c       | 10 +++++-----
+ .../BlackBoxTest/RandomNumberBBTestFunction.c          |  8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c
+index 47e7800f..5e55f639 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c
+@@ -223,7 +223,7 @@ BBTestGetRNGConformanceTestCheckpoint1 (
+                    StandardLib,
+                    EFI_TEST_ASSERTION_FAILED,
+                    gTestGenericFailureGuid,
+-                   L"RANDOM_NAME_PROTOCOL.GetInfo - GetInfo() is not supported or EFI_DEVICE_ERROR",
++                   L"RANDOM_NUMBER_PROTOCOL.GetInfo - GetInfo() is not supported or EFI_DEVICE_ERROR",
+                    L"%a:%d: Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -303,7 +303,7 @@ BBTestGetRNGConformanceTestCheckpoint1 (
+                  StandardLib,
+                  AssertionType,
+                  gConformanceTestAssertionGuid002,
+-                 L"RANDOM_NAME_PROTOCOL.GetRNG - GetRNG() returns EFI_INVALID_PARAMETER when RNGValueLength is 0",
++                 L"RANDOM_NUMBER_PROTOCOL.GetRNG - GetRNG() returns EFI_INVALID_PARAMETER when RNGValueLength is 0",
+                  L"%a:%d: Status - %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -326,7 +326,7 @@ BBTestGetRNGConformanceTestCheckpoint1 (
+                  StandardLib,
+                  AssertionType,
+                  gConformanceTestAssertionGuid003,
+-                 L"RANDOM_NAME_PROTOCOL.GetRNG - GetRNG() returns EFI_INVALID_PARAMETER when RNGValue is NULL",
++                 L"RANDOM_NUMBER_PROTOCOL.GetRNG - GetRNG() returns EFI_INVALID_PARAMETER when RNGValue is NULL",
+                  L"%a:%d: Status - %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -352,7 +352,7 @@ BBTestGetRNGConformanceTestCheckpoint1 (
+                  StandardLib,
+                  AssertionType,
+                  gConformanceTestAssertionGuid004,
+-                 L"RANDOM_NAME_PROTOCOL.GetRNG - GetRNG() returns EFI_INVALID_PARAMETER when RNGValueLength is 0",
++                 L"RANDOM_NUMBER_PROTOCOL.GetRNG - GetRNG() returns EFI_INVALID_PARAMETER when RNGValueLength is 0",
+                  L"%a:%d: Status - %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -375,7 +375,7 @@ BBTestGetRNGConformanceTestCheckpoint1 (
+                  StandardLib,
+                  AssertionType,
+                  gConformanceTestAssertionGuid005,
+-                 L"RANDOM_NAME_PROTOCOL.GetRNG - GetRNG() returns EFI_INVALID_PARAMETER when RNGValue is NULL",
++                 L"RANDOM_NUMBER_PROTOCOL.GetRNG - GetRNG() returns EFI_INVALID_PARAMETER when RNGValue is NULL",
+                  L"%a:%d: Status - %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c
+index df879e4c..23c8e730 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c
+@@ -248,7 +248,7 @@ BBTestGetInfoFunctionTestCheckpoint1 (
+                  StandardLib,
+                  AssertionType,
+                  gFunctionTestAssertionGuid002,
+-                 L"RANDOM_NAME_PROTOCOL.GetInfo - GetInfo() returns EFI_SUCCESS with valid parameters",
++                 L"RANDOM_NUMBER_PROTOCOL.GetInfo - GetInfo() returns EFI_SUCCESS with valid parameters",
+                  L"%a:%d: Status - %r, RNGAlgorithmListSize - %d",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -271,7 +271,7 @@ BBTestGetInfoFunctionTestCheckpoint1 (
+                    StandardLib,
+                    AssertionType,
+                    gFunctionTestAssertionGuid003,
+-                   L"RANDOM_NAME_PROTOCOL.GetInfo - GetInfo() should returns valid algo",
++                   L"RANDOM_NUMBER_PROTOCOL.GetInfo - GetInfo() should returns valid algo",
+                    L"%a:%d:",
+                    __FILE__,
+                    (UINTN)__LINE__
+@@ -316,7 +316,7 @@ BBTestGetRNGFunctionTestCheckpoint1 (
+                    StandardLib,
+                    EFI_TEST_ASSERTION_FAILED,
+                    gTestGenericFailureGuid,
+-                   L"RANDOM_NAME_PROTOCOL.GetInfo - GetInfo() is not supported or EFI_DEVICE_ERROR",
++                   L"RANDOM_NUMBER_PROTOCOL.GetInfo - GetInfo() is not supported or EFI_DEVICE_ERROR",
+                    L"%a:%d: Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -400,7 +400,7 @@ BBTestGetRNGFunctionTestCheckpoint1 (
+                    StandardLib,
+                    AssertionType,
+                    gFunctionTestAssertionGuid004,
+-                   L"RANDOM_NAME_PROTOCOL.GetRNG - GetRNG() should returns EFI_SUCCESS with valid parameters",
++                   L"RANDOM_NUMBER_PROTOCOL.GetRNG - GetRNG() should returns EFI_SUCCESS with valid parameters",
+                    L"%a:%d: Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-- 
+2.17.1
+

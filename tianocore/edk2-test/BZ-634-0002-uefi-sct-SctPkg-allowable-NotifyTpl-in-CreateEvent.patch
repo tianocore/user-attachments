@@ -1,0 +1,69 @@
+From 1484851907459db25df44a9920655754ab4c51b5 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Wed, 6 Jan 2021 12:20:57 +0100
+Subject: [PATCH 2/2] uefi-sct/SctPkg: allowable NotifyTpl in CreateEvent
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3057
+
+According to table Table 27. TPL Restrictions in UEFI spec 2.8 B:
+
+Event Notification Levels must be "> TPL_APPLICATION" and "<= TPL_HIGH_LEVEL".
+
+In the conformance test for CreateEvent() check that TPL_APPLICATION
+results in EFI_INVALID_PARAMETER if the event can be notified.
+
+In the functional tests check that events can be created with
+TPL_HIGH_LEVEL.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../EventTimerTaskPriorityServicesBBTestCreateEvent.c        | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/EventTimerTaskPriorityServices/BlackBoxTest/EventTimerTaskPriorityServicesBBTestCreateEvent.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/EventTimerTaskPriorityServices/BlackBoxTest/EventTimerTaskPriorityServicesBBTestCreateEvent.c
+index f71d6d21b8db..5fc0614192bb 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/EventTimerTaskPriorityServices/BlackBoxTest/EventTimerTaskPriorityServicesBBTestCreateEvent.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/EventTimerTaskPriorityServices/BlackBoxTest/EventTimerTaskPriorityServicesBBTestCreateEvent.c
+@@ -190,6 +190,7 @@ BBTestCreateEvent_Conf_Sub1 (
+   EFI_TPL             NotifyTpls[] = {
+                         TPL_CALLBACK,
+                         TPL_NOTIFY,
++			TPL_HIGH_LEVEL,
+                         0
+                       };
+   EFI_TEST_ASSERTION  AssertionType;
+@@ -263,6 +264,7 @@ BBTestCreateEvent_Conf_Sub2 (
+   EFI_TPL             InvalidNotifyTpls[] = {
+                         (EFI_TPL) (TPL_HIGH_LEVEL + 1),
+                         (EFI_TPL) (TPL_APPLICATION - 1),
++                        (EFI_TPL) TPL_APPLICATION,
+                         (EFI_TPL) -1,
+                         0
+                       };
+@@ -340,6 +342,7 @@ BBTestCreateEvent_Conf_Sub3 (
+   EFI_TPL             NotifyTpls[] = {
+                         TPL_CALLBACK,
+                         TPL_NOTIFY,
++			TPL_HIGH_LEVEL,
+                         0
+                       };
+   EFI_TEST_ASSERTION  AssertionType;
+@@ -404,6 +407,7 @@ BBTestCreateEvent_Conf_Sub4 (
+   EFI_TPL             NotifyTpls[] = {
+                         TPL_CALLBACK,
+                         TPL_NOTIFY,
++			TPL_HIGH_LEVEL,
+                         0
+                       };
+   EFI_TEST_ASSERTION  AssertionType;
+@@ -478,6 +482,7 @@ BBTestCreateEvent_Func_Sub1 (
+   EFI_TPL             NotifyTpls[] = {
+                         TPL_CALLBACK,
+                         TPL_NOTIFY,
++			TPL_HIGH_LEVEL,
+                         0
+                       };
+   EFI_TEST_ASSERTION  AssertionType;
+-- 
+2.29.2
+

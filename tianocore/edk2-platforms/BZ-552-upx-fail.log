@@ -1,0 +1,1041 @@
+=~=~=~=~=~=~=~=~=~=~=~= PuTTY log 2020.09.11 14:52:11 =~=~=~=~=~=~=~=~=~=~=~=
+FSP-T: CAR Init
+PrintPeiCoreEntryPointParam in PlatformInit
+FspHobList - 0x0
+StartOfRange - 0xFEF00000
+EndOfRange - 0xFEF2FF00
+======== TestPointTempMemoryFunction - Enter
+TempRamStart - 0xFEF00000
+TempRamEnd   - 0xFEF2FF00
+==== TestPointDumpCpuInfo - Enter
+CPU info
+  CPUID = 0x000806EB
+  Microcode ID (0x0000008B)  = 0x000000D500000000
+  Platform ID (0x00000017)   = 0x001C000000000000
+==== TestPointDumpCpuInfo - Exit
+TempRamTestStart - 0xFEF00000
+TempRamTestEnd   - 0xFEF2F000
+TempRam Test PASS
+======== TestPointTempMemoryFunction - Exit
+FSP Wrapper BootFirmwareVolumeBase - 0xFFFA0000
+FSP Wrapper BootFirmwareVolumeSize - 0x60000
+FSP Wrapper TemporaryRamBase       - 0xFEF00000
+FSP Wrapper TemporaryRamSize       - 0x2FF00
+FSP Wrapper PeiTemporaryRamBase    - 0xFEF00000
+FSP Wrapper PeiTemporaryRamSize    - 0x17F80
+FSP Wrapper StackBase              - 0xFEF17F80
+FSP Wrapper StackSize              - 0x17F80
+SecStartupPhase2() Stack Base: 0xFEF17F80, Stack Size: 0x17F80
+Register PPI Notify: DCD0BE23-9586-40F4-B643-06522CED4EDE
+Install PPI: 8C8CE578-8A3D-4F1C-9935-896185C32DD3
+Install PPI: 5473C07A-3DCB-4DCA-BD6F-1E9689E7349A
+The 0th FV start address is 0x000FFFA0000, size is 0x00060000, handle is 0xFFFA0000
+Register PPI Notify: 49EDB1C1-BF21-4761-BB12-EB0031AABB39
+Register PPI Notify: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38
+Install PPI: B9E0ABFE-5979-4914-977F-6DEE78C278A6
+Register PPI Notify: 0ECC666B-4662-47F9-9DD5-D096FF7DA49E
+Install PPI: CEAB683C-EC56-4A2D-A906-4053FA4E9C16
+Install PPI: 6F8C2B35-FEF4-448D-8256-E11B19D61077
+Install PPI: 2F3962B2-57C5-44EC-9EFC-A69FD302032B
+Install PPI: 0ECC666B-4662-47F9-9DD5-D096FF7DA49E
+Notify: PPI Guid: 0ECC666B-4662-47F9-9DD5-D096FF7DA49E, Peim notify entry point: FFFF7AB4
+SecGetPerformance
+FPDT: SEC Performance Hob ResetEnd = 401597131
+DiscoverPeimsAndOrderWithApriori(): Found 0xD PEI FFS files in the 0th FV
+Loading PEIM 9B3ADA4F-AE56-4C24-8DEA-F03B7558AE50
+Loading PEIM at 0x000FFFAE100 EntryPoint=0x000FFFAE415 PcdPeim.efi
+Install PPI: 06E81C58-4AD7-44BC-8390-F10265F72480
+Install PPI: 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+Install PPI: 4D8B155B-C059-4C8F-8926-06FD4331DB8A
+Install PPI: A60C6B59-E459-425D-9C69-0BCC9CB27D81
+Register PPI Notify: 605EA650-C65C-42E1-BA80-91A52AB618C6
+Loading PEIM A3610442-E69F-4DF3-82CA-2360C4031A23
+Loading PEIM at 0x000FFFB1A40 EntryPoint=0x000FFFB1D55 ReportStatusCodeRouterPei.efi
+Install PPI: 0065D394-9951-4144-82A3-0AFC8579C251
+Install PPI: 229832D3-7A30-4B36-B827-F40CB7D45436
+Loading PEIM 9D225237-FA01-464C-A949-BAABC02D31D0
+Loading PEIM at 0x000FFFB32C0 EntryPoint=0x000FFFB3655 StatusCodeHandlerPei.efi
+PROGRESS CODE: V03020003 I0
+Loading PEIM AE265864-CF5D-41A8-913D-71C155E76442
+Loading PEIM at 0x000FFFB9240 EntryPoint=0x000FFFB95D5 CpuIoPei.efi
+PROGRESS CODE: V03020002 I0
+Install PPI: E6AF1F7B-FC3F-46DA-A828-A3B457A44282
+PROGRESS CODE: V03020003 I0
+Loading PEIM 4F1F379F-2A62-48BB-AC34-D3F135C6E2B7
+Loading PEIM at 0x000FFFBB1C0 EntryPoint=0x000FFFBB4D5 PcatSingleSegmentPciCfg2Pei.efi
+PROGRESS CODE: V03020002 I0
+Install PPI: 057A449A-1FDC-4C06-BFC9-F53F6A99BB92
+PROGRESS CODE: V03020003 I0
+Loading PEIM AAC33064-9ED0-4B89-A5AD-3EA767960B22
+Loading PEIM at 0x000FFFBF6C0 EntryPoint=0x000FFFBF9D5 FaultTolerantWritePei.efi
+PROGRESS CODE: V03020002 I0
+Install PPI: 1D3E9CB8-43AF-490B-830A-3516AA532047
+PROGRESS CODE: V03020003 I0
+Loading PEIM 3FECFD95-7CB2-4A6E-8FAC-DEFD9947E35E
+Loading PEIM at 0x000FFFC71C0 EntryPoint=0x000FFFC74D5 ReportFvPei.efi
+PROGRESS CODE: V03020002 I0
+TestPointLibSetTable
+Install FlashFvFspT - 0xFFF8A000, 0x6000
+Install PPI: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38
+Notify: PPI Guid: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38, Peim notify entry point: FFFA1139
+The 1th FV start address is 0x000FFF8A000, size is 0x00006000, handle is 0xFFF8A000
+Install FlashFvSecurity - 0xFF9E0000, 0x70000
+Install PPI: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38
+Notify: PPI Guid: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38, Peim notify entry point: FFFA1139
+The 2th FV start address is 0x000FF9E0000, size is 0x00070000, handle is 0xFF9E0000
+Found firmware volume Image File FF9E00E8 in FV[2] FF9E0000
+ProcessFvFile() FV at 0xFF9E0180, FvAlignment required is 0x80
+Install PPI: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38
+Notify: PPI Guid: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38, Peim notify entry point: FFFA1139
+The 3th FV start address is 0x000FF9E0180, size is 0x00010000, handle is 0xFF9E0180
+Install PPI: 49EDB1C1-BF21-4761-BB12-EB0031AABB39
+Notify: PPI Guid: 49EDB1C1-BF21-4761-BB12-EB0031AABB39, Peim notify entry point: FFFA1139
+The FV FF9E0180 has already been processed!
+Found firmware volume Image File FF9F0180 in FV[2] FF9E0000
+Found firmware volume Image File FF9F0260 in FV[2] FF9E0000
+Register PPI Notify: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+PROGRESS CODE: V03020003 I0
+Loading PEIM A842B2D2-5C88-44E9-A9E2-4830F26662B7
+Loading PEIM at 0x000FFFF04C0 EntryPoint=0x000FFFF07DD BiosInfo.efi
+PROGRESS CODE: V03020002 I0
+Install PPI: 09D0D15C-E9F0-4DFC-9E0B-39331FCA6685
+PROGRESS CODE: V03020003 I0
+DiscoverPeimsAndOrderWithApriori(): Found 0x0 PEI FFS files in the 1th FV
+DiscoverPeimsAndOrderWithApriori(): Found 0x3 PEI FFS files in the 2th FV
+FV file FF9E00E8 has been dispatched!
+DiscoverPeimsAndOrderWithApriori(): Found 0x2 PEI FFS files in the 3th FV
+Loading PEIM 34C8C28F-B61C-45A2-8F2E-89E46BECC63B
+Loading PEIM at 0x000FFFBD0C0 EntryPoint=0x000FFFBD3F5 PeiVariable.efi
+PROGRESS CODE: V03020002 I0
+Install PPI: 2AB86EF5-ECB5-4134-B556-3854CA1FE1B4
+PROGRESS CODE: V03020003 I0
+Loading PEIM EEEE611D-F78F-4FB9-B868-55907F169280
+Loading PEIM at 0x000FFFC9E40 EntryPoint=0x000FFFCA289 PlatformInitPreMem.efi
+PROGRESS CODE: V03020002 I0
+TestPointLibSetTable
+Aip (0x2, Minimum Platform TestPoint (PEI)) is found
+Install PPI: 1792429D-9D94-4E08-A099-73A286AEB435
+UpXtremeDetectionCallback
+Processor Brand String = Genuine Intel(R) CPU 0000 @ 1.60GHz
+Processor Unicode Brand String = Genuine Intel(R) CPU 0000 @ 1.60GHz
+CpuFamilyModel 0x806E0, CpuStepping 0xB, CpuDid 0x3E34
+PcdPei - SkuId 0x10 is to be set.
+PcdPei - SkuId is found in SkuId table.
+PcdPei - Set current SKU Id to 0x10.
+SKU_ID: 0x10
+BOM_ID 0x6
+Install PPI: 191DCFCF-E16E-43BB-9BC3-6EEE6FAB3A27
+TestPointLibSetFeaturesVerified - Index:0x0 Mask:0x01
+======== TestPointDebugInitDone - Enter
+!!! DebugInitialized !!!
+TestPointLibSetFeaturesVerified - Index:0x0 Mask:0x02
+======== TestPointDebugInitDone - Exit
+Install PPI: 7408D748-FC8C-4EE6-9288-C4BEC092A410
+Installing StallPpi 
+Install PPI: 1F4C6F90-B06B-48D8-A201-BAE5F1CD7D56
+PchInitializeReset() Start
+Install PPI: 6CC45765-CCE4-42FD-BC56-011AAAC6C9A8
+PchInitializeReset() End
+Register PPI Notify: 2AB86EF5-ECB5-4134-B556-3854CA1FE1B4
+Notify: PPI Guid: 2AB86EF5-ECB5-4134-B556-3854CA1FE1B4, Peim notify entry point: FFFCC3AD
+Up Xtreme Bom ID 0x6
+Using Xtreme SPD Samsung Ddr4
+(WDT) OcWdtResetCheck()
+(WDT) Status OK.
+Install PPI: F38D1338-AF7A-4FB6-91DB-1A9C2183570D
+Silicon PEI Policy Initialization Start in Pre-Memory...
+TotalBlockSize after adding Block[0x0]= 0x20
+TotalBlockSize after adding Block[0x1]= 0x40
+TotalBlockSize after adding Block[0x2]= 0x60
+TotalBlockSize after adding Block[0x3]= 0x80
+TotalBlockSize after adding Block[0x4]= 0x124
+TotalBlockSize after adding Block[0x5]= 0x144
+TotalBlockSize after adding Block[0x6]= 0x220
+TotalBlockSize after adding Block[0x7]= 0x29C
+TotalBlockSize after adding Block[0x8]= 0x2C0
+TotalBlockSize after adding Block[0x9]= 0x2E0
+TotalBlockSize after adding Block[0xA]= 0x300
+TotalBlockSize after adding Block[0x0]= 0x2C
+TotalBlockSize after adding Block[0x0]= 0x78
+TotalBlockSize after adding Block[0x1]= 0x118
+TotalBlockSize after adding Block[0x2]= 0x148
+TotalBlockSize after adding Block[0x3]= 0x1B0
+TotalBlockSize after adding Block[0x4]= 0x2B4
+TotalBlockSize after adding Block[0x5]= 0x3B8
+TotalBlockSize after adding Block[0x6]= 0x3EC
+TotalBlockSize after adding Block[0x7]= 0x418
+TotalBlockSize after adding Block[0x8]= 0x438
+TotalBlockSize after adding Block[0x0]= 0x24
+TotalBlockSize after adding Block[0x1]= 0x58
+TotalBlockSize = 0x7BC
+PCH AddPreMemConfigBlocks
+PchGeneralPreMemConfig->Header.GuidHob.Name = C65F62FA-52B9-4837-86EB-1AFBD4ADBB3E
+PchGeneralPreMemConfig->Header.GuidHob.Header.HobLength = 0x20
+DciPreMemConfig->Header.GuidHob.Name = AB4AF366-2250-40C3-92DB-3661C6713C5A
+DciPreMemConfig->Header.GuidHob.Header.HobLength = 0x20
+WdtPreMemConfig->Header.GuidHob.Name = FBCE08CC-60F2-4BDF-B788-09BB8165522B
+WdtPreMemConfig->Header.GuidHob.Header.HobLength = 0x20
+PchTraceHubPreMemConfig->Header.GuidHob.Name = 08456C11-DB85-4914-8D1A-E5AC6437E896
+PchTraceHubPreMemConfig->Header.GuidHob.Header.HobLength = 0x20
+SmbusPreMemConfig->Header.GuidHob.Name = 77A6E62C-716B-4386-9E9C-23A02E137B3A
+SmbusPreMemConfig->Header.GuidHob.Header.HobLength = 0xA4
+LpcPreMemConfig->Header.GuidHob.Name = A6E6032F-1E58-407E-9AB8-C630C6C4118E
+LpcPreMemConfig->Header.GuidHob.Header.HobLength = 0x20
+HsioPciePreMemConfig->Header.GuidHob.Name = E8FB0C12-0DA1-4A20-B336-FB75938CE014
+HsioPciePreMemConfig->Header.GuidHob.Header.HobLength = 0xDC
+HsioSataPreMemConfig->Header.GuidHob.Name = 732260D0-A5C1-4119-AA0C-93DCAC670A31
+HsioSataPreMemConfig->Header.GuidHob.Header.HobLength = 0x7C
+PcieRpPreMemConfig->Header.GuidHob.Name = 8377AB38-F8B0-476A-9CA1-68EA7857D82A
+PcieRpPreMemConfig->Header.GuidHob.Header.HobLength = 0x24
+PcieRpPreMemConfig->Header.GuidHob.Name = D38F1E2B-21B3-43D1-9FA8-A5E178731E88
+PcieRpPreMemConfig->Header.GuidHob.Header.HobLength = 0x20
+PcieRpPreMemConfig->Header.GuidHob.Name = 7C24E649-C1F0-4CF9-8796-E7A0EE3443F8
+PcieRpPreMemConfig->Header.GuidHob.Header.HobLength = 0x20
+Me AddConfigBlocks. TotalBlockCount = 0x1
+SA AddConfigBlocks. TotalBlockCount = 0x9
+MiscPeiPreMemConfig->Header.GuidHob.Name = 4A525577-3469-4F11-99CF-FBCD5EF184E4
+MiscPeiPreMemConfig->Header.GuidHob.Header.HobLength = 0x78
+PciePeiPreMemConfig->Header.GuidHob.Name = 81BAF3C9-F295-4572-8B21-793FA31BA5DB
+PciePeiPreMemConfig->Header.GuidHob.Header.HobLength = 0xA0
+GtPreMemConfig->Header.GuidHob.Name = 0319C56B-C43A-42F1-80BE-CA5BD1D5C928
+GtPreMemConfig->Header.GuidHob.Header.HobLength = 0x30
+SgConfig->Header.GuidHob.Name = C7956998-C065-46C4-8E2F-582B67EBBE2F
+SgConfig->Header.GuidHob.Header.HobLength = 0x68
+MemConfig->Header.GuidHob.Name = 26CF084C-C9DB-41BB-92C6-D197B8A1E4BF
+MemConfig->Header.GuidHob.Header.HobLength = 0x104
+MemConfigNoCrc->Header.GuidHob.Name = C56C73D0-1CDB-4C0C-A957-EA62A9E6F50C
+MemConfigNoCrc->Header.GuidHob.Header.HobLength = 0x104
+OcPreMemConfig->Header.GuidHob.Name = 09ECC29D-DBBE-49FB-A649-4BF640E2EBD6
+OcPreMemConfig->Header.GuidHob.Header.HobLength = 0x34
+Vtd->Header.GuidHob.Name = 03E5CF63-BEBB-4041-B7E7-BF546120F1C5
+Vtd->Header.GuidHob.Header.HobLength = 0x2C
+IpuPreMemPolicy->Header.GuidHob.Name = 830A222B-3FF5-432E-9DD5-4EE3FCA2AAA2
+IpuPreMemPolicy->Header.GuidHob.Header.HobLength = 0x20
+Applying Sample policy defaults for RVP3
+CPU Pre-Mem Entry 
+CpuConfigLibPreMemConfig->Header.GuidHob.Name = FC1C0EC2-C6B4-4F05-BB85-C8008D5B4AB7
+CpuConfigLibPreMemConfig->Header.GuidHob.Header.HobLength = 0x24
+CpuOverclockingPreMemConfig->Header.GuidHob.Name = 396223B6-6088-44E7-99CB-FA8B993DED4C
+CpuOverclockingPreMemConfig->Header.GuidHob.Header.HobLength = 0x34
+CpuAddPreMemConfigBlocks Done 
+Updating PCH Policy by board config in Pre Mem
+Updating ME Policy by board config in Pre Mem
+UpdatePeiMePolicyPreMem
+Entering Get Config Block function call from UpdatePeiSaPolicyPreMem
+UpdatePeiCpuPolicyPreMem Start
+SpiServiceInit() Start
+Flash Region read Permission : FF
+Flash Region write Permission : FF
+Component 0 SFDP VSCC value : B1D82084
+Component 1 SFDP VSCC value : 2000
+Component Number : 1
+Total Flash Size : 2000000
+PchStrapBaseAddr : 100
+PchStrapSize : 114
+CpuStrapBaseAddr : 300
+CpuStrapSize : C
+SPI PPI Installed
+Install PPI: DADE7CE3-6971-4B75-825E-0EE0EB17722D
+SpiServiceInit() End
+MaxLogicProcessors = 8
+------------------------ PCH Print PreMemPolicy Start ------------------------
+ Revision= 1
+------------------ PCH General PreMem Config ------------------
+ Port80Route= 0
+------------------ PCH DCI PreMem Config ------------------
+PlatformDebugConsent = 0
+DciUsb3TypecUfpDbg = 2
+------------------ PCH WDT PreMem Config ------------------
+DisableAndLock= 0
+------------------ PCH TraceHub PreMem Config ------------------
+EnableMode= 0
+MemReg0Size= 3
+MemReg1Size= 3
+------------------ PCH SMBUS PreMem Config ------------------
+ Enable= 1
+ ArpEnable= 0
+ DynamicPowerGating= 1
+ SpdWriteDisable= 1
+ SmbAlertEnable= 0
+ SmbusIoBase= EFA0
+ NumRsvdSmbusAddresses= 4
+ RsvdSmbusAddressTable= { A2h A0h A2h A0h }
+------------------ PCH LPC PreMem Config ------------------
+EnhancePort8xhDecoding= 1
+------------------ HSIO PCIE PreMem Config ------------------
+ RootPort[0] HsioRxSetCtleEnable= 0
+ RootPort[0] HsioRxSetCtle= 0
+ RootPort[0] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[0] HsioTxGen1DownscaleAmp= 0
+ RootPort[0] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[0] HsioTxGen2DownscaleAmp= 0
+ RootPort[0] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[0] HsioTxGen3DownscaleAmp= 0
+ RootPort[0] HsioTxGen1DeEmphEnable= 0
+ RootPort[0] HsioTxGen1DeEmph= 0
+ RootPort[0] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[0] HsioTxGen2DeEmph3p5= 0
+ RootPort[0] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[0] HsioTxGen2DeEmph6p0= 0
+ RootPort[1] HsioRxSetCtleEnable= 0
+ RootPort[1] HsioRxSetCtle= 0
+ RootPort[1] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[1] HsioTxGen1DownscaleAmp= 0
+ RootPort[1] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[1] HsioTxGen2DownscaleAmp= 0
+ RootPort[1] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[1] HsioTxGen3DownscaleAmp= 0
+ RootPort[1] HsioTxGen1DeEmphEnable= 0
+ RootPort[1] HsioTxGen1DeEmph= 0
+ RootPort[1] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[1] HsioTxGen2DeEmph3p5= 0
+ RootPort[1] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[1] HsioTxGen2DeEmph6p0= 0
+ RootPort[2] HsioRxSetCtleEnable= 0
+ RootPort[2] HsioRxSetCtle= 0
+ RootPort[2] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[2] HsioTxGen1DownscaleAmp= 0
+ RootPort[2] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[2] HsioTxGen2DownscaleAmp= 0
+ RootPort[2] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[2] HsioTxGen3DownscaleAmp= 0
+ RootPort[2] HsioTxGen1DeEmphEnable= 0
+ RootPort[2] HsioTxGen1DeEmph= 0
+ RootPort[2] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[2] HsioTxGen2DeEmph3p5= 0
+ RootPort[2] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[2] HsioTxGen2DeEmph6p0= 0
+ RootPort[3] HsioRxSetCtleEnable= 0
+ RootPort[3] HsioRxSetCtle= 0
+ RootPort[3] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[3] HsioTxGen1DownscaleAmp= 0
+ RootPort[3] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[3] HsioTxGen2DownscaleAmp= 0
+ RootPort[3] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[3] HsioTxGen3DownscaleAmp= 0
+ RootPort[3] HsioTxGen1DeEmphEnable= 0
+ RootPort[3] HsioTxGen1DeEmph= 0
+ RootPort[3] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[3] HsioTxGen2DeEmph3p5= 0
+ RootPort[3] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[3] HsioTxGen2DeEmph6p0= 0
+ RootPort[4] HsioRxSetCtleEnable= 0
+ RootPort[4] HsioRxSetCtle= 0
+ RootPort[4] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[4] HsioTxGen1DownscaleAmp= 0
+ RootPort[4] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[4] HsioTxGen2DownscaleAmp= 0
+ RootPort[4] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[4] HsioTxGen3DownscaleAmp= 0
+ RootPort[4] HsioTxGen1DeEmphEnable= 0
+ RootPort[4] HsioTxGen1DeEmph= 0
+ RootPort[4] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[4] HsioTxGen2DeEmph3p5= 0
+ RootPort[4] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[4] HsioTxGen2DeEmph6p0= 0
+ RootPort[5] HsioRxSetCtleEnable= 0
+ RootPort[5] HsioRxSetCtle= 0
+ RootPort[5] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[5] HsioTxGen1DownscaleAmp= 0
+ RootPort[5] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[5] HsioTxGen2DownscaleAmp= 0
+ RootPort[5] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[5] HsioTxGen3DownscaleAmp= 0
+ RootPort[5] HsioTxGen1DeEmphEnable= 0
+ RootPort[5] HsioTxGen1DeEmph= 0
+ RootPort[5] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[5] HsioTxGen2DeEmph3p5= 0
+ RootPort[5] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[5] HsioTxGen2DeEmph6p0= 0
+ RootPort[6] HsioRxSetCtleEnable= 0
+ RootPort[6] HsioRxSetCtle= 0
+ RootPort[6] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[6] HsioTxGen1DownscaleAmp= 0
+ RootPort[6] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[6] HsioTxGen2DownscaleAmp= 0
+ RootPort[6] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[6] HsioTxGen3DownscaleAmp= 0
+ RootPort[6] HsioTxGen1DeEmphEnable= 0
+ RootPort[6] HsioTxGen1DeEmph= 0
+ RootPort[6] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[6] HsioTxGen2DeEmph3p5= 0
+ RootPort[6] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[6] HsioTxGen2DeEmph6p0= 0
+ RootPort[7] HsioRxSetCtleEnable= 0
+ RootPort[7] HsioRxSetCtle= 0
+ RootPort[7] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[7] HsioTxGen1DownscaleAmp= 0
+ RootPort[7] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[7] HsioTxGen2DownscaleAmp= 0
+ RootPort[7] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[7] HsioTxGen3DownscaleAmp= 0
+ RootPort[7] HsioTxGen1DeEmphEnable= 0
+ RootPort[7] HsioTxGen1DeEmph= 0
+ RootPort[7] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[7] HsioTxGen2DeEmph3p5= 0
+ RootPort[7] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[7] HsioTxGen2DeEmph6p0= 0
+ RootPort[8] HsioRxSetCtleEnable= 0
+ RootPort[8] HsioRxSetCtle= 0
+ RootPort[8] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[8] HsioTxGen1DownscaleAmp= 0
+ RootPort[8] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[8] HsioTxGen2DownscaleAmp= 0
+ RootPort[8] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[8] HsioTxGen3DownscaleAmp= 0
+ RootPort[8] HsioTxGen1DeEmphEnable= 0
+ RootPort[8] HsioTxGen1DeEmph= 0
+ RootPort[8] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[8] HsioTxGen2DeEmph3p5= 0
+ RootPort[8] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[8] HsioTxGen2DeEmph6p0= 0
+ RootPort[9] HsioRxSetCtleEnable= 0
+ RootPort[9] HsioRxSetCtle= 0
+ RootPort[9] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[9] HsioTxGen1DownscaleAmp= 0
+ RootPort[9] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[9] HsioTxGen2DownscaleAmp= 0
+ RootPort[9] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[9] HsioTxGen3DownscaleAmp= 0
+ RootPort[9] HsioTxGen1DeEmphEnable= 0
+ RootPort[9] HsioTxGen1DeEmph= 0
+ RootPort[9] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[9] HsioTxGen2DeEmph3p5= 0
+ RootPort[9] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[9] HsioTxGen2DeEmph6p0= 0
+ RootPort[10] HsioRxSetCtleEnable= 0
+ RootPort[10] HsioRxSetCtle= 0
+ RootPort[10] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[10] HsioTxGen1DownscaleAmp= 0
+ RootPort[10] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[10] HsioTxGen2DownscaleAmp= 0
+ RootPort[10] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[10] HsioTxGen3DownscaleAmp= 0
+ RootPort[10] HsioTxGen1DeEmphEnable= 0
+ RootPort[10] HsioTxGen1DeEmph= 0
+ RootPort[10] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[10] HsioTxGen2DeEmph3p5= 0
+ RootPort[10] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[10] HsioTxGen2DeEmph6p0= 0
+ RootPort[11] HsioRxSetCtleEnable= 0
+ RootPort[11] HsioRxSetCtle= 0
+ RootPort[11] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[11] HsioTxGen1DownscaleAmp= 0
+ RootPort[11] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[11] HsioTxGen2DownscaleAmp= 0
+ RootPort[11] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[11] HsioTxGen3DownscaleAmp= 0
+ RootPort[11] HsioTxGen1DeEmphEnable= 0
+ RootPort[11] HsioTxGen1DeEmph= 0
+ RootPort[11] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[11] HsioTxGen2DeEmph3p5= 0
+ RootPort[11] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[11] HsioTxGen2DeEmph6p0= 0
+ RootPort[12] HsioRxSetCtleEnable= 0
+ RootPort[12] HsioRxSetCtle= 0
+ RootPort[12] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[12] HsioTxGen1DownscaleAmp= 0
+ RootPort[12] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[12] HsioTxGen2DownscaleAmp= 0
+ RootPort[12] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[12] HsioTxGen3DownscaleAmp= 0
+ RootPort[12] HsioTxGen1DeEmphEnable= 0
+ RootPort[12] HsioTxGen1DeEmph= 0
+ RootPort[12] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[12] HsioTxGen2DeEmph3p5= 0
+ RootPort[12] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[12] HsioTxGen2DeEmph6p0= 0
+ RootPort[13] HsioRxSetCtleEnable= 0
+ RootPort[13] HsioRxSetCtle= 0
+ RootPort[13] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[13] HsioTxGen1DownscaleAmp= 0
+ RootPort[13] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[13] HsioTxGen2DownscaleAmp= 0
+ RootPort[13] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[13] HsioTxGen3DownscaleAmp= 0
+ RootPort[13] HsioTxGen1DeEmphEnable= 0
+ RootPort[13] HsioTxGen1DeEmph= 0
+ RootPort[13] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[13] HsioTxGen2DeEmph3p5= 0
+ RootPort[13] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[13] HsioTxGen2DeEmph6p0= 0
+ RootPort[14] HsioRxSetCtleEnable= 0
+ RootPort[14] HsioRxSetCtle= 0
+ RootPort[14] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[14] HsioTxGen1DownscaleAmp= 0
+ RootPort[14] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[14] HsioTxGen2DownscaleAmp= 0
+ RootPort[14] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[14] HsioTxGen3DownscaleAmp= 0
+ RootPort[14] HsioTxGen1DeEmphEnable= 0
+ RootPort[14] HsioTxGen1DeEmph= 0
+ RootPort[14] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[14] HsioTxGen2DeEmph3p5= 0
+ RootPort[14] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[14] HsioTxGen2DeEmph6p0= 0
+ RootPort[15] HsioRxSetCtleEnable= 0
+ RootPort[15] HsioRxSetCtle= 0
+ RootPort[15] HsioTxGen1DownscaleAmpEnable= 0
+ RootPort[15] HsioTxGen1DownscaleAmp= 0
+ RootPort[15] HsioTxGen2DownscaleAmpEnable= 0
+ RootPort[15] HsioTxGen2DownscaleAmp= 0
+ RootPort[15] HsioTxGen3DownscaleAmpEnable= 0
+ RootPort[15] HsioTxGen3DownscaleAmp= 0
+ RootPort[15] HsioTxGen1DeEmphEnable= 0
+ RootPort[15] HsioTxGen1DeEmph= 0
+ RootPort[15] HsioTxGen2DeEmph3p5Enable= 0
+ RootPort[15] HsioTxGen2DeEmph3p5= 0
+ RootPort[15] HsioTxGen2DeEmph6p0Enable= 0
+ RootPort[15] HsioTxGen2DeEmph6p0= 0
+---------------- HSIO SATA PreMem Config for controller 0 ----------------
+ PortSettings[0] HsioRxGen1EqBoostMagEnable= 0
+ PortSettings[0] HsioRxGen1EqBoostMag= 0
+ PortSettings[0] HsioRxGen2EqBoostMagEnable= 0
+ PortSettings[0] HsioRxGen2EqBoostMag= 0
+ PortSettings[0] HsioRxGen3EqBoostMagEnable= 0
+ PortSettings[0] HsioRxGen3EqBoostMag= 0
+ PortSettings[0] HsioTxGen1DownscaleAmpEnable= 0
+ PortSettings[0] HsioTxGen1DownscaleAmp= 0
+ PortSettings[0] HsioTxGen2DownscaleAmpEnable= 0
+ PortSettings[0] HsioTxGen2DownscaleAmp= 0
+ PortSettings[0] HsioTxGen3DownscaleAmpEnable= 0
+ PortSettings[0] HsioTxGen3DownscaleAmp= 0
+ PortSettings[0] HsioTxGen1DeEmphEnable= 0
+ PortSettings[0] HsioTxGen1DeEmph= 0
+ PortSettings[0] HsioTxGen2DeEmphEnable= 0
+ PortSettings[0] HsioTxGen2DeEmph= 0
+ PortSettings[0] HsioTxGen3DeEmphEnable= 0
+ PortSettings[0] HsioTxGen3DeEmph= 0
+ PortSettings[1] HsioRxGen1EqBoostMagEnable= 0
+ PortSettings[1] HsioRxGen1EqBoostMag= 0
+ PortSettings[1] HsioRxGen2EqBoostMagEnable= 0
+ PortSettings[1] HsioRxGen2EqBoostMag= 0
+ PortSettings[1] HsioRxGen3EqBoostMagEnable= 0
+ PortSettings[1] HsioRxGen3EqBoostMag= 0
+ PortSettings[1] HsioTxGen1DownscaleAmpEnable= 0
+ PortSettings[1] HsioTxGen1DownscaleAmp= 0
+ PortSettings[1] HsioTxGen2DownscaleAmpEnable= 0
+ PortSettings[1] HsioTxGen2DownscaleAmp= 0
+ PortSettings[1] HsioTxGen3DownscaleAmpEnable= 0
+ PortSettings[1] HsioTxGen3DownscaleAmp= 0
+ PortSettings[1] HsioTxGen1DeEmphEnable= 0
+ PortSettings[1] HsioTxGen1DeEmph= 0
+ PortSettings[1] HsioTxGen2DeEmphEnable= 0
+ PortSettings[1] HsioTxGen2DeEmph= 0
+ PortSettings[1] HsioTxGen3DeEmphEnable= 0
+ PortSettings[1] HsioTxGen3DeEmph= 0
+ PortSettings[2] HsioRxGen1EqBoostMagEnable= 0
+ PortSettings[2] HsioRxGen1EqBoostMag= 0
+ PortSettings[2] HsioRxGen2EqBoostMagEnable= 0
+ PortSettings[2] HsioRxGen2EqBoostMag= 0
+ PortSettings[2] HsioRxGen3EqBoostMagEnable= 0
+ PortSettings[2] HsioRxGen3EqBoostMag= 0
+ PortSettings[2] HsioTxGen1DownscaleAmpEnable= 0
+ PortSettings[2] HsioTxGen1DownscaleAmp= 0
+ PortSettings[2] HsioTxGen2DownscaleAmpEnable= 0
+ PortSettings[2] HsioTxGen2DownscaleAmp= 0
+ PortSettings[2] HsioTxGen3DownscaleAmpEnable= 0
+ PortSettings[2] HsioTxGen3DownscaleAmp= 0
+ PortSettings[2] HsioTxGen1DeEmphEnable= 0
+ PortSettings[2] HsioTxGen1DeEmph= 0
+ PortSettings[2] HsioTxGen2DeEmphEnable= 0
+ PortSettings[2] HsioTxGen2DeEmph= 0
+ PortSettings[2] HsioTxGen3DeEmphEnable= 0
+ PortSettings[2] HsioTxGen3DeEmph= 0
+------------------ PCH PCIe RP PreMem Config ------------------
+ Port[0] RpEnabled= 1
+ Port[1] RpEnabled= 1
+ Port[2] RpEnabled= 1
+ Port[3] RpEnabled= 1
+ Port[4] RpEnabled= 1
+ Port[5] RpEnabled= 1
+ Port[6] RpEnabled= 1
+ Port[7] RpEnabled= 1
+ Port[8] RpEnabled= 1
+ Port[9] RpEnabled= 1
+ Port[10] RpEnabled= 1
+ Port[11] RpEnabled= 1
+ Port[12] RpEnabled= 1
+ Port[13] RpEnabled= 1
+ Port[14] RpEnabled= 1
+ Port[15] RpEnabled= 1
+ PcieImrEnabled= 0
+ PcieImrSize= 0 MB
+ ImrRpSelection= 0
+------------------ HD Audio PreMem Config ------------------
+ Enable= 1
+------------------ ISH PreMem Config ------------------
+ Enable= 1
+------------------------ PCH Print PreMemPolicy End --------------------------
+
+---------------------- Me Config Block Pre-Mem Print Begin -----------------
+------------------------ ME_PEI_PREMEM_CONFIG -----------------
+ Revision                  : 0x2
+ HeciTimeouts              : 0x1
+ DidInitStat               : 0x0
+ DisableCpuReplacedPolling : 0x0
+ SendDidMsg                : 0x1
+ DisableHeciRetry          : 0x0
+ DisableMessageCheck       : 0x0
+ SkipMbpHob                : 0x0
+ HeciCommunication2        : 0x0
+ KtDeviceEnable            : 0x1
+ Heci1BarAddress           : 0xFED1A000
+ Heci2BarAddress           : 0xFED1B000
+ Heci3BarAddress           : 0xFED1C000
+
+---------------------- Me Config Block Pre-Mem Print End -------------------
+
+------------------------ SA Policy (PEI PreMem) Print BEGIN -----------------
+Revision : 0x1
+------------------------ SA_MISC_PEI_PREMEM_CONFIG  -----------------
+ Revision : 3
+ SpdAddressTable[4] : 0x0 0x0 0x0 0x0
+ MchBar : 0xFED10000
+ DmiBar : 0xFED18000
+ EpBar : 0xFED19000
+ SmbusBar : 0xEFA0
+ GdxcBar : 0xFED84000
+ TsegSize : 0x1000000
+ UserBd : 0x5
+ EdramBar : 0xFED80000
+ MmioSize : 0 MB
+ MmioSizeAdjustment : 0 MB
+ SkipExtGfxScan: 0x0
+ S3DataPtr : 0x0
+------------------------ SG_DELAY_OPTIMIZATION_DATA -----------------
+ SaRtd3.SgDelayAfterHoldReset : 0x64
+ SaRtd3.SgDelayAfterPwrEn     : 0x12C
+ ScanExtGfxForLegacyOpRom : 0x0
+ AcpiReservedMemoryBase : 0x0
+ AcpiReservedMemorySize : 0x0
+ SystemMemoryLength : 0x0
+ OpRomScanTempMmioBar : 0x80000000
+ OpRomScanTempMmioLimit : 0xC0000000
+------------------------ GRAPHICS_PEI_PREMEM_CONFIG -----------------
+ Revision : 2
+ PanelPowerEnable : 0x1
+ GttSize : 3 MB
+ IgdDvmt50PreAlloc : 0x1
+ InternalGraphics : 0x2
+ PrimaryDisplay : 0x3
+ ApertureSize : 0x1
+ GtPsmiSupport : 0x0
+ PsmiRegionSize : 0x0
+ GttMmAdr : 0xCF000000
+ GmAdr : 0xD0000000
+ DeltaT12PowerCycleDelayPreMem : 0x0
+------------------------ PCIE_PEI_PREMEM_CONFIG -----------------
+ Revision : 3
+ DmiMaxLinkSpeed : 0x0
+ DmiGen3EqPh2Enable : 0x2
+ DmiGen3EqPh3Method : 0x0
+ DmiGen3ProgramStaticEq : 0x1
+ Peg0Enable : 0x2
+ Peg1Enable : 0x2
+ Peg2Enable : 0x2
+ Peg3Enable : 0x2
+ Peg0MaxLinkSpeed : 0x0
+ Peg1MaxLinkSpeed : 0x0
+ Peg2MaxLinkSpeed : 0x0
+ Peg3MaxLinkSpeed : 0x0
+ Peg0MaxLinkWidth : 0x0
+ Peg1MaxLinkWidth : 0x0
+ Peg2MaxLinkWidth : 0x0
+ Peg3MaxLinkWidth : 0x0
+ Peg0PowerDownUnusedLanes : 0x1
+ Peg1PowerDownUnusedLanes : 0x1
+ Peg2PowerDownUnusedLanes : 0x1
+ Peg3PowerDownUnusedLanes : 0x1
+ Peg0Gen3EqPh2Enable : 0x2
+ Peg1Gen3EqPh2Enable : 0x2
+ Peg2Gen3EqPh2Enable : 0x2
+ Peg3Gen3EqPh2Enable : 0x2
+ Peg0Gen3EqPh3Method : 0x0
+ Peg1Gen3EqPh3Method : 0x0
+ Peg2Gen3EqPh3Method : 0x0
+ Peg3Gen3EqPh3Method : 0x0
+ PegGen3ProgramStaticEq : 0x1
+ Gen3SwEqAlwaysAttempt : 0x0
+ Gen3SwEqNumberOfPresets : 0x2
+ Gen3SwEqEnableVocTest : 0x2
+ InitPcieAspmAfterOprom : 0x0
+ PegRxCemTestingMode : 0x0
+ PegRxCemLoopbackLane : 0x0
+ PegRxCemNonProtocolAwareness : 0x0
+ PegDisableSpreadSpectrumClocking : 0x0
+ PegGenerateBdatMarginTable : 0x0
+ DmiGen3RootPortPreset[4] : 0x4 0x4 0x4 0x4
+ DmiGen3EndPointPreset[4] : 0x7 0x7 0x7 0x7
+ DmiGen3EndPointHint[4] : 0x2 0x2 0x2 0x2
+ DmiGen3RxCtlePeaking[2] : 0x0 0x0
+ PegGen3RootPortPreset[16] : 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7
+ PegRootPortHPE[3] : 0x0 0x0 0x0
+ PegGen3EndPointPreset[16] : 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7 0x7
+ PegGen3EndPointHint[16] : 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2 0x2
+ PegGen3RxCtlePeaking[8] : 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+ PegGen3RxCtleOverride : 0x0
+ DmiDeEmphasis : 0x1
+
+ Gen3SwEqJitterDwellTime : 0xBB8
+ Gen3SwEqJitterErrorTarget : 0x2
+ Gen3SwEqVocDwellTime : 0x2710
+ Gen3SwEqVocErrorTarget : 0x2
+ PegDataPtr : 0
+ PegGpioData->GpioSupport : 0x0
+ PegGpioData.SaPeg0ResetGpio.GpioPad Group:0, PadNumber:0
+ PegGpioData.SaPeg0ResetGpio.Active : 0x0
+ PegGpioData.SaPeg3ResetGpio.GpioPad Group:0, PadNumber:0
+ PegGpioData.SaPeg3ResetGpio.Active : 0x0
+------------------------ VTD_CONFIG -----------------
+ Revision : 2
+ VtdDisable : 0x0
+ X2ApicOptOut : 0x0
+ VtdBaseAddress[3] : 0xFED90000 0xFED92000 0xFED91000
+------------------------ SWITCHABLE_GRAPHICS_CONFIG -----------------
+ Revision : 1
+ SgConfig->SaRtd3Pcie0Gpio.GpioSupport : 0x0
+------------------------ IPU_PREMEM_CONFIG -----------------
+ Revision : 1
+ SaIpuEnable : 0x0
+ SaIpuImrConfiguration : 0x0
+------------------------ MEMORY_CONFIG ------------------------------
+ Guid                   : 26CF084C-C9DB-41BB-92C6-D197B8A1E4BF
+ Revision               : 3
+ Size                   : 0x104
+ HobBufferSize          : 0x0
+ EccSupport             : 0x1
+ DdrFreqLimit           : 0
+ SpdProfileSelected     : 0x0
+ tCL                    : 0x0
+ tRCDtRP                : 0x0
+ tRAS                   : 0x0
+ tWR                    : 0x0
+ tRFC                   : 0x0
+ tRRD                   : 0x0
+ tWTR                   : 0x0
+ tRTP                   : 0x0
+ tFAW                   : 0x0
+ tCWL                   : 0x0
+ tREFI                  : 0x0
+ NModeSupport           : 0x0
+ VddVoltage             : 0
+ DisableDimmChannel[2] : 0x0 0x0
+ RemapEnable            : 0x1
+ ScramblerSupport       : 0x1
+ SerialDebug            : 0x3
+ ProbelessTrace      : 0x0
+ ECT                    : 0x1
+ SOT                    : 0x1
+ ERDMPRTC2D             : 0x1
+ RDMPRT                 : 0x1
+ RCVET                  : 0x1
+ JWRL                   : 0x1
+ EWRTC2D                : 0x1
+ ERDTC2D                : 0x1
+ WRTC1D                 : 0x1
+ WRVC1D                 : 0x1
+ RDTC1D                 : 0x1
+ DIMMODTT               : 0x1
+ DIMMRONT               : 0x1
+ WRDSEQT                : 0x0
+ WRSRT                  : 0x1
+ RDODTT                 : 0x1
+ RDEQT                  : 0x1
+ RDAPT                  : 0x1
+ WRTC2D                 : 0x1
+ RDTC2D                 : 0x1
+ WRVC2D                 : 0x1
+ RDVC2D                 : 0x1
+ CMDVC                  : 0x1
+ LCT                    : 0x1
+ RTL                    : 0x1
+ TAT                    : 0x1
+ RMT                    : 0x1
+ MEMTST                 : 0x0
+ ALIASCHK               : 0x1
+ RCVENC1D               : 0x1
+ RMC                    : 0x1
+ WRDSUDT                : 0x0
+ VddSettleWaitTime      : 0x0
+ RefClk                 : 0x0
+ Ratio                  : 0x0
+ OddRatioMode           : 0x0
+ MrcTimeMeasure         : 0x0
+ MrcFastBoot            : 0x1
+ DqPinsInterleaved      : 0x0
+ MrcSafeConfig          : 0x0
+ SafeMode               : 0x0
+ Lp4DqsOscEn            : 0x1
+ EnBER                  : 0x1
+ Ddr4MixedUDimm2DpcLimit: 0x1
+ PowerDownMode          : 0xFF
+ PwdwnIdleCounter       : 0x0
+ RankInterleave         : 0x1
+ EnhancedInterleave     : 0x1
+ WeaklockEn             : 0x1
+ EnCmdRate              : 0x3
+ CmdTriStateDis         : 0x0
+ BClkFrequency          : 0x5F5E100
+ MemoryTrace            : 0x0
+ ChHashEnable           : 0x1
+ ChHashMask             : 0x0
+ ChHashInterleaveBit    : 0x2
+ PerBankRefresh         : 0x1
+ EnableExtts            : 0x0
+ EnableCltm             : 0x0
+ EnableOltm             : 0x0
+ EnablePwrDn            : 0x1
+ EnablePwrDnLpddr       : 0x1
+ Refresh2X              : 0x0
+ DdrThermalSensor       : 0x1
+ LockPTMregs            : 0x0
+ UserPowerWeightsEn     : 0x0
+ EnergyScaleFact        : 0x4
+ RaplPwrFlCh1           : 0x0
+ RaplPwrFlCh0           : 0x0
+ RaplLim2Lock           : 0x0
+ RaplLim2WindX          : 0x1
+ RaplLim2WindY          : 0xA
+ RaplLim2Ena            : 0x0
+ RaplLim2Pwr            : 0xDE
+ RaplLim1WindX          : 0x0
+ RaplLim1WindY          : 0x0
+ RaplLim1Ena            : 0x0
+ RaplLim1Pwr            : 0x0
+ WarmThresholdCh0Dimm0  : 0xFF
+ WarmThresholdCh0Dimm1  : 0xFF
+ WarmThresholdCh1Dimm0  : 0xFF
+ WarmThresholdCh1Dimm1  : 0xFF
+ HotThresholdCh0Dimm0   : 0xFF
+ HotThresholdCh0Dimm1   : 0xFF
+ HotThresholdCh1Dimm0   : 0xFF
+ HotThresholdCh1Dimm1   : 0xFF
+ WarmBudgetCh0Dimm0     : 0xFF
+ WarmBudgetCh0Dimm1     : 0xFF
+ WarmBudgetCh1Dimm0     : 0xFF
+ WarmBudgetCh1Dimm1     : 0xFF
+ HotBudgetCh0Dimm0      : 0xFF
+ HotBudgetCh0Dimm1      : 0xFF
+ HotBudgetCh1Dimm0      : 0xFF
+ HotBudgetCh1Dimm1      : 0xFF
+ IdleEnergyCh0Dimm0     : 0xA
+ IdleEnergyCh0Dimm1     : 0xA
+ IdleEnergyCh1Dimm0     : 0xA
+ IdleEnergyCh1Dimm1     : 0xA
+ PdEnergyCh0Dimm0       : 0x6
+ PdEnergyCh0Dimm1       : 0x6
+ PdEnergyCh1Dimm0       : 0x6
+ PdEnergyCh1Dimm1       : 0x6
+ ActEnergyCh0Dimm0      : 0xAC
+ ActEnergyCh0Dimm1      : 0xAC
+ ActEnergyCh1Dimm0      : 0xAC
+ ActEnergyCh1Dimm1      : 0xAC
+ RdEnergyCh0Dimm0       : 0xD4
+ RdEnergyCh0Dimm1       : 0xD4
+ RdEnergyCh1Dimm0       : 0xD4
+ RdEnergyCh1Dimm1       : 0xD4
+ WrEnergyCh0Dimm0       : 0xDD
+ WrEnergyCh0Dimm1       : 0xDD
+ WrEnergyCh1Dimm0       : 0xDD
+ WrEnergyCh1Dimm1       : 0xDD
+ SrefCfgEna             : 0x1
+ SrefCfgIdleTmr         : 0x200
+ ThrtCkeMinDefeat       : 0x0
+ ThrtCkeMinTmr          : 0x30
+ ThrtCkeMinDefeatLpddr  : 0x1
+ ThrtCkeMinTmrLpddr     : 0x40
+ AutoSelfRefreshSupport : 0x1
+ ExtTemperatureSupport  : 0x1
+ MaxRttWr               : 0x0
+ MobilePlatform         : 0x1
+ Force1Dpc              : 0x0
+ ForceSingleRank        : 0x0
+ PciIndex               : 0xCF8
+ PciData                : 0xCFC
+ CkeRankMapping         : 0xAA
+ RhPrevention           : 0x1
+ RhSolution             : 0x0
+ RhActProbability       : 0xB
+ VttTermination         : 0x1
+ VttCompForVsshi        : 0x0
+ BerEnable              : 0x0
+ BerAddress[0]      : 0x0
+ BerAddress[1]      : 0x0
+ BerAddress[2]      : 0x0
+ BerAddress[3]      : 0x0
+ CleanMemory            : 0x0
+ MemTestOnWarmBoot      : 0x1
+ ExitOnFailure          : 0x1
+ Vc1ReadMeter           : 0x1
+ SaGv                   : 0x3
+ FreqSaGvLow            : 0x0
+ FreqSaGvMid            : 0x0
+ StrongWkLeaker         : 0x7
+ CaVrefConfig           : 0x2
+ SimicsFlag             : 0x0
+ PlatformMemorySize     : 0x16A4B000
+ SmramMask              : 0x0
+ DllBwEn0: 0
+ DllBwEn1: 1
+ DllBwEn2: 2
+ DllBwEn3: 2
+ RetrainOnFastFail: 1
+ ForceOltmOrRefresh2x: 0
+ RmtPerTask: 0
+ TrainTrace: 0
+ tRd2RdSG               : 0x0
+ tRd2RdDG               : 0x0
+ tRd2RdDR               : 0x0
+ tRd2RdDD               : 0x0
+ tRd2WrSG               : 0x0
+ tRd2WrDG               : 0x0
+ tRd2WrDR               : 0x0
+ tRd2WrDD               : 0x0
+ tWr2RdSG               : 0x0
+ tWr2RdDG               : 0x0
+ tWr2RdDR               : 0x0
+ tWr2RdDD               : 0x0
+ tWr2WrSG               : 0x0
+ tWr2WrDG               : 0x0
+ tWr2WrDR               : 0x0
+ tWr2WrDD               : 0x0
+------------------------ OVERCLOCKING_CONFIG -----------------
+ Revision : 2
+ OcSupport : 0x0
+ GtMaxOcRatio : 0x0
+ GtVoltageMode : 0x0
+ GtVoltageOffset : 0x0
+ GtVoltageOverride : 0x0
+ GtExtraTurboVoltage : 0x0
+ SaVoltageOffset : 0x0
+ GtusMaxOcRatio : 0x0
+ GtusVoltageMode : 0x0
+ GtusVoltageOffset : 0x0
+ GtusVoltageOverride : 0x0
+ GtusExtraTurboVoltage : 0x0
+ DqByteMapCh0        : 0x0F 0xF0 0x00 0xF0 0x0F 0xF0 0x0F 0x00 0xFF 0x00 0xFF 0x00 
+ DqByteMapCh1        : 0x33 0xCC 0x00 0xCC 0x33 0xCC 0x33 0x00 0xFF 0x00 0xFF 0x00 
+ DqsMapCpu2DramCh0   : 0 1 3 2 4 5 6 7 
+ DqsMapCpu2DramCh1   : 1 0 4 5 2 3 6 7 
+
+------------------------ SA Policy (PEI PreMem) Print END -----------------
+
+------------------------ CPU - SiPreMemPolicyPpi Print Begin in PreMem -----------------
+ Revision= 1
+------------------ CPU Config Lib PreMem Config ------------------
+CPU_CONFIG_LIB_PREMEM_CONFIG : HyperThreading = 0x1
+CPU_CONFIG_LIB_PREMEM_CONFIG : BootFrequency = 0x1
+CPU_CONFIG_LIB_PREMEM_CONFIG : ActiveCoreCount = 0x0
+CPU_CONFIG_LIB_PREMEM_CONFIG : FClkFrequency = 0x0
+CPU_CONFIG_LIB_PREMEM_CONFIG : JtagC10PowerGateDisable = 0x0
+CPU_CONFIG_LIB_PREMEM_CONFIG : BistOnReset = 0x0
+CPU_CONFIG_LIB_PREMEM_CONFIG : VmxEnable = 0x1
+CPU_CONFIG_LIB_PREMEM_CONFIG : CpuRatio = 0x0
+CPU_CONFIG_LIB_PREMEM_CONFIG : PeciSxReset = 0x0
+CPU_CONFIG_LIB_PREMEM_CONFIG : PeciC10Reset = 0x0
+CPU_CONFIG_LIB_PREMEM_CONFIG : SkipMpInit = 0x0
+CPU_CONFIG_LIB_PREMEM_CONFIG : DpSscMarginEnable = 0x0
+------------------ CPU OverClocking Config ------------------
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: OcSupport : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: OcLock : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: CoreVoltageMode : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: CoreMaxOcRatio  : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: CoreVoltageOverride : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: CoreVoltageAdaptive : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: CoreVoltageOffset : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: RingVoltageMode : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: RingVoltageOverride : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: RingVoltageAdaptive : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: RingVoltageOffset : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: RingMaxOcRatio  : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: RingDownBin     : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: Avx2RatioOffset : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: Avx3RatioOffset : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: BclkAdaptiveVoltage  : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: CorePllVoltageOffset : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: GtPllVoltageOffset   : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: RingPllVoltageOffset : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: SaPllVoltageOffset   : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: McPllVoltageOffset   : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: TjMaxOffset          : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: TvbRatioClipping     : 0x0
+ CPU_OVERCLOCKING_PREMEM_CONFIG:: TvbVoltageOptimization : 0x0
+
+------------------------ CPU - SiPreMemPolicyPpi Print End -----------------
+
+Install PPI: C133FE57-17C7-4B09-8B3C-97C189D0AB8D
+Silicon PEI Policy Initialization Done in Pre-Memory
+GpioGroupTierInitHook Start
+GpioGroupTierInitHook End
+Install PPI: EF398D58-9DFD-4103-BF94-78C6F4FE712F
+Register PPI Notify: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+Install PPI: BAE23646-BD60-4F8B-B3F9-F391EE7EE6C8
+Register PPI Notify: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+PROGRESS CODE: V03020003 I0
+Loading PEIM 839EB770-5C64-4EED-A6D5-EC515B2B2B23
+Loading PEIM at 0x000FF9E02C0 EntryPoint=0x000FF9E05D5 PlatformVTdInfoSamplePei.efi
+PROGRESS CODE: V03020002 I0
+Install PPI: 3DE0593F-6E3E-4542-A1CB-CBB2DBEBD8FF
+SiliconInitialized - 0
+Register PPI Notify: 82A72DC8-61EC-403E-B15A-8D7A3A718498
+InitGlobalVtd
+MchBar - FED10000
+VTd2 - FED91001
+Install PPI: 8A59FCB3-F191-400C-9767-67AF2B25684A
+PROGRESS CODE: V03020003 I0
+Loading PEIM F906769F-4AED-4A0D-8C7C-FF21B9D1051A
+Loading PEIM at 0x000FF9E2140 EntryPoint=0x000FF9E2475 IntelVTdPmrPei.efi
+PROGRESS CODE: V03020002 I0
+IntelVTdPmrInitialize
+Register PPI Notify: 8A59FCB3-F191-400C-9767-67AF2B25684A
+Notify: PPI Guid: 8A59FCB3-F191-400C-9767-67AF2B25684A, Peim notify entry point: FF9E2AEE
+VTdInfoNotify
+MemoryInitialized - 0
+*****************************************************************************
+*         DMAR Table                                                        *
+*****************************************************************************
+DMAR address ............................................. 0xFF9E1E78
+  Table Contents:
+    Host Address Width ................................... 0x26
+    Flags ................................................ 0x00
+      INTR_REMAP ......................................... 0x00
+      X2APIC_OPT_OUT_SET ................................. 0x00
+      DMA_CTRL_PLATFORM_OPT_IN_FLAG ...................... 0x00
+  ***************************************************************************
+  *       DMA-Remapping Hardware Definition Structure                       *
+  ***************************************************************************
+  DRHD address ........................................... 0xFF9E1EA8
+    Type ................................................. 0x0000
+    Length ............................................... 0x0010
+    Flags ................................................ 0x01
+      INCLUDE_PCI_ALL .................................... 0x01
+    Segment Number ....................................... 0x0000
+    Register Base Address ................................ 0x00000000FED91000
+  ***************************************************************************
+
+*****************************************************************************
+
+  VTD (0) BaseAddress -  0x00000000FED91000
+GetDmaProtectionEnabledEngineMask - 0x1
+EnabledEngineMask - 0x0
+SetDmaProtectedRange(0x1) - [0x0, 0x0] [0x0000000000000000, 0x0000008000000000]
+VtdUnitBaseAddress - 0xFED91000
+PlmrAlignment - 0x100000
+PhmrAlignment - 0x100000
+PLMR set done
+PHMR set done
+EnablePmr - FED91000
+EnablePmr - Done
+Install PPI: 70B0AF26-F847-4BB6-AAB9-CDE84FC61431
+PROGRESS CODE: V03020003 I0
+Loading PEIM 86D70125-BAA3-4296-A62F-602BEBBB9081
+Loading PEIM at 0x000FFFC1040 EntryPoint=0x000FFFC1436 DxeIpl.efi
+PROGRESS CODE: V03020002 I0
+PROGRESS CODE: V03020003 I0
+Loading PEIM 3307DD15-23BA-4546-A004-FCBCC47D4A49
+Loading PEIM at 0x000FFFEA840 EntryPoint=0x000FFFEAC2D SiliconPolicyPeiPreMem.efi
+PROGRESS CODE: V03020002 I0
+FSP UpdatePeiPchPolicyPreMem
+FspmUpd = 0x0
+WYQ UpdatePeiPchPolicyPreMem

@@ -1,0 +1,855 @@
+From 60a36bb976df85c6d56ac23ddeb6318f48e6de99 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Tue, 9 Mar 2021 18:01:04 +0100
+Subject: [PATCH edk2-test 1/1] uefi-sct/SctPkg: type mismatch in SimpleTextOut
+ test
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3253
+
+SctPrint() requires that %d refers to an UINTN parameter.
+
+SimpleTextOutBBTestFunction_uefi.c has a lot of
+StandardLib->RecordAssertion() calls where an INT32 is passed
+as argument for a '%d' print code.
+
+This leads to incorrect output like:
+
+MaxMode=-549755813885,
+
+-549755813885 is 0x0xFFFFFF8000000003. So MaxMode actually
+is an INT32 with value 3 in this example.
+
+Convert the parameters to UINTN.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../SimpleTextOutBBTestFunction_uefi.c        | 624 +++++++++---------
+ 1 file changed, 312 insertions(+), 312 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+index 9b0ae233ce5f..bbe3f4e27077 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+@@ -176,12 +176,12 @@ BBTestResetFunctionManualTest (
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->MaxMode,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.MaxMode
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.MaxMode
+                  );
+ 
+   //
+@@ -272,12 +272,12 @@ BBTestResetFunctionManualTest (
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->MaxMode,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.MaxMode
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.MaxMode
+                  );
+ 
+   //
+@@ -505,12 +505,12 @@ BBTestResetFunctionAutoTest (
+                    L"Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->MaxMode,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.MaxMode
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.MaxMode
+                    );
+ 
+     //
+@@ -582,12 +582,12 @@ BBTestResetFunctionAutoTest (
+                    L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->MaxMode,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.MaxMode
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.MaxMode
+                    );
+ 
+     //
+@@ -850,18 +850,18 @@ BBTestOutputStringFunctionAutoTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -987,18 +987,18 @@ BBTestOutputStringFunctionAutoTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -1094,18 +1094,18 @@ BBTestOutputStringFunctionAutoTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -1217,18 +1217,18 @@ BBTestOutputStringFunctionAutoTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -1469,18 +1469,18 @@ BBTestOutputStringFunctionManualTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -1626,18 +1626,18 @@ BBTestOutputStringFunctionManualTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -1754,18 +1754,18 @@ BBTestOutputStringFunctionManualTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -1897,18 +1897,18 @@ BBTestOutputStringFunctionManualTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -2240,18 +2240,18 @@ BBTestTestStringFunctionAutoTest (
+                  L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -2433,18 +2433,18 @@ BBTestQueryModeFunctionAutoTest (
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Index,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+ 
+     if ( EFI_UNSUPPORTED == Status && 1 == Index ) {
+@@ -2720,18 +2720,18 @@ BBTestSetModeFunctionManualTest (
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Index,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+ 
+     //
+@@ -2968,18 +2968,18 @@ BBTestSetModeFunctionAutoTest (
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    Index,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+ 
+     //
+@@ -3193,18 +3193,18 @@ BBTestSetAttributeFunctionManualTest (
+                        L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                        __FILE__,
+                        (UINTN)__LINE__,
+-                       SimpleOut->Mode->CursorColumn,
+-                       SimpleOut->Mode->CursorRow,
+-                       SimpleOut->Mode->Mode,
+-                       SimpleOut->Mode->MaxMode,
+-                       SimpleOut->Mode->Attribute,
+-                       SimpleOut->Mode->CursorVisible,
+-                       ModeExpected.CursorColumn,
+-                       ModeExpected.CursorRow,
+-                       ModeExpected.Mode,
+-                       ModeExpected.MaxMode,
+-                       ModeExpected.Attribute,
+-                       ModeExpected.CursorVisible
++                       (UINTN)SimpleOut->Mode->CursorColumn,
++                       (UINTN)SimpleOut->Mode->CursorRow,
++                       (UINTN)SimpleOut->Mode->Mode,
++                       (UINTN)SimpleOut->Mode->MaxMode,
++                       (UINTN)SimpleOut->Mode->Attribute,
++                       (UINTN)SimpleOut->Mode->CursorVisible,
++                       (UINTN)ModeExpected.CursorColumn,
++                       (UINTN)ModeExpected.CursorRow,
++                       (UINTN)ModeExpected.Mode,
++                       (UINTN)ModeExpected.MaxMode,
++                       (UINTN)ModeExpected.Attribute,
++                       (UINTN)ModeExpected.CursorVisible
+                        );
+         Result = FALSE;		
+       }
+@@ -3451,18 +3451,18 @@ BBTestSetAttributeFunctionAutoTest (
+                          L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                          __FILE__,
+                          (UINTN)__LINE__,
+-                         SimpleOut->Mode->CursorColumn,
+-                         SimpleOut->Mode->CursorRow,
+-                         SimpleOut->Mode->Mode,
+-                         SimpleOut->Mode->MaxMode,
+-                         SimpleOut->Mode->Attribute,
+-                         SimpleOut->Mode->CursorVisible,
+-                         ModeExpected.CursorColumn,
+-                         ModeExpected.CursorRow,
+-                         ModeExpected.Mode,
+-                         ModeExpected.MaxMode,
+-                         ModeExpected.Attribute,
+-                         ModeExpected.CursorVisible
++                         (UINTN)SimpleOut->Mode->CursorColumn,
++                         (UINTN)SimpleOut->Mode->CursorRow,
++                         (UINTN)SimpleOut->Mode->Mode,
++                         (UINTN)SimpleOut->Mode->MaxMode,
++                         (UINTN)SimpleOut->Mode->Attribute,
++                         (UINTN)SimpleOut->Mode->CursorVisible,
++                         (UINTN)ModeExpected.CursorColumn,
++                         (UINTN)ModeExpected.CursorRow,
++                         (UINTN)ModeExpected.Mode,
++                         (UINTN)ModeExpected.MaxMode,
++                         (UINTN)ModeExpected.Attribute,
++                         (UINTN)ModeExpected.CursorVisible
+                          );
+ 		  Result = FALSE;
+         }
+@@ -3653,18 +3653,18 @@ BBTestClearScreenFunctionManualTest (
+                  L" Expected: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+                  (UINTN)__LINE__,
+-                 SimpleOut->Mode->CursorColumn,
+-                 SimpleOut->Mode->CursorRow,
+-                 SimpleOut->Mode->Mode,
+-                 SimpleOut->Mode->MaxMode,
+-                 SimpleOut->Mode->Attribute,
+-                 SimpleOut->Mode->CursorVisible,
+-                 ModeExpected.CursorColumn,
+-                 ModeExpected.CursorRow,
+-                 ModeExpected.Mode,
+-                 ModeExpected.MaxMode,
+-                 ModeExpected.Attribute,
+-                 ModeExpected.CursorVisible
++                 (UINTN)SimpleOut->Mode->CursorColumn,
++                 (UINTN)SimpleOut->Mode->CursorRow,
++                 (UINTN)SimpleOut->Mode->Mode,
++                 (UINTN)SimpleOut->Mode->MaxMode,
++                 (UINTN)SimpleOut->Mode->Attribute,
++                 (UINTN)SimpleOut->Mode->CursorVisible,
++                 (UINTN)ModeExpected.CursorColumn,
++                 (UINTN)ModeExpected.CursorRow,
++                 (UINTN)ModeExpected.Mode,
++                 (UINTN)ModeExpected.MaxMode,
++                 (UINTN)ModeExpected.Attribute,
++                 (UINTN)ModeExpected.CursorVisible
+                  );
+ 
+   //
+@@ -3896,18 +3896,18 @@ BBTestClearScreenFunctionAutoTest (
+                    L"Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+ 
+     //
+@@ -4143,18 +4143,18 @@ BBTestSetCursorPositionFunctionManualTest (
+                        L"Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                        __FILE__,
+                        (UINTN)__LINE__,
+-                       SimpleOut->Mode->CursorColumn,
+-                       SimpleOut->Mode->CursorRow,
+-                       SimpleOut->Mode->Mode,
+-                       SimpleOut->Mode->MaxMode,
+-                       SimpleOut->Mode->Attribute,
+-                       SimpleOut->Mode->CursorVisible,
+-                       ModeExpected.CursorColumn,
+-                       ModeExpected.CursorRow,
+-                       ModeExpected.Mode,
+-                       ModeExpected.MaxMode,
+-                       ModeExpected.Attribute,
+-                       ModeExpected.CursorVisible
++                       (UINTN)SimpleOut->Mode->CursorColumn,
++                       (UINTN)SimpleOut->Mode->CursorRow,
++                       (UINTN)SimpleOut->Mode->Mode,
++                       (UINTN)SimpleOut->Mode->MaxMode,
++                       (UINTN)SimpleOut->Mode->Attribute,
++                       (UINTN)SimpleOut->Mode->CursorVisible,
++                       (UINTN)ModeExpected.CursorColumn,
++                       (UINTN)ModeExpected.CursorRow,
++                       (UINTN)ModeExpected.Mode,
++                       (UINTN)ModeExpected.MaxMode,
++                       (UINTN)ModeExpected.Attribute,
++                       (UINTN)ModeExpected.CursorVisible
+                        );
+         Result = FALSE;
+       }
+@@ -4434,18 +4434,18 @@ BBTestSetCursorPositionFunctionAutoTest (
+                          L"Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                          __FILE__,
+                          (UINTN)__LINE__,
+-                         SimpleOut->Mode->CursorColumn,
+-                         SimpleOut->Mode->CursorRow,
+-                         SimpleOut->Mode->Mode,
+-                         SimpleOut->Mode->MaxMode,
+-                         SimpleOut->Mode->Attribute,
+-                         SimpleOut->Mode->CursorVisible,
+-                         ModeExpected.CursorColumn,
+-                         ModeExpected.CursorRow,
+-                         ModeExpected.Mode,
+-                         ModeExpected.MaxMode,
+-                         ModeExpected.Attribute,
+-                         ModeExpected.CursorVisible
++                         (UINTN)SimpleOut->Mode->CursorColumn,
++                         (UINTN)SimpleOut->Mode->CursorRow,
++                         (UINTN)SimpleOut->Mode->Mode,
++                         (UINTN)SimpleOut->Mode->MaxMode,
++                         (UINTN)SimpleOut->Mode->Attribute,
++                         (UINTN)SimpleOut->Mode->CursorVisible,
++                         (UINTN)ModeExpected.CursorColumn,
++                         (UINTN)ModeExpected.CursorRow,
++                         (UINTN)ModeExpected.Mode,
++                         (UINTN)ModeExpected.MaxMode,
++                         (UINTN)ModeExpected.Attribute,
++                         (UINTN)ModeExpected.CursorVisible
+                          );
+ 		  Result = FALSE;
+         }
+@@ -4669,18 +4669,18 @@ BBTestEnableCursorFunctionManualTest (
+                    L"Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+ 
+     //
+@@ -4739,18 +4739,18 @@ BBTestEnableCursorFunctionManualTest (
+                    L"Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+   } else {
+     //
+@@ -4803,18 +4803,18 @@ BBTestEnableCursorFunctionManualTest (
+                    L"Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+ 
+     //
+@@ -4888,18 +4888,18 @@ BBTestEnableCursorFunctionManualTest (
+                    L"Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+   } else {
+     //
+@@ -5128,18 +5128,18 @@ BBTestEnableCursorFunctionAutoTest (
+                    L"Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+ 
+     AssertionType = EFI_TEST_ASSERTION_PASSED;
+@@ -5212,18 +5212,18 @@ BBTestEnableCursorFunctionAutoTest (
+                    L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-                   SimpleOut->Mode->CursorColumn,
+-                   SimpleOut->Mode->CursorRow,
+-                   SimpleOut->Mode->Mode,
+-                   SimpleOut->Mode->MaxMode,
+-                   SimpleOut->Mode->Attribute,
+-                   SimpleOut->Mode->CursorVisible,
+-                   ModeExpected.CursorColumn,
+-                   ModeExpected.CursorRow,
+-                   ModeExpected.Mode,
+-                   ModeExpected.MaxMode,
+-                   ModeExpected.Attribute,
+-                   ModeExpected.CursorVisible
++                   (UINTN)SimpleOut->Mode->CursorColumn,
++                   (UINTN)SimpleOut->Mode->CursorRow,
++                   (UINTN)SimpleOut->Mode->Mode,
++                   (UINTN)SimpleOut->Mode->MaxMode,
++                   (UINTN)SimpleOut->Mode->Attribute,
++                   (UINTN)SimpleOut->Mode->CursorVisible,
++                   (UINTN)ModeExpected.CursorColumn,
++                   (UINTN)ModeExpected.CursorRow,
++                   (UINTN)ModeExpected.Mode,
++                   (UINTN)ModeExpected.MaxMode,
++                   (UINTN)ModeExpected.Attribute,
++                   (UINTN)ModeExpected.CursorVisible
+                    );
+ 
+ 
+-- 
+2.30.1
+

@@ -1,0 +1,117 @@
+From 715a77485fe318775636566cc32a4f91418ec9eb Mon Sep 17 00:00:00 2001
+From: Sam Kaynor <sam.kaynor@arm.com>
+Date: Tue, 8 Nov 2022 11:02:28 -0600
+Subject: [PATCH] ArmPkg: Smbios: .uni file default values
+
+Changed all instances of default value 
+"Not Specified" to empty string ""
+
+---
+ ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassStrings.uni  | 12 ++++++------
+ ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type00/MiscBiosVendor.uni            |  8 ++++----
+ ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type01/MiscSystemManufacturer.uni    | 12 ++++++------
+ ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type02/MiscBaseBoardManufacturer.uni | 14 +++++++-------
+ ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type03/MiscChassisManufacturer.uni   | 10 +++++-----
+ 5 files changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassStrings.uni b/ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassStrings.uni
+index 22b3c64d9fe2..a86695ea3e29 100644
+--- a/ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassStrings.uni
++++ b/ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassStrings.uni
+@@ -15,10 +15,10 @@
+ //
+ // Processor Information
+ //
+-#string STR_PROCESSOR_SOCKET_DESIGNATION    #language en-US  "Not Specified"
+-#string STR_PROCESSOR_MANUFACTURE           #language en-US  "Not Specified"
+-#string STR_PROCESSOR_VERSION               #language en-US  "Not Specified"
+-#string STR_PROCESSOR_SERIAL_NUMBER         #language en-US  "Not Specified"
+-#string STR_PROCESSOR_ASSET_TAG             #language en-US  "Not Specified"
+-#string STR_PROCESSOR_PART_NUMBER           #language en-US  "Not Specified"
++#string STR_PROCESSOR_SOCKET_DESIGNATION    #language en-US  ""
++#string STR_PROCESSOR_MANUFACTURE           #language en-US  ""
++#string STR_PROCESSOR_VERSION               #language en-US  ""
++#string STR_PROCESSOR_SERIAL_NUMBER         #language en-US  ""
++#string STR_PROCESSOR_ASSET_TAG             #language en-US  ""
++#string STR_PROCESSOR_PART_NUMBER           #language en-US  ""
+ #string STR_PROCESSOR_UNKNOWN               #language en-US  "Unknown"
+diff --git a/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type00/MiscBiosVendor.uni b/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type00/MiscBiosVendor.uni
+index a3f068cdcca2..6f1c360c0aaf 100644
+--- a/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type00/MiscBiosVendor.uni
++++ b/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type00/MiscBiosVendor.uni
+@@ -11,8 +11,8 @@
+ 
+ /=#
+ 
+-#string STR_MISC_BIOS_VENDOR           #language en-US  "Not Specified"
+-#string STR_MISC_BIOS_VERSION          #language en-US  "Not Specified"
+-#string STR_MISC_BIOS_RELEASE_DATE     #language en-US  "Not Specified"
+-#string STR_MISC_BIOS_VENDOR           #language en-US  "Not Specified"
++#string STR_MISC_BIOS_VENDOR           #language en-US  ""
++#string STR_MISC_BIOS_VERSION          #language en-US  ""
++#string STR_MISC_BIOS_RELEASE_DATE     #language en-US  ""
++#string STR_MISC_BIOS_VENDOR           #language en-US  ""
+ #string STR_MISC_BIOS_RELEASE_DATE     #language en-US  "12/02/2020"
+diff --git a/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type01/MiscSystemManufacturer.uni b/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type01/MiscSystemManufacturer.uni
+index 2b3b19cab2ea..d8f73a3ffc74 100644
+--- a/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type01/MiscSystemManufacturer.uni
++++ b/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type01/MiscSystemManufacturer.uni
+@@ -11,9 +11,9 @@
+ 
+ /=#
+ 
+-#string STR_MISC_SYSTEM_MANUFACTURER   #language en-US  "Not Specified"
+-#string STR_MISC_SYSTEM_PRODUCT_NAME   #language en-US  "Not Specified"
+-#string STR_MISC_SYSTEM_VERSION        #language en-US  "Not Specified"
+-#string STR_MISC_SYSTEM_SERIAL_NUMBER  #language en-US  "Not Specified"
+-#string STR_MISC_SYSTEM_SKU_NUMBER     #language en-US  "Not Specified"
+-#string STR_MISC_SYSTEM_FAMILY         #language en-US  "Not Specified"
++#string STR_MISC_SYSTEM_MANUFACTURER   #language en-US  ""
++#string STR_MISC_SYSTEM_PRODUCT_NAME   #language en-US  ""
++#string STR_MISC_SYSTEM_VERSION        #language en-US  ""
++#string STR_MISC_SYSTEM_SERIAL_NUMBER  #language en-US  ""
++#string STR_MISC_SYSTEM_SKU_NUMBER     #language en-US  ""
++#string STR_MISC_SYSTEM_FAMILY         #language en-US  ""
+diff --git a/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type02/MiscBaseBoardManufacturer.uni b/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type02/MiscBaseBoardManufacturer.uni
+index 0f0fb1f93bbb..9f36e5ff1998 100644
+--- a/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type02/MiscBaseBoardManufacturer.uni
++++ b/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type02/MiscBaseBoardManufacturer.uni
+@@ -11,10 +11,10 @@
+ 
+ /=#
+ 
+-#string STR_MISC_BASE_BOARD_MANUFACTURER     #language en-US  "Not Specified"
+-#string STR_MISC_BASE_BOARD_PRODUCT_NAME     #language en-US  "Not Specified"
+-#string STR_MISC_BASE_BOARD_VERSION          #language en-US  "Not Specified"
+-#string STR_MISC_BASE_BOARD_SERIAL_NUMBER    #language en-US  "Not Specified"
+-#string STR_MISC_BASE_BOARD_ASSET_TAG        #language en-US  "Not Specified"
+-#string STR_MISC_BASE_BOARD_CHASSIS_LOCATION #language en-US  "Not Specified"
+-#string STR_MISC_BASE_BOARD_SKU_NUMBER       #language en-US  "Not Specified"
++#string STR_MISC_BASE_BOARD_MANUFACTURER     #language en-US  ""
++#string STR_MISC_BASE_BOARD_PRODUCT_NAME     #language en-US  ""
++#string STR_MISC_BASE_BOARD_VERSION          #language en-US  ""
++#string STR_MISC_BASE_BOARD_SERIAL_NUMBER    #language en-US  ""
++#string STR_MISC_BASE_BOARD_ASSET_TAG        #language en-US  ""
++#string STR_MISC_BASE_BOARD_CHASSIS_LOCATION #language en-US  ""
++#string STR_MISC_BASE_BOARD_SKU_NUMBER       #language en-US  ""
+diff --git a/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type03/MiscChassisManufacturer.uni b/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type03/MiscChassisManufacturer.uni
+index 9512b354fe9a..77cbe27d8f7a 100644
+--- a/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type03/MiscChassisManufacturer.uni
++++ b/ArmPkg/Universal/Smbios/SmbiosMiscDxe/Type03/MiscChassisManufacturer.uni
+@@ -11,8 +11,8 @@
+ 
+ /=#
+ 
+-#string STR_MISC_CHASSIS_MANUFACTURER  #language en-US  "Not Specified"
+-#string STR_MISC_CHASSIS_VERSION       #language en-US  "Not Specified"
+-#string STR_MISC_CHASSIS_SERIAL_NUMBER #language en-US  "Not Specified"
+-#string STR_MISC_CHASSIS_ASSET_TAG     #language en-US  "Not Specified"
+-#string STR_MISC_CHASSIS_SKU_NUMBER    #language en-US  "Not Specified"
++#string STR_MISC_CHASSIS_MANUFACTURER  #language en-US  ""
++#string STR_MISC_CHASSIS_VERSION       #language en-US  ""
++#string STR_MISC_CHASSIS_SERIAL_NUMBER #language en-US  ""
++#string STR_MISC_CHASSIS_ASSET_TAG     #language en-US  ""
++#string STR_MISC_CHASSIS_SKU_NUMBER    #language en-US  ""
+-- 
+2.34.1
+

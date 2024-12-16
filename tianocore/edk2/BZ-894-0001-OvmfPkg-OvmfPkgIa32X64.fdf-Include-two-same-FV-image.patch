@@ -1,0 +1,35 @@
+From 9b848c092e257053173df89bbf24bc5c91da5a30 Mon Sep 17 00:00:00 2001
+From: Liming Gao <gaoliming@byosoft.com.cn>
+Date: Fri, 3 Dec 2021 11:05:30 +0800
+Subject: [PATCH] OvmfPkg/OvmfPkgIa32X64.fdf: Include two same FV images into
+ MEMFD
+
+Test Case is for Python FMMT tool
+
+Signed-off-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ OvmfPkg/OvmfPkgIa32X64.fdf | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/OvmfPkg/OvmfPkgIa32X64.fdf b/OvmfPkg/OvmfPkgIa32X64.fdf
+index 9d8695922f..6a6f3b8099 100644
+--- a/OvmfPkg/OvmfPkgIa32X64.fdf
++++ b/OvmfPkg/OvmfPkgIa32X64.fdf
+@@ -86,10 +86,13 @@ gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPeiTempRamBase|gUefiOvmfPkgTokenSpaceGuid.P
+ gUefiOvmfPkgTokenSpaceGuid.PcdOvmfPeiMemFvBase|gUefiOvmfPkgTokenSpaceGuid.PcdOvmfPeiMemFvSize
+ FV = PEIFV
+ 
+-0x100000|0xC00000
++0x100000|0x600000
+ gUefiOvmfPkgTokenSpaceGuid.PcdOvmfDxeMemFvBase|gUefiOvmfPkgTokenSpaceGuid.PcdOvmfDxeMemFvSize
+ FV = DXEFV
+ 
++0x700000|0x600000
++FV = DXEFV
++
+ ################################################################################
+ 
+ [FV.SECFV]
+-- 
+2.27.0.windows.1
+

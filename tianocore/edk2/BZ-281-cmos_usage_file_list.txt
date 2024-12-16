@@ -1,0 +1,185 @@
+EmulatorPkg\PlatformSmbiosDxe\SmbiosTable.c(384):    0,  // Cmos            :1;
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBios.c(428):  LegacyBiosInitCmos (Private);
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(1047):  LegacyBiosCompleteStandardCmosBeforeBoot (Private);
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2095):  Fill in the standard CMOS stuff prior to legacy Boot
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2103):LegacyBiosCompleteStandardCmosBeforeBoot (
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2112):  // Update CMOS locations
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2116):  // CMOS 14 = BDA 40:10 plus bit 3(display enabled)
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2137):  LegacyWriteStandardCmos (CMOS_10, Floppy);
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2138):  LegacyWriteStandardCmos (CMOS_14, Bda);
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2143):  LegacyWriteStandardCmos (CMOS_0A, 0x26);
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2153):  LegacyWriteStandardCmos (CMOS_17, (UINT8)(Size & 0xFF));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2154):  LegacyWriteStandardCmos (CMOS_30, (UINT8)(Size & 0xFF));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2155):  LegacyWriteStandardCmos (CMOS_18, (UINT8)(Size >> 8));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2156):  LegacyWriteStandardCmos (CMOS_31, (UINT8)(Size >> 8));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyBootSupport.c(2158):  LegacyCalculateWriteStandardCmosChecksum ();
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(2):  This code fills in standard CMOS values and updates the standard CMOS
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(4):  non-standard CMOS locations and non-standard checksums.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(22):  Read CMOS register through index/data port.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(24):  @param[in]  Index   The index of the CMOS register to read.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(26):  @return  The data value from the CMOS register specified by Index.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(30):LegacyReadStandardCmos (
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(39):  Write CMOS register through index/data port.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(41):  @param[in]  Index  The index of the CMOS register to write.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(42):  @param[in]  Value  The value of CMOS register to write.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(44):  @return  The value written to the CMOS register specified by Index.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(48):LegacyWriteStandardCmos (
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(58):  Calculate the new standard CMOS checksum and write it.
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(66):LegacyCalculateWriteStandardCmosChecksum (
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(74):    Checksum = (UINT16)(Checksum + LegacyReadStandardCmos (Register));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(76):  LegacyWriteStandardCmos (CMOS_2E, (UINT8)(Checksum >> 8));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(77):  LegacyWriteStandardCmos (CMOS_2F, (UINT8)(Checksum & 0xff));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(83):  Fill in the standard CMOS stuff before Legacy16 load
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(91):LegacyBiosInitCmos (
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(100):  LegacyWriteStandardCmos (CMOS_0E, (UINT8)(LegacyReadStandardCmos (CMOS_0E) & BIT7));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(103):  // Update CMOS locations 15,16,17,18,30,31 and 32
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(104):  // CMOS 16,15 = 640Kb = 0x280
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(105):  // CMOS 18,17 = 31,30 = 15Mb max in 1Kb increments =0x3C00 max
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(106):  // CMOS 32 = 0x20
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(108):  LegacyWriteStandardCmos (CMOS_15, 0x80);
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(109):  LegacyWriteStandardCmos (CMOS_16, 0x02);
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(116):  LegacyWriteStandardCmos (CMOS_17, (UINT8)(Size & 0xFF));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(117):  LegacyWriteStandardCmos (CMOS_30, (UINT8)(Size & 0xFF));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(118):  LegacyWriteStandardCmos (CMOS_18, (UINT8)(Size >> 8));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(119):  LegacyWriteStandardCmos (CMOS_31, (UINT8)(Size >> 8));
+IntelFrameworkModulePkg\Csm\LegacyBiosDxe\LegacyCmos.c(121):  LegacyCalculateWriteStandardCmosChecksum ();
+MdePkg\Library\UefiRuntimeLib\RuntimeLib.c(255):  During runtime, if a PC-AT CMOS device is present in the platform the caller must synchronize
+MdePkg\Library\UefiRuntimeLib\RuntimeLib.c(286):  During runtime, if a PC-AT CMOS device is present in the platform the caller must synchronize
+MdePkg\Library\UefiRuntimeLib\RuntimeLib.c(315):  During runtime, if a PC-AT CMOS device is present in the platform the caller must synchronize
+OvmfPkg\PlatformPei\Cmos.c(2):  PC/AT CMOS access routines
+OvmfPkg\PlatformPei\Cmos.c(16):#include "Cmos.h"
+OvmfPkg\PlatformPei\Cmos.c(20):  Reads 8-bits of CMOS data.
+OvmfPkg\PlatformPei\Cmos.c(22):  Reads the 8-bits of CMOS data at the location specified by Index.
+OvmfPkg\PlatformPei\Cmos.c(25):  @param  Index  The CMOS location to read.
+OvmfPkg\PlatformPei\Cmos.c(32):CmosRead8 (
+OvmfPkg\PlatformPei\Cmos.c(42):  Writes 8-bits of CMOS data.
+OvmfPkg\PlatformPei\Cmos.c(44):  Writes 8-bits of CMOS data to the location specified by Index
+OvmfPkg\PlatformPei\Cmos.c(47):  @param  Index  The CMOS location to write.
+OvmfPkg\PlatformPei\Cmos.c(48):  @param  Value  The value to write to CMOS.
+OvmfPkg\PlatformPei\Cmos.c(50):  @return The value written to CMOS.
+OvmfPkg\PlatformPei\Cmos.c(55):CmosWrite8 (
+OvmfPkg\PlatformPei\MemDetect.c(42):#include "Cmos.h"
+OvmfPkg\PlatformPei\MemDetect.c(215):  UINT8 Cmos0x34;
+OvmfPkg\PlatformPei\MemDetect.c(216):  UINT8 Cmos0x35;
+OvmfPkg\PlatformPei\MemDetect.c(219):  // CMOS 0x34/0x35 specifies the system memory above 16 MB.
+OvmfPkg\PlatformPei\MemDetect.c(220):  // * CMOS(0x35) is the high byte
+OvmfPkg\PlatformPei\MemDetect.c(221):  // * CMOS(0x34) is the low byte
+OvmfPkg\PlatformPei\MemDetect.c(227):  Cmos0x34 = (UINT8) CmosRead8 (0x34);
+OvmfPkg\PlatformPei\MemDetect.c(228):  Cmos0x35 = (UINT8) CmosRead8 (0x35);
+OvmfPkg\PlatformPei\MemDetect.c(230):  return (UINT32) (((UINTN)((Cmos0x35 << 8) + Cmos0x34) << 16) + SIZE_16MB);
+OvmfPkg\PlatformPei\MemDetect.c(240):  UINTN  CmosIndex;
+OvmfPkg\PlatformPei\MemDetect.c(243):  // CMOS 0x5b-0x5d specifies the system memory above 4GB MB.
+OvmfPkg\PlatformPei\MemDetect.c(244):  // * CMOS(0x5d) is the most significant size byte
+OvmfPkg\PlatformPei\MemDetect.c(245):  // * CMOS(0x5c) is the middle size byte
+OvmfPkg\PlatformPei\MemDetect.c(246):  // * CMOS(0x5b) is the least significant size byte
+OvmfPkg\PlatformPei\MemDetect.c(251):  for (CmosIndex = 0x5d; CmosIndex >= 0x5b; CmosIndex--) {
+OvmfPkg\PlatformPei\MemDetect.c(252):    Size = (UINT32) (Size << 8) + (UINT32) CmosRead8 (CmosIndex);
+OvmfPkg\PlatformPei\MemDetect.c(286):  // Otherwise, get the flat size of the memory above 4GB from the CMOS (which
+OvmfPkg\PlatformPei\MemDetect.c(652):    // memory size read from the CMOS.
+OvmfPkg\PlatformPei\Platform.c(43):#include "Cmos.h"
+OvmfPkg\PlatformPei\Platform.c(488):  if (CmosRead8 (0xF) == 0xFE) {
+OvmfPkg\PlatformPei\Platform.c(491):  CmosWrite8 (0xF, 0x00);
+OvmfPkg\PlatformPei\Platform.c(530):DebugDumpCmos (
+OvmfPkg\PlatformPei\Platform.c(536):  DEBUG ((EFI_D_INFO, "CMOS:\n"));
+OvmfPkg\PlatformPei\Platform.c(542):    DEBUG ((EFI_D_INFO, " %02x", CmosRead8 (Loop)));
+OvmfPkg\PlatformPei\Platform.c(632):  DebugDumpCmos ();
+OvmfPkg\Sec\SecMain.c(494):  Reads 8-bits of CMOS data.
+OvmfPkg\Sec\SecMain.c(496):  Reads the 8-bits of CMOS data at the location specified by Index.
+OvmfPkg\Sec\SecMain.c(499):  @param  Index  The CMOS location to read.
+OvmfPkg\Sec\SecMain.c(506):CmosRead8 (
+OvmfPkg\Sec\SecMain.c(521):  return (CmosRead8 (0xF) == 0xFE);
+OvmfPkg\SmmAccess\SmmAccessPei.c(214):CmosRead8 (
+OvmfPkg\SmmAccess\SmmAccessPei.c(228):  UINT32 Cmos0x34;
+OvmfPkg\SmmAccess\SmmAccessPei.c(229):  UINT32 Cmos0x35;
+OvmfPkg\SmmAccess\SmmAccessPei.c(231):  Cmos0x34 = CmosRead8 (0x34);
+OvmfPkg\SmmAccess\SmmAccessPei.c(232):  Cmos0x35 = CmosRead8 (0x35);
+OvmfPkg\SmmAccess\SmmAccessPei.c(234):  return ((Cmos0x35 << 8 | Cmos0x34) << 16) + SIZE_16MB;
+PcAtChipsetPkg\PcatRealTimeClockRuntimeDxe\PcRtc.c(1259):      DEBUG ((EFI_D_INFO, "PcRtc: Write 0x%x to CMOS location 0x%x\n", Century, mModuleGlobal.CenturyRtcAddress));
+QuarkPlatformPkg\Acpi\DxeSmm\AcpiSmm\AcpiSmmPlatform.c(638):  IoWrite8 (R_IOPORT_CMOS_STANDARD_INDEX, Data8);
+QuarkPlatformPkg\Acpi\DxeSmm\AcpiSmm\AcpiSmmPlatform.c(640):  IoWrite8 (R_IOPORT_CMOS_STANDARD_DATA, Data8);
+QuarkPlatformPkg\Acpi\DxeSmm\AcpiSmm\AcpiSmmPlatform.c(698):  IoWrite8 (R_IOPORT_CMOS_STANDARD_INDEX, Data8);
+QuarkPlatformPkg\Acpi\DxeSmm\AcpiSmm\AcpiSmmPlatform.c(699):  Data8 = IoRead8 (R_IOPORT_CMOS_STANDARD_DATA);
+QuarkSocPkg\QuarkNorthCluster\Library\IntelQNCLib\IntelQNCLib.c(238):  // PM1_STS information cannot be lost after power down, unless CMOS is cleared.
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\EventLogInfo.c(199):  ShellPrintHiiEx(-1,-1,NULL,STRING_TOKEN (STR_SMBIOSVIEW_EVENTLOGINFO_PREBOOT_ADDRESS), gShellDebug1HiiHandle, Header->CMOSAddress);
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\EventLogInfo.c(200):  ShellPrintHiiEx(-1,-1,NULL,STRING_TOKEN (STR_SMBIOSVIEW_EVENTLOGINFO_PREBOOT_INDEX), gShellDebug1HiiHandle, Header->CMOSBitIndex);
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\EventLogInfo.c(372):      // (as read from CMOS) of the occurrence of the event
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\QueryTable.c(1901):    L" CMOS Battery Failure "
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\QueryTable.c(1905):    L" CMOS System Options Not Set "
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\QueryTable.c(1909):    L" CMOS Checksum Error "
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\QueryTable.c(1913):    L" CMOS Configuration Error "
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\QueryTable.c(1933):    L" CMOS Memory Size Different "
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\QueryTable.c(1961):    L" CMOS Time Not Set "
+ShellPkg\Library\UefiShellDebug1CommandsLib\SmbiosView\QueryTable.c(2545):    L" CMOS"
+Vlv2TbltDevicePkg\AcpiPlatform\AcpiPlatform.c(1290):ReadCmosBank1Byte (
+Vlv2TbltDevicePkg\AcpiPlatform\AcpiPlatform.c(1302):WriteCmosBank1Byte (
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(26):  CmosTable.h
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(34):#include <Library/PlatformCmosLib.h>
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(35):#include "CmosMap.h"
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(41):#define  EXCLUDE_FROM_CHECKSUM   CMOS_ATTRIBUTE_EXCLUDE_FROM_CHECKSUM
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(43):#define CMOS_DEBUG_PRINT_LEVEL_DEFAULT_VALUE      0x46   // EFI_D_WARN|EFI_D_INFO|EFI_D_LOAD
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(44):#define CMOS_DEBUG_PRINT_LEVEL_3_DEFAULT_VALUE    0x80   // EFI_D_ERROR
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(47):// Add the CMOS entry below
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(49):CMOS_ENTRY mCmosTable[] = {
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(52):{ CMOS_LCDPANELTYPE_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(53):{ CMOS_LCDPANELSCALING_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(54):{ CMOS_IGDBOOTTYPE_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(55):{ CMOS_BACKLIGHT_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(56):{ CMOS_LFP_PANEL_COLOR_DEPTH_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(57):{ CMOS_EDP_ACTIVE_LFP_CONFIG_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(58):{ CMOS_PRIMARY_DISPLAY_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(59):{ CMOS_IGD_DISPLAY_PIPE_B_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(60):{ CMOS_SDVOPANELTYPE_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(61):{ CMOS_PLATFORM_RESET_OS, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(62):{ CMOS_CPU_BSP_SELECT, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(63):{ CMOS_CPU_RATIO_OFFSET, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(64):{ CMOS_ICH_PORT80_OFFSET, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(65):{ CMOS_MAXRATIO_CONFIG_REG, DEFAULT_VALUE, DEFAULT_ATTRIBUTES },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(66):{ RTC_ADDRESS_CENTURY, RTC_ADDRESS_CENTURY_DEFAULT, CMOS_ATTRIBUTE_EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(67):{ CMOS_POST_CODE_BREAK_REG, DEFAULT_VALUE, EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(68):{ CMOS_POST_CODE_BREAK_1_REG, DEFAULT_VALUE, EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(69):{ CMOS_POST_CODE_BREAK_2_REG, DEFAULT_VALUE, EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(70):{ CMOS_POST_CODE_BREAK_3_REG, DEFAULT_VALUE, EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(71):{ CMOS_DEBUG_PRINT_LEVEL_REG, CMOS_DEBUG_PRINT_LEVEL_DEFAULT_VALUE, EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(72):{ CMOS_DEBUG_PRINT_LEVEL_1_REG, DEFAULT_VALUE, EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(73):{ CMOS_DEBUG_PRINT_LEVEL_2_REG, DEFAULT_VALUE, EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(74):{ CMOS_DEBUG_PRINT_LEVEL_3_REG, CMOS_DEBUG_PRINT_LEVEL_3_DEFAULT_VALUE, EXCLUDE_FROM_CHECKSUM },
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(78):  Funtion to return platform CMOS entry.
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(80):  @param [out]  CmosEntry  Platform CMOS entry.
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(82):  @param [out]  CmosEntryCount Number of platform CMOS entry.
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(88):GetPlatformCmosEntry (
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(89):  OUT CMOS_ENTRY  **CmosEntry,
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(90):  OUT UINTN       *CmosEntryCount
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(93):  *CmosEntry = mCmosTable;
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(94):  *CmosEntryCount = sizeof(mCmosTable)/sizeof(mCmosTable[0]);
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(99):  Function to check if Battery lost or CMOS cleared.
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(102):  @reval FALSE CMOS is cleared.
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(106):CheckCmosBatteryStatus (
+Vlv2TbltDevicePkg\Library\PlatformCmosLib\PlatformCmosLib.c(111):  // Check if the CMOS battery is present
+Vlv2TbltDevicePkg\Library\ResetSystemLib\ResetSystemLib.c(58):  IoWrite8 (0x72, CMOS_RESET_TYPE_BY_OS);
+Vlv2TbltDevicePkg\MonoStatusCode\MonoStatusCode.c(38):#define CMOS_EFI_DEBUG              0x14
+Vlv2TbltDevicePkg\PlatformDxe\Platform.c(692):  // Clear Status D reg VM bit, Date of month Alarm to make Data in CMOS RAM is no longer Valid
+Vlv2TbltDevicePkg\PlatformDxe\Platform.c(1143):    Data = ReadCmosBank1Byte (CpuIo, ACPI_TPM_REQUEST);
+Vlv2TbltDevicePkg\PlatformDxe\Platform.c(1148):    WriteCmosBank1Byte (CpuIo, ACPI_TPM_REQUEST, 0x00);
+Vlv2TbltDevicePkg\PlatformDxe\Platform.c(1151):      WriteCmosBank1Byte (CpuIo, ACPI_TPM_LAST_REQUEST, Data);
+Vlv2TbltDevicePkg\PlatformDxe\Platform.c(1378):        WriteCmosBank1Byte (CpuIo, ACPI_TPM_REQUEST, 0xF0);
+Vlv2TbltDevicePkg\PlatformDxe\Platform.c(1488):        WriteCmosBank1Byte (CpuIo, ACPI_TPM_LAST_REQUEST, 0x0A);
+Vlv2TbltDevicePkg\PlatformDxe\Platform.c(1798):ReadCmosBank1Byte (
+Vlv2TbltDevicePkg\PlatformDxe\Platform.c(1811):WriteCmosBank1Byte (
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(77):ReadCmosBank1Byte (
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(89):WriteCmosBank1Byte (
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(179):  // Before we clear the TO status bit here we need to save the results in a CMOS bit for later use.
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(185):    WriteCmosBank1Byte (
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(186):      EFI_CMOS_PERFORMANCE_FLAGS,
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(187):      ReadCmosBank1Byte (EFI_CMOS_PERFORMANCE_FLAGS) | B_CMOS_TCO_WDT_RESET
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(221):  // First Clear CMOS S4 Wake up flag.
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(223):  WriteCmosBank1Byte(CMOS_S4_WAKEUP_FLAG_ADDRESS, 0);
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(226):  // Check wake up reason and set CMOS accordingly.  Currently checks
+Vlv2TbltDevicePkg\PlatformInitPei\PchInitPeim.c(232):    WriteCmosBank1Byte(CMOS_S4_WAKEUP_FLAG_ADDRESS, 1);
+Vlv2TbltDevicePkg\PlatformPei\BootMode.c(113):  Check CMOS register bit to determine if previous boot was successful
+Vlv2TbltDevicePkg\PlatformSmm\Platform.c(715):  // Clear Status D reg VM bit, Date of month Alarm to make Data in CMOS RAM is no longer Valid
+Vlv2TbltDevicePkg\PlatformSmm\Platform.c(848):  UINT8             CmosData;
+Vlv2TbltDevicePkg\PlatformSmm\Platform.c(906):  CmosData = IoRead8(PCAT_RTC_DATA_REGISTER);
+Vlv2TbltDevicePkg\PlatformSmm\Platform.c(907):  CmosData &= ~(B_RTC_DATE_ALARM_MASK);
+Vlv2TbltDevicePkg\PlatformSmm\Platform.c(908):  CmosData |= mWakeupDay ;
+Vlv2TbltDevicePkg\PlatformSmm\Platform.c(910):    IoWrite8(PCAT_RTC_DATA_REGISTER, CmosData);
+Vlv2TbltDevicePkg\PlatformSmm\Platform.c(912):    if(((CmosData = IoRead8(PCAT_RTC_DATA_REGISTER)) & B_RTC_DATE_ALARM_MASK)

@@ -1,0 +1,36 @@
+From 7236c071096548ffabf3c6efe6e2419741ac23c6 Mon Sep 17 00:00:00 2001
+From: Adrian Sperber <asperber@amperecomputing.com>
+Date: Tue, 30 May 2023 18:57:34 -0700
+Subject: [PATCH] Bug 4469 - SmBiosView does not print correct Slot ID
+ information
+
+SlotType related check only supports PcieGen3 checks within
+DisplaySystemSlotId.
+SmbiosView will print:
+Slot Id: undefined Slot Id
+Updating this check to Gen6andBeyond which fixes the problem:
+Slot Id: the value present in the Slot Number field of the PCI Interrupt
+Routing table entry that is associated with this slot is: <currrent
+index>
+
+Signed-off-by: Adrian Sperber <asperber@amperecomputing.com>
+---
+ .../Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c   | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+index a14b79904d..b109934f58 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+@@ -2998,7 +2998,7 @@ DisplaySystemSlotId (
+       break;
+ 
+     default:
+-      if (((SlotType >= 0x0E) && (SlotType <= 0x12)) || ((SlotType >= 0xA6) && (SlotType <= 0xB6))) {
++      if (((SlotType >= 0x0E) && (SlotType <= 0x12)) || ((SlotType >= 0xA6) && (SlotType <= SlotTypePCIExpressGen6andBeyond))) {
+         ShellPrintHiiEx (-1, -1, NULL, STRING_TOKEN (STR_SMBIOSVIEW_PRINTINFO_VALUE_PRESENT), gShellDebug1HiiHandle, SlotId);
+       } else {
+         ShellPrintHiiEx (-1, -1, NULL, STRING_TOKEN (STR_SMBIOSVIEW_PRINTINFO_UNDEFINED_SLOT_ID), gShellDebug1HiiHandle);
+-- 
+2.38.1.windows.1
+

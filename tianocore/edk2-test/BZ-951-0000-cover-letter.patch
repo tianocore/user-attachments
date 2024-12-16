@@ -1,0 +1,50 @@
+From 3af68d4ae3962442d8bae475925d92be8aea5b6d Mon Sep 17 00:00:00 2001
+From: Sunil V L <sunilvl@ventanamicro.com>
+Date: Thu, 3 Mar 2022 19:41:16 +0530
+Subject: [RFC V1 0/5] Add UEFI-SCT test cases for RISCV_EFI_BOOT_PROTOCOL
+
+RISC-V platforms need to support new RISCV_EFI_BOOT_PROTOCOL
+to communicate the boot hart ID to the OS. This patch series adds
+the test cases to UEFI SCT for this protocol.
+
+The protocol spec is maintained at:
+https://github.com/riscv-non-isa/riscv-uefi
+
+These tests are tested with u-boot 2022.04 which implements this
+protocol.
+
+These patches can be found in riscv_boot_protocol_v1 branch at
+https://github.com/vlsunil/edk2-test.git
+
+Sunil V L (5):
+  uefi-sct/SctPkg: Add header file for RISCV_EFI_BOOT_PROTOCOL
+  uefi-sct/SctPkg: Add test cases for RISCV_EFI_BOOT_PROTOCOL
+  uefi-sct/SctPkg: Build test cases of RISCV_EFI_BOOT_PROTOCOL
+  uefi-sct/SctPkg: Install RISCV_EFI_BOOT_PROTOCOL test module
+  uefi-sct/SctPkg: Add a category for RISCV_EFI_BOOT_PROTOCOL
+
+ uefi-sct/SctPkg/CommonGenFramework.sh         |   4 +
+ uefi-sct/SctPkg/Config/Data/Category.ini      |   7 +
+ .../EFI/Protocol/RiscV/BlackBoxTest/Guid.c    |  38 ++++
+ .../EFI/Protocol/RiscV/BlackBoxTest/Guid.h    |  50 +++++
+ .../BlackBoxTest/RiscVBootProtocolBBTest.inf  |  50 +++++
+ .../RiscVBootProtocolBBTestConformance.c      | 171 ++++++++++++++++++
+ .../RiscVBootProtocolBBTestFunction.c         | 124 +++++++++++++
+ .../RiscVBootProtocolBBTestMain.c             | 122 +++++++++++++
+ .../RiscVBootProtocolBBTestMain.h             | 112 ++++++++++++
+ uefi-sct/SctPkg/UEFI/Protocol/RiscVBoot.h     |  72 ++++++++
+ uefi-sct/SctPkg/UEFI/UEFI.dec                 |   1 +
+ uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc             |   3 +
+ 12 files changed, 754 insertions(+)
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.h
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTest.inf
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestConformance.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestFunction.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.h
+ create mode 100644 uefi-sct/SctPkg/UEFI/Protocol/RiscVBoot.h
+
+-- 
+2.25.1
+

@@ -1,0 +1,81 @@
+From 03535cb856c03ba3aa3af62627c22630f9573e1d Mon Sep 17 00:00:00 2001
+From: Xiaoyu Lu <xiaoyux.lu@intel.com>
+Date: Thu, 1 Aug 2019 14:41:05 +0800
+Subject: [PATCH] CryptoPkg: Fix VS2017 build problem for ARM/AARCH64
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=2029
+
+1. CryptPkcs7VerifyEku.c contains internal/x509_int.h header file, this
+   file contains internal/refcount.h file, if _M_ARM or _M_ARM64
+   defined, it will contains (intrin.h).
+   So we undef these flags for MSVC. It will fix include header
+   dependence problem(intrin.h).
+
+2. ARM with MSFT toolchain was not enabled in BuildOptions, So
+   add CC_FLAGS for ARM/AARCH64 into OpensslLib[Crypto].inf BuildOptions
+   section to fix build problem.
+
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Signed-off-by: Xiaoyu Lu <xiaoyux.lu@intel.com>
+---
+ CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf   | 2 +-
+ CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf    | 2 +-
+ CryptoPkg/Library/OpensslLib/OpensslLib.inf       | 2 ++
+ CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf | 2 ++
+ 4 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf b/CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+index 020df3c19b..50a0796a26 100644
+--- a/CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
++++ b/CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+@@ -92,7 +92,7 @@
+   # suppress the following warnings so we do not break the build with warnings-as-errors:
+   # C4090: 'function' : different 'const' qualifiers
+   #
+-  MSFT:*_*_*_CC_FLAGS = /wd4090
++  MSFT:*_*_*_CC_FLAGS = /wd4090 /U_M_ARM /U_M_ARM64 
+ 
+   # -JCryptoPkg/Include : To disable the use of the system includes provided by RVCT
+   # --diag_remark=1     : Reduce severity of "#1-D: last line of file ends without a newline"
+diff --git a/CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf b/CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf
+index 4c43537476..710c6e9574 100644
+--- a/CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf
++++ b/CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf
+@@ -89,7 +89,7 @@
+   # C4090: 'function' : different 'const' qualifiers
+   # C4718: 'function call' : recursive call has no side effects, deleting
+   #
+-  MSFT:*_*_*_CC_FLAGS = /wd4090 /wd4718
++  MSFT:*_*_*_CC_FLAGS = /wd4090 /wd4718 /U_M_ARM /U_M_ARM64 
+ 
+   # -JCryptoPkg/Include : To disable the use of the system includes provided by RVCT
+   # --diag_remark=1     : Reduce severity of "#1-D: last line of file ends without a newline"
+diff --git a/CryptoPkg/Library/OpensslLib/OpensslLib.inf b/CryptoPkg/Library/OpensslLib/OpensslLib.inf
+index 5f36edeeef..e71be449fe 100644
+--- a/CryptoPkg/Library/OpensslLib/OpensslLib.inf
++++ b/CryptoPkg/Library/OpensslLib/OpensslLib.inf
+@@ -586,6 +586,8 @@
+   #
+   MSFT:*_*_IA32_CC_FLAGS   = -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /wd4090 /wd4132 /wd4244 /wd4245 /wd4267 /wd4310 /wd4389 /wd4700 /wd4702 /wd4706 /wd4819
+   MSFT:*_*_X64_CC_FLAGS    = -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /wd4090 /wd4132 /wd4244 /wd4245 /wd4267 /wd4306 /wd4310 /wd4700 /wd4389 /wd4702 /wd4706 /wd4819
++  MSFT:*_*_ARM_CC_FLAGS    = -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /wd4090 /wd4132 /wd4244 /wd4245 /wd4267 /wd4306 /wd4310 /wd4700 /wd4389 /wd4702 /wd4706 /wd4819
++  MSFT:*_*_AARCH64_CC_FLAGS    = -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /wd4090 /wd4132 /wd4244 /wd4245 /wd4267 /wd4306 /wd4310 /wd4700 /wd4389 /wd4702 /wd4706 /wd4819
+ 
+   INTEL:*_*_IA32_CC_FLAGS  = -U_WIN32 -U_WIN64 -U_MSC_VER -U__ICC $(OPENSSL_FLAGS) /w
+   INTEL:*_*_X64_CC_FLAGS   = -U_WIN32 -U_WIN64 -U_MSC_VER -U__ICC $(OPENSSL_FLAGS) /w
+diff --git a/CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf b/CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
+index de05cac931..812ebf5599 100644
+--- a/CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
++++ b/CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
+@@ -542,6 +542,8 @@
+   #
+   MSFT:*_*_IA32_CC_FLAGS   = -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /wd4090 /wd4132 /wd4244 /wd4245 /wd4267 /wd4310 /wd4389 /wd4700 /wd4702 /wd4706 /wd4819
+   MSFT:*_*_X64_CC_FLAGS    = -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /wd4090 /wd4132 /wd4244 /wd4245 /wd4267 /wd4306 /wd4310 /wd4700 /wd4389 /wd4702 /wd4706 /wd4819
++  MSFT:*_*_ARM_CC_FLAGS    = -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /wd4090 /wd4132 /wd4244 /wd4245 /wd4267 /wd4306 /wd4310 /wd4700 /wd4389 /wd4702 /wd4706 /wd4819
++  MSFT:*_*_AARCH64_CC_FLAGS    = -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /wd4090 /wd4132 /wd4244 /wd4245 /wd4267 /wd4306 /wd4310 /wd4700 /wd4389 /wd4702 /wd4706 /wd4819
+ 
+   INTEL:*_*_IA32_CC_FLAGS  = -U_WIN32 -U_WIN64 -U_MSC_VER -U__ICC $(OPENSSL_FLAGS) /w
+   INTEL:*_*_X64_CC_FLAGS   = -U_WIN32 -U_WIN64 -U_MSC_VER -U__ICC $(OPENSSL_FLAGS) /w
+-- 
+2.20.1.windows.1
+

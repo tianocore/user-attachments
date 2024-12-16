@@ -1,0 +1,276 @@
+From 7a05355d97277cdd1a367daaca8ace4453ba41e7 Mon Sep 17 00:00:00 2001
+From: Vineel Kovvuri <vineelko@microsoft.com>
+Date: Sat, 6 Nov 2021 01:00:26 -0700
+Subject: [PATCH 2/4] Port VsIntrinsicLib from Project Mu
+
+Signed-off-by: Vineel Kovvuri <vineelko@microsoft.com>
+---
+ MdePkg/Library/VsIntrinsicLib/IA32/Llmul.asm  | 98 +++++++++++++++++++
+ MdePkg/Library/VsIntrinsicLib/IA32/Llshr.asm  | 79 +++++++++++++++
+ .../Library/VsIntrinsicLib/VsIntrinsicLib.inf | 38 +++++++
+ .../Library/VsIntrinsicLib/VsIntrinsicLib.uni | 17 ++++
+ 4 files changed, 232 insertions(+)
+ create mode 100644 MdePkg/Library/VsIntrinsicLib/IA32/Llmul.asm
+ create mode 100644 MdePkg/Library/VsIntrinsicLib/IA32/Llshr.asm
+ create mode 100644 MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
+ create mode 100644 MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.uni
+
+diff --git a/MdePkg/Library/VsIntrinsicLib/IA32/Llmul.asm b/MdePkg/Library/VsIntrinsicLib/IA32/Llmul.asm
+new file mode 100644
+index 0000000000..190392da1b
+--- /dev/null
++++ b/MdePkg/Library/VsIntrinsicLib/IA32/Llmul.asm
+@@ -0,0 +1,98 @@
++;***
++;llmul.asm - long multiply routine
++;
++;       Copyright (c) Microsoft Corporation. All rights reserved.
++;       SPDX-License-Identifier: BSD-2-Clause-Patent
++;
++;Purpose:
++;       Defines long multiply routine
++;       Both signed and unsigned routines are the same, since multiply's
++;       work out the same in 2's complement
++;       creates the following routine:
++;           __allmul
++;
++;Original Implemenation: MSVC 14.12.25827
++;
++;*******************************************************************************
++    .686
++    .model  flat,C
++    .code
++
++
++;***
++;llmul - long multiply routine
++;
++;Purpose:
++;       Does a long multiply (same for signed/unsigned)
++;       Parameters are not changed.
++;
++;Entry:
++;       Parameters are passed on the stack:
++;               1st pushed: multiplier (QWORD)
++;               2nd pushed: multiplicand (QWORD)
++;
++;Exit:
++;       EDX:EAX - product of multiplier and multiplicand
++;       NOTE: parameters are removed from the stack
++;
++;Uses:
++;       ECX
++;
++;Exceptions:
++;
++;*******************************************************************************
++_allmul PROC NEAR
++
++A       EQU     [esp + 4]       ; stack address of a
++B       EQU     [esp + 12]      ; stack address of b
++
++HIGH_PART  EQU     [4]             ; 
++LOW_PART   EQU     [0]
++
++;
++;       AHI, BHI : upper 32 bits of A and B
++;       ALO, BLO : lower 32 bits of A and B
++;
++;             ALO * BLO
++;       ALO * BHI
++; +     BLO * AHI
++; ---------------------
++;
++
++        mov     eax,HIGH_PART(A)
++        mov     ecx,HIGH_PART(B)
++        or      ecx,eax         ;test for both high dwords zero.
++        mov     ecx,LOW_PART(B)
++        jnz     short hard      ;both are zero, just mult ALO and BLO
++
++        mov     eax,LOW_PART(A)
++        mul     ecx
++
++        ret     16              ; callee restores the stack
++
++hard:
++        push    ebx
++
++; must redefine A and B since esp has been altered
++
++A2      EQU     [esp + 8]       ; stack address of a
++B2      EQU     [esp + 16]      ; stack address of b
++
++        mul     ecx             ;eax has AHI, ecx has BLO, so AHI * BLO
++        mov     ebx,eax         ;save result
++
++        mov     eax,LOW_PART(A2)
++        mul     dword ptr HIGH_PART(B2) ;ALO * BHI
++        add     ebx,eax         ;ebx = ((ALO * BHI) + (AHI * BLO))
++
++        mov     eax,LOW_PART(A2);ecx = BLO
++        mul     ecx             ;so edx:eax = ALO*BLO
++        add     edx,ebx         ;now edx has all the LO*HI stuff
++
++        pop     ebx
++
++        ret     16              ; callee restores the stack
++
++_allmul ENDP
++
++        end
+diff --git a/MdePkg/Library/VsIntrinsicLib/IA32/Llshr.asm b/MdePkg/Library/VsIntrinsicLib/IA32/Llshr.asm
+new file mode 100644
+index 0000000000..81c5240c16
+--- /dev/null
++++ b/MdePkg/Library/VsIntrinsicLib/IA32/Llshr.asm
+@@ -0,0 +1,79 @@
++        title   llshr - long shift right
++;***
++;llshr.asm - long shift right
++;
++;       Copyright (c) Microsoft Corporation. All rights reserved.
++;       SPDX-License-Identifier: BSD-2-Clause-Patent
++;
++;Purpose:
++;       define signed long shift right routine
++;           __allshr
++;
++;Original Implemenation: MSVC 14.12.25827
++;
++;*******************************************************************************
++    .686
++    .model  flat,C
++    .code
++
++
++
++;***
++;llshr - long shift right
++;
++;Purpose:
++;       Does a signed Long Shift Right
++;       Shifts a long right any number of bits.
++;
++;Entry:
++;       EDX:EAX - long value to be shifted
++;       CL    - number of bits to shift by
++;
++;Exit:
++;       EDX:EAX - shifted value
++;
++;Uses:
++;       CL is destroyed.
++;
++;Exceptions:
++;
++;*******************************************************************************
++_allshr PROC NEAR
++
++;
++; Handle shifts of 64 bits or more (if shifting 64 bits or more, the result
++; depends only on the high order bit of edx).
++;
++        cmp     cl,64
++        jae     short RETSIGN
++
++;
++; Handle shifts of between 0 and 31 bits
++;
++        cmp     cl, 32
++        jae     short MORE32
++        shrd    eax,edx,cl
++        sar     edx,cl
++        ret
++
++;
++; Handle shifts of between 32 and 63 bits
++;
++MORE32:
++        mov     eax,edx
++        sar     edx,31
++        and     cl,31
++        sar     eax,cl
++        ret
++
++;
++; Return double precision 0 or -1, depending on the sign of edx
++;
++RETSIGN:
++        sar     edx,31
++        mov     eax,edx
++        ret
++
++_allshr ENDP
++
++        end
+diff --git a/MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf b/MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
+new file mode 100644
+index 0000000000..d55bfcbd22
+--- /dev/null
++++ b/MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
+@@ -0,0 +1,38 @@
++## @file
++#  Visual Studio 2017 C compiler intrinsic Library implementation.
++#
++#  Since the C compiler does very aggressive full program optimizations there are cases
++#  where some small number of compiler inserted functions can not be avoided.
++#  To handle that case this NULL library can be injected into all 32bit modules
++#  so that the link time dependency is met and the modules compile.
++#
++#  The routines are based on src delivered with the visual studio product.  it is
++#  critical that calling convention, stack usage, register usage, etc is in line
++#  with what the compiler expects as there is no way to influence the behaviors
++#  for compiler inserted functions.
++#
++# Copyright (c) Microsoft Corporation. All rights reserved.
++# SPDX-License-Identifier: BSD-2-Clause-Patent
++##
++
++[Defines]
++  INF_VERSION                    = 0x00010005
++  BASE_NAME                      = VsIntrinsicLib
++  MODULE_UNI_FILE                = VsIntrinsicLib.uni
++  FILE_GUID                      = ed449fc0-3265-40ed-91b8-435b8df0aa5f
++  MODULE_TYPE                    = BASE
++  VERSION_STRING                 = 1.0
++  LIBRARY_CLASS                  = NULL
++
++#
++#  VALID_ARCHITECTURES           = IA32
++#
++
++[Sources]
++
++[Sources.Ia32]
++  IA32/Llmul.asm
++  IA32/Llshr.asm
++
++[Packages]
++  MdePkg/MdePkg.dec
+diff --git a/MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.uni b/MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.uni
+new file mode 100644
+index 0000000000..c4513808fd
+--- /dev/null
++++ b/MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.uni
+@@ -0,0 +1,17 @@
++// /** @file
++// VsIntrinsic Library implementation.
++//
++// VsIntrinsic Library implementation.
++//
++//
++//
++//Copyright (c) Microsoft Corporation. All rights reserved.
++//SPDX-License-Identifier: BSD-2-Clause-Patent
++//
++//**/
++
++
++#string STR_MODULE_ABSTRACT             #language en-US "VsIntrinsic Library implementation"
++
++#string STR_MODULE_DESCRIPTION          #language en-US "VsIntrinsic Library implementation"
++
+-- 
+2.25.1
+

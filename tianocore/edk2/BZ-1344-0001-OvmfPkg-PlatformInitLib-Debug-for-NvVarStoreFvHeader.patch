@@ -1,0 +1,97 @@
+From 62334b4e5e85e9702508aca767e0370728dd80a9 Mon Sep 17 00:00:00 2001
+From: sunceping <cepingx.sun@intel.com>
+Date: Wed, 22 Mar 2023 14:30:09 +0800
+Subject: [PATCH 1/1] OvmfPkg/PlatformInitLib: Debug for NvVarStoreFvHeader
+
+Signed-off-by: Sun Ceping <cepingx.sun@intel.com>
+---
+ OvmfPkg/Library/PlatformInitLib/Platform.c | 59 ++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+
+diff --git a/OvmfPkg/Library/PlatformInitLib/Platform.c b/OvmfPkg/Library/PlatformInitLib/Platform.c
+index 9fee6e481038..1d10986782f2 100644
+--- a/OvmfPkg/Library/PlatformInitLib/Platform.c
++++ b/OvmfPkg/Library/PlatformInitLib/Platform.c
+@@ -727,6 +727,61 @@ CheckPaddingData (
+ 
+   return TRUE;
+ }
++#define COLUME_SIZE 16
++/**
++
++  This function dump raw data.
++
++  @param  Data  raw data
++  @param  Size  raw data size
++
++**/
++STATIC
++VOID
++InternalDumpData (
++  IN UINT8  *Data,
++  IN UINTN  Size
++  )
++{
++  UINTN  Index;
++  for (Index = 0; Index < Size; Index++) {
++    DEBUG ((DEBUG_INFO, Index == COLUME_SIZE / 2 ? " | %02x" : " %02x", (UINTN)Data[Index]));
++  }
++}
++
++/**
++
++  This function dump raw data with colume format.
++
++  @param  Data  raw data
++  @param  Size  raw data size
++
++**/
++STATIC
++VOID
++InternalDumpHex (
++  IN UINT8  *Data,
++  IN UINTN  Size
++  )
++{
++  UINTN  Index;
++  UINTN  Count;
++  UINTN  Left;
++
++  Count = Size / COLUME_SIZE;
++  Left  = Size % COLUME_SIZE;
++  for (Index = 0; Index < Count; Index++) {
++    DEBUG ((DEBUG_INFO, "%04x: ", Index * COLUME_SIZE));
++    InternalDumpData (Data + Index * COLUME_SIZE, COLUME_SIZE);
++    DEBUG ((DEBUG_INFO, "\n"));
++  }
++
++  if (Left != 0) {
++    DEBUG ((DEBUG_INFO, "%04x: ", Index * COLUME_SIZE));
++    InternalDumpData (Data + Index * COLUME_SIZE, Left);
++    DEBUG ((DEBUG_INFO, "\n"));
++  }
++}
+ 
+ /**
+   Check the integrity of NvVarStore.
+@@ -753,6 +808,8 @@ PlatformValidateNvVarStore (
+   VARIABLE_STORE_HEADER          *NvVarStoreHeader;
+   AUTHENTICATED_VARIABLE_HEADER  *VariableHeader;
+ 
++  DEBUG((DEBUG_INFO,"%a , NvVarStoreBase is 0x%p, NvVarStoreSize is 0x%x \n", __FUNCTION__, NvVarStoreBase, NvVarStoreSize));
++
+   static EFI_GUID  FvHdrGUID       = EFI_SYSTEM_NV_DATA_FV_GUID;
+   static EFI_GUID  VarStoreHdrGUID = EFI_AUTHENTICATED_VARIABLE_GUID;
+ 
+@@ -770,6 +827,8 @@ PlatformValidateNvVarStore (
+   //
+   NvVarStoreFvHeader = (EFI_FIRMWARE_VOLUME_HEADER *)NvVarStoreBase;
+ 
++  InternalDumpHex(NvVarStoreBase, 64);
++
+   if ((!IsZeroBuffer (NvVarStoreFvHeader->ZeroVector, 16)) ||
+       (!CompareGuid (&FvHdrGUID, &NvVarStoreFvHeader->FileSystemGuid)) ||
+       (NvVarStoreFvHeader->Signature != EFI_FVH_SIGNATURE) ||
+-- 
+2.34.1
+

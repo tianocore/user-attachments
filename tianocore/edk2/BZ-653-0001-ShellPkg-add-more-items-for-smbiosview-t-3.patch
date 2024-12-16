@@ -1,0 +1,65 @@
+From 451c3497f1901315b53da12b37bc9c21520fcb70 Mon Sep 17 00:00:00 2001
+From: Mars CC Lin <mars_cc_lin@phoenix.com>
+Date: Wed, 17 Feb 2021 13:12:36 +0800
+Subject: [PATCH v2] ShellPkg: add more items for smbiosview -t 3 .
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=3177
+Add ContainedElementCount, ContainedElementRecordLength and
+ContainedElements for smbiosview type 3.
+
+Signed-off-by: Mars CC Lin <mars_cc_lin@phoenix.com>
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Cc: Philippe Mathieu-Daude <philmd@redhat.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ .../SmbiosView/PrintInfo.c                         | 14 ++++++++++++++
+ .../SmbiosView/SmbiosViewStrings.uni               |  1 +
+ 2 files changed, 15 insertions(+)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+index a3dc7b68c4..4be6cf2df4 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+@@ -280,6 +280,7 @@ SmbiosPrintStructure (
+   )
+ {
+   UINT8 Index;
++  UINT8 Index2 = 0;
+   UINT8 *Buffer;
+ 
+   if (Struct == NULL) {
+@@ -404,6 +405,19 @@ SmbiosPrintStructure (
+       if (Struct->Hdr->Length > 0x12) {
+         PRINT_STRUCT_VALUE (Struct, Type3, NumberofPowerCords);
+       }
++      if (Struct->Hdr->Length > 0x13) {
++        PRINT_STRUCT_VALUE (Struct, Type3, ContainedElementCount);
++      }
++      if (Struct->Hdr->Length > 0x14) {
++        PRINT_STRUCT_VALUE (Struct, Type3, ContainedElementRecordLength);
++      }
++      for (Index = 0; Index < Struct->Type3->ContainedElementCount; Index++) {
++        ShellPrintHiiEx(-1,-1,NULL,STRING_TOKEN (STR_SMBIOSVIEW_PRINTINFO_CONTAINED_ELEMENT), gShellDebug1HiiHandle, Index+1);
++        for (Index2 = 0; Index2< Struct->Type3->ContainedElementRecordLength; Index2++) {
++          Print (L"%02X ", Buffer[0x15 + (Index * Struct->Type3->ContainedElementRecordLength) + Index2]);
++        }
++        Print (L"\n");
++      }
+     }
+     if (AE_SMBIOS_VERSION (0x2, 0x7) && (Struct->Hdr->Length > 0x13)) {
+       if (Struct->Hdr->Length > (0x15 + (Struct->Type3->ContainedElementCount * Struct->Type3->ContainedElementRecordLength))) {
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
+index 8bcba7ccf7..9433e8a25f 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
+@@ -93,6 +93,7 @@
+ #string STR_SMBIOSVIEW_PRINTINFO_POWER_SUPPLY_STATE             #language en-US "Power Supply State "
+ #string STR_SMBIOSVIEW_PRINTINFO_THERMAL_STATE                  #language en-US "Thermal state "
+ #string STR_SMBIOSVIEW_PRINTINFO_SECURITY_STATUS                #language en-US "Security Status "
++#string STR_SMBIOSVIEW_PRINTINFO_CONTAINED_ELEMENT              #language en-US "Contained Element %d: "
+ #string STR_SMBIOSVIEW_PRINTINFO_SUPOPRT                        #language en-US "Support "
+ #string STR_SMBIOSVIEW_PRINTINFO_CURRENT                        #language en-US "Current "
+ #string STR_SMBIOSVIEW_PRINTINFO_INSTALLED                      #language en-US "Installed "
+-- 
+2.29.1.windows.1
+

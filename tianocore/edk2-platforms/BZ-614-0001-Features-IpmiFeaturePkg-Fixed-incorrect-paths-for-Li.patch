@@ -1,0 +1,39 @@
+From 801fec42a6b3aeed156ad80db77c017a1b7fca62 Mon Sep 17 00:00:00 2001
+From: zengzhi <zengzhi@byosoft.com.cn>
+Date: Wed, 16 Dec 2020 14:57:38 +0800
+Subject: [PATCH] Features/IpmiFeaturePkg:Fixed incorrect paths for
+ LibraryClassses
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3038
+
+added IpmiCommandLib.h ,Deleted IpmiCommandLib.inf.
+added IpmiPlatformHookLib,Deleted IpmiCommandLib.
+
+Cc: Sai Chaganty <rangasai.v.chaganty@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Signed-off-by: zengzhi <zengzhi@byosoft.com.cn>
+---
+ .../OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dec     | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Features/Intel/OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dec b/Features/Intel/OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dec
+index 1426496d..c89691ef 100644
+--- a/Features/Intel/OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dec
++++ b/Features/Intel/OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dec
+@@ -25,11 +25,11 @@
+ [LibraryClasses]
+   ## @libraryclass  Provides services to send IPMI commands.
+   #
+-  IpmiCommandLib|Include/Library/IpmiCommandLib.inf
++  IpmiCommandLib|Include/Library/IpmiCommandLib.h
+ 
+   ## @libraryclass  Provides an API for platform-specific IPMI hooks.
+   #
+-  IpmiCommandLib|Include/Library/IpmiPlatformHookLib.h
++  IpmiPlatformHookLib|Include/Library/IpmiPlatformHookLib.h
+ 
+ [Guids]
+   gIpmiFeaturePkgTokenSpaceGuid  =  {0xc05283f6, 0xd6a8, 0x48f3, {0x9b, 0x59, 0xfb, 0xca, 0x71, 0x32, 0x0f, 0x12}}
+-- 
+2.26.2.windows.1
+

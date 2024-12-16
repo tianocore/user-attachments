@@ -1,0 +1,496 @@
+From 6d4126adb3fd0b3d6c3b032ecaef5206b11def15 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Mon, 28 Dec 2020 21:06:02 +0100
+Subject: [PATCH edk2-test v2 1/1] uefi-sct/SctPkg: typo ExtendedVeirification
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3142
+
+The parameter name ExtendedVerification has repeatedly been misspelled.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+v2:
+        remove unrelated changes
+---
+ .../SimpleTextInBBTestConformance.c           |  6 ++--
+ .../BlackBoxTest/SimpleTextInBBTestFunction.c |  2 +-
+ .../BlackBoxTest/SimpleTextInBBTestStress.c   |  2 +-
+ .../SimpleTextOutBBTestFunction_efi.c         | 36 +++++++++----------
+ .../SimpleTextOutBBTestFunction_uefi.c        | 20 +++++------
+ .../SimpleTextInBBTestConformance.c           |  6 ++--
+ .../BlackBoxTest/SimpleTextInBBTestFunction.c |  2 +-
+ .../BlackBoxTest/SimpleTextInBBTestStress.c   |  2 +-
+ .../SimpleTextOutBBTestFunction_uefi.c        | 20 +++++------
+ 9 files changed, 48 insertions(+), 48 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestConformance.c
+index be5b000f65b2..975fa7d9a4b2 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestConformance.c
+@@ -147,7 +147,7 @@ BBTestReadKeyStrokeConformanceManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -188,7 +188,7 @@ BBTestReadKeyStrokeConformanceManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -393,7 +393,7 @@ BBTestWaitForKeyConformanceManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestFunction.c
+index f062101a61ff..509813147f79 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestFunction.c
+@@ -812,7 +812,7 @@ BBTestWaitForKeyFunctionManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestStress.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestStress.c
+index 124c993572fd..106496bae92d 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestStress.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestStress.c
+@@ -141,7 +141,7 @@ BBTestReadKeyStrokeManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_efi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_efi.c
+index c69bc7afd0db..e59e51fc12bb 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_efi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_efi.c
+@@ -181,7 +181,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid001,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, mode position integrity",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, mode position integrity",
+                  L"%a:%d: Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+@@ -211,7 +211,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid002,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE",
+                  L"%a:%d: Status = %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -274,7 +274,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid004,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, mode position integrity",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, mode position integrity",
+                  L"%a:%d: Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+@@ -304,7 +304,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid005,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE",
+                  L"%a:%d, Status = %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -323,7 +323,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid006,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, user's view",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, user's view",
+                  L"%a:%d",
+                  __FILE__,
+                  (UINTN)__LINE__
+@@ -368,7 +368,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid007,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, mode position integrity",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, mode position integrity",
+                  L"%a:%d: Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+@@ -398,7 +398,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid008,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                  L"%a:%d: Status = %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -461,7 +461,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid010,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, mode position integrity",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, mode position integrity",
+                  L"%a:%d: Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                  __FILE__,
+@@ -491,7 +491,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid011,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                  L"%a:%d: Status = %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -510,7 +510,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid012,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, user's view",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, user's view",
+                  L"%a:%d: user feedback",
+                  __FILE__,
+                  (UINTN)__LINE__
+@@ -695,7 +695,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid014,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, mode position integrity, Backgroud color is black",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, mode position integrity, Backgroud color is black",
+                    L"%a:%d: Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                    L"Expected:Cursor Position(%d x %d), MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+@@ -725,7 +725,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid015,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, check return code",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, check return code",
+                    L"%a:%d: Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -786,7 +786,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid017,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, mode position integrity, background color is black",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, mode position integrity, background color is black",
+                    L"%a:%d: Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                    L"Expected:Cursor Position(%d x %d), MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+@@ -816,7 +816,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid018,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, check return code",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, check return code",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -859,7 +859,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid019,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, mode position integrity, background color is black",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, mode position integrity, background color is black",
+                    L"%a:%d: Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                    L" Expected:Cursor Position(%d x %d), MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+@@ -889,7 +889,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid020,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, check return code",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, check return code",
+                    L"%a:%d: Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -950,7 +950,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid022,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, mode position integrity, background color is black",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, mode position integrity, background color is black",
+                    L"%a:%d: Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                    L"Expected:Cursor Position(%d x %d), MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                    __FILE__,
+@@ -980,7 +980,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid023,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, check return code",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, check return code",
+                    L"%a:%d: Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+index cb53af93d039..9b0ae233ce5f 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+@@ -171,7 +171,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid001,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE",
+                  L"%a:%d: Current: Cursor Position(%d x %d), MaxMode=%d. "\
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                  __FILE__,
+@@ -196,7 +196,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid002,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE",
+                  L"%a:%d: Status = %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -215,7 +215,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid006,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, user's view",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, user's view",
+                  L"%a:%d",
+                  __FILE__,
+                  (UINTN)__LINE__
+@@ -267,7 +267,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid007,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                  L"%a:%d: Current: Cursor Position(%d x %d), MaxMode=%d. "\
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                  __FILE__,
+@@ -292,7 +292,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid008,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                  L"%a:%d: Status = %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -311,7 +311,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid012,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, user's view",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, user's view",
+                  L"%a:%d: user feedback",
+                  __FILE__,
+                  (UINTN)__LINE__
+@@ -500,7 +500,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid014,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE",
+                    L"%a:%d: Current: Cursor Position(%d x %d), MaxMode=%d. "\
+                    L"Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                    __FILE__,
+@@ -525,7 +525,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid015,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, check return code",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, check return code",
+                    L"%a:%d: Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -577,7 +577,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid019,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, mode position integrity, background color is black",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, mode position integrity, background color is black",
+                    L"%a:%d: Current: Cursor Position(%d x %d), MaxMode=%d. "\
+                    L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                    __FILE__,
+@@ -602,7 +602,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid020,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, check return code",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, check return code",
+                    L"%a:%d: Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestConformance.c
+index be5b000f65b2..975fa7d9a4b2 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestConformance.c
+@@ -147,7 +147,7 @@ BBTestReadKeyStrokeConformanceManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -188,7 +188,7 @@ BBTestReadKeyStrokeConformanceManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -393,7 +393,7 @@ BBTestWaitForKeyConformanceManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestFunction.c
+index ee1173d9dee9..8442f0b0ed56 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestFunction.c
+@@ -812,7 +812,7 @@ BBTestWaitForKeyFunctionManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestStress.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestStress.c
+index 124c993572fd..106496bae92d 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestStress.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestStress.c
+@@ -141,7 +141,7 @@ BBTestReadKeyStrokeManualTest (
+                    StandardLib,
+                    AssertionType,
+                    gTestGenericFailureGuid,
+-                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                   L"EFI_SIMPLE_TEXT_IN_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                    L"%a:%d, Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+index cb53af93d039..9b0ae233ce5f 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+@@ -171,7 +171,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid001,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE",
+                  L"%a:%d: Current: Cursor Position(%d x %d), MaxMode=%d. "\
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                  __FILE__,
+@@ -196,7 +196,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid002,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE",
+                  L"%a:%d: Status = %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -215,7 +215,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid006,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, user's view",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, user's view",
+                  L"%a:%d",
+                  __FILE__,
+                  (UINTN)__LINE__
+@@ -267,7 +267,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid007,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                  L"%a:%d: Current: Cursor Position(%d x %d), MaxMode=%d. "\
+                  L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                  __FILE__,
+@@ -292,7 +292,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid008,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE",
+                  L"%a:%d: Status = %r",
+                  __FILE__,
+                  (UINTN)__LINE__,
+@@ -311,7 +311,7 @@ BBTestResetFunctionManualTest (
+                  StandardLib,
+                  AssertionType,
+                  gSimpleTextOutputFunctionTestAssertionGuid012,
+-                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, user's view",
++                 L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, user's view",
+                  L"%a:%d: user feedback",
+                  __FILE__,
+                  (UINTN)__LINE__
+@@ -500,7 +500,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid014,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE",
+                    L"%a:%d: Current: Cursor Position(%d x %d), MaxMode=%d. "\
+                    L"Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                    __FILE__,
+@@ -525,7 +525,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid015,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as FALSE, check return code",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as FALSE, check return code",
+                    L"%a:%d: Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -577,7 +577,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid019,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, mode position integrity, background color is black",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, mode position integrity, background color is black",
+                    L"%a:%d: Current: Cursor Position(%d x %d), MaxMode=%d. "\
+                    L" Expected:Cursor Position(%d x %d), MaxMode=%d.",
+                    __FILE__,
+@@ -602,7 +602,7 @@ BBTestResetFunctionAutoTest (
+                    StandardLib,
+                    AssertionType,
+                    gSimpleTextOutputFunctionTestAssertionGuid020,
+-                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVeirification as TRUE, check return code",
++                   L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.Reset - Reset with ExtendedVerification as TRUE, check return code",
+                    L"%a:%d: Status = %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-- 
+2.29.2
+

@@ -1,0 +1,49 @@
+From 1ed224dd92ddce644ef911837b1b6f77b051c347 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 21 Dec 2022 16:53:29 +0530
+Subject: [PATCH] FatPkg: Fix EnhancedFatDxe driver coverity issues
+
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ FatPkg/EnhancedFatDxe/DirectoryManage.c | 4 ++--
+ FatPkg/EnhancedFatDxe/DiskCache.c       | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/FatPkg/EnhancedFatDxe/DirectoryManage.c b/FatPkg/EnhancedFatDxe/DirectoryManage.c
+index 723fc35f38..cc4acfec2f 100644
+--- a/FatPkg/EnhancedFatDxe/DirectoryManage.c
++++ b/FatPkg/EnhancedFatDxe/DirectoryManage.c
+@@ -474,7 +474,7 @@ FatGetDirEntInfo (
+     Info       = Buffer;
+     Info->Size = ResultSize;
+     if ((Entry->Attributes & FAT_ATTRIBUTE_DIRECTORY) != 0) {
+-      Cluster            = (Entry->FileClusterHigh << 16) | Entry->FileCluster;
++      Cluster            = ((UINTN)(Entry->FileClusterHigh) << 16) | (UINTN)Entry->FileCluster;
+       Info->PhysicalSize = FatPhysicalDirSize (Volume, Cluster);
+       Info->FileSize     = Info->PhysicalSize;
+     } else {
+@@ -1167,7 +1167,7 @@ FatOpenDirEnt (
+       //
+       Volume             = Parent->Volume;
+       OFile->FullPathLen = Parent->FullPathLen + 1 + StrLen (DirEnt->FileString);
+-      OFile->FileCluster = ((DirEnt->Entry.FileClusterHigh) << 16) | (DirEnt->Entry.FileCluster);
++      OFile->FileCluster = (((UINTN)(DirEnt->Entry.FileClusterHigh)) << 16) | (DirEnt->Entry.FileCluster);
+       InsertTailList (&Parent->ChildHead, &OFile->ChildLink);
+     } else {
+       //
+diff --git a/FatPkg/EnhancedFatDxe/DiskCache.c b/FatPkg/EnhancedFatDxe/DiskCache.c
+index d1a34a6a64..d56e338586 100644
+--- a/FatPkg/EnhancedFatDxe/DiskCache.c
++++ b/FatPkg/EnhancedFatDxe/DiskCache.c
+@@ -477,7 +477,7 @@ FatInitializeDiskCache (
+   DiskCache[CacheFat].BaseAddress   = Volume->FatPos;
+   DiskCache[CacheFat].LimitAddress  = Volume->FatPos + Volume->FatSize;
+   FatCacheSize                      = FatCacheGroupCount << DiskCache[CacheFat].PageAlignment;
+-  DataCacheSize                     = FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment;
++  DataCacheSize                     = (UINTN)FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment;
+   //
+   // Allocate the Fat Cache buffer
+   //
+-- 
+2.36.1.windows.1
+

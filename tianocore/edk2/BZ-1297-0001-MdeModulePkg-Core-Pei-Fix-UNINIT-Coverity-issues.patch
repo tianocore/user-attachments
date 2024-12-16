@@ -1,0 +1,52 @@
+From d8f1b2fd650fa88e569e801350315c2973f90246 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:08:07 +0530
+Subject: [PATCH 1/4] MdeModulePkg/Core/Pei: Fix UNINIT Coverity issues
+
+The function EvacuateTempRam has a for loop and it is assumed that
+there will be a FvHandle match and break from inside the loop. The
+code does not handle a scenario of no match in this for loop due to
+which uninitialized value "PeiCoreFvHandle.FvPpi" comes into usage
+when calling "ConvertPeiCorePpiPointers" after the for loop.
+
+Hence, add an FvIndex check after the loop to catch if no match.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4300
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c b/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
+index 3552feda8f1b..3689bbaf2aa3 100644
+--- a/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
++++ b/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
+@@ -1162,6 +1162,7 @@ MigratePeimsInFv (
+ 
+   @retval EFI_SUCCESS           Successfully migrated installed FVs from temporary RAM to permanent memory.
+   @retval EFI_OUT_OF_RESOURCES  Insufficient memory exists to allocate needed pages.
++  @retval EFI_INVALID_PARAMETER Invalid PeiCore's private data structure.
+ 
+ **/
+ EFI_STATUS
+@@ -1207,6 +1208,13 @@ EvacuateTempRam (
+     }
+   }
+ 
++  //
++  // Catch if there is no match found.
++  //
++  if (FvIndex == Private->FvCount) {
++    return EFI_INVALID_PARAMETER;
++  }
++
+   Status = EFI_SUCCESS;
+ 
+   ConvertPeiCorePpiPointers (Private, &PeiCoreFvHandle);
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,73 @@
+From c0077e3d90522ad7f3394553f6ab23ff6a0e3ac4 Mon Sep 17 00:00:00 2001
+From: Xiaoqiang Zhang <xiaoqiang.zhang@intel.com>
+Date: Tue, 9 May 2023 13:07:04 +0800
+Subject: [PATCH v1] MinPlatformPkg: Fix SetLargeVariable fail issue
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4454
+
+On Server platform, when the large variable "FspNvsBuffer" is
+already in the UEFI variable store and the remaining variable
+storage space is less than the large variable size. And also
+not in OS runtime then we need to add the size of the current
+data that will end up being replaced by the new data to the
+remaining space before we decide that there is not enough
+space to store the large variable.
+
+Cc: Chasel Chiu <chasel.chiu@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Eric Dong <eric.dong@intel.com>
+
+Signed-off-by: Xiaoqiang Zhang <xiaoqiang.zhang@intel.com>
+---
+ Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/LargeVariableWriteLib.c       | 10 +++++++++-
+ Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/BaseLargeVariableWriteLib.inf |  1 +
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/LargeVariableWriteLib.c b/Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/LargeVariableWriteLib.c
+index de23ae6160..da820f65b9 100644
+--- a/Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/LargeVariableWriteLib.c
++++ b/Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/LargeVariableWriteLib.c
+@@ -22,7 +22,7 @@
+ #include <Library/PrintLib.h>
+ #include <Library/VariableReadLib.h>
+ #include <Library/VariableWriteLib.h>
+-
++#include <Library/LargeVariableReadLib.h>
+ #include "LargeVariableCommon.h"
+ 
+ /**
+@@ -270,6 +270,7 @@ SetLargeVariable (
+   UINT8         *OffsetPtr;
+   UINTN         BytesRemaining;
+   UINTN         SizeToSave;
++  UINTN         BufferSize = 0;
+ 
+   //
+   // Check input parameters.
+@@ -365,6 +366,13 @@ SetLargeVariable (
+     // Non-Volatile storage to store the data.
+     //
+     RemainingVariableStorage = GetRemainingVariableStorageSpace ();
++    //
++    // Check if current variable already existed in NV storage variable space
++    //
++    Status = GetLargeVariable (VariableName, VendorGuid, &BufferSize, NULL);
++    if ((Status == EFI_BUFFER_TOO_SMALL) && (BufferSize != 0)) {
++      RemainingVariableStorage = RemainingVariableStorage + BufferSize;
++    }
+     if (DataSize > RemainingVariableStorage) {
+       DEBUG ((DEBUG_ERROR, "SetLargeVariable: Not enough NV storage space to store the data\n"));
+       Status = EFI_OUT_OF_RESOURCES;
+diff --git a/Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/BaseLargeVariableWriteLib.inf b/Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/BaseLargeVariableWriteLib.inf
+index 2493a94596..cbc2a5d93a 100644
+--- a/Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/BaseLargeVariableWriteLib.inf
++++ b/Platform/Intel/MinPlatformPkg/Library/BaseLargeVariableLib/BaseLargeVariableWriteLib.inf
+@@ -49,3 +49,4 @@
+   PrintLib
+   VariableReadLib
+   VariableWriteLib
++  LargeVariableReadLib
+-- 
+2.39.1.windows.1
+

@@ -1,0 +1,57 @@
+From 3810c05e34563147b069c5692c6ede7b3f3ecd34 Mon Sep 17 00:00:00 2001
+From: Vineel Kovvuri <vineelko@microsoft.com>
+Date: Wed, 23 Feb 2022 22:03:14 -0800
+Subject: [PATCH 4/4] Increase FV size
+
+- Without this enabling ECC Ciphers will fail OVMF NOOPT build
+
+Signed-off-by: Vineel Kovvuri <vineelko@microsoft.com>
+---
+ BaseTools/Source/C/BrotliCompress/brotli              | 2 +-
+ MdeModulePkg/Library/BrotliCustomDecompressLib/brotli | 2 +-
+ OvmfPkg/OvmfPkgIa32X64.fdf                            | 6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/BaseTools/Source/C/BrotliCompress/brotli b/BaseTools/Source/C/BrotliCompress/brotli
+index f4153a09f8..666c3280cc 160000
+--- a/BaseTools/Source/C/BrotliCompress/brotli
++++ b/BaseTools/Source/C/BrotliCompress/brotli
+@@ -1 +1 @@
+-Subproject commit f4153a09f87cbb9c826d8fc12c74642bb2d879ea
++Subproject commit 666c3280cc11dc433c303d79a83d4ffbdd12cc8d
+diff --git a/MdeModulePkg/Library/BrotliCustomDecompressLib/brotli b/MdeModulePkg/Library/BrotliCustomDecompressLib/brotli
+index f4153a09f8..666c3280cc 160000
+--- a/MdeModulePkg/Library/BrotliCustomDecompressLib/brotli
++++ b/MdeModulePkg/Library/BrotliCustomDecompressLib/brotli
+@@ -1 +1 @@
+-Subproject commit f4153a09f87cbb9c826d8fc12c74642bb2d879ea
++Subproject commit 666c3280cc11dc433c303d79a83d4ffbdd12cc8d
+diff --git a/OvmfPkg/OvmfPkgIa32X64.fdf b/OvmfPkg/OvmfPkgIa32X64.fdf
+index 49266dd467..0f541f6f49 100644
+--- a/OvmfPkg/OvmfPkgIa32X64.fdf
++++ b/OvmfPkg/OvmfPkgIa32X64.fdf
+@@ -62,10 +62,10 @@ FV = SECFV
+ 
+ [FD.MEMFD]
+ BaseAddress   = $(MEMFD_BASE_ADDRESS)
+-Size          = 0xD00000
++Size          = 0xE00000
+ ErasePolarity = 1
+ BlockSize     = 0x10000
+-NumBlocks     = 0xD0
++NumBlocks     = 0xE0
+ 
+ 0x000000|0x006000
+ gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPageTablesBase|gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPageTablesSize
+@@ -86,7 +86,7 @@ gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPeiTempRamBase|gUefiOvmfPkgTokenSpaceGuid.P
+ gUefiOvmfPkgTokenSpaceGuid.PcdOvmfPeiMemFvBase|gUefiOvmfPkgTokenSpaceGuid.PcdOvmfPeiMemFvSize
+ FV = PEIFV
+ 
+-0x100000|0xC00000
++0x100000|0xD00000
+ gUefiOvmfPkgTokenSpaceGuid.PcdOvmfDxeMemFvBase|gUefiOvmfPkgTokenSpaceGuid.PcdOvmfDxeMemFvSize
+ FV = DXEFV
+ 
+-- 
+2.25.1
+

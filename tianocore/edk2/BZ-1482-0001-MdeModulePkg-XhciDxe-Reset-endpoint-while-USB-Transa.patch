@@ -1,0 +1,90 @@
+From 2ef49d5cd3593dc573f3fac9db533b4a93ef04b5 Mon Sep 17 00:00:00 2001
+Message-ID: <2ef49d5cd3593dc573f3fac9db533b4a93ef04b5.1710220024.git.xianglei.cai@intel.com>
+In-Reply-To: <cover.1710220024.git.xianglei.cai@intel.com>
+References: <cover.1710220024.git.xianglei.cai@intel.com>
+From: Xianglei Cai <xianglei.cai@intel.com>
+Date: Mon, 11 Mar 2024 16:41:00 +0800
+Subject: [PATCH 1/1] MdeModulePkg/XhciDxe: Reset endpoint while USB
+ Transaction error
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=4556
+
+Based on XHCI spec 4.8.3, software should do the
+reset endpoint while USB Transaction occur.
+Also add the error code for USB Transaction error
+since UEFI spec don't have the related definition.
+
+Cc: Hao A Wu     <hao.a.wu@intel.com>
+Cc: Ray Ni       <ray.ni@intel.com>
+Cc: Liming Gao   <gaoliming@byosoft.com.cn>
+Cc: Jenny Huang  <jenny.huang@intel.com>
+Cc: More Shih    <more.shih@intel.com>
+
+Signed-off-by: Xianglei Cai <xianglei.cai@intel.com>
+---
+ MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c      |  2 +-
+ MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c |  2 +-
+ MdePkg/Include/Protocol/UsbIo.h          | 21 +++++++++++----------
+ 3 files changed, 13 insertions(+), 12 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c b/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c
+index f4e61d223c1b..63cc29b26536 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c
+@@ -825,7 +825,7 @@ XhcTransfer (
+   *TransferResult = Urb->Result;
+   *DataLength     = Urb->Completed;
+ 
+-  if ((*TransferResult == EFI_USB_ERR_STALL) || (*TransferResult == EFI_USB_ERR_BABBLE)) {
++  if ((*TransferResult == EFI_USB_ERR_STALL) || (*TransferResult == EFI_USB_ERR_BABBLE) || (*TransferResult == EFI_USB_ERR_TRANSACTION)) {
+     ASSERT (Status == EFI_DEVICE_ERROR);
+     RecoveryStatus = XhcRecoverHaltedEndpoint (Xhc, Urb);
+     if (EFI_ERROR (RecoveryStatus)) {
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c b/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
+index 05528a478baf..e77852f62f10 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
+@@ -1193,7 +1193,7 @@ XhcCheckUrbResult (
+         goto EXIT;
+ 
+       case TRB_COMPLETION_USB_TRANSACTION_ERROR:
+-        CheckedUrb->Result  |= EFI_USB_ERR_TIMEOUT;
++        CheckedUrb->Result  |= EFI_USB_ERR_TRANSACTION;
+         CheckedUrb->Finished = TRUE;
+         DEBUG ((DEBUG_ERROR, "XhcCheckUrbResult: TRANSACTION_ERROR! Completecode = %x\n", EvtTrb->Completecode));
+         goto EXIT;
+diff --git a/MdePkg/Include/Protocol/UsbIo.h b/MdePkg/Include/Protocol/UsbIo.h
+index a780b4e07b44..211ef0c94156 100644
+--- a/MdePkg/Include/Protocol/UsbIo.h
++++ b/MdePkg/Include/Protocol/UsbIo.h
+@@ -50,16 +50,17 @@ typedef enum {
+ //
+ // USB Transfer Results
+ //
+-#define EFI_USB_NOERROR         0x00
+-#define EFI_USB_ERR_NOTEXECUTE  0x01
+-#define EFI_USB_ERR_STALL       0x02
+-#define EFI_USB_ERR_BUFFER      0x04
+-#define EFI_USB_ERR_BABBLE      0x08
+-#define EFI_USB_ERR_NAK         0x10
+-#define EFI_USB_ERR_CRC         0x20
+-#define EFI_USB_ERR_TIMEOUT     0x40
+-#define EFI_USB_ERR_BITSTUFF    0x80
+-#define EFI_USB_ERR_SYSTEM      0x100
++#define EFI_USB_NOERROR          0x00
++#define EFI_USB_ERR_NOTEXECUTE   0x01
++#define EFI_USB_ERR_STALL        0x02
++#define EFI_USB_ERR_BUFFER       0x04
++#define EFI_USB_ERR_BABBLE       0x08
++#define EFI_USB_ERR_NAK          0x10
++#define EFI_USB_ERR_CRC          0x20
++#define EFI_USB_ERR_TIMEOUT      0x40
++#define EFI_USB_ERR_BITSTUFF     0x80
++#define EFI_USB_ERR_SYSTEM       0x100
++#define EFI_USB_ERR_TRANSACTION  0x200
+ 
+ /**
+   Async USB transfer callback routine.
+-- 
+2.42.0.windows.2
+

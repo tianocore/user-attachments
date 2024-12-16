@@ -1,0 +1,41 @@
+From 9b8f23a0e0bcbbad71a757a1af780086c3f65df9 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:58:07 +0530
+Subject: [PATCH 1/1] MdeModulePkg/.../PartitionDxe: Fix OVERFLOW_BEFORE_WIDEN
+ Coverity issue
+
+Full pathanme - MdeModulePkg/Universal/Disk/PartitionDxe
+
+"PartHeader->NumberOfPartitionEntries * PartHeader->SizeOfPartitionEntry"
+is a potentially overflowing expression with type "unsigned int" (32
+bits, unsigned) evaluated using 32-bit arithmetic, and then used in a
+context that expects an expression of type "UINTN" (64 bits, unsigned).
+
+To avoid overflow, cast "PartHeader->NumberOfPartitionEntries" to type
+"UINTN".
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4294
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/Disk/PartitionDxe/Gpt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/Disk/PartitionDxe/Gpt.c b/MdeModulePkg/Universal/Disk/PartitionDxe/Gpt.c
+index 5bcf94d58773..42045f945596 100644
+--- a/MdeModulePkg/Universal/Disk/PartitionDxe/Gpt.c
++++ b/MdeModulePkg/Universal/Disk/PartitionDxe/Gpt.c
+@@ -575,7 +575,7 @@ PartitionCheckGptEntryArrayCRC (
+     return FALSE;
+   }
+ 
+-  Size = PartHeader->NumberOfPartitionEntries * PartHeader->SizeOfPartitionEntry;
++  Size = (UINTN)PartHeader->NumberOfPartitionEntries * PartHeader->SizeOfPartitionEntry;
+ 
+   Status = gBS->CalculateCrc32 (Ptr, Size, &Crc);
+   if (EFI_ERROR (Status)) {
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,117 @@
+From cc38f55422a94a6fbb5fb1a2a9cf5dccb12a2467 Mon Sep 17 00:00:00 2001
+From: Dandan Bi <dandan.bi@intel.com>
+Date: Tue, 15 Nov 2016 08:43:41 +0800
+Subject: [patch] ReproducePatch
+
+Signed-off-by: Dandan Bi <dandan.bi@intel.com>
+---
+ MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr     | 29 ++++++++++++++++++++
+ .../Universal/DriverSampleDxe/VfrStrings.uni       | 32 ++++++++++++++++++++++
+ 2 files changed, 61 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr b/MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr
+index 6e7b96b..326d9b2 100644
+--- a/MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr
++++ b/MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr
+@@ -525,10 +525,14 @@ formset
+       
+     goto 6,
+       prompt = STRING_TOKEN(STR_GOTO_FORM6), //SixthSetupPage  // this too has no end-op and basically it's a jump to a form ONLY
+       help   = STRING_TOKEN(STR_GOTO_HELP);
+ 
++    goto 7,
++      prompt = STRING_TOKEN(STR_FORM7_TITLE),
++      help   = STRING_TOKEN(STR_FORM7_TITLE);
++
+     goto 
+       formsetguid = DRIVER_SAMPLE_INVENTORY_GUID,
+       formid  = 0x1,
+       question = 0x1,
+       prompt  = STRING_TOKEN(STR_GOTO_ANOTHER_FORMSET),
+@@ -801,7 +805,32 @@ formset
+     // This is where we will insert dynamic created opcodes
+     //
+     label LABEL_END;
+ 
+   endform;
++  
++  form formid = 7,                             // Form ID
++    title  = STRING_TOKEN(STR_FORM7_TITLE);    // Form title
++
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT1);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_2TEXT);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT3);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT4);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT5);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT6);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT7);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT8);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT9);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT10);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT11);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT12);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT13);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT14);
++    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT15);
++    goto 1,
++      prompt = STRING_TOKEN(STR_GOTO_FORM1), //MainSetupPage
++      help   = STRING_TOKEN(STR_GOTO_HELP);
++    
++    
++ endform;
+ 
+ endformset;
+diff --git a/MdeModulePkg/Universal/DriverSampleDxe/VfrStrings.uni b/MdeModulePkg/Universal/DriverSampleDxe/VfrStrings.uni
+index 8d4448c..cb21a53 100644
+--- a/MdeModulePkg/Universal/DriverSampleDxe/VfrStrings.uni
++++ b/MdeModulePkg/Universal/DriverSampleDxe/VfrStrings.uni
+@@ -39,14 +39,46 @@
+                                        #language fr-FR "Mi Segunda Paginación De la Disposición"
+ #string STR_FORM3_TITLE                #language en-US "My Third Setup Page"
+                                        #language fr-FR "Mi Tercera Paginación De la Disposición"
+ #string STR_FORM6_TITLE                #language en-US "My Sixth Setup Page"
+                                        #language fr-FR "My Sixth Setup Page"
++#string STR_FORM7_TITLE                #language en-US "Show menu test"
++                                       #language fr-FR "Show menu test"
+ #string STR_DYNAMIC_TITLE              #language en-US "My Dynamic Page"
+                                        #language fr-FR "My Dynamic Page Spanish"
+ #string STR_SUBTITLE_TEXT              #language en-US "My subtitle text"
+                                        #language fr-FR "Mi texto del subtítulo"
++#string STR_SUBTITLE_TEXT1             #language en-US "menu test 1"
++                                       #language fr-FR "menu test 1"
++#string STR_SUBTITLE_2TEXT             #language en-US "menu test 2"
++                                       #language fr-FR "menu test 2"
++#string STR_SUBTITLE_TEXT3             #language en-US "menu test 3"
++                                       #language fr-FR "menu test 3"
++#string STR_SUBTITLE_TEXT4             #language en-US "menu test 4"
++                                       #language fr-FR "menu test 4"
++#string STR_SUBTITLE_TEXT5             #language en-US "menu test 5"
++                                       #language fr-FR "menu test 5"
++#string STR_SUBTITLE_TEXT6             #language en-US "menu test 6"
++                                       #language fr-FR "menu test 6"
++#string STR_SUBTITLE_TEXT7             #language en-US "menu test 7"
++                                       #language fr-FR "menu test 7"
++#string STR_SUBTITLE_TEXT8             #language en-US "menu test 8"
++                                       #language fr-FR "menu test 8"
++#string STR_SUBTITLE_TEXT9             #language en-US "menu test 9"
++                                       #language fr-FR "menu test 9"
++#string STR_SUBTITLE_TEXT10            #language en-US "menu test 10"
++                                       #language fr-FR "menu test 10"
++#string STR_SUBTITLE_TEXT11            #language en-US "menu test 11"
++                                       #language fr-FR "menu test 11"
++#string STR_SUBTITLE_TEXT12            #language en-US "menu test 12"
++                                       #language fr-FR "menu test 12"
++#string STR_SUBTITLE_TEXT13            #language en-US "menu test 13"
++                                       #language fr-FR "menu test 13"
++#string STR_SUBTITLE_TEXT14            #language en-US "menu test 14"
++                                       #language fr-FR "menu test 14"
++#string STR_SUBTITLE_TEXT15            #language en-US "menu test 15"
++                                       #language fr-FR "menu test 15"
+ #string STR_SUBTITLE_TEXT2             #language en-US " "
+                                        #language fr-FR " "
+ #string STR_CPU_STRING                 #language en-US "My CPU Speed is "
+                                        #language fr-FR "My CPU Speed is "
+ #string STR_CPU_STRING2                #language en-US " "
+-- 
+1.9.5.msysgit.1
+

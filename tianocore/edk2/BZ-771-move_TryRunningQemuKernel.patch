@@ -1,0 +1,52 @@
+commit 9ba7c72cbec4e829dd2b3e0396013774444e5c23
+Author: Christoph Willing <chris.willing@linux.com>
+Date:   Wed Jul 21 19:33:16 2021 +1000
+
+    Ref: https://bugzilla.tianocore.org/show_bug.cgi?id=3504
+    
+    This change runs PlatformBdsConnectSequence() before TryRunningQemuKernel().
+    
+    It reverses commit a34a886962561f6d8550b2a1bb193798ca456431 which aimed
+    to improve UEFI boot time. Unfortunately that commit now results in boot
+    failure when using qemu's -kernel option therefore rendering the -initrd
+    & -append options useless.
+    
+    Such failures are seen in all releases from edk2-stable201808 to
+    edk2-stable202105 as well as the master branch.
+    
+    The last releases which actually work correctly are vUDK2017 and vUDK2018
+    as they don't contain the a34a88 commit.
+    
+    This change has been tested with edk2-stable201808, edk2-stable201811,
+    edk2-stable202105 as well as master (at 21/7/2021). It results in correct
+    booting using the -kernel option in all the test cases. No measurable
+    change in boot times was discernible compared with the unaffected vUDK2017
+    & vUDK2018 releases.
+    
+    Signed-off-by: Christoph Willing <chris.willing@linux.com>
+
+diff --git a/OvmfPkg/Library/PlatformBootManagerLib/BdsPlatform.c b/OvmfPkg/Library/PlatformBootManagerLib/BdsPlatform.c
+index b0e9742937..b42127017b 100644
+--- a/OvmfPkg/Library/PlatformBootManagerLib/BdsPlatform.c
++++ b/OvmfPkg/Library/PlatformBootManagerLib/BdsPlatform.c
+@@ -1516,15 +1516,15 @@ PlatformBootManagerAfterConsole (
+   //
+   Tcg2PhysicalPresenceLibProcessRequest (NULL);
+ 
+-  //
+-  // Process QEMU's -kernel command line option
+-  //
+-  TryRunningQemuKernel ();
+-
+   //
+   // Perform some platform specific connect sequence
+   //
+   PlatformBdsConnectSequence ();
++  
++  //
++  // Process QEMU's -kernel command line option
++  //
++  TryRunningQemuKernel ();
+ 
+   EfiBootManagerRefreshAllBootOption ();
+ 

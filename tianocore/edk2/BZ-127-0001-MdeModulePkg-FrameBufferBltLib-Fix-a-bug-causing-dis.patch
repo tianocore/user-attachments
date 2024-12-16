@@ -1,0 +1,69 @@
+From dad2a675e36602a64c9a45c6a5b40d958ddd8b90 Mon Sep 17 00:00:00 2001
+From: Ruiyu Ni <ruiyu.ni@intel.com>
+Date: Fri, 12 Jan 2018 11:37:54 +0800
+Subject: [PATCH] MdeModulePkg/FrameBufferBltLib: Fix a bug causing display
+ corrupted
+
+The Graphics Output Protocol's mode information specifies the
+PixelsPerScanLine property. Most of the time this is identical to
+HorizontalResolution. However, due to alignment requirements etc. it
+may be slightly larger. I.e. each scan line will have some "pixels"
+that are not visible on the screen but consume space in the frame
+buffer.
+
+If the graphics output protocol correctly initializes
+HorizontalResolution to 1366 and PixelsPerScanLine to 1376. As a
+result the graphics output is broken.
+
+If setting HorizontalResolution to 1376 instead, the output is fine
+(except for 10 invisible pixels on the right of the screen).
+
+The patch fixes this bug by using PixelsPerScanLine when calculating
+the line width.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Reported-by: Christian Ehrhardt <ehrhardt@genua.de>
+Signed-off-by: Ruiyu Ni <ruiyu.ni@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+Cc: Christian Ehrhardt <ehrhardt@genua.de>
+---
+ MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c b/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
+index 011d9c52cd..3e323fe3f0 100644
+--- a/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
++++ b/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
+@@ -1,7 +1,7 @@
+ /** @file
+   FrameBufferBltLib - Library to perform blt operations on a frame buffer.
+ 
+-  Copyright (c) 2007 - 2017, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2007 - 2018, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -148,9 +148,9 @@ FrameBufferBltConfigure (
+   FrameBufferBltLibConfigurePixelFormat (BitMask, &BytesPerPixel, PixelShl, PixelShr);
+ 
+   if (*ConfigureSize < sizeof (FRAME_BUFFER_CONFIGURE)
+-                     + FrameBufferInfo->HorizontalResolution * BytesPerPixel) {
++                     + FrameBufferInfo->PixelsPerScanLine * BytesPerPixel) {
+     *ConfigureSize = sizeof (FRAME_BUFFER_CONFIGURE)
+-                   + FrameBufferInfo->HorizontalResolution * BytesPerPixel;
++                   + FrameBufferInfo->PixelsPerScanLine * BytesPerPixel;
+     return RETURN_BUFFER_TOO_SMALL;
+   }
+ 
+@@ -164,7 +164,7 @@ FrameBufferBltConfigure (
+   Configure->BytesPerPixel = BytesPerPixel;
+   Configure->PixelFormat   = FrameBufferInfo->PixelFormat;
+   Configure->FrameBuffer   = (UINT8*) FrameBuffer;
+-  Configure->WidthInPixels = (UINTN) FrameBufferInfo->HorizontalResolution;
++  Configure->WidthInPixels = (UINTN) FrameBufferInfo->PixelsPerScanLine;
+   Configure->Height        = (UINTN) FrameBufferInfo->VerticalResolution;
+   Configure->WidthInBytes  = Configure->WidthInPixels * Configure->BytesPerPixel;
+ 
+-- 
+2.15.1.windows.2
+

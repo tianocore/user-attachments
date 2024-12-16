@@ -1,0 +1,63 @@
+b4f76e0079e39cc95dbbdfd631325fc2dc8fb38e
+ MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.c | 16 +++++++---------
+ MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.h |  3 +--
+ 2 files changed, 8 insertions(+), 11 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.c b/MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.c
+index 23ebbf108f09..03f6d02275ce 100644
+--- a/MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.c
++++ b/MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.c
+@@ -2,7 +2,7 @@
+   UfsHcDxe driver is used to provide platform-dependent info, mainly UFS host controller
+   MMIO base, to upper layer UFS drivers.
+ 
+-  Copyright (c) 2014 - 2015, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2014 - 2017, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -32,7 +32,6 @@ EFI_DRIVER_BINDING_PROTOCOL gUfsHcDriverBinding = {
+ //
+ UFS_HOST_CONTROLLER_PRIVATE_DATA gUfsHcTemplate = {
+   UFS_HC_PRIVATE_DATA_SIGNATURE,  // Signature
+-  NULL,                           // Handle
+   {                               // UfsHcProtocol
+     UfsHcGetMmioBar,
+     UfsHcAllocateBuffer,
+@@ -672,13 +671,12 @@ Done:
+       //
+       // Restore original PCI attributes
+       //
+-      Status = PciIo->Attributes (
+-                        PciIo,
+-                        EfiPciIoAttributeOperationSet,
+-                        Private->PciAttributes,
+-                        NULL
+-                        );
+-      ASSERT_EFI_ERROR (Status);
++      PciIo->Attributes (
++              PciIo,
++              EfiPciIoAttributeOperationSet,
++              Private->PciAttributes,
++              NULL
++              );
+     }
+     gBS->CloseProtocol (
+           Controller,
+diff --git a/MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.h b/MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.h
+index 89f19feb7aa7..755de4fbc368 100644
+--- a/MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.h
++++ b/MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.h
+@@ -49,11 +49,10 @@ extern EFI_COMPONENT_NAME2_PROTOCOL               gUfsHcComponentName2;
+ typedef struct _UFS_HOST_CONTROLLER_PRIVATE_DATA  UFS_HOST_CONTROLLER_PRIVATE_DATA;
+ 
+ //
+-// Nvme private data structure.
++// UFS private data structure.
+ //
+ struct _UFS_HOST_CONTROLLER_PRIVATE_DATA {
+   UINT32                             Signature;
+-  EFI_HANDLE                         Handle;
+ 
+   EDKII_UFS_HOST_CONTROLLER_PROTOCOL UfsHc;
+   EFI_PCI_IO_PROTOCOL                *PciIo;  

@@ -1,0 +1,65 @@
+From d702f1a6ac1664bea2a5f9412f635a0b5b19315d Mon Sep 17 00:00:00 2001
+From: Miki Shindo <miki.shindo@intel.com>
+Date: Tue, 10 May 2022 03:38:34 -0700
+Subject: [edk2:PATCH v2] MdePkg/Acpi62: Add type 7 NFIT Platform Capabilities
+ Structure support
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3915
+
+This commit adds a definition type 7 Platform Capabilities Structure
+for NFIT Table Structure Types. The type has been added
+since ACPI Specification Version 6.2A.
+
+
+Signed-off-by: Miki Shindo <miki.shindo@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Reviewed-by: Ray Ni <ray.ni@intel.com>
+
+---
+ MdePkg/Include/IndustryStandard/Acpi62.h | 1 +
+ MdePkg/Include/IndustryStandard/Acpi63.h | 1 +
+ MdePkg/Include/IndustryStandard/Acpi64.h | 1 +
+ 3 files changed, 3 insertions(+)
+
+diff --git a/MdePkg/Include/IndustryStandard/Acpi62.h b/MdePkg/Include/IndustryStandard/Acpi62.h
+index 313db63044..aa115d475c 100644
+--- a/MdePkg/Include/IndustryStandard/Acpi62.h
++++ b/MdePkg/Include/IndustryStandard/Acpi62.h
+@@ -1486,6 +1486,7 @@ typedef struct {
+ #define EFI_ACPI_6_2_NFIT_NVDIMM_CONTROL_REGION_STRUCTURE_TYPE            4
+ #define EFI_ACPI_6_2_NFIT_NVDIMM_BLOCK_DATA_WINDOW_REGION_STRUCTURE_TYPE  5
+ #define EFI_ACPI_6_2_NFIT_FLUSH_HINT_ADDRESS_STRUCTURE_TYPE               6
++#define EFI_ACPI_6_2_NFIT_PLATFORM_CAPABILITIES_STRUCTURE_TYPE            7
+ 
+ //
+ // Definition for NFIT Structure Header
+diff --git a/MdePkg/Include/IndustryStandard/Acpi63.h b/MdePkg/Include/IndustryStandard/Acpi63.h
+index b1e9d5db5b..a440bdfd48 100644
+--- a/MdePkg/Include/IndustryStandard/Acpi63.h
++++ b/MdePkg/Include/IndustryStandard/Acpi63.h
+@@ -1450,6 +1450,7 @@ typedef struct {
+ #define EFI_ACPI_6_3_NFIT_NVDIMM_CONTROL_REGION_STRUCTURE_TYPE            4
+ #define EFI_ACPI_6_3_NFIT_NVDIMM_BLOCK_DATA_WINDOW_REGION_STRUCTURE_TYPE  5
+ #define EFI_ACPI_6_3_NFIT_FLUSH_HINT_ADDRESS_STRUCTURE_TYPE               6
++#define EFI_ACPI_6_3_NFIT_PLATFORM_CAPABILITIES_STRUCTURE_TYPE            7
+ 
+ //
+ // Definition for NFIT Structure Header
+diff --git a/MdePkg/Include/IndustryStandard/Acpi64.h b/MdePkg/Include/IndustryStandard/Acpi64.h
+index 232697f228..88d01761f1 100644
+--- a/MdePkg/Include/IndustryStandard/Acpi64.h
++++ b/MdePkg/Include/IndustryStandard/Acpi64.h
+@@ -1493,6 +1493,7 @@ typedef struct {
+ #define EFI_ACPI_6_4_NFIT_NVDIMM_CONTROL_REGION_STRUCTURE_TYPE            4
+ #define EFI_ACPI_6_4_NFIT_NVDIMM_BLOCK_DATA_WINDOW_REGION_STRUCTURE_TYPE  5
+ #define EFI_ACPI_6_4_NFIT_FLUSH_HINT_ADDRESS_STRUCTURE_TYPE               6
++#define EFI_ACPI_6_4_NFIT_PLATFORM_CAPABILITIES_STRUCTURE_TYPE            7
+ 
+ //
+ // Definition for NFIT Structure Header
+-- 
+2.27.0.windows.1
+

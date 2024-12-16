@@ -1,0 +1,1458 @@
+
+============= Intel Slim Bootloader STAGE1A =============
+SBID: SBL_TGL 
+ISVN: 001
+IVER: 000.005.000.008.00016
+SVER: AFCE3A38BE585B8F-dirty
+FDBG: BLD(D IA32) FSP(R)
+FSPV: ID(TGLI-FSP) REV(0A002F32)
+Loader global data @ 0xFEF2FC40
+Run  STAGE1A @ 0xFFFEA000
+Load STAGE1B @ 0xFFD80000
+
+============= Intel Slim Bootloader STAGE1B =============
+[Boot Guard] AcmStatus : 0xC0008000
+[Boot Guard] BootStatus: 0x98000000
+[Boot Guard] Boot Guard is Enabled Successfully.
+Sending EC Command: 2D
+SendEcDataTimeout sent 2D 
+Sending EC Command: 0D
+SendEcDataTimeout sent D 
+ReceiveEcDataTimeout Read 29 
+Receiving EC Data: F8
+ReceiveEcDataTimeout Read 29 
+Receiving EC Data: 01
+SpiInstance = FEF3D3D0
+PchSpiBase at 0x00001F05
+ScSpiBar0 at 0xF0000000
+Registering container KEYH
+HASH verification for usage (0x00000100) with Hash Alg (0x2): Success
+SignType (0x2) SignSize (0x180)  SignHashAlg (0x2)
+RSA verification for usage (0x00000100): Success
+HASH verification for usage (0x00000000) with Hash Alg (0x2): Success
+Calculate Hash for component Type 0x4 as its not available in Component hash table 
+Append public key hash into store: Success
+Load EXT CFG Data @ 0xFEF3DB54:0x06B8 ... Success
+HASH verification for usage (0x00000200) with Hash Alg (0x2): Success
+SignType (0x2) SignSize (0x180)  SignHashAlg (0x2)
+RSA verification for usage (0x00000200): Success
+Calculate Hash for component Type 0x4 as its not available in Component hash table 
+Processor supports Boot Guard.
+Boot Guard ACM Status = C0008000
+Boot Guard Boot Status = 80000000
+ME FW STS 4 = 4000
+MSR_BOOT_GUARD_SACM_INFO MSR = 6F
+TPM Type is 3
+Boot Guard Support status: 1
+GetPlatformDataPtr is copied 0xFEF3DB24 
+BOOT: BP0 
+MODE: 0
+BoardID: 0x01
+PlatformName: TGLU_DDR
+Memory Init
+Load Security Cfg Data
+FSPM CfgData assignment
+Load Memory Cfg Data
+SkipMbpHob = 0x0
+Load Graphics Cfg Data
+board Id = 1 .....
+Call FspMemoryInit ... Success
+Loader global data @ 0x78C0FD70
+Switch to memory stack @ 0x78C4FF00
+Stage1 stack: 0x30000 (0x2640C used)
+Stage1 heap: 0x10000 (0x3364 used)
+Call FspTempRamExit ... Success
+GetSupportedAndActivePcrs - Count = 00000004
+TpmHashAlgorithmBitmap 0x00000017 ActivePcrBanks 0x00000002
+TPM Lib Private Data not found
+Bootloader requested PCR Bank is enabled. 
+TCG Event Log created at 0x78BF4000 
+TPM initialization completed succesfully.
+GetSupportedAndActivePcrs - Count = 00000004
+Adding event in TCG event log at : 0x78BF4041 
+Adding DetailPCR Event in TCG Event Log.
+DetailPcrData:
+AcmPolicySts  - 0x12000F831
+AcmSvn        - 0x0002
+AcmRsaSignature:  AcmSigSize= 0x0180
+  00000000: 1D 05 9E 15 0D 04 04 D6-35 59 4C 70 7B 55 0D AB  *........5YLp.U..*
+  00000010: E5 92 EE 08 7E 2C 79 32-AB 55 E6 CE 80 E6 6F 32  *.....,y2.U....o2*
+  00000020: BA 42 9C C5 3C F8 70 80-C2 78 70 3A 40 49 AF CA  *.B..<.p..xp:@I..*
+  00000030: 48 C6 C2 08 54 BF A4 77-C8 54 00 92 AD 36 45 33  *H...T..w.T...6E3*
+  00000040: E0 51 C5 24 39 D6 39 7B-5D 21 1C 4C 13 AD 3C F0  *.Q.$9.9.]!.L..<.*
+  00000050: 61 B4 B5 69 1A F6 9F 15-CB AF 80 E1 6C 33 2D BD  *a..i........l3-.*
+  00000060: 5F 38 7F A7 24 1B 78 50-EC AC 80 A1 D3 C6 8F 82  *_8..$.xP........*
+  00000070: 4B 9C 53 1C BF D9 82 B5-EF F5 4F E4 85 C4 11 6D  *K.S.......O....m*
+  00000080: 09 48 3A DB 6E D2 79 53-58 18 B7 1F 6E 5D B8 3A  *.H:.n.ySX...n].:*
+  00000090: DF CF B1 D5 7E 33 D0 02-61 6E 52 4A DF E0 7E 11  *.....3..anRJ....*
+  000000A0: 81 F3 79 D8 8F DB DA A0-2B 47 8F 4F 86 50 20 E3  *..y.....+G.O.P .*
+  000000B0: 48 93 28 AE 1E D0 2A E1-CB 48 D8 44 CC 14 23 48  *H.(...*..H.D..#H*
+  000000C0: EF C4 48 DA AB 8B EF F4-A4 5D 44 FB 67 3D E0 6E  *..H......]D.g=.n*
+  000000D0: 32 18 56 85 D2 88 49 EC-C0 72 DE CC 2D 82 53 48  *2.V...I..r..-.SH*
+  000000E0: 13 5D 39 1C 11 31 51 74-04 3C D8 D2 93 B3 73 18  *.]9..1Qt.<....s.*
+  000000F0: 98 91 CF 7B D1 E9 B3 07-85 2D E3 69 4E F6 52 83  *.........-.iN.R.*
+  00000100: 65 62 0F 8D 59 83 36 18-D2 D6 31 61 49 21 32 2A  *eb..Y.6...1aI!2**
+  00000110: 9A A6 5D 5C 4B 15 AA D2-45 39 CA E9 F3 FF FC 28  *..]\K...E9.....(*
+  00000120: 3C 35 36 C2 EE E2 B8 37-15 68 32 82 C0 AF 61 5A  *<56....7.h2...aZ*
+  00000130: 61 D6 79 9C 4D 84 73 43-89 BD FB B4 48 0B 79 11  *a.y.M.sC....H.y.*
+  00000140: 3A E8 67 49 A0 EB 5D C7-FC 99 BF 53 E3 B0 44 53  *:.gI..]....S..DS*
+  00000150: 42 AA 33 AC C0 69 4C 07-D2 8D 47 34 CC 3F 61 E0  *B.3..iL...G4.?a.*
+  00000160: 07 DE 85 B3 8A 67 16 05-6A 33 E0 6A 33 92 D7 72  *.....g..j3.j3..r*
+  00000170: 2F 0F 48 32 4A 16 70 56-97 E3 79 4A ED 02 84 B0  */.H2J.pV..yJ....*
+KmSignature:  KmSigSize= 0x0180
+  00000000: AB 35 82 29 39 1C A6 42-2C B1 19 63 E9 52 51 8F  *.5.)9..B,..c.RQ.*
+  00000010: DC 15 0C 6D EE F6 98 34-DF 0D FB AB 71 A0 34 4C  *...m...4....q.4L*
+  00000020: 95 E9 0F 76 11 19 BF 31-A1 C9 A3 77 FA CF 45 50  *...v...1...w..EP*
+  00000030: FB AD FF 83 D2 CF 22 F6-90 51 05 50 B1 C3 91 05  *......"..Q.P....*
+  00000040: DF 60 54 BF 4C B6 44 4F-CC 17 79 2D A3 EF 54 BD  *.`T.L.DO..y-..T.*
+  00000050: 3F 1A 26 B2 84 0A 4E E4-6C C2 83 97 E0 8C 02 30  *?.&...N.l......0*
+  00000060: 87 20 EF E0 BE B8 A9 E4-56 EB 20 F4 DE 1D 34 63  *. ......V. ...4c*
+  00000070: 6C 3C 61 C7 19 75 D2 DD-31 57 34 00 F9 C0 A8 2F  *l<a..u..1W4..../*
+  00000080: 75 EC 33 BD D4 27 6F 91-0B B3 22 72 49 3E E8 DC  *u.3..'o..."rI>..*
+  00000090: 31 14 9F 6A 74 9B 2A B2-81 41 3E CC AC 6C 31 CE  *1..jt.*..A>..l1.*
+  000000A0: AC EE 96 11 E0 1F E1 B3-00 32 48 37 6F 30 8C AE  *.........2H7o0..*
+  000000B0: 03 67 5D A5 F5 C2 8E 7D-29 A9 48 E6 85 5C 63 A8  *.g].....).H..\c.*
+  000000C0: 7C E1 8A C5 E3 79 86 20-94 F3 78 7A B2 C1 3A 35  *.....y. ..xz..:5*
+  000000D0: D8 02 37 AC 5E 37 E3 BD-AE 4B 3F 48 5B BF 63 40  *..7.^7...K?H[.c@*
+  000000E0: 1B 26 BA D3 87 0D 37 8F-92 80 AC CF C7 10 9C 43  *.&....7........C*
+  000000F0: 97 7F 47 38 C4 C8 4D 51-00 A5 EE A6 02 D4 CC 2F  *..G8..MQ......./*
+  00000100: 4A E7 DC 9F 65 41 B5 BC-BC B3 9A 3F 61 58 90 27  *J...eA.....?aX.'*
+  00000110: 78 3A 70 EB 80 63 29 95-91 AF 1A BB AA B4 F2 6E  *x:p..c)........n*
+  00000120: BD 7F 7E 96 41 B0 7D 70-29 66 65 6B CF B1 81 33  *....A..p)fek...3*
+  00000130: C6 67 FC DF 6C 0E 85 A8-EC 92 D9 DE ED 55 E3 0A  *.g..l........U..*
+  00000140: 5C 9E 5A 70 70 E4 69 65-8A CB 39 55 92 E6 07 6B  *\.Zpp.ie..9U...k*
+  00000150: F4 76 4A 3A 80 7E 87 C4-1F 7C C8 4D CB F7 D8 C7  *.vJ:.......M....*
+  00000160: 81 A8 99 99 C9 8D AE C7-C0 69 D4 B0 9A 0A 58 B9  *.........i....X.*
+  00000170: 6D AC C9 70 B6 9C D4 05-04 1A 14 97 2A E7 B6 FD  *m..p........*...*
+BpmSignatureoffset:0x015C
+BpmSignature:  BpmSigSize= 0x0180
+  00000000: 1A EF 0F ED 38 28 60 82-A5 89 6D 97 C0 E5 36 EA  *....8(`...m...6.*
+  00000010: 97 50 E1 D2 E5 25 79 78-2F 0E 91 B9 C8 00 13 C6  *.P...%yx/.......*
+  00000020: 77 1B 7F 21 3E DD AD 56-99 A4 05 47 ED F0 2A 4B  *w..!>..V...G..*K*
+  00000030: F0 4B DC 68 94 55 60 1C-6A 94 99 7F A4 DC 50 6D  *.K.h.U`.j.....Pm*
+  00000040: 69 FE 67 23 87 74 90 64-C5 AF FC 5B D7 26 4D 0D  *i.g#.t.d...[.&M.*
+  00000050: 79 8D D5 07 87 4F 9F 60-1E 72 46 58 27 7C 14 50  *y....O.`.rFX'..P*
+  00000060: E4 EC D7 A2 3C 8D 74 3A-35 69 A7 89 F9 EF BA F5  *....<.t:5i......*
+  00000070: DB A3 17 33 F2 15 AE 32-9D A4 4B 6A 6E EC 8C DD  *...3...2..Kjn...*
+  00000080: 59 B9 CC 64 F3 9E 0B BD-42 2E AC A7 DE 4C 7C 15  *Y..d....B....L..*
+  00000090: 74 8C F7 44 BF F8 9C FB-B8 CA 9D 78 8B 1E 3B C9  *t..D.......x..;.*
+  000000A0: 19 A2 89 9A ED D8 4B 9B-0E BF C6 4C 7D 98 C4 B5  *......K....L....*
+  000000B0: F7 F6 57 84 DD 8B 8B C7-03 6C A8 3A AB 85 D1 B2  *..W......l.:....*
+  000000C0: B0 57 37 C9 72 15 97 68-A3 22 7E 40 FC B2 4F B2  *.W7.r..h.".@..O.*
+  000000D0: 4B 87 3B E9 E1 88 50 C5-56 E3 D4 B5 62 F0 AB 5B  *K.;...P.V...b..[*
+  000000E0: 66 73 1F AB 94 75 65 87-4E 54 81 2B A3 F1 74 FD  *fs...ue.NT.+..t.*
+  000000F0: F8 2E A8 E5 A0 53 A8 F8-EB 7E A8 25 DE 7A 8A 96  *.....S.....%.z..*
+  00000100: 54 C2 EE E5 01 86 14 EB-5D 36 90 F7 73 FC B9 56  *T.......]6..s..V*
+  00000110: D1 3C 48 10 D9 A6 BF AF-D0 7A 3D D2 E5 37 62 D1  *.<H......z=..7b.*
+  00000120: 42 51 B6 A4 61 3B 95 0A-A2 F3 B6 12 78 BE 95 CB  *BQ..a;......x...*
+  00000130: 21 07 0D 1B 42 51 CE 86-87 7D C7 AD 03 68 D2 F2  *!...BQ.......h..*
+  00000140: BA F6 A4 B7 E4 60 71 E4-3F 4C 86 DE 0B D6 B2 B5  *.....`q.?L......*
+  00000150: CD C0 F5 04 20 53 9C 46-EE 62 BD 0F 85 60 C1 69  *.... S.F.b...`.i*
+  00000160: 63 4C C8 64 66 EE ED 28-07 10 8C 35 7C 14 3F 6B  *cL.df..(...5..?k*
+  00000170: 16 2D FA 92 2F 0C 8B 24-CF A9 0E 9B A5 60 CC 58  *.-../..$.....`.X*
+IbbDigestCount = 0x0004
+Idx = 0x0000
+ActivePcrBanks = 0x2
+Idx = 0x0001
+ActivePcrBanks = 0x2
+IbbDigestSize:  32
+  00000000: 7F 32 D1 D8 82 94 4F EE-CD 23 B0 13 46 AE 9A 0A  *.2....O..#..F...*
+  00000010: 74 B0 49 D8 79 C8 76 A9-69 B9 2E A5 27 4B E1 10  *t.I.y.v.i...'K..*
+Idx = 0x0002
+ActivePcrBanks = 0x2
+Idx = 0x0003
+ActivePcrBanks = 0x2
+CreateDetailPCREvent()
+Adding event in TCG event log at : 0x78BF4084 
+PCR (1) extended successfully with (2147483649) event type.
+Adding event in TCG event log at : 0x78BF40D1 
+PCR (1) extended successfully with (2147483649) event type.
+Adding event in TCG event log at : 0x78BF4113 
+Memory FSP @ 0x78C50000
+Memory TOP @ 0x78750000
+HASH verification for usage (0x00000002) with Hash Alg (0x2): Success
+Calculate Hash for component Type 0x1 as its not available in Component hash table 
+PCR (0) extended successfully with (1) event type.
+Adding event in TCG event log at : 0x78BF4152 
+Loaded STAGE2 @ 0x789F4000
+
+============= Intel Slim Bootloader STAGE2 =============
+PCH gen (0x5), series (0x2), stepping (0x10)
+LPC DeviceId (0xA082)
+GPIO PAD: 0x09000000   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000001   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000002   DATA: 0x0534AD81 0x00002601
+GPIO PAD: 0x09000003   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09000004   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09000005   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000006   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000007   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000008   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000009   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x0900000A   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x0900000B   DATA: 0x0150A383 0x00002001
+GPIO PAD: 0x0900000C   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x0900000D   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x0900000E   DATA: 0x0550E285 0x00002001
+GPIO PAD: 0x09000010   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09000011   DATA: 0x0150A281 0x00002001
+GPIO PAD: 0x09000012   DATA: 0x0550A281 0x00002001
+GPIO PAD: 0x09000013   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000014   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000015   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09000016   DATA: 0x0350A283 0x00002001
+GPIO PAD: 0x09000017   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09020000   DATA: 0x0350A383 0x00002019
+GPIO PAD: 0x09020001   DATA: 0x0350A383 0x00002019
+GPIO PAD: 0x09020002   DATA: 0x0350A383 0x00002019
+GPIO PAD: 0x09020003   DATA: 0x0350A383 0x00002019
+GPIO PAD: 0x09020004   DATA: 0x0350A383 0x00002019
+GPIO PAD: 0x09020005   DATA: 0x0350A383 0x00002009
+GPIO PAD: 0x09020006   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09020007   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09020008   DATA: 0x0350A385 0x00002001
+GPIO PAD: 0x09020009   DATA: 0x0350A385 0x00002001
+GPIO PAD: 0x0902000A   DATA: 0x0550A581 0x00002001
+GPIO PAD: 0x0902000B   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x0902000C   DATA: 0x0350A383 0x00002019
+GPIO PAD: 0x0902000D   DATA: 0x0350E281 0x00002001
+GPIO PAD: 0x0902000E   DATA: 0x0550A281 0x00002001
+GPIO PAD: 0x0902000F   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09020010   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09020011   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09020012   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09020013   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09020014   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09020015   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09020016   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09020017   DATA: 0x0550A281 0x00002001
+GPIO PAD: 0x09060000   DATA: 0x0350A487 0x00002001
+GPIO PAD: 0x09060001   DATA: 0x0350A587 0x00002001
+GPIO PAD: 0x09060002   DATA: 0x0350A287 0x00002001
+GPIO PAD: 0x09060003   DATA: 0x0350A487 0x00002001
+GPIO PAD: 0x09060004   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09060005   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09060006   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09060007   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09070000   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09070001   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09070002   DATA: 0x0350A281 0x00002001
+GPIO PAD: 0x09070003   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09070004   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070005   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070006   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070007   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070008   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070009   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x0907000A   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x0907000B   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x0907000C   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x0907000D   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x0907000E   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x0907000F   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09070010   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070011   DATA: 0x0350A283 0x00002001
+GPIO PAD: 0x09070012   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070013   DATA: 0x0314AD83 0x00002601
+GPIO PAD: 0x09070014   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070015   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070016   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09070017   DATA: 0x0350A281 0x00002001
+GPIO PAD: 0x09080000   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080001   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080002   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080003   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080004   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080005   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080006   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080007   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080008   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080009   DATA: 0x0350A38B 0x0000201F
+GPIO PAD: 0x0908000A   DATA: 0x0350A28B 0x0000201F
+GPIO PAD: 0x0908000B   DATA: 0x0350A38B 0x0000201F
+GPIO PAD: 0x0908000C   DATA: 0x0350A28B 0x0000201F
+GPIO PAD: 0x0908000D   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x0908000E   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x0908000F   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09080010   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09080011   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080012   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09080013   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x09050000   DATA: 0x0750A383 0x00002019
+GPIO PAD: 0x09050001   DATA: 0x0750A383 0x0000201F
+GPIO PAD: 0x09050002   DATA: 0x0750A383 0x0000201F
+GPIO PAD: 0x09050003   DATA: 0x0750A383 0x00002019
+GPIO PAD: 0x09050004   DATA: 0x0750A283 0x00002001
+GPIO PAD: 0x09050005   DATA: 0x0750A283 0x00002001
+GPIO PAD: 0x09050006   DATA: 0x0750A283 0x00002001
+GPIO PAD: 0x09050007   DATA: 0x0750E281 0x00002001
+GPIO PAD: 0x09050008   DATA: 0x0750A383 0x00002001
+GPIO PAD: 0x09050009   DATA: 0x0750A283 0x00002001
+GPIO PAD: 0x0905000A   DATA: 0x0750A283 0x00002001
+GPIO PAD: 0x0905000B   DATA: 0x0750A283 0x00002001
+GPIO PAD: 0x090B0000   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090B0001   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090B0002   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090B0003   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090B0004   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090B0005   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090B0006   DATA: 0x0150A383 0x00002001
+GPIO PAD: 0x090B0007   DATA: 0x0150A383 0x00002001
+GPIO PAD: 0x090B0008   DATA: 0x0538AD81 0x00002001
+GPIO PAD: 0x090B0009   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090B000A   DATA: 0x0150A281 0x00002001
+GPIO PAD: 0x090B000B   DATA: 0x0150A281 0x00002001
+GPIO PAD: 0x090B000C   DATA: 0x0518AD81 0x00002001
+GPIO PAD: 0x090B000D   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090B000E   DATA: 0x0314AD81 0x00002601
+GPIO PAD: 0x090B000F   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090B0010   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090B0011   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090B0012   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090B0013   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090B0014   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090B0015   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090B0016   DATA: 0x0350E281 0x00002001
+GPIO PAD: 0x090B0017   DATA: 0x0314AD81 0x00002601
+GPIO PAD: 0x090C0000   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090C0001   DATA: 0x0350A383 0x00002019
+GPIO PAD: 0x090C0002   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090C0003   DATA: 0x0350A383 0x00002019
+GPIO PAD: 0x090C0004   DATA: 0x0314AD81 0x00002601
+GPIO PAD: 0x090C0005   DATA: 0x0314AD81 0x00002601
+GPIO PAD: 0x090C0006   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C0007   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090C0008   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C0009   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090C000A   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090C000B   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C000C   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C000D   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C000E   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C000F   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C0010   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C0011   DATA: 0x0550E283 0x00002001
+GPIO PAD: 0x090C0012   DATA: 0x0530A483 0x00002001
+GPIO PAD: 0x090C0013   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090C0014   DATA: 0x0550A281 0x00002001
+GPIO PAD: 0x090C0015   DATA: 0x0550A581 0x00002001
+GPIO PAD: 0x090C0016   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090C0017   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090E0000   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090E0001   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090E0002   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090E0003   DATA: 0x0518A581 0x00002001
+GPIO PAD: 0x090E0004   DATA: 0x0150A383 0x00002001
+GPIO PAD: 0x090E0005   DATA: 0x0150A383 0x00002001
+GPIO PAD: 0x090E0006   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090E0007   DATA: 0x0512AD81 0x00002001
+GPIO PAD: 0x090E0008   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x090E0009   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090E000A   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090E000B   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090E000C   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090E000D   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x090E000E   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090E000F   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x090E0010   DATA: 0x0350A385 0x00002001
+GPIO PAD: 0x090E0011   DATA: 0x0538AD81 0x00002001
+GPIO PAD: 0x090E0012   DATA: 0x0350A38B 0x0000201F
+GPIO PAD: 0x090E0013   DATA: 0x0350A28B 0x0000201F
+GPIO PAD: 0x090E0014   DATA: 0x0350A38B 0x0000201F
+GPIO PAD: 0x090E0015   DATA: 0x0350A28B 0x0000201F
+GPIO PAD: 0x090E0016   DATA: 0x0550A281 0x00002001
+GPIO PAD: 0x090E0017   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09030000   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09030001   DATA: 0x0350A383 0x0000201F
+GPIO PAD: 0x09030002   DATA: 0x0350A283 0x0000201F
+GPIO PAD: 0x09030003   DATA: 0x0350A383 0x0000201F
+GPIO PAD: 0x09030004   DATA: 0x0350A383 0x00002001
+GPIO PAD: 0x09030005   DATA: 0x0550A281 0x00002001
+GPIO PAD: 0x09030006   DATA: 0x0550E281 0x00002001
+GPIO PAD: 0x09030007   DATA: 0x0350A381 0x00002001
+GPIO PAD: 0x0900000F   DATA: 0x0350E581 0x00002001
+CMOS boot Magic [0x5A]
+CMOS boot target [0x1]
+Variable region: 0xFF60E000:0x2000
+Save MRC Training Data (0x78C95E50 0x00FAA8) ... SaveNvsData  Length=0xFAA8
+Matched with saved NVS data
+80000014
+Silicon Init
+Load Security Cfg Data
+PchLp is detected
+BIOS SPI region will be protected
+IAS  SPI region will be protected
+Load Silicon Cfg Data
+Call FspSiliconInit ... 
+Success
+FspGfxHob->FrameBufferBase = 0xB0000000
+Graphics Info: 1280 x 1024 x 32 @ 0xB0000000
+MEM: 0000000000000000 00000000000A0000 00 1
+MEM: 00000000000A0000 0000000000060000 00 2
+MEM: 0000000000100000 00000000780B8000 00 1
+MEM: 00000000781B8000 0000000000500000 01 2
+MEM: 00000000786B8000 0000000000090000 00 3
+MEM: 0000000078748000 0000000000008000 00 4
+MEM: 00000000700000 00 2
+MEM: 000000007B000000 0000000000800000 00 2
+MEM: 000000007B800000 0000000000800000 00 2
+MEM: 000000007C000000 0000000003C00000 00 2
+MEM: 00000000FED20000 0000000000060000 00 2
+MEM: 00000000FF582000 0000000000A7E000 00 2
+MEM: 0000000100000000 0000000380400000 00 1
+MP Init (Wakeup)
+MP Init (Run)
+Detected 8 CPU threads
+ CPU  0 APIC ID: 0
+ CPU  1 APIC ID: 4
+ CPU  2 APIC ID: 2
+ CPU  3 APIC ID: 6
+ CPU  4 APIC ID: 1
+ CPU  5 APIC ID: 3
+ CPU  6 APIC ID: 5
+ CPU  7 APIC ID: 7
+PCI Enum
+Call FspNotifyPhase(20) ... Success
+ACPI NVS, LowPowerS0IdleConstraint(Micro-pep constraints) = 0x0000000061EA06F4 
+Update Cpu Nvs Done
+Revision 0x1, PpmFlags 0x027A7FB7
+Initialize VT-d
+VTd enabled
+ACPI Init
+Creating BDAT Table...
+No BDAT data exists, exiting without creating table
+Updated BDAT Table in AcpiTable Entries
+Updated DMAR Table in AcpiTable Entries
+Update Dmar ACPI Table
+McD0BaseAddress 0x00000000, IgdMode 0x0000
+GttMode 0x0003, GttMmAdr  0x81000000, GttMemSize 0x00800000
+RMRR Base  address IGD 000000007B800000
+RMRR Limit address IGD 000000007FBFFFFF
+RMRR Base  address USB 0000000000000000
+RMRR Limit address USB 0000000000000000
+WARNING:  RmrrUsb.RmrrHeader.ReservedMemoryRegionBaseAddress is 0.
+RMRR Base address  TCSS DMA0 0000000000000000
+RMRR Limit Address TCSS DMA0 0000000000000000
+RMRR Base address  TCSS DMA1 0000000000000000
+RMRR Limit Address TCSS DMA1 0000000000000000
+VTD base address 1 = FED90000
+VTD base address 2 = FED92000
+VTD base address 4 = FED84000
+VTD base address 5 = FED85000
+VTD base address 6 = FED86000
+VTD base address 7 = FED87000
+VTD base address 3 = FED91000
+Rmrr->RmrrHeader.ReservedMemoryRegionBaseAddress 0
+Rmrr->RmrrHeader.ReservedMemoryRegionBaseAddress 0
+  00000000: 50 53 44 53 52 00 00 00-01 00 49 4E 54 45 4C 20  *PSDSR.....INTEL *
+  00000010: 45 44 4B 32 20 20 20 20-05 00 00 00 49 4E 54 4C  *EDK2    ....INTL*
+  00000020: 0D 00 00 01 03 00 00 00-40 96 31 31 00 00 00 00  *........@.11....*
+  00000030: 00 00 0F 00 00 00 61 05-00 00 02 00 00 00 49 4E  *......a.......IN*
+  00000040: 54 45 4C 20 20 20 20 20-20 20 20 20 20 20 01 03  *TEL           ..*
+  00000050: 01 04                                            *..*
+Updated Psd Table in AcpiTable Entries
+Not adding ACPI table 
+CPU PNVS Base Old=0xFFFF0000 New=0x78748D62
+CPU PNVS Size Old=0xAA55 New=0x0065
+PNVS Old=0xFFFF0000 New=0x78748A8B
+PNVL Old=0x0000AA55 New=0x000002D7
+SANV Base Old=0xFFFF0000 New=0x78748DC7
+SANV Size Old=0xAA55 New=0x01A8
+ACPI Ret: Success
+VbtAddress =0x78A6F79C 
+Extended VBT supported
+VBT data found '$VBT TIGERLAKE      '
+Updating GOP VBT fields using GOP Configuration Lib.
+VBT Updated.
+IgdOpRegion ended
+HeciInitialize () - Start
+InitializeHeci () - H_RDY is already initialized
+HeciInitLib init Status: Success
+CSME MeasuredBoot state: 0 
+Loading Payload ID 0x49464555
+Registering container EPLD
+HASH verification for usage (0x00001000) with Hash Alg (0x2): Success
+SignType (0x2) SignSize (0x180)  SignHashAlg (0x2)
+RSA verification for usage (0x00001000): Success
+HASH verification for usage (0x00000000) with Hash Alg (0x2): Success
+Calculate Hash for component Type 0x45 as its not available in Component hash table 
+PCR (0) extended successfully with (1) event type.
+Adding event in TCG event log at : 0x78BF418D 
+Load Payload ID 0x49464555 @ 0x00B00000
+FV Format Payload
+MP Init (Done)
+Stage2: SmmRamBase = 0x7B000000, SmmRamSize = 0x800000
+Stage2: SmmRamBase = 0x7B000000, SmmRamSize = 0x800000
+HOB @ 0x78C10000
+Created 6 OS boot options (Current: 0)
+Stage2: SmmRamBase = 0x7B000000, SmmRamSize = 0x800000
+HECI1 MeFirmwareStatus = 4400308 
+Stage2: HwState 0xF TpmType 0x3
+Stage2 stack: 0x40000 (stack used 0xBBC, HOB used 0x1048, 0x3E3FC free)
+Stage2 heap: 0x4C0000 (0x23B570 used, 0x284A90 free)
+Payload entry: 0x00800320
+Jump to payload
+
+GET_BOOTLOADER_PARAMETER() = 0x80032000800330
+sizeof(UINTN) = 0x4
+buildhob: base = 0x0, size = 0xA0000, type = 0x0
+buildhob: base = 0xA0000, size = 0x60000, type = 0x5
+buildhob: base = 0x100000, size = 0x780B8000, type = 0x0
+buildhob: base = 0x781B8000, size = 0x500000, type = 0x5
+buildhob: base = 0x786B8000, size = 0x90000, type = 0x5
+buildhob: base = 0x78748000, size = 0x8000, type = 0x5
+buildhob: base = 0x78750000, size = 0x500000, type = 0x5
+buildhob: base = 0x78C50000, size = 0x3B0000, type = 0x5
+buildhob: base = 0x79000000, size = 0x2000000, type = 0x5
+buildhob: base = 0x7B000000, size = 0x800000, type = 0x5
+buildhob: base = 0x7B800000, size = 0x800000, type = 0x5
+buildhob: base = 0x7C000000, size = 0x3C00000, type = 0x5
+buildhob: base = 0xFED20000, size = 0x60000, type = 0x5
+buildhob: base = 0xFF582000, size = 0xA7E000, type = 0x5
+buildhob: base = 0x100000000, size = 0x380400000, type = 0x0
+Created graphics info hob
+Created graphics device info hob
+Detected Acpi Table at 0x786B8000, length 0x5DB10
+Detected Smbios Table at 0x789D9000, length 0x1000
+Rsdp at 0x786B8000
+Rsdt at 0x786B8030, Xsdt at 0x786B80E0
+Found Fadt in Rsdt
+Found MM config address in Rsdt
+PmCtrl  Reg 0x1804
+PmTimer Reg 0x1808
+Reset   Reg 0xCF9
+Reset   Value 0xE
+PmEvt   Reg 0x1800
+PmGpeEn Reg 0x1870
+PcieBaseAddr 0xC0000000
+PcieBaseSize 0x100000
+Create acpi board info guid hob
+VerifiedBoot 0x1
+MeasuredBoot 0x1
+ Get FSP hob success. FspsBase = 0x78BAC000
+ Get FSP hob success. FspHobList = 0x78C90000
+ Get SMM info. smm_base = 0x7B000000
+ smm_size = 0x800000
+ Base = 0xFF610000, Size=0x40000 Status=0xSuccess
+ GuidHob = 0xD003B8
+   DeviceTable = 0x78C10E00
+   found it  = 0x1F05
+   DeviceBase  = 0x1F05
+   2DeviceBase  = 0xFD000
+ SpiPciBase = 0xC00FD000
+ SpiFlashInfo->Flags = 0x1
+SPI flash base at 0xC00FD000
+VarStoreBase=0xFF610000, length=0x40000
+TpmType - TPM_TYPE_PTT 
+DxeCoreEntryPoint = 0x2CD9B94
+AddressBits=39 5LevelPaging=0 1GPage=1
+Pml5=1 Pml4=1 Pdp=512 TotalPage=2
+HandOffToDxeCore() Stack Base: 0x2CB9000, Stack Size: 0x20000
+AllocatePoolI: Type 4, Addr 4803FFE98 (len 100) 4,480
+AllocatePoolI: Type 4, Addr 781B5718 (len 80) 4,648
+AllocatePoolI: Type 4, Addr 781B5498 (len 80) 4,816
+AllocatePoolI: Type 4, Addr 781B5A98 (len 10) 4,872
+AllocatePoolI: Type 6, Addr 781B6C98 (len 180) 760
+DxeMain: MemoryBaseAddress=0x2D00000 MemoryLength=0x754B8000
+ConvertRange: 47FFFE000-4803FEFFF to type 4
+AddRange: 47FFFE000-4803FEFFF to 4
+ConvertRange: 47FFFE000-47FFFFFFF to type 7
+AddRange: 47FFFE000-47FFFFFFF to 7
+ConvertRange: 480001000-4803FEFFF to type 7
+AddRange: 480001000-4803FEFFF to 7
+ConvertRange: 4803FD000-4803FEFFF to type 4
+AddRange: 4803FD000-4803FEFFF to 4
+AllocatePoolI: Type 4, Addr 4803FD018 (len 1000) 9,008
+AllocatePoolI: Type 4, Addr 781B5298 (len 18) 9,072
+HOBLIST address in DXE = 0x4803FF018
+Memory Allocation 0x00000004 0x800000 - 0xC0FFFF
+Memory Allocation 0x0000000B 0xFEC80000 - 0xFECFFFFF
+Memory Allocation 0x00000003 0x2CD9000 - 0x2CFFFFF
+Memory Allocation 0x00000003 0x2CD9000 - 0x2CFFFFF
+Memory Allocation 0x00000004 0x2CB9000 - 0x2CD8FFF
+Memory Allocation 0x00000004 0x28B9000 - 0x2CB8FFF
+Memory Allocation 0x00000004 0x28B8000 - 0x28B8FFF
+FV Hob            0x807520 - 0xB5D51F
+AllocatePoolI: Type 4, Addr 781B5598 (len B8) 9,296
+AllocatePoolI: Type 4, Addr 4803FFA98 (len B8) 9,520
+AllocatePoolI: Type 4, Addr 4803FFB98 (len B8) 9,744
+AllocatePoolI: Type 4, Addr 4803FFC98 (len B8) 9,968
+ConvertRange: 4803FC000-4803FCFFF to type 4
+AddRange: 4803FC000-4803FCFFF to 4
+AllocatePoolI: Type 4, Addr 4803FC018 (len B8) 10,192
+AllocatePoolI: Type 4, Addr 4803FCF98 (len 48) 10,304
+AllocatePoolI: Type 4, Addr 4803FFD98 (len 30) 10,392
+InstallProtocolInterface: D8117CFE-94A6-11D4-9A3A-0090273FC14D 2CFB6F0
+AllocatePoolI: Type 4, Addr 4803FFE18 (len 48) 10,504
+AllocatePoolI: Type 4, Addr 781B5698 (len 58) 10,632
+AllocatePoolI: Type 4, Addr 781B5218 (len 38) 10,728
+AllocatePoolI: Type 4, Addr 4803FCB98 (len B8) 10,952
+AllocatePoolI: Type 4, Addr 4803FCF18 (len 48) 11,064
+AllocatePoolI: Type 4, Addr 781B5418 (len 30) 11,152
+AllocatePoolI: Type 4, Addr 4803FCC98 (len B8) 11,376
+AllocatePoolI: Type 4, Addr 781B5318 (len 30) 11,464
+AllocatePoolI: Type 4, Addr 4803FCD98 (len B8) 11,688
+AllocatePoolI: Type 4, Addr 4803FCE98 (len 48) 11,800
+AllocatePoolI: Type 4, Addr 4803FC118 (len 30) 11,888
+AllocatePoolI: Type 4, Addr 4803FCA98 (len B8) 12,112
+AllocatePoolI: Type 4, Addr 4803FC818 (len 48) 12,224
+AllocatePoolI: Type 4, Addr 4803FCA18 (len 30) 12,312
+AllocatePoolI: Type 4, Addr 4803FC898 (len B8) 12,536
+AllocatePoolI: Type 4, Addr 4803FC998 (len 48) 12,648
+AllocatePoolI: Type 4, Addr 4803FC198 (len 30) 12,736
+AllocatePoolI: Type 4, Addr 4803FC618 (len B8) 12,960
+AllocatePoolI: Type 4, Addr 4803FC718 (len 48) 13,072
+AllocatePoolI: Type 4, Addr 4803FC798 (len 30) 13,160
+AllocatePoolI: Type 4, Addr 4803FC218 (len B8) 13,384
+AllocatePoolI: Type 4, Addr 4803FC598 (len 48) 13,496
+AllocatePoolI: Type 4, Addr 4803FC318 (len 30) 13,584
+AllocatePoolI: Type 4, Addr 4803FC398 (len B8) 13,808
+AllocatePoolI: Type 4, Addr 4803FC498 (len 48) 13,920
+AllocatePoolI: Type 4, Addr 4803FC518 (len 30) 14,008
+ConvertRange: 4803FB000-4803FBFFF to type 4
+AddRange: 4803FB000-4803FBFFF to 4
+AllocatePoolI: Type 4, Addr 4803FB018 (len B8) 14,232
+AllocatePoolI: Type 4, Addr 4803FBF98 (len 48) 14,344
+AllocatePoolI: Type 4, Addr 4803FBB98 (len 30) 14,432
+AllocatePoolI: Type 4, Addr 4803FBE98 (len B8) 14,656
+AllocatePoolI: Type 4, Addr 4803FBC18 (len 48) 14,768
+AllocatePoolI: Type 4, Addr 4803FBE18 (len 30) 14,856
+AllocatePoolI: Type 4, Addr 4803FBC98 (len B8) 15,080
+AllocatePoolI: Type 4, Addr 4803FBD98 (len 48) 15,192
+AllocatePoolI: Type 4, Addr 4803FB118 (len 30) 15,280
+AllocatePoolI: Type 4, Addr 4803FBA98 (len B8) 15,504
+AllocatePoolI: Type 4, Addr 4803FB818 (len 48) 15,616
+AllocatePoolI: Type 4, Addr 4803FBA18 (len 30) 15,704
+AllocatePoolI: Type 4, Addr 4803FB898 (len B8) 15,928
+AllocatePoolI: Type 4, Addr 4803FB998 (len 48) 16,040
+AllocatePoolI: Type 4, Addr 4803FB198 (len 30) 16,128
+AllocatePoolI: Type 4, Addr 4803FB618 (len B8) 16,352
+AllocatePoolI: Type 4, Addr 4803FB718 (len 48) 16,464
+AllocatePoolI: Type 4, Addr 4803FB798 (len 30) 16,552
+AllocatePoolI: Type 4, Addr 4803FB218 (len B8) 16,776
+AllocatePoolI: Type 4, Addr 4803FB598 (len 48) 16,888
+AllocatePoolI: Type 4, Addr 4803FB318 (len 30) 16,976
+AllocatePoolI: Type 4, Addr 4803FB398 (len 80) 17,144
+ConvertRange: 4803F7000-4803FAFFF to type 4
+AddRange: 4803F7000-4803FAFFF to 4
+AllocatePoolI: Type 4, Addr 4803F7018 (len 3560) 30,848
+AllocatePoolI: Type 4, Addr 4803FB498 (len 20) 30,920
+InstallProtocolInterface: 8F644FA9-E850-4DB1-9CE2-0B44698E8DA4 4803FB3B0
+AllocatePoolI: Type 4, Addr 4803FB518 (len 48) 31,032
+ConvertRange: 4803F6000-4803F6FFF to type 4
+AddRange: 4803F6000-4803F6FFF to 4
+AllocatePoolI: Type 4, Addr 4803F6018 (len 58) 31,160
+AllocatePoolI: Type 4, Addr 4803F6F18 (len 38) 31,256
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 4803FB498
+AllocatePoolI: Type 4, Addr 4803F6F98 (len 48) 31,368
+AllocatePoolI: Type 4, Addr 4803F6B18 (len 58) 31,496
+AllocatePoolI: Type 4, Addr 4803F6E18 (len B8) 31,720
+AllocatePoolI: Type 4, Addr 4803F6B98 (len 30) 31,808
+AllocatePoolI: Type 4, Addr 4803F6D98 (len 30) 31,896
+AllocatePoolI: Type 4, Addr 4803F6C18 (len 48) 32,008
+AllocatePoolI: Type 4, Addr 4803F6C98 (len A0) 32,208
+AllocatePoolI: Type 4, Addr 4803F6098 (len 28) 32,288
+AllocatePoolI: Type 4, Addr 4803F6A18 (len 28) 32,368
+AllocatePoolI: Type 4, Addr 4803F6A98 (len 28) 32,448
+AllocatePoolI: Type 4, Addr 4803F6798 (len 28) 32,528
+AllocatePoolI: Type 4, Addr 4803F6998 (len 28) 32,608
+AllocatePoolI: Type 4, Addr 4803F6818 (len 28) 32,688
+AllocatePoolI: Type 4, Addr 4803F6898 (len 28) 32,768
+AllocatePoolI: Type 4, Addr 4803F6918 (len 28) 32,848
+AllocatePoolI: Type 4, Addr 4803F6118 (len 28) 32,928
+AllocatePoolI: Type 4, Addr 4803F6718 (len 28) 33,008
+AllocatePoolI: Type 4, Addr 4803F6598 (len 28) 33,088
+AllocatePoolI: Type 4, Addr 4803F6618 (len 28) 33,168
+AllocatePoolI: Type 4, Addr 4803F6698 (len 28) 33,248
+AllocatePoolI: Type 4, Addr 4803F6198 (len 28) 33,328
+AllocatePoolI: Type 4, Addr 4803F6498 (len 28) 33,408
+AllocatePoolI: Type 4, Addr 4803F6518 (len 28) 33,488
+AllocatePoolI: Type 4, Addr 4803F6218 (len 28) 33,568
+AllocatePoolI: Type 4, Addr 4803F6418 (len 28) 33,648
+AllocatePoolI: Type 4, Addr 4803F6298 (len 28) 33,728
+AllocatePoolI: Type 4, Addr 4803F6318 (len 28) 33,808
+AllocatePoolI: Type 4, Addr 4803F6398 (len 28) 33,888
+ConvertRange: 4803F5000-4803F5FFF to type 4
+AddRange: 4803F5000-4803F5FFF to 4
+AllocatePoolI: Type 4, Addr 4803F5018 (len 28) 33,968
+AllocatePoolI: Type 4, Addr 4803F5F18 (len 28) 34,048
+AllocatePoolI: Type 4, Addr 4803F5F98 (len 28) 34,128
+AllocatePoolI: Type 4, Addr 4803F5B18 (len 28) 34,208
+AllocatePoolI: Type 4, Addr 4803F5E18 (len 28) 34,288
+AllocatePoolI: Type 4, Addr 4803F5E98 (len 28) 34,368
+AllocatePoolI: Type 4, Addr 4803F5B98 (len 28) 34,448
+AllocatePoolI: Type 4, Addr 4803F5D98 (len 28) 34,528
+AllocatePoolI: Type 4, Addr 4803F5C18 (len 28) 34,608
+AllocatePoolI: Type 4, Addr 4803F5C98 (len 28) 34,688
+AllocatePoolI: Type 4, Addr 4803F5D18 (len 28) 34,768
+AllocatePoolI: Type 4, Addr 4803F5098 (len 28) 34,848
+AllocatePoolI: Type 4, Addr 4803F5A18 (len 28) 34,928
+AllocatePoolI: Type 4, Addr 4803F5A98 (len 28) 35,008
+AllocatePoolI: Type 4, Addr 4803F5798 (len 28) 35,088
+AllocatePoolI: Type 4, Addr 4803F5998 (len 28) 35,168
+AllocatePoolI: Type 4, Addr 4803F5818 (len 28) 35,248
+AllocatePoolI: Type 4, Addr 4803F5898 (len 28) 35,328
+AllocatePoolI: Type 4, Addr 4803F5918 (len 28) 35,408
+AllocatePoolI: Type 4, Addr 4803F5118 (len 28) 35,488
+AllocatePoolI: Type 4, Addr 4803F5718 (len 28) 35,568
+AllocatePoolI: Type 4, Addr 4803F5598 (len 28) 35,648
+AllocatePoolI: Type 4, Addr 4803F5618 (len 28) 35,728
+AllocatePoolI: Type 4, Addr 4803F5698 (len 28) 35,808
+AllocatePoolI: Type 4, Addr 4803F5198 (len 28) 35,888
+AllocatePoolI: Type 4, Addr 4803F5498 (len 28) 35,968
+AllocatePoolI: Type 4, Addr 4803F5518 (len 28) 36,048
+AllocatePoolI: Type 4, Addr 4803F5218 (len 28) 36,128
+AllocatePoolI: Type 4, Addr 4803F5418 (len 28) 36,208
+AllocatePoolI: Type 4, Addr 4803F5298 (len 28) 36,288
+AllocatePoolI: Type 4, Addr 4803F5318 (len 28) 36,368
+AllocatePoolI: Type 4, Addr 4803F5398 (len 28) 36,448
+ConvertRange: 4803F4000-4803F4FFF to type 4
+AddRange: 4803F4000-4803F4FFF to 4
+AllocatePoolI: Type 4, Addr 4803F4018 (len 28) 36,528
+AllocatePoolI: Type 4, Addr 4803F4F18 (len 28) 36,608
+AllocatePoolI: Type 4, Addr 4803F4F98 (len 28) 36,688
+InstallProtocolInterface: 220E73B6-6BDB-4413-8405-B974B108619A 4803F6CB0
+AllocatePoolI: Type 4, Addr 4803F4B18 (len 48) 36,800
+AllocatePoolI: Type 4, Addr 4803F4E18 (len 58) 36,928
+InstallProtocolInterface: EE4E5898-3914-4259-9D6E-DC7BD79403CF 2CFC380
+AllocatePoolI: Type 4, Addr 4803F4E98 (len 48) 37,040
+AllocatePoolI: Type 4, Addr 4803F4B98 (len 58) 37,168
+AllocatePoolI: Type 4, Addr 4803F4D98 (len 38) 37,264
+AllocatePoolI: Type 4, Addr 4803F4C18 (len B8) 37,488
+AllocatePoolI: Type 4, Addr 4803F4D18 (len 30) 37,576
+AllocatePoolI: Type 4, Addr 4803F4098 (len 48) 37,688
+FreePool: 4803F4098 (len 48) 37,576
+AllocatePoolI: Type 4, Addr 4803F4098 (len 30) 37,664
+AllocatePoolI: Type 4, Addr 4803F4A18 (len 30) 37,752
+AllocatePoolI: Type 4, Addr 4803F4A98 (len 30) 37,840
+AllocatePoolI: Type 4, Addr 4803F4798 (len 90) 38,024
+AllocatePoolI: Type 4, Addr 4803F4898 (len 30) 38,112
+ConvertRange: 4803EC000-4803F3FFF to type 4
+AddRange: 4803EC000-4803F3FFF to 4
+AllocatePoolI: Type 4, Addr 4803EC018 (len 79D0) 69,336
+AllocatePoolI: Type 4, Addr 4803F4918 (len 48) 69,448
+AllocatePoolI: Type 4, Addr 4803F4998 (len 40) 69,552
+AllocatePoolI: Type 4, Addr 4803F4118 (len 40) 69,656
+AllocatePoolI: Type 4, Addr 4803F4718 (len 8) 69,704
+AllocatePoolI: Type 4, Addr 4803F4598 (len 90) 69,888
+AllocatePoolI: Type 4, Addr 4803F4698 (len 30) 69,976
+ConvertRange: 4803E6000-4803EBFFF to type 4
+AddRange: 4803E6000-4803EBFFF to 4
+AllocatePoolI: Type 4, Addr 4803E6018 (len 5490) 91,664
+AllocatePoolI: Type 4, Addr 4803F4198 (len 48) 91,776
+AllocatePoolI: Type 4, Addr 4803F4498 (len 40) 91,880
+AllocatePoolI: Type 4, Addr 4803F4518 (len 18) 91,944
+AllocatePoolI: Type 4, Addr 4803F4218 (len 90) 92,128
+AllocatePoolI: Type 4, Addr 4803F4318 (len 30) 92,216
+ConvertRange: 4803E1000-4803E5FFF to type 4
+AddRange: 4803E1000-4803E5FFF to 4
+AllocatePoolI: Type 4, Addr 4803E1018 (len 4C90) 111,856
+AllocatePoolI: Type 4, Addr 4803F4398 (len 48) 111,968
+AllocatePoolI: Type 4, Addr 4803F4418 (len 40) 112,072
+ConvertRange: 4803E0000-4803E0FFF to type 4
+AddRange: 4803E0000-4803E0FFF to 4
+AllocatePoolI: Type 4, Addr 4803E0018 (len 28) 112,152
+AllocatePoolI: Type 4, Addr 4803E0F18 (len 90) 112,336
+AllocatePoolI: Type 4, Addr 4803E0B18 (len 30) 112,424
+ConvertRange: 4803D7000-4803DFFFF to type 4
+AddRange: 4803D7000-4803DFFFF to 4
+AllocatePoolI: Type 4, Addr 4803D7018 (len 8E48) 148,888
+AllocatePoolI: Type 4, Addr 4803E0E18 (len 48) 149,000
+AllocatePoolI: Type 4, Addr 4803E0E98 (len 40) 149,104
+AllocatePoolI: Type 4, Addr 4803E0B98 (len 18) 149,168
+AllocatePoolI: Type 4, Addr 4803E0C18 (len 90) 149,352
+AllocatePoolI: Type 4, Addr 4803E0D18 (len 30) 149,440
+ConvertRange: 4803C4000-4803D6FFF to type 4
+AddRange: 4803C4000-4803D6FFF to 4
+AllocatePoolI: Type 4, Addr 4803C4018 (len 12298) 223,872
+AllocatePoolI: Type 4, Addr 4803E0D98 (len 48) 223,984
+AllocatePoolI: Type 4, Addr 4803E0098 (len 40) 224,088
+AllocatePoolI: Type 4, Addr 4803E0A18 (len 18) 224,152
+AllocatePoolI: Type 4, Addr 4803E0798 (len 90) 224,336
+AllocatePoolI: Type 4, Addr 4803E0A98 (len 30) 224,424
+ConvertRange: 4803AB000-4803C3FFF to type 4
+AddRange: 4803AB000-4803C3FFF to 4
+AllocatePoolI: Type 4, Addr 4803AB018 (len 180F0) 323,008
+AllocatePoolI: Type 4, Addr 4803E0898 (len 48) 323,120
+AllocatePoolI: Type 4, Addr 4803E0918 (len 40) 323,224
+AllocatePoolI: Type 4, Addr 4803E0998 (len 48) 323,336
+AllocatePoolI: Type 4, Addr 4803E0118 (len 90) 323,520
+AllocatePoolI: Type 4, Addr 4803E0618 (len 30) 323,608
+ConvertRange: 4803A5000-4803AAFFF to type 4
+AddRange: 4803A5000-4803AAFFF to 4
+AllocatePoolI: Type 4, Addr 4803A5018 (len 54D8) 345,368
+AllocatePoolI: Type 4, Addr 4803E0698 (len 48) 345,480
+AllocatePoolI: Type 4, Addr 4803E0718 (len 40) 345,584
+AllocatePoolI: Type 4, Addr 4803E0218 (len 28) 345,664
+AllocatePoolI: Type 4, Addr 4803E0518 (len 90) 345,848
+AllocatePoolI: Type 4, Addr 4803E0298 (len 30) 345,936
+ConvertRange: 4803A1000-4803A4FFF to type 4
+AddRange: 4803A1000-4803A4FFF to 4
+AllocatePoolI: Type 4, Addr 4803A1018 (len 39E0) 360,792
+AllocatePoolI: Type 4, Addr 4803E0498 (len 48) 360,904
+AllocatePoolI: Type 4, Addr 4803E0318 (len 40) 361,008
+AllocatePoolI: Type 4, Addr 4803E0398 (len 18) 361,072
+ConvertRange: 4803A0000-4803A0FFF to type 4
+AddRange: 4803A0000-4803A0FFF to 4
+AllocatePoolI: Type 4, Addr 4803A0018 (len 90) 361,256
+AllocatePoolI: Type 4, Addr 4803A0F98 (len 30) 361,344
+ConvertRange: 48039C000-48039FFFF to type 4
+AddRange: 48039C000-48039FFFF to 4
+AllocatePoolI: Type 4, Addr 48039C018 (len 39F8) 376,224
+AllocatePoolI: Type 4, Addr 4803E0418 (len 48) 376,336
+AllocatePoolI: Type 4, Addr 4803A0B98 (len 40) 376,440
+AllocatePoolI: Type 4, Addr 4803A0E98 (len 28) 376,520
+AllocatePoolI: Type 4, Addr 4803A0C18 (len 90) 376,704
+AllocatePoolI: Type 4, Addr 4803A0F18 (len 30) 376,792
+ConvertRange: 480396000-48039BFFF to type 4
+AddRange: 480396000-48039BFFF to 4
+AllocatePoolI: Type 4, Addr 480396018 (len 5260) 397,920
+AllocatePoolI: Type 4, Addr 4803A0D18 (len 48) 398,032
+AllocatePoolI: Type 4, Addr 4803A0D98 (len 40) 398,136
+AllocatePoolI: Type 4, Addr 4803A0E18 (len 18) 398,200
+AllocatePoolI: Type 4, Addr 4803A0118 (len 90) 398,384
+AllocatePoolI: Type 4, Addr 4803A0B18 (len 30) 398,472
+ConvertRange: 480391000-480395FFF to type 4
+AddRange: 480391000-480395FFF to 4
+AllocatePoolI: Type 4, Addr 480391018 (len 4280) 415,536
+AllocatePoolI: Type 4, Addr 4803A0898 (len 48) 415,648
+AllocatePoolI: Type 4, Addr 4803A0A98 (len 40) 415,752
+AllocatePoolI: Type 4, Addr 4803A0918 (len 28) 415,832
+AllocatePoolI: Type 4, Addr 4803A0998 (len 90) 416,016
+AllocatePoolI: Type 4, Addr 4803A0218 (len 30) 416,104
+ConvertRange: 48038C000-480390FFF to type 4
+AddRange: 48038C000-480390FFF to 4
+AllocatePoolI: Type 4, Addr 48038C018 (len 44A8) 433,720
+AllocatePoolI: Type 4, Addr 4803A0818 (len 48) 433,832
+AllocatePoolI: Type 4, Addr 4803A0698 (len 40) 433,936
+AllocatePoolI: Type 4, Addr 4803A0718 (len 38) 434,032
+AllocatePoolI: Type 4, Addr 4803A0298 (len 90) 434,216
+AllocatePoolI: Type 4, Addr 4803A0618 (len 30) 434,304
+ConvertRange: 480386000-48038BFFF to type 4
+AddRange: 480386000-48038BFFF to 4
+AllocatePoolI: Type 4, Addr 480386018 (len 5678) 456,480
+AllocatePoolI: Type 4, Addr 4803A0798 (len 48) 456,592
+AllocatePoolI: Type 4, Addr 4803A0398 (len 40) 456,696
+AllocatePoolI: Type 4, Addr 4803A0598 (len 18) 456,760
+AllocatePoolI: Type 4, Addr 4803A0418 (len 90) 456,944
+AllocatePoolI: Type 4, Addr 4803A0518 (len 30) 457,032
+ConvertRange: 48037F000-480385FFF to type 4
+AddRange: 48037F000-480385FFF to 4
+AllocatePoolI: Type 4, Addr 48037F018 (len 6278) 482,280
+ConvertRange: 48037E000-48037EFFF to type 4
+AddRange: 48037E000-48037EFFF to 4
+AllocatePoolI: Type 4, Addr 48037E018 (len 48) 482,392
+AllocatePoolI: Type 4, Addr 48037EF18 (len 40) 482,496
+AllocatePoolI: Type 4, Addr 48037EF98 (len 38) 482,592
+AllocatePoolI: Type 4, Addr 48037EB18 (len 90) 482,776
+AllocatePoolI: Type 4, Addr 48037EE98 (len 30) 482,864
+ConvertRange: 480370000-48037DFFF to type 4
+AddRange: 480370000-48037DFFF to 4
+AllocatePoolI: Type 4, Addr 480370018 (len D470) 537,288
+AllocatePoolI: Type 4, Addr 48037EC18 (len 48) 537,400
+AllocatePoolI: Type 4, Addr 48037EE18 (len 40) 537,504
+AllocatePoolI: Type 4, Addr 48037EC98 (len 18) 537,568
+AllocatePoolI: Type 4, Addr 48037ED18 (len 90) 537,752
+AllocatePoolI: Type 4, Addr 48037E098 (len 30) 537,840
+ConvertRange: 48036B000-48036FFFF to type 4
+AddRange: 48036B000-48036FFFF to 4
+AllocatePoolI: Type 4, Addr 48036B018 (len 4180) 554,648
+AllocatePoolI: Type 4, Addr 48037EA18 (len 48) 554,760
+AllocatePoolI: Type 4, Addr 48037EA98 (len 40) 554,864
+AllocatePoolI: Type 4, Addr 48037E798 (len 18) 554,928
+AllocatePoolI: Type 4, Addr 48037E818 (len 90) 555,112
+AllocatePoolI: Type 4, Addr 48037E918 (len 30) 555,200
+ConvertRange: 48035D000-48036AFFF to type 4
+AddRange: 48035D000-48036AFFF to 4
+AllocatePoolI: Type 4, Addr 48035D018 (len DB88) 611,440
+AllocatePoolI: Type 4, Addr 48037E998 (len 48) 611,552
+AllocatePoolI: Type 4, Addr 48037E118 (len 40) 611,656
+AllocatePoolI: Type 4, Addr 48037E718 (len 18) 611,720
+AllocatePoolI: Type 4, Addr 48037E598 (len 90) 611,904
+AllocatePoolI: Type 4, Addr 48037E698 (len 30) 611,992
+ConvertRange: 480359000-48035CFFF to type 4
+AddRange: 480359000-48035CFFF to 4
+AllocatePoolI: Type 4, Addr 480359018 (len 3CF0) 627,632
+AllocatePoolI: Type 4, Addr 48037E198 (len 48) 627,744
+AllocatePoolI: Type 4, Addr 48037E498 (len 40) 627,848
+AllocatePoolI: Type 4, Addr 48037E518 (len 18) 627,912
+AllocatePoolI: Type 4, Addr 48037E218 (len 90) 628,096
+AllocatePoolI: Type 4, Addr 48037E318 (len 30) 628,184
+ConvertRange: 480338000-480358FFF to type 4
+AddRange: 480338000-480358FFF to 4
+AllocatePoolI: Type 4, Addr 480338018 (len 20B60) 762,208
+AllocatePoolI: Type 4, Addr 48037E398 (len 48) 762,320
+AllocatePoolI: Type 4, Addr 48037E418 (len 40) 762,424
+ConvertRange: 480337000-480337FFF to type 4
+AddRange: 480337000-480337FFF to 4
+AllocatePoolI: Type 4, Addr 480337018 (len 18) 762,488
+AllocatePoolI: Type 4, Addr 480337F18 (len 90) 762,672
+AllocatePoolI: Type 4, Addr 480337B18 (len 30) 762,760
+ConvertRange: 48031C000-480336FFF to type 4
+AddRange: 48031C000-480336FFF to 4
+AllocatePoolI: Type 4, Addr 48031C018 (len 1AF78) 873,256
+AllocatePoolI: Type 4, Addr 480337E18 (len 48) 873,368
+AllocatePoolI: Type 4, Addr 480337E98 (len 40) 873,472
+AllocatePoolI: Type 4, Addr 480337B98 (len 48) 873,584
+AllocatePoolI: Type 4, Addr 480337C18 (len 90) 873,768
+AllocatePoolI: Type 4, Addr 480337D18 (len 30) 873,856
+ConvertRange: 480305000-48031BFFF to type 4
+AddRange: 480305000-48031BFFF to 4
+AllocatePoolI: Type 4, Addr 480305018 (len 166E8) 965,776
+AllocatePoolI: Type 4, Addr 480337D98 (len 48) 965,888
+AllocatePoolI: Type 4, Addr 480337098 (len 40) 965,992
+AllocatePoolI: Type 4, Addr 480337A18 (len 60) 966,128
+AllocatePoolI: Type 4, Addr 480337798 (len 90) 966,312
+AllocatePoolI: Type 4, Addr 480337898 (len 30) 966,400
+ConvertRange: 480301000-480304FFF to type 4
+AddRange: 480301000-480304FFF to 4
+AllocatePoolI: Type 4, Addr 480301018 (len 3EE8) 982,544
+AllocatePoolI: Type 4, Addr 480337918 (len 48) 982,656
+AllocatePoolI: Type 4, Addr 480337998 (len 40) 982,760
+AllocatePoolI: Type 4, Addr 480337118 (len 18) 982,824
+AllocatePoolI: Type 4, Addr 480337598 (len 90) 983,008
+AllocatePoolI: Type 4, Addr 480337698 (len 30) 983,096
+ConvertRange: 4802FB000-480300FFF to type 4
+AddRange: 4802FB000-480300FFF to 4
+AllocatePoolI: Type 4, Addr 4802FB018 (len 5DE0) 1,007,168
+AllocatePoolI: Type 4, Addr 480337718 (len 48) 1,007,280
+AllocatePoolI: Type 4, Addr 480337198 (len 40) 1,007,384
+AllocatePoolI: Type 4, Addr 480337498 (len 18) 1,007,448
+AllocatePoolI: Type 4, Addr 480337218 (len 90) 1,007,632
+AllocatePoolI: Type 4, Addr 480337518 (len 30) 1,007,720
+ConvertRange: 4802E5000-4802FAFFF to type 4
+AddRange: 4802E5000-4802FAFFF to 4
+AllocatePoolI: Type 4, Addr 4802E5018 (len 15F48) 1,097,688
+AllocatePoolI: Type 4, Addr 480337318 (len 48) 1,097,800
+AllocatePoolI: Type 4, Addr 480337398 (len 40) 1,097,904
+AllocatePoolI: Type 4, Addr 480337418 (len 40) 1,098,008
+ConvertRange: 4802E4000-4802E4FFF to type 4
+AddRange: 4802E4000-4802E4FFF to 4
+AllocatePoolI: Type 4, Addr 4802E4018 (len 40) 1,098,112
+AllocatePoolI: Type 4, Addr 4802E4F18 (len 90) 1,098,296
+AllocatePoolI: Type 4, Addr 4802E4B18 (len 30) 1,098,384
+ConvertRange: 4802D5000-4802E3FFF to type 4
+AddRange: 4802D5000-4802E3FFF to 4
+AllocatePoolI: Type 4, Addr 4802D5018 (len EC50) 1,158,920
+AllocatePoolI: Type 4, Addr 4802E4E18 (len 48) 1,159,032
+AllocatePoolI: Type 4, Addr 4802E4E98 (len 40) 1,159,136
+AllocatePoolI: Type 4, Addr 4802E4B98 (len 38) 1,159,232
+AllocatePoolI: Type 4, Addr 4802E4C18 (len 90) 1,159,416
+AllocatePoolI: Type 4, Addr 4802E4D18 (len 30) 1,159,504
+ConvertRange: 4802D0000-4802D4FFF to type 4
+AddRange: 4802D0000-4802D4FFF to 4
+AllocatePoolI: Type 4, Addr 4802D0018 (len 3FE0) 1,175,896
+AllocatePoolI: Type 4, Addr 4802E4D98 (len 48) 1,176,008
+AllocatePoolI: Type 4, Addr 4802E4098 (len 40) 1,176,112
+AllocatePoolI: Type 4, Addr 4802E4A18 (len 18) 1,176,176
+AllocatePoolI: Type 4, Addr 4802E4798 (len 90) 1,176,360
+AllocatePoolI: Type 4, Addr 4802E4A98 (len 30) 1,176,448
+ConvertRange: 4802CA000-4802CFFFF to type 4
+AddRange: 4802CA000-4802CFFFF to 4
+AllocatePoolI: Type 4, Addr 4802CA018 (len 54A8) 1,198,160
+AllocatePoolI: Type 4, Addr 4802E4898 (len 48) 1,198,272
+AllocatePoolI: Type 4, Addr 4802E4918 (len 40) 1,198,376
+AllocatePoolI: Type 4, Addr 4802E4998 (len 40) 1,198,480
+AllocatePoolI: Type 4, Addr 4802E4118 (len 40) 1,198,584
+AllocatePoolI: Type 4, Addr 4802E4598 (len 90) 1,198,768
+AllocatePoolI: Type 4, Addr 4802E4698 (len 30) 1,198,856
+ConvertRange: 4802C2000-4802C9FFF to type 4
+AddRange: 4802C2000-4802C9FFF to 4
+AllocatePoolI: Type 4, Addr 4802C2018 (len 7AB0) 1,230,304
+AllocatePoolI: Type 4, Addr 4802E4718 (len 48) 1,230,416
+AllocatePoolI: Type 4, Addr 4802E4198 (len 40) 1,230,520
+AllocatePoolI: Type 4, Addr 4802E4498 (len 40) 1,230,624
+AllocatePoolI: Type 4, Addr 4802E4518 (len 40) 1,230,728
+AllocatePoolI: Type 4, Addr 4802E4218 (len 90) 1,230,912
+AllocatePoolI: Type 4, Addr 4802E4318 (len 30) 1,231,000
+ConvertRange: 4802BC000-4802C1FFF to type 4
+AddRange: 4802BC000-4802C1FFF to 4
+AllocatePoolI: Type 4, Addr 4802BC018 (len 5EB0) 1,255,280
+AllocatePoolI: Type 4, Addr 4802E4398 (len 48) 1,255,392
+AllocatePoolI: Type 4, Addr 4802E4418 (len 40) 1,255,496
+ConvertRange: 4802BB000-4802BBFFF to type 4
+AddRange: 4802BB000-4802BBFFF to 4
+AllocatePoolI: Type 4, Addr 4802BB018 (len 40) 1,255,600
+AllocatePoolI: Type 4, Addr 4802BBF18 (len 40) 1,255,704
+AllocatePoolI: Type 4, Addr 4802BBB18 (len 90) 1,255,888
+AllocatePoolI: Type 4, Addr 4802BBE98 (len 30) 1,255,976
+ConvertRange: 4802B1000-4802BAFFF to type 4
+AddRange: 4802B1000-4802BAFFF to 4
+AllocatePoolI: Type 4, Addr 4802B1018 (len 9A90) 1,295,584
+AllocatePoolI: Type 4, Addr 4802BBF98 (len 48) 1,295,696
+AllocatePoolI: Type 4, Addr 4802BBC18 (len 40) 1,295,800
+AllocatePoolI: Type 4, Addr 4802BBE18 (len 40) 1,295,904
+AllocatePoolI: Type 4, Addr 4802BBC98 (len 40) 1,296,008
+AllocatePoolI: Type 4, Addr 4802BBD18 (len 90) 1,296,192
+AllocatePoolI: Type 4, Addr 4802BB098 (len 30) 1,296,280
+ConvertRange: 4802A9000-4802B0FFF to type 4
+AddRange: 4802A9000-4802B0FFF to 4
+AllocatePoolI: Type 4, Addr 4802A9018 (len 7C18) 1,328,088
+AllocatePoolI: Type 4, Addr 4802BBA18 (len 48) 1,328,200
+AllocatePoolI: Type 4, Addr 4802BBA98 (len 40) 1,328,304
+AllocatePoolI: Type 4, Addr 4802BB798 (len 40) 1,328,408
+AllocatePoolI: Type 4, Addr 4802BB998 (len 40) 1,328,512
+AllocatePoolI: Type 4, Addr 4802BB818 (len 90) 1,328,696
+AllocatePoolI: Type 4, Addr 4802BB918 (len 30) 1,328,784
+ConvertRange: 48029E000-4802A8FFF to type 4
+AddRange: 48029E000-4802A8FFF to 4
+AllocatePoolI: Type 4, Addr 48029E018 (len A8C8) 1,372,032
+AllocatePoolI: Type 4, Addr 4802BB118 (len 48) 1,372,144
+AllocatePoolI: Type 4, Addr 4802BB718 (len 40) 1,372,248
+AllocatePoolI: Type 4, Addr 4802BB598 (len 40) 1,372,352
+AllocatePoolI: Type 4, Addr 4802BB618 (len 40) 1,372,456
+AllocatePoolI: Type 4, Addr 4802BB198 (len 90) 1,372,640
+AllocatePoolI: Type 4, Addr 4802BB518 (len 30) 1,372,728
+ConvertRange: 480297000-48029DFFF to type 4
+AddRange: 480297000-48029DFFF to 4
+AllocatePoolI: Type 4, Addr 480297018 (len 6B78) 1,400,280
+AllocatePoolI: Type 4, Addr 4802BB698 (len 48) 1,400,392
+AllocatePoolI: Type 4, Addr 4802BB298 (len 40) 1,400,496
+AllocatePoolI: Type 4, Addr 4802BB498 (len 40) 1,400,600
+AllocatePoolI: Type 4, Addr 4802BB318 (len 40) 1,400,704
+AllocatePoolI: Type 4, Addr 4802BB398 (len 90) 1,400,888
+ConvertRange: 480296000-480296FFF to type 4
+AddRange: 480296000-480296FFF to 4
+AllocatePoolI: Type 4, Addr 480296018 (len 30) 1,400,976
+ConvertRange: 48028F000-480295FFF to type 4
+AddRange: 48028F000-480295FFF to 4
+AllocatePoolI: Type 4, Addr 48028F018 (len 67A8) 1,427,552
+AllocatePoolI: Type 4, Addr 480296F18 (len 48) 1,427,664
+AllocatePoolI: Type 4, Addr 480296F98 (len 40) 1,427,768
+AllocatePoolI: Type 4, Addr 480296B18 (len 40) 1,427,872
+AllocatePoolI: Type 4, Addr 480296E18 (len 40) 1,427,976
+AllocatePoolI: Type 4, Addr 480296B98 (len 90) 1,428,160
+AllocatePoolI: Type 4, Addr 480296E98 (len 30) 1,428,248
+ConvertRange: 480286000-48028EFFF to type 4
+AddRange: 480286000-48028EFFF to 4
+AllocatePoolI: Type 4, Addr 480286018 (len 8990) 1,463,504
+AllocatePoolI: Type 4, Addr 480296C98 (len 48) 1,463,616
+AllocatePoolI: Type 4, Addr 480296D18 (len 40) 1,463,720
+AllocatePoolI: Type 4, Addr 480296D98 (len 40) 1,463,824
+AllocatePoolI: Type 4, Addr 480296098 (len 40) 1,463,928
+AllocatePoolI: Type 4, Addr 480296A18 (len 90) 1,464,112
+AllocatePoolI: Type 4, Addr 480296798 (len 30) 1,464,200
+ConvertRange: 480282000-480285FFF to type 4
+AddRange: 480282000-480285FFF to 4
+AllocatePoolI: Type 4, Addr 480282018 (len 3EC8) 1,480,312
+AllocatePoolI: Type 4, Addr 480296998 (len 48) 1,480,424
+AllocatePoolI: Type 4, Addr 480296818 (len 40) 1,480,528
+AllocatePoolI: Type 4, Addr 480296898 (len 40) 1,480,632
+AllocatePoolI: Type 4, Addr 480296918 (len 40) 1,480,736
+AllocatePoolI: Type 4, Addr 480296118 (len 90) 1,480,920
+AllocatePoolI: Type 4, Addr 480296618 (len 30) 1,481,008
+ConvertRange: 48027C000-480281FFF to type 4
+AddRange: 48027C000-480281FFF to 4
+AllocatePoolI: Type 4, Addr 48027C018 (len 50D0) 1,501,736
+AllocatePoolI: Type 4, Addr 480296698 (len 48) 1,501,848
+AllocatePoolI: Type 4, Addr 480296718 (len 40) 1,501,952
+AllocatePoolI: Type 4, Addr 480296218 (len 40) 1,502,056
+AllocatePoolI: Type 4, Addr 480296518 (len 40) 1,502,160
+AllocatePoolI: Type 4, Addr 480296298 (len 90) 1,502,344
+AllocatePoolI: Type 4, Addr 480296598 (len 30) 1,502,432
+ConvertRange: 480273000-48027BFFF to type 4
+AddRange: 480273000-48027BFFF to 4
+AllocatePoolI: Type 4, Addr 480273018 (len 8A28) 1,537,840
+AllocatePoolI: Type 4, Addr 480296398 (len 48) 1,537,952
+AllocatePoolI: Type 4, Addr 480296418 (len 40) 1,538,056
+AllocatePoolI: Type 4, Addr 480296498 (len 40) 1,538,160
+ConvertRange: 480272000-480272FFF to type 4
+AddRange: 480272000-480272FFF to 4
+AllocatePoolI: Type 4, Addr 480272018 (len 40) 1,538,264
+AllocatePoolI: Type 4, Addr 480272F18 (len 90) 1,538,448
+AllocatePoolI: Type 4, Addr 480272B18 (len 30) 1,538,536
+ConvertRange: 480263000-480271FFF to type 4
+AddRange: 480263000-480271FFF to 4
+AllocatePoolI: Type 4, Addr 480263018 (len E138) 1,596,232
+AllocatePoolI: Type 4, Addr 480272E18 (len 48) 1,596,344
+AllocatePoolI: Type 4, Addr 480272E98 (len 40) 1,596,448
+AllocatePoolI: Type 4, Addr 480272B98 (len 40) 1,596,552
+AllocatePoolI: Type 4, Addr 480272D98 (len 40) 1,596,656
+AllocatePoolI: Type 4, Addr 480272C18 (len 90) 1,596,840
+AllocatePoolI: Type 4, Addr 480272D18 (len 30) 1,596,928
+ConvertRange: 48025C000-480262FFF to type 4
+AddRange: 48025C000-480262FFF to 4
+AllocatePoolI: Type 4, Addr 48025C018 (len 6280) 1,622,184
+AllocatePoolI: Type 4, Addr 480272098 (len 48) 1,622,296
+AllocatePoolI: Type 4, Addr 480272A18 (len 40) 1,622,400
+AllocatePoolI: Type 4, Addr 480272A98 (len 40) 1,622,504
+AllocatePoolI: Type 4, Addr 480272798 (len 40) 1,622,608
+AllocatePoolI: Type 4, Addr 480272818 (len 90) 1,622,792
+AllocatePoolI: Type 4, Addr 480272918 (len 30) 1,622,880
+ConvertRange: 48024F000-48025BFFF to type 4
+AddRange: 48024F000-48025BFFF to 4
+AllocatePoolI: Type 4, Addr 48024F018 (len CF88) 1,676,048
+AllocatePoolI: Type 4, Addr 480272998 (len 48) 1,676,160
+AllocatePoolI: Type 4, Addr 480272118 (len 40) 1,676,264
+AllocatePoolI: Type 4, Addr 480272718 (len 40) 1,676,368
+AllocatePoolI: Type 4, Addr 480272598 (len 40) 1,676,472
+AllocatePoolI: Type 4, Addr 480272618 (len 90) 1,676,656
+AllocatePoolI: Type 4, Addr 480272198 (len 30) 1,676,744
+ConvertRange: 480242000-48024EFFF to type 4
+AddRange: 480242000-48024EFFF to 4
+AllocatePoolI: Type 4, Addr 480242018 (len CCF8) 1,729,256
+AllocatePoolI: Type 4, Addr 480272498 (len 48) 1,729,368
+AllocatePoolI: Type 4, Addr 480272518 (len 40) 1,729,472
+AllocatePoolI: Type 4, Addr 480272218 (len 40) 1,729,576
+AllocatePoolI: Type 4, Addr 480272418 (len 40) 1,729,680
+AllocatePoolI: Type 4, Addr 480272298 (len 90) 1,729,864
+AllocatePoolI: Type 4, Addr 480272398 (len 30) 1,729,952
+ConvertRange: 480234000-480241FFF to type 4
+AddRange: 480234000-480241FFF to 4
+AllocatePoolI: Type 4, Addr 480234018 (len D230) 1,783,800
+ConvertRange: 480233000-480233FFF to type 4
+AddRange: 480233000-480233FFF to 4
+AllocatePoolI: Type 4, Addr 480233018 (len 48) 1,783,912
+AllocatePoolI: Type 4, Addr 480233F18 (len 40) 1,784,016
+AllocatePoolI: Type 4, Addr 480233F98 (len 40) 1,784,120
+AllocatePoolI: Type 4, Addr 480233B18 (len 40) 1,784,224
+AllocatePoolI: Type 4, Addr 480233E18 (len 90) 1,784,408
+AllocatePoolI: Type 4, Addr 480233B98 (len 30) 1,784,496
+ConvertRange: 480228000-480232FFF to type 4
+AddRange: 480228000-480232FFF to 4
+AllocatePoolI: Type 4, Addr 480228018 (len A8A0) 1,827,704
+AllocatePoolI: Type 4, Addr 480233D98 (len 48) 1,827,816
+AllocatePoolI: Type 4, Addr 480233C18 (len 40) 1,827,920
+AllocatePoolI: Type 4, Addr 480233C98 (len 40) 1,828,024
+AllocatePoolI: Type 4, Addr 480233D18 (len 40) 1,828,128
+AllocatePoolI: Type 4, Addr 480233098 (len 90) 1,828,312
+AllocatePoolI: Type 4, Addr 480233A98 (len 30) 1,828,400
+ConvertRange: 48021F000-480227FFF to type 4
+AddRange: 48021F000-480227FFF to 4
+AllocatePoolI: Type 4, Addr 48021F018 (len 8560) 1,862,584
+AllocatePoolI: Type 4, Addr 480233818 (len 48) 1,862,696
+AllocatePoolI: Type 4, Addr 480233A18 (len 40) 1,862,800
+AllocatePoolI: Type 4, Addr 480233898 (len 40) 1,862,904
+AllocatePoolI: Type 4, Addr 480233918 (len 40) 1,863,008
+AllocatePoolI: Type 4, Addr 480233198 (len 90) 1,863,192
+AllocatePoolI: Type 4, Addr 480233998 (len 30) 1,863,280
+ConvertRange: 480215000-48021EFFF to type 4
+AddRange: 480215000-48021EFFF to 4
+AllocatePoolI: Type 4, Addr 480215018 (len 9820) 1,902,264
+AllocatePoolI: Type 4, Addr 480233698 (len 48) 1,902,376
+AllocatePoolI: Type 4, Addr 480233718 (len 40) 1,902,480
+AllocatePoolI: Type 4, Addr 480233798 (len 40) 1,902,584
+AllocatePoolI: Type 4, Addr 480233298 (len 40) 1,902,688
+AllocatePoolI: Type 4, Addr 480233598 (len 90) 1,902,872
+AllocatePoolI: Type 4, Addr 480233318 (len 30) 1,902,960
+ConvertRange: 480209000-480214FFF to type 4
+AddRange: 480209000-480214FFF to 4
+AllocatePoolI: Type 4, Addr 480209018 (len B360) 1,948,920
+AllocatePoolI: Type 4, Addr 480233518 (len 48) 1,949,032
+AllocatePoolI: Type 4, Addr 480233398 (len 40) 1,949,136
+AllocatePoolI: Type 4, Addr 480233418 (len 40) 1,949,240
+AllocatePoolI: Type 4, Addr 480233498 (len 40) 1,949,344
+ConvertRange: 480208000-480208FFF to type 4
+AddRange: 480208000-480208FFF to 4
+AllocatePoolI: Type 4, Addr 480208018 (len 90) 1,949,528
+AllocatePoolI: Type 4, Addr 480208F98 (len 30) 1,949,616
+ConvertRange: 4801F8000-480207FFF to type 4
+AddRange: 4801F8000-480207FFF to 4
+AllocatePoolI: Type 4, Addr 4801F8018 (len FD40) 2,014,488
+AllocatePoolI: Type 4, Addr 480208B98 (len 48) 2,014,600
+AllocatePoolI: Type 4, Addr 480208E98 (len 40) 2,014,704
+AllocatePoolI: Type 4, Addr 480208F18 (len 40) 2,014,808
+AllocatePoolI: Type 4, Addr 480208C18 (len 40) 2,014,912
+AllocatePoolI: Type 4, Addr 480208C98 (len 90) 2,015,096
+AllocatePoolI: Type 4, Addr 480208D98 (len 30) 2,015,184
+ConvertRange: 4801EB000-4801F7FFF to type 4
+AddRange: 4801EB000-4801F7FFF to 4
+AllocatePoolI: Type 4, Addr 4801EB018 (len C228) 2,064,928
+AllocatePoolI: Type 4, Addr 480208E18 (len 48) 2,065,040
+AllocatePoolI: Type 4, Addr 480208118 (len 40) 2,065,144
+AllocatePoolI: Type 4, Addr 480208A98 (len 40) 2,065,248
+AllocatePoolI: Type 4, Addr 480208B18 (len 40) 2,065,352
+AllocatePoolI: Type 4, Addr 480208818 (len 90) 2,065,536
+AllocatePoolI: Type 4, Addr 480208918 (len 30) 2,065,624
+ConvertRange: 4801E2000-4801EAFFF to type 4
+AddRange: 4801E2000-4801EAFFF to 4
+AllocatePoolI: Type 4, Addr 4801E2018 (len 8D28) 2,101,800
+AllocatePoolI: Type 4, Addr 480208998 (len 48) 2,101,912
+AllocatePoolI: Type 4, Addr 480208A18 (len 40) 2,102,016
+AllocatePoolI: Type 4, Addr 480208198 (len 40) 2,102,120
+AllocatePoolI: Type 4, Addr 480208798 (len 40) 2,102,224
+AllocatePoolI: Type 4, Addr 480208618 (len 90) 2,102,408
+AllocatePoolI: Type 4, Addr 480208718 (len 30) 2,102,496
+ConvertRange: 4801D9000-4801E1FFF to type 4
+AddRange: 4801D9000-4801E1FFF to 4
+AllocatePoolI: Type 4, Addr 4801D9018 (len 81D8) 2,135,776
+AllocatePoolI: Type 4, Addr 480208218 (len 48) 2,135,888
+AllocatePoolI: Type 4, Addr 480208518 (len 40) 2,135,992
+AllocatePoolI: Type 4, Addr 480208598 (len 40) 2,136,096
+AllocatePoolI: Type 4, Addr 480208298 (len 40) 2,136,200
+AllocatePoolI: Type 4, Addr 480208318 (len 90) 2,136,384
+AllocatePoolI: Type 4, Addr 480208418 (len 30) 2,136,472
+ConvertRange: 4801CC000-4801D8FFF to type 4
+AddRange: 4801CC000-4801D8FFF to 4
+AllocatePoolI: Type 4, Addr 4801CC018 (len CC48) 2,188,808
+AllocatePoolI: Type 4, Addr 480208498 (len 48) 2,188,920
+ConvertRange: 4801CB000-4801CBFFF to type 4
+AddRange: 4801CB000-4801CBFFF to 4
+AllocatePoolI: Type 4, Addr 4801CB018 (len 40) 2,189,024
+AllocatePoolI: Type 4, Addr 4801CBF18 (len 48) 2,189,136
+AllocatePoolI: Type 4, Addr 4801CBB18 (len 90) 2,189,320
+AllocatePoolI: Type 4, Addr 4801CBE98 (len 30) 2,189,408
+ConvertRange: 4801B8000-4801CAFFF to type 4
+AddRange: 4801B8000-4801CAFFF to 4
+AllocatePoolI: Type 4, Addr 4801B8018 (len 12240) 2,263,752
+AllocatePoolI: Type 4, Addr 4801CBF98 (len 48) 2,263,864
+AllocatePoolI: Type 4, Addr 4801CBC18 (len 40) 2,263,968
+AllocatePoolI: Type 4, Addr 4801CBE18 (len 48) 2,264,080
+AllocatePoolI: Type 4, Addr 4801CBC98 (len 18) 2,264,144
+AllocatePoolI: Type 4, Addr 4801CBD18 (len B8) 2,264,368
+ConvertRange: 4801B6000-4801B7FFF to type 4
+AddRange: 4801B6000-4801B7FFF to 4
+AllocatePoolI: Type 4, Addr 4801B6018 (len 1000) 2,268,504
+Loading driver 80CF7257-87AB-47F9-A3FE-D50B76D89541
+AllocatePoolI: Type 4, Addr 4801CB098 (len 30) 2,268,592
+AllocatePoolI: Type 4, Addr 4801CBA18 (len 8) 2,268,640
+FreePool: 4801CBA18 (len 8) 2,268,592
+AllocatePoolI: Type 4, Addr 4801CBA18 (len 30) 2,268,680
+AllocatePoolI: Type 4, Addr 4801CBA98 (len 8) 2,268,728
+FreePool: 4801CBA98 (len 8) 2,268,680
+AllocatePoolI: Type 4, Addr 4801CBA98 (len 40) 2,268,784
+ConvertRange: 4801AE000-4801B5FFF to type 4
+AddRange: 4801AE000-4801B5FFF to 4
+AllocatePoolI: Type 4, Addr 4801AE018 (len 78A0) 2,299,704
+FreePool: 4801CBA18 (len 30) 2,299,616
+AllocatePoolI: Type 4, Addr 4801CB798 (len 188) 2,300,048
+AllocatePoolI: Type 4, Addr 4801CBA18 (len 18) 2,300,112
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 4801CB7C0
+AllocatePoolI: Type 4, Addr 4801CB118 (len 58) 2,300,240
+AllocatePoolI: Type 4, Addr 4801CB718 (len 38) 2,300,336
+ConvertRange: 4801A6000-4801ADFFF to type 3
+AddRange: 4801A6000-4801ADFFF to 3
+Loading driver at 0x004801A6000 EntryPoint=0x004801A6374 PcdDxe.efi
+AllocatePoolI: Type 4, Addr 4801CB598 (len 18) 2,300,400
+AllocatePoolI: Type 4, Addr 4801CB618 (len 0) 2,300,440
+FreePool: 4801CB618 (len 0) 2,300,400
+AllocatePoolI: Type 4, Addr 4801CB618 (len 30) 2,300,488
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 4801CB618
+AllocatePoolI: Type 4, Addr 4801CB698 (len 48) 2,300,600
+AllocatePoolI: Type 4, Addr 4801CB198 (len 58) 2,300,728
+ProtectUefiImageCommon - 0x801CB7C0
+  - 0x00000004801A6000 - 0x00000000000078A0
+FreePool: 4801AE018 (len 78A0) 2,269,808
+ConvertRange: 4801AE000-4801B5FFF to type 7
+AddRange: 4801AE000-4801B5FFF to 7
+AllocatePoolI: Type 4, Addr 4801CB498 (len 30) 2,269,896
+AllocatePoolI: Type 4, Addr 4801CB218 (len 108) 2,270,200
+ConvertRange: 4801B5000-4801B5FFF to type 4
+AddRange: 4801B5000-4801B5FFF to 4
+AllocatePoolI: Type 4, Addr 4801B5018 (len E0) 2,270,464
+AllocatePoolI: Type 4, Addr 4801B5C18 (len 128) 2,270,800
+AllocatePoolI: Type 4, Addr 4801CB518 (len 50) 2,270,920
+AllocatePoolI: Type 4, Addr 4801CB398 (len 18) 2,270,984
+AllocatePoolI: Type 4, Addr 4801B5D98 (len 110) 2,271,296
+InstallProtocolInterface: 11B34006-D85B-4D0A-A290-D5A571310EF7 4801ACFB0
+AllocatePoolI: Type 4, Addr 4801CB418 (len 48) 2,271,408
+AllocatePoolI: Type 4, Addr 4801B5F18 (len 58) 2,271,536
+AllocatePoolI: Type 4, Addr 4801B5F98 (len 38) 2,271,632
+InstallProtocolInterface: 13A3F0F6-264A-3EF0-F2E0-DEC512342F34 4801ACF10
+AllocatePoolI: Type 4, Addr 4801B5198 (len 48) 2,271,744
+AllocatePoolI: Type 4, Addr 4801B5B18 (len 58) 2,271,872
+InstallProtocolInterface: 5BE40F57-FA68-4610-BBBF-E9C5FCDAD365 4801AD0C0
+AllocatePoolI: Type 4, Addr 4801B5B98 (len 48) 2,271,984
+AllocatePoolI: Type 4, Addr 4801B5898 (len 58) 2,272,112
+InstallProtocolInterface: FD0F4478-0EFD-461D-BA2D-E58C45FD5F5E 4801ACFA0
+AllocatePoolI: Type 4, Addr 4801B5A98 (len 48) 2,272,224
+AllocatePoolI: Type 4, Addr 4801B5918 (len 58) 2,272,352
+AllocatePoolI: Type 4, Addr 4801B5998 (len B8) 2,272,576
+AllocatePoolI: Type 4, Addr 4801B5218 (len 48) 2,272,688
+AllocatePoolI: Type 4, Addr 4801B5818 (len 30) 2,272,776
+FreePool: 4801CB218 (len 108) 2,272,472
+AllocatePoolI: Type 4, Addr 4801CB218 (len 8) 2,272,520
+AllocatePoolI: Type 4, Addr 4801CB298 (len 0) 2,272,560
+FreePool: 4801CB298 (len 0) 2,272,520
+FreePool: 4801CB218 (len 8) 2,272,472
+Loading driver D93CE3D8-A7EB-4730-8C8E-CC466A9ECC3C
+AllocatePoolI: Type 4, Addr 4801CB218 (len 8) 2,272,520
+FreePool: 4801CB218 (len 8) 2,272,472
+AllocatePoolI: Type 4, Addr 4801CB218 (len 30) 2,272,560
+AllocatePoolI: Type 4, Addr 4801CB298 (len 8) 2,272,608
+FreePool: 4801CB298 (len 8) 2,272,560
+AllocatePoolI: Type 4, Addr 4801CB298 (len 40) 2,272,664
+ConvertRange: 4801AF000-4801B4FFF to type 4
+AddRange: 4801AF000-4801B4FFF to 4
+AllocatePoolI: Type 4, Addr 4801AF018 (len 5400) 2,294,208
+FreePool: 4801CB218 (len 30) 2,294,120
+AllocatePoolI: Type 4, Addr 4801B5298 (len 188) 2,294,552
+AllocatePoolI: Type 4, Addr 4801CB218 (len 18) 2,294,616
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 4801B52C0
+AllocatePoolI: Type 4, Addr 4801CB318 (len 58) 2,294,744
+AllocatePoolI: Type 4, Addr 4801B5518 (len 38) 2,294,840
+ConvertRange: 48019C000-4801A5FFF to type 5
+AddRange: 48019C000-4801A5FFF to 5
+AllocatePoolI: Type 6, Addr 781B6F18 (len 50) 880
+AllocatePoolI: Type 6, Addr 781B6F98 (len 30) 968
+InsertImageRecord - 0x781B6F98
+InsertImageRecord - 0x000000048019C000 - 0x000000000000A000
+AllocatePoolI: Type 4, Addr 4801B5598 (len 40) 2,294,944
+ImageRecordCount - 0x0
+  Image - c:\projects\sources\gitlab\uefi\Build\TestPlatformPkgX64\DEBUG_VS2015x86\X64\MdeModulePkg\Universal\ReportStatusCodeRouter\RuntimeDxe\ReportStatusCodeRouterRuntimeDxe\DEBUG\ReportStatusCodeRouterRuntimeDxe.pdb
+  Section - '.text   '
+  VirtualSize          - 0x00002F0E
+  VirtualAddress       - 0x00001000
+  SizeOfRawData        - 0x00003000
+  PointerToRawData     - 0x00000400
+  PointerToRelocations - 0x00000000
+  PointerToLinenumbers - 0x00000000
+  NumberOfRelocations  - 0x00000000
+  NumberOfLinenumbers  - 0x00000000
+  Characteristics      - 0x68000020
+AllocatePoolI: Type 4, Addr 4801B5618 (len 28) 2,295,024
+ImageCode: 0x000000048019D000 - 0x0000000000003000
+  Section - '.rdata  '
+  Section - '.data   '
+  Section - '        '
+  Section - '.xdata  '
+  Section - '.reloc  '
+ImageCode SegmentCount - 0x1
+Loading driver at 0x0048019C000 EntryPoint=0x0048019D0F4 ReportStatusCodeRouterRuntimeDxe.efi
+AllocatePoolI: Type 4, Addr 4801B5698 (len 18) 2,295,088
+AllocatePoolI: Type 4, Addr 4801B5718 (len 0) 2,295,128
+FreePool: 4801B5718 (len 0) 2,295,088
+AllocatePoolI: Type 4, Addr 4801B5718 (len 30) 2,295,176
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 4801B5718
+AllocatePoolI: Type 4, Addr 4801B5798 (len 58) 2,295,304
+ProtectUefiImageCommon - 0x801B52C0
+  - 0x000000048019C000 - 0x000000000000A000
+FreePool: 4801AF018 (len 5400) 2,273,760
+ConvertRange: 4801AF000-4801B4FFF to type 7
+AddRange: 4801AF000-4801B4FFF to 7
+ConvertRange: 4801B4000-4801B4FFF to type 4
+AddRange: 4801B4000-4801B4FFF to 4
+AllocatePoolI: Type 4, Addr 4801B4018 (len 30) 2,273,848
+AllocatePoolI: Type 4, Addr 4801B4B18 (len 108) 2,274,152
+AllocatePoolI: Type 6, Addr 781B6118 (len B8) 1,192
+AllocatePoolI: Type 4, Addr 4801B4F18 (len B8) 2,274,376
+InstallProtocolInterface: 86212936-0E76-41C8-A03A-2AF2FC1C39E2 4801A20D8
+AllocatePoolI: Type 4, Addr 4801B4C98 (len 48) 2,274,488
+AllocatePoolI: Type 4, Addr 4801B4E98 (len 58) 2,274,616
+AllocatePoolI: Type 4, Addr 4801B4D18 (len 38) 2,274,712
+InstallProtocolInterface: D2B2B828-0826-48A7-B3DF-983C006024F0 4801A20D0
+AllocatePoolI: Type 4, Addr 4801B4D98 (len 48) 2,274,824
+AllocatePoolI: Type 4, Addr 4801B4E18 (len 58) 2,274,952
+AllocatePoolI: Type 6, Addr 781B6898 (len B8) 1,416
+FreePool: 4801B4B18 (len 108) 2,274,648
+AllocatePoolI: Type 4, Addr 4801B4B18 (len 8) 2,274,696
+AllocatePoolI: Type 4, Addr 4801B4B98 (len 0) 2,274,736
+FreePool: 4801B4B98 (len 0) 2,274,696
+FreePool: 4801B4B18 (len 8) 2,274,648
+Loading driver F80697E9-7FD6-4665-8646-88E33EF71DFC
+AllocatePoolI: Type 4, Addr 4801B4B18 (len 8) 2,274,696
+FreePool: 4801B4B18 (len 8) 2,274,648
+AllocatePoolI: Type 4, Addr 4801B4B18 (len 30) 2,274,736
+AllocatePoolI: Type 4, Addr 4801B4B98 (len 8) 2,274,784
+FreePool: 4801B4B98 (len 8) 2,274,736
+AllocatePoolI: Type 4, Addr 4801B4B98 (len 40) 2,274,840
+ConvertRange: 480193000-48019BFFF to type 4
+AddRange: 480193000-48019BFFF to 4
+AllocatePoolI: Type 4, Addr 480193018 (len 8DE0) 2,311,200
+FreePool: 4801B4B18 (len 30) 2,311,112
+AllocatePoolI: Type 4, Addr 4801B4098 (len 188) 2,311,544
+AllocatePoolI: Type 4, Addr 4801B4B18 (len 18) 2,311,608
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 4801B40C0
+AllocatePoolI: Type 4, Addr 4801B4C18 (len 58) 2,311,736
+AllocatePoolI: Type 4, Addr 4801B4998 (len 38) 2,311,832
+ConvertRange: 48018A000-480192FFF to type 3
+AddRange: 48018A000-480192FFF to 3
+Loading driver at 0x0048018A000 EntryPoint=0x0048018A394 SecurityStubDxe.efi
+AllocatePoolI: Type 4, Addr 4801B4A18 (len 18) 2,311,896
+AllocatePoolI: Type 4, Addr 4801B4A98 (len 0) 2,311,936
+FreePool: 4801B4A98 (len 0) 2,311,896
+AllocatePoolI: Type 4, Addr 4801B4A98 (len 30) 2,311,984
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 4801B4A98
+AllocatePoolI: Type 4, Addr 4801B4318 (len 58) 2,312,112
+ProtectUefiImageCommon - 0x801B40C0
+  - 0x000000048018A000 - 0x0000000000008DE0
+FreePool: 480193018 (len 8DE0) 2,275,752
+ConvertRange: 480193000-48019BFFF to type 7
+AddRange: 480193000-48019BFFF to 7
+AllocatePoolI: Type 4, Addr 4801B4918 (len 30) 2,275,840
+AllocatePoolI: Type 4, Addr 4801B4798 (len 108) 2,276,144
+InstallProtocolInterface: 94AB2F58-1438-4EF1-9152-18941A3A0E68 480192640
+AllocatePoolI: Type 4, Addr 4801B4398 (len 58) 2,276,272
+AllocatePoolI: Type 4, Addr 4801B4698 (len 38) 2,276,368
+InstallProtocolInterface: A46423E3-4617-49F1-B9FF-D1BFA9115839 480192638
+AllocatePoolI: Type 4, Addr 4801B4718 (len 58) 2,276,496
+InstallProtocolInterface: 15853D7C-3DDF-43E0-A1CB-EBF85B8F872C 480192648
+AllocatePoolI: Type 4, Addr 4801B4418 (len 48) 2,276,608
+AllocatePoolI: Type 4, Addr 4801B4618 (len 58) 2,276,736
+AllocatePoolI: Type 4, Addr 4801B4498 (len 38) 2,276,832
+AllocatePoolI: Type 4, Addr 4801B4518 (len B8) 2,277,056
+ConvertRange: 4801B3000-4801B3FFF to type 4
+AddRange: 4801B3000-4801B3FFF to 4
+AllocatePoolI: Type 4, Addr 4801B3018 (len B8) 2,277,280
+AllocatePoolI: Type 4, Addr 4801B3F98 (len 48) 2,277,392
+AllocatePoolI: Type 4, Addr 4801B3B98 (len 30) 2,277,480
+FreePool: 4801B4798 (len 108) 2,277,176
+AllocatePoolI: Type 4, Addr 4801B3E98 (len 10) 2,277,232
+AllocatePoolI: Type 4, Addr 4801B3F18 (len 0) 2,277,272
+FreePool: 4801B3F18 (len 0) 2,277,232
+AllocatePoolI: Type 4, Addr 4801B3F18 (len 0) 2,277,272
+FreePool: 4801B3F18 (len 0) 2,277,232
+FreePool: 4801B3E98 (len 10) 2,277,176
+Loading driver 1A1E4886-9517-440E-9FDE-3BE44CEE2136
+AllocatePoolI: Type 4, Addr 4801B3E98 (len 8) 2,277,224
+FreePool: 4801B3E98 (len 8) 2,277,176
+AllocatePoolI: Type 4, Addr 4801B3E98 (len 30) 2,277,264
+AllocatePoolI: Type 4, Addr 4801B3F18 (len 8) 2,277,312
+FreePool: 4801B3F18 (len 8) 2,277,264
+AllocatePoolI: Type 4, Addr 4801B3F18 (len 40) 2,277,368
+ConvertRange: 480177000-480189FFF to type 4
+AddRange: 480177000-480189FFF to 4
+AllocatePoolI: Type 4, Addr 480177018 (len 12240) 2,351,712
+FreePool: 4801B3E98 (len 30) 2,351,624
+AllocatePoolI: Type 4, Addr 4801B3E98 (len 8) 2,351,672
+FreePool: 4801B3E98 (len 8) 2,351,624
+AllocatePoolI: Type 4, Addr 4801B3C18 (len 188) 2,352,056
+AllocatePoolI: Type 4, Addr 4801B3E98 (len 18) 2,352,120
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 4801B3C40
+AllocatePoolI: Type 4, Addr 4801B4798 (len 58) 2,352,248
+AllocatePoolI: Type 4, Addr 4801B4818 (len 38) 2,352,344
+ConvertRange: 480164000-480176FFF to type 3
+AddRange: 480164000-480176FFF to 3
+Loading driver at 0x00480164000 EntryPoint=0x00480165114 CpuDxe.efi
+AllocatePoolI: Type 4, Addr 4801B4898 (len 18) 2,352,408
+AllocatePoolI: Type 4, Addr 4801B3118 (len 0) 2,352,448
+FreePool: 4801B3118 (len 0) 2,352,408
+AllocatePoolI: Type 4, Addr 4801B3118 (len 30) 2,352,496
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 4801B3118
+AllocatePoolI: Type 4, Addr 4801B3A98 (len 58) 2,352,624
+ProtectUefiImageCommon - 0x801B3C40
+  - 0x0000000480164000 - 0x0000000000012240
+FreePool: 480177018 (len 12240) 2,278,280
+ConvertRange: 480177000-480189FFF to type 7
+AddRange: 480177000-480189FFF to 7
+AllocatePoolI: Type 4, Addr 4801B3B18 (len 30) 2,278,368
+AllocatePoolI: Type 4, Addr 4801B3818 (len 108) 2,278,672
+ConvertRange: 47FC00000-47FFFFFFF to type 4
+AddRange: 47FC00000-47FFFFFFF to 4
+ConvertRange: 47FE00000-47FFFFFFF to type 7
+AddRange: 47FE00000-47FFFFFFF to 7
+Paging: added 512 pages to page table pool
+Split - 0x7FC01000
+ConvertPageEntryAttribute 0x47FC000E3->0x47FC000E1
+CurrentPagingContext:
+  MachineType   - 0x8664
+  PageTableBase - 0x2A01000
+  Attributes    - 0xC0000006
+AllocatePoolI: Type 6, Addr 781B6B18 (len 50) 1,536
+!!!! X64 Exception Type - 06(#UD - Invalid Opcode)  CPU Apic ID - 00000000 !!!!
+RIP  - 00000000801642F7, CS  - 0000000000000038, RFLAGS - 0000000000010002
+RAX  - 00000004801642F7, RCX - 0000000000000038, RDX - 00000004801752C0
+RBX  - 00000000781B6B18, RSP - 0000000002CD8CA8, RBP - 0000000002CD8D30
+RSI  - 00000004801B4818, RDI - 00000000781B6B18
+R8   - 0000000000000000, R9  - 0000000480175307, R10 - 00000000000003F8
+R11  - 0000000002CD8B80, R12 - 0000000000000000, R13 - 0000000000000040
+R14  - 0000000000000000, R15 - 0000000000000010
+DS   - 0000000000000008, ES  - 0000000000000008, FS  - 0000000000000008
+GS   - 0000000000000008, SS  - 0000000000000008
+CR0  - 0000000080010033, CR2 - 0000000000000000, CR3 - 0000000002A01000
+CR4  - 0000000000040668, CR8 - 0000000000000000
+DR0  - 0000000000000000, DR1 - 0000000000000000, DR2 - 0000000000000000
+DR3  - 0000000000000000, DR6 - 00000000FFFF0FF0, DR7 - 0000000000000400
+GDTR - 00000000781B6B18 0000000000000047, LDTR - 0000000000000000
+IDTR - 00000000028B8008 00000000000001FF,   TR - 0000000000000000
+FXSAVE_STATE - 0000000002CD8900

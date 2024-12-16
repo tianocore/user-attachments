@@ -1,0 +1,68 @@
+From a1a3346a4d250c6e041aef86884df246deb50ce5 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:11:03 +0530
+Subject: [PATCH 1/2] NetworkPkg/Ip4Dxe: Fix OVERRUN Coverity issue
+
+The function NetGetMaskLength returns the invalid length 33, which is
+IP4_MASK_NUM if the mask is invalid. This limit on array access is not
+handled in the functions Ip4AddRoute and Ip4DelRute thereby opening up
+a scenario of RouteArea array OVERRUN.
+
+Hence, to avoid OVERRUN, store return value from NetGetMaskLength into
+MaskLength and return ENTRY_NOT_FOUND if MaskLength is IP4_MASK_NUM.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4269
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Ip4Dxe/Ip4Route.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/NetworkPkg/Ip4Dxe/Ip4Route.c b/NetworkPkg/Ip4Dxe/Ip4Route.c
+index 0a9225414158..2bcd333408b3 100644
+--- a/NetworkPkg/Ip4Dxe/Ip4Route.c
++++ b/NetworkPkg/Ip4Dxe/Ip4Route.c
+@@ -298,12 +298,19 @@ Ip4AddRoute (
+   LIST_ENTRY       *Head;
+   LIST_ENTRY       *Entry;
+   IP4_ROUTE_ENTRY  *RtEntry;
++  INTN             MaskLength;
++
++  MaskLength = NetGetMaskLength (Netmask);
++
++  if (MaskLength == IP4_MASK_NUM) {
++    return EFI_NOT_FOUND;
++  }
+ 
+   //
+   // All the route entries with the same netmask length are
+-  // linke to the same route area
++  // linked to the same route area
+   //
+-  Head = &(RtTable->RouteArea[NetGetMaskLength (Netmask)]);
++  Head = &(RtTable->RouteArea[MaskLength]);
+ 
+   //
+   // First check whether the route exists
+@@ -360,8 +367,15 @@ Ip4DelRoute (
+   LIST_ENTRY       *Entry;
+   LIST_ENTRY       *Next;
+   IP4_ROUTE_ENTRY  *RtEntry;
++  INTN             MaskLength;
+ 
+-  Head = &(RtTable->RouteArea[NetGetMaskLength (Netmask)]);
++  MaskLength = NetGetMaskLength (Netmask);
++
++  if (MaskLength == IP4_MASK_NUM) {
++    return EFI_NOT_FOUND;
++  }
++
++  Head = &(RtTable->RouteArea[MaskLength]);
+ 
+   NET_LIST_FOR_EACH_SAFE (Entry, Next, Head) {
+     RtEntry = NET_LIST_USER_STRUCT (Entry, IP4_ROUTE_ENTRY, Link);
+-- 
+2.36.1.windows.1
+

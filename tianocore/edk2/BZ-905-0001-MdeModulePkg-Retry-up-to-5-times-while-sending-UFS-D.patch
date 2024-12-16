@@ -1,0 +1,411 @@
+From 4c9014e0ec210c0bef5051cdeaeac5e09749a5b4 Mon Sep 17 00:00:00 2001
+From: VincentX Ke <vincentx.ke@intel.com>
+Date: Wed, 15 Dec 2021 11:59:29 +0800
+Subject: [PATCH] MdeModulePkg: Retry up to 5 times while sending UFS DME
+ request to fix timing problem.
+
+BZ: https://bugzilla.tianocore.org/show_bug.cgi?id=3775
+
+Refactoring UFS DME request sending function and retry up to 5 times.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Ian Chiu <Ian.chiu@intel.com>
+Cc: Maggie Chu <maggie.chu@intel.com>
+Signed-off-by: VincentX Ke <vincentx.ke@intel.com>
+---
+ MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c | 306 +++++++++++---------
+ 1 file changed, 176 insertions(+), 130 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c b/MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c
+index 2baa57593e..9fa5fcf46f 100644
+--- a/MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c
++++ b/MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c
+@@ -1,6 +1,6 @@
+ /** @file
+ 
+-  Copyright (c) 2014 - 2018, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -747,60 +747,91 @@ UfsStopExecCmd (
+ }
+ 
+ /**
+-  Read or write specified device descriptor of a UFS device.
++  Extracts return data from query response upiu.
+ 
+-  @param[in]      Private       The pointer to the UFS_PEIM_HC_PRIVATE_DATA data structure.
+-  @param[in]      Read          The boolean variable to show r/w direction.
+-  @param[in]      DescId        The ID of device descriptor.
+-  @param[in]      Index         The Index of device descriptor.
+-  @param[in]      Selector      The Selector of device descriptor.
+-  @param[in, out] Descriptor    The buffer of device descriptor to be read or written.
+-  @param[in]      DescSize      The size of device descriptor buffer.
++  @param[in]  Packet            Pointer to the UFS_DEVICE_MANAGEMENT_REQUEST_PACKET.
++  @param[in]  QueryResp         Pointer to the query response.
+ 
+-  @retval EFI_SUCCESS           The device descriptor was read/written successfully.
+-  @retval EFI_DEVICE_ERROR      A device error occurred while attempting to r/w the device descriptor.
+-  @retval EFI_TIMEOUT           A timeout occurred while waiting for the completion of r/w the device descriptor.
++  @retval EFI_INVALID_PARAMETER Packet or QueryResp are empty or opcode is invalid.
++  @retval EFI_DEVICE_ERROR      Data returned from device is invalid.
++  @retval EFI_SUCCESS           Data extracted.
+ 
+ **/
+ EFI_STATUS
+-UfsRwDeviceDesc (
+-  IN     UFS_PEIM_HC_PRIVATE_DATA  *Private,
+-  IN     BOOLEAN                   Read,
+-  IN     UINT8                     DescId,
+-  IN     UINT8                     Index,
+-  IN     UINT8                     Selector,
+-  IN OUT VOID                      *Descriptor,
+-  IN     UINT32                    DescSize
++UfsGetReturnDataFromQueryResponse (
++  IN UFS_DEVICE_MANAGEMENT_REQUEST_PACKET  *Packet,
++  IN UTP_QUERY_RESP_UPIU                   *QueryResp
+   )
+ {
+-  EFI_STATUS                            Status;
+-  UFS_DEVICE_MANAGEMENT_REQUEST_PACKET  Packet;
+-  UINT8                                 Slot;
+-  UTP_TRD                               *Trd;
+-  UINTN                                 Address;
+-  UTP_QUERY_RESP_UPIU                   *QueryResp;
+-  UINT8                                 *CmdDescBase;
+-  UINT32                                CmdDescSize;
+-  UINT16                                ReturnDataSize;
++  UINT16  ReturnDataSize;
+ 
+-  ZeroMem (&Packet, sizeof (UFS_DEVICE_MANAGEMENT_REQUEST_PACKET));
++  ReturnDataSize = 0;
+ 
+-  if (Read) {
+-    Packet.DataDirection    = UfsDataIn;
+-    Packet.InDataBuffer     = Descriptor;
+-    Packet.InTransferLength = DescSize;
+-    Packet.Opcode           = UtpQueryFuncOpcodeRdDesc;
+-  } else {
+-    Packet.DataDirection     = UfsDataOut;
+-    Packet.OutDataBuffer     = Descriptor;
+-    Packet.OutTransferLength = DescSize;
+-    Packet.Opcode            = UtpQueryFuncOpcodeWrDesc;
++  if (Packet == NULL || QueryResp == NULL) {
++    return EFI_INVALID_PARAMETER;
+   }
+ 
+-  Packet.DescId   = DescId;
+-  Packet.Index    = Index;
+-  Packet.Selector = Selector;
+-  Packet.Timeout  = UFS_TIMEOUT;
++  switch (Packet->Opcode) {
++    case UtpQueryFuncOpcodeRdDesc:
++      ReturnDataSize = QueryResp->Tsf.Length;
++      SwapLittleEndianToBigEndian ((UINT8 *) &ReturnDataSize, sizeof (UINT16));
++      //
++      // Make sure the hardware device does not return more data than expected.
++      //
++      if (ReturnDataSize > Packet->InTransferLength) {
++        return EFI_DEVICE_ERROR;
++      }
++
++      CopyMem (Packet->InDataBuffer, (QueryResp + 1), ReturnDataSize);
++      Packet->InTransferLength = ReturnDataSize;
++      break;
++    case UtpQueryFuncOpcodeWrDesc:
++      ReturnDataSize = QueryResp->Tsf.Length;
++      SwapLittleEndianToBigEndian ((UINT8 *) &ReturnDataSize, sizeof (UINT16));
++      Packet->OutTransferLength = ReturnDataSize;
++      break;
++    case UtpQueryFuncOpcodeRdFlag:
++    case UtpQueryFuncOpcodeSetFlag:
++    case UtpQueryFuncOpcodeClrFlag:
++    case UtpQueryFuncOpcodeTogFlag:
++      //
++      // The 'FLAG VALUE' field is at byte offset 3 of QueryResp->Tsf.Value
++      //
++      *((UINT8 *) (Packet->OutDataBuffer)) = *((UINT8 *) &(QueryResp->Tsf.Value) + 3);
++      break;
++    default:
++      return EFI_INVALID_PARAMETER;
++  }
++
++  return EFI_SUCCESS;
++}
++
++/**
++  Creates Transfer Request descriptor and sends Query Request to the device.
++
++  @param[in]  Private           Pointer to the UFS_PEIM_HC_PRIVATE_DATA.
++  @param[in]  Packet            Pointer to the UFS_DEVICE_MANAGEMENT_REQUEST_PACKET.
++
++  @retval EFI_SUCCESS           The device descriptor was read/written successfully.
++  @retval EFI_INVALID_PARAMETER The DescId, Index and Selector fields in Packet are invalid
++                                combination to point to a type of UFS device descriptor.
++  @retval EFI_DEVICE_ERROR      A device error occurred while attempting to r/w the device descriptor.
++  @retval EFI_TIMEOUT           A timeout occurred while waiting for the completion of r/w the device descriptor.
++
++**/
++EFI_STATUS
++UfsSendDmRequestRetry (
++  IN UFS_PEIM_HC_PRIVATE_DATA              *Private,
++  IN UFS_DEVICE_MANAGEMENT_REQUEST_PACKET  *Packet
++  )
++{
++  UINT8                Slot;
++  EFI_STATUS           Status;
++  UTP_TRD              *Trd;
++  UINTN                Address;
++  UTP_QUERY_RESP_UPIU  *QueryResp;
++  UINT8                *CmdDescBase;
++  UINT32               CmdDescSize;
+ 
+   //
+   // Find out which slot of transfer request list is available.
+@@ -810,20 +841,21 @@ UfsRwDeviceDesc (
+     return Status;
+   }
+ 
+-  Trd = ((UTP_TRD *)Private->UtpTrlBase) + Slot;
++  Trd = ((UTP_TRD*) Private->UtpTrlBase) + Slot;
+   //
+   // Fill transfer request descriptor to this slot.
+   //
+-  Status = UfsCreateDMCommandDesc (Private, &Packet, Trd);
++  Status = UfsCreateDMCommandDesc (Private, Packet, Trd);
+   if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "Failed to create DM command descriptor\n"));
+     return Status;
+   }
+ 
+   //
+   // Check the transfer request result.
+   //
+-  CmdDescBase = (UINT8 *)(UINTN)(LShiftU64 ((UINT64)Trd->UcdBaU, 32) | LShiftU64 ((UINT64)Trd->UcdBa, 7));
+-  QueryResp   = (UTP_QUERY_RESP_UPIU *)(CmdDescBase + Trd->RuO * sizeof (UINT32));
++  CmdDescBase = (UINT8 *) (UINTN) (LShiftU64 ((UINT64) Trd->UcdBaU, 32) | LShiftU64 ((UINT64) Trd->UcdBa, 7));
++  QueryResp   = (UTP_QUERY_RESP_UPIU *) (CmdDescBase + Trd->RuO * sizeof (UINT32));
+   CmdDescSize = Trd->RuO * sizeof (UINT32) + Trd->RuL * sizeof (UINT32);
+ 
+   //
+@@ -835,43 +867,117 @@ UfsRwDeviceDesc (
+   // Wait for the completion of the transfer request.
+   //
+   Address = Private->UfsHcBase + UFS_HC_UTRLDBR_OFFSET;
+-  Status  = UfsWaitMemSet (Address, BIT0 << Slot, 0, Packet.Timeout);
++  Status = UfsWaitMemSet (Address, BIT0 << Slot, 0, Packet->Timeout);
+   if (EFI_ERROR (Status)) {
+     goto Exit;
+   }
+ 
+   if (QueryResp->QueryResp != 0) {
++    DEBUG ((DEBUG_ERROR, "Failed to send query request, OCS = %X, QueryResp = %X\n", Trd->Ocs, QueryResp->QueryResp));
+     DumpQueryResponseResult (QueryResp->QueryResp);
+     Status = EFI_DEVICE_ERROR;
+     goto Exit;
+   }
+ 
+-  if (Trd->Ocs == 0) {
+-    ReturnDataSize = QueryResp->Tsf.Length;
+-    SwapLittleEndianToBigEndian ((UINT8 *)&ReturnDataSize, sizeof (UINT16));
++  Status = UfsGetReturnDataFromQueryResponse (Packet, QueryResp);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "Failed to get return data from query response\n"));
++    goto Exit;
++  }
+ 
+-    if (Read) {
+-      //
+-      // Make sure the hardware device does not return more data than expected.
+-      //
+-      if (ReturnDataSize > Packet.InTransferLength) {
+-        Status = EFI_DEVICE_ERROR;
+-        goto Exit;
+-      }
++Exit:
++  UfsStopExecCmd (Private, Slot);
++  UfsPeimFreeMem (Private->Pool, CmdDescBase, CmdDescSize);
+ 
+-      CopyMem (Packet.InDataBuffer, (QueryResp + 1), ReturnDataSize);
+-      Packet.InTransferLength = ReturnDataSize;
+-    } else {
+-      Packet.OutTransferLength = ReturnDataSize;
++  return Status;
++
++}
++
++/**
++  Sends Query Request to the device. Query is sent until device responds correctly or counter runs out.
++
++  @param[in]  Private           Pointer to the UFS_PEIM_HC_PRIVATE_DATA.
++  @param[in]  Packet            Pointer to the UFS_DEVICE_MANAGEMENT_REQUEST_PACKET.
++
++  @retval EFI_SUCCESS           The device responded correctly to the Query request.
++  @retval EFI_INVALID_PARAMETER The DescId, Index and Selector fields in Packet are invalid
++                                combination to point to a type of UFS device descriptor.
++  @retval EFI_DEVICE_ERROR      A device error occurred while waiting for the response from the device.
++  @retval EFI_TIMEOUT           A timeout occurred while waiting for the completion of the operation.
++
++**/
++EFI_STATUS
++UfsSendDmRequest (
++  IN UFS_PEIM_HC_PRIVATE_DATA              *Private,
++  IN UFS_DEVICE_MANAGEMENT_REQUEST_PACKET  *Packet
++  )
++{
++  EFI_STATUS  Status;
++  UINT8       Retry;
++
++  Status = EFI_SUCCESS;
++
++  for (Retry = 0; Retry < 5; Retry ++) {
++    Status = UfsSendDmRequestRetry (Private, Packet);
++    if (!EFI_ERROR (Status)) {
++      return EFI_SUCCESS;
+     }
++  }
++
++  DEBUG ((DEBUG_ERROR, "Failed to get response from the device after %d retries\n", Retry));
++  return Status;
++}
++
++/**
++  Read or write specified device descriptor of a UFS device.
++
++  @param[in]      Private       The pointer to the UFS_PEIM_HC_PRIVATE_DATA data structure.
++  @param[in]      Read          The boolean variable to show r/w direction.
++  @param[in]      DescId        The ID of device descriptor.
++  @param[in]      Index         The Index of device descriptor.
++  @param[in]      Selector      The Selector of device descriptor.
++  @param[in, out] Descriptor    The buffer of device descriptor to be read or written.
++  @param[in]      DescSize      The size of device descriptor buffer.
++
++  @retval EFI_SUCCESS           The device descriptor was read/written successfully.
++  @retval EFI_DEVICE_ERROR      A device error occurred while attempting to r/w the device descriptor.
++  @retval EFI_TIMEOUT           A timeout occurred while waiting for the completion of r/w the device descriptor.
++
++**/
++EFI_STATUS
++UfsRwDeviceDesc (
++  IN     UFS_PEIM_HC_PRIVATE_DATA  *Private,
++  IN     BOOLEAN                   Read,
++  IN     UINT8                     DescId,
++  IN     UINT8                     Index,
++  IN     UINT8                     Selector,
++  IN OUT VOID                      *Descriptor,
++  IN     UINT32                    DescSize
++  )
++{
++  EFI_STATUS                            Status;
++  UFS_DEVICE_MANAGEMENT_REQUEST_PACKET  Packet;
++
++  ZeroMem (&Packet, sizeof (UFS_DEVICE_MANAGEMENT_REQUEST_PACKET));
++
++  if (Read) {
++    Packet.DataDirection     = UfsDataIn;
++    Packet.InDataBuffer      = Descriptor;
++    Packet.InTransferLength  = DescSize;
++    Packet.Opcode            = UtpQueryFuncOpcodeRdDesc;
+   } else {
+-    Status = EFI_DEVICE_ERROR;
++    Packet.DataDirection     = UfsDataOut;
++    Packet.OutDataBuffer     = Descriptor;
++    Packet.OutTransferLength = DescSize;
++    Packet.Opcode            = UtpQueryFuncOpcodeWrDesc;
+   }
+ 
+-Exit:
+-  UfsStopExecCmd (Private, Slot);
+-  UfsPeimFreeMem (Private->Pool, CmdDescBase, CmdDescSize);
++  Packet.DescId              = DescId;
++  Packet.Index               = Index;
++  Packet.Selector            = Selector;
++  Packet.Timeout             = UFS_TIMEOUT;
+ 
++  Status = UfsSendDmRequest (Private, &Packet);
+   return Status;
+ }
+ 
+@@ -898,12 +1004,6 @@ UfsRwFlags (
+ {
+   EFI_STATUS                            Status;
+   UFS_DEVICE_MANAGEMENT_REQUEST_PACKET  Packet;
+-  UINT8                                 Slot;
+-  UTP_TRD                               *Trd;
+-  UINTN                                 Address;
+-  UTP_QUERY_RESP_UPIU                   *QueryResp;
+-  UINT8                                 *CmdDescBase;
+-  UINT32                                CmdDescSize;
+ 
+   if (Value == NULL) {
+     return EFI_INVALID_PARAMETER;
+@@ -931,62 +1031,8 @@ UfsRwFlags (
+   Packet.Selector = 0;
+   Packet.Timeout  = UFS_TIMEOUT;
+ 
+-  //
+-  // Find out which slot of transfer request list is available.
+-  //
+-  Status = UfsFindAvailableSlotInTrl (Private, &Slot);
+-  if (EFI_ERROR (Status)) {
+-    return Status;
+-  }
+-
+-  //
+-  // Fill transfer request descriptor to this slot.
+-  //
+-  Trd    = ((UTP_TRD *)Private->UtpTrlBase) + Slot;
+-  Status = UfsCreateDMCommandDesc (Private, &Packet, Trd);
+-  if (EFI_ERROR (Status)) {
+-    return Status;
+-  }
+-
+-  //
+-  // Check the transfer request result.
+-  //
+-  CmdDescBase = (UINT8 *)(UINTN)(LShiftU64 ((UINT64)Trd->UcdBaU, 32) | LShiftU64 ((UINT64)Trd->UcdBa, 7));
+-  QueryResp   = (UTP_QUERY_RESP_UPIU *)(CmdDescBase + Trd->RuO * sizeof (UINT32));
+-  CmdDescSize = Trd->RuO * sizeof (UINT32) + Trd->RuL * sizeof (UINT32);
+-
+-  //
+-  // Start to execute the transfer request.
+-  //
+-  UfsStartExecCmd (Private, Slot);
+-
+-  //
+-  // Wait for the completion of the transfer request.
+-  //
+-  Address = Private->UfsHcBase + UFS_HC_UTRLDBR_OFFSET;
+-  Status  = UfsWaitMemSet (Address, BIT0 << Slot, 0, Packet.Timeout);
+-  if (EFI_ERROR (Status)) {
+-    goto Exit;
+-  }
+-
+-  if (QueryResp->QueryResp != 0) {
+-    DumpQueryResponseResult (QueryResp->QueryResp);
+-    Status = EFI_DEVICE_ERROR;
+-    goto Exit;
+-  }
+-
+-  if (Trd->Ocs == 0) {
+-    //
+-    // The 'FLAG VALUE' field is at byte offset 3 of QueryResp->Tsf.Value
+-    //
+-    *Value = *((UINT8 *)&(QueryResp->Tsf.Value) + 3);
+-  } else {
+-    Status = EFI_DEVICE_ERROR;
+-  }
+-
+-Exit:
+-  UfsStopExecCmd (Private, Slot);
+-  UfsPeimFreeMem (Private->Pool, CmdDescBase, CmdDescSize);
++  Status = UfsSendDmRequest (Private, &Packet);
++  *Value = *((UINT8 *) (Packet.OutDataBuffer));
+ 
+   return Status;
+ }
+-- 
+2.18.0.windows.1
+

@@ -1,0 +1,12 @@
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/Comp.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/Comp.c
+index f45f663db..6e5e474ff 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/Comp.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/Comp.c
+@@ -356,6 +356,7 @@ ShellCommandRunComp (
+         if (DiffPointNumber == 0) {
+           ShellPrintHiiEx(-1, -1, NULL, STRING_TOKEN (STR_COMP_FOOTER_PASS), gShellDebug1HiiHandle);
+         } else {
++		  ShellStatus = SHELL_NOT_EQUAL;
+           ShellPrintHiiEx(-1, -1, NULL, STRING_TOKEN (STR_COMP_FOOTER_FAIL), gShellDebug1HiiHandle);
+         }
+       }

@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<style>
+.AlignLeft { text-align: left; }
+.AlignCenter { text-align: center; }
+.AlignRight { text-align: right; }
+body { font-family: sans-serif; font-size: 11pt; }
+img.AutoScale { max-width: 100%; max-height: 100%; }
+td { vertical-align: top; padding-left: 4px; padding-right: 4px; }
+
+tr.SectionGap td { font-size: 4px; border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionBegin td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionMiddle td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SubsectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+tr.SubsectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+table.fc { border-top: 1px solid Black; border-left: 1px solid Black; width: 100%; font-family: monospace; font-size: 10pt; }
+td.TextItemInsigMod { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigOrphan { color: #000000; background-color: #FAEEFF; }
+td.TextItemNum { color: #696969; background-color: #F0F0F0; }
+td.TextItemSame { color: #000000; background-color: #FFFFFF; }
+td.TextItemSigMod { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigOrphan { color: #000000; background-color: #F1E3FF; }
+.TextSegInsigDiff { color: #0000FF; }
+.TextSegReplacedDiff { color: #0000FF; font-style: italic; }
+.TextSegSigDiff { color: #FF0000; }
+td.TextItemInsigAdd { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigDel { color: #000000; background-color: #EEEEFF; text-decoration: line-through; }
+td.TextItemSigAdd { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigDel { color: #000000; background-color: #FFE3E3; text-decoration: line-through; }
+.TextSegElementKeyword { font-weight: bold; }
+.TextSegElementIdentifier { }
+.TextSegElementString { color: #3A7726; }
+.TextSegElementComment { color: #786A41; }
+.TextSegElementOperator { }
+</style>
+<title>Text Compare</title>
+</head>
+<body>
+Text Compare<br>
+Produced: 2019-10-31 08:50:03 AM<br>
+&nbsp; &nbsp;
+<br>
+Mode:&nbsp; Differences, With Context, Ignoring Unimportant &nbsp;
+<br>
+Left file: C:\Users\kilia\AppData\Local\Temp\TortoiseGit\WinHost-b1564648.000.c &nbsp;
+<br>
+Right file: B:\edk2-staging.KG2\edk2\EmulatorPkg\Win\Host\WinHost.c &nbsp;
+<br>
+<table class="fc" cellspacing="0" cellpadding="0">
+<tbody><tr class="SectionBegin">
+<td class="TextItemSame">&nbsp; <span class="TextSegElementOperator">}</span></td>
+<td class="AlignCenter">=</td>
+<td class="TextItemSame">&nbsp; <span class="TextSegElementOperator">}</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp; <span class="TextSegElementIdentifier">MemorySizeStr</span>&nbsp; &nbsp; &nbsp; <span class="TextSegElementOperator">=</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">CHAR16</span> <span class="TextSegElementOperator">*)</span> <span class="TextSegElementIdentifier">PcdGetPtr</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">PcdEmuMemorySize</span><span class="TextSegElementOperator">);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp; <span class="TextSegElementIdentifier">MemorySizeStr</span>&nbsp; &nbsp; &nbsp; <span class="TextSegElementOperator">=</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">CHAR16</span> <span class="TextSegElementOperator">*)</span> <span class="TextSegElementIdentifier">PcdGetPtr</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">PcdEmuMemorySize</span><span class="TextSegElementOperator">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp; <span class="TextSegElementIdentifier">FirmwareVolumesStr</span> <span class="TextSegElementOperator">=</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">CHAR16</span> <span class="TextSegElementOperator">*)</span> <span class="TextSegElementIdentifier">PcdGetPtr</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">PcdEmuFirmwareVolume</span><span class="TextSegElementOperator">);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp; <span class="TextSegElementIdentifier">FirmwareVolumesStr</span> <span class="TextSegElementOperator">=</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">CHAR16</span> <span class="TextSegElementOperator">*)</span> <span class="TextSegElementIdentifier">PcdGetPtr</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">PcdEmuFirmwareVolume</span><span class="TextSegElementOperator">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemSame">&nbsp; <span class="TextSegElementIdentifier">SecPrint</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementString">"\n\rEDK II WIN Host Emulation Environment from http://www.tianocore.org/edk2/\n\r"</span><span class="TextSegElementOperator">);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp; <span class="TextSegElementIdentifier">SecPrint</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementString">"\n\rEDK II WIN Host Emulation Environment from http://www.tianocore.org/edk2/\n\r"</span><span class="TextSegElementOperator">);</span></td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">-+</td>
+<td class="TextItemSigMod">&nbsp; <span class="TextSegSigDiff">if</span> <span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">1</span><span class="TextSegSigDiff">)</span> <span class="TextSegSigDiff">{</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">int</span> <span class="TextSegSigDiff">i</span><span class="TextSegSigDiff">;</span></td>
+</tr>
+<tr class="SectionAll">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">-+</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span> <span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"######################################################################################################\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span> <span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"add \"/debug\" command line switch, to connect to the debugger at the very beginning of POST emulation\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span> <span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"######################################################################################################\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionAll">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">-+</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">if</span> <span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">Argc</span> <span class="TextSegSigDiff">&gt;</span> <span class="TextSegSigDiff">1</span><span class="TextSegSigDiff">)</span> <span class="TextSegSigDiff">{</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">for</span> <span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">i</span> <span class="TextSegSigDiff">=</span> <span class="TextSegSigDiff">1</span><span class="TextSegSigDiff">;</span> <span class="TextSegSigDiff">i</span> <span class="TextSegSigDiff">&lt;</span> <span class="TextSegSigDiff">Argc</span><span class="TextSegSigDiff">;</span> <span class="TextSegSigDiff">i</span><span class="TextSegSigDiff">++)</span> <span class="TextSegSigDiff">{</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">if</span> <span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">0</span> <span class="TextSegSigDiff">==</span> <span class="TextSegSigDiff">strcmp</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"/debug"</span><span class="TextSegSigDiff">,</span> <span class="TextSegSigDiff">Argv</span><span class="TextSegSigDiff">[</span><span class="TextSegSigDiff">i</span><span class="TextSegSigDiff">]))</span> <span class="TextSegSigDiff">{</span></td>
+</tr>
+<tr class="SectionAll">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegElementComment">//SecPrint("IF
+ YOU WANT TO DEBUG from the very beginning of the EMULATION:\n\t1. start
+ the TASKMGR\n\t2. connect WinHost.exe to the debugger\n\t3. and press 
+ENTER in this command box\nOR\n");</span></td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">-+</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"\t1. start Visual Studio\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"\t2. DEBUG-&gt;ATTACH TO PROCESS (CTRL + ALT + P) --&gt; WinHost.exe\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"\t3. Break All&nbsp; (CTRL + ALT + Break) --&gt; WinHost.exe\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"\t4. SET A SOFTWARE BREAKPOINT (F9) in line 445\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"\t5. and press ENTER in this command box\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"\t6. go back to Visual Studio an RUN/SINGLE STEP the application\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">"\t7. otherwise press enter to continue...\n"</span><span class="TextSegSigDiff">);</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">getchar</span><span class="TextSegSigDiff">();</span></td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegElementComment">//</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegElementComment">// 1. SET A SOFTWARE BREAKPOINT TO THE NEXT LINE of code below --&gt;&gt; SecPrint("");</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegElementComment">// 2. switch to the command box and press ENTER</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegElementComment">// 3. start single stepping the entire boot/emulation process, good luck...</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegElementComment">//</span></td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">-+</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">SecPrint</span><span class="TextSegSigDiff">(</span><span class="TextSegSigDiff">""</span><span class="TextSegSigDiff">);</span>//now you can single step the entire boot/emulation process, good luck...</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">}</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">}</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">}</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSigMod">&nbsp; <span class="TextSegSigDiff">}</span></td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp; <span class="TextSegElementComment">//</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp; <span class="TextSegElementComment">//</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp; <span class="TextSegElementComment">// Determine the first thread available to this process.</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp; <span class="TextSegElementComment">// Determine the first thread available to this process.</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp; <span class="TextSegElementComment">//</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp; <span class="TextSegElementComment">//</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemSame">&nbsp; <span class="TextSegElementKeyword">if</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">GetProcessAffinityMask</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">GetCurrentProcess</span> <span class="TextSegElementOperator">(),</span> <span class="TextSegElementOperator">&amp;</span><span class="TextSegElementIdentifier">ProcessAffinityMask</span><span class="TextSegElementOperator">,</span> <span class="TextSegElementOperator">&amp;</span><span class="TextSegElementIdentifier">SystemAffinityMask</span><span class="TextSegElementOperator">))</span> <span class="TextSegElementOperator">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp; <span class="TextSegElementKeyword">if</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">GetProcessAffinityMask</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">GetCurrentProcess</span> <span class="TextSegElementOperator">(),</span> <span class="TextSegElementOperator">&amp;</span><span class="TextSegElementIdentifier">ProcessAffinityMask</span><span class="TextSegElementOperator">,</span> <span class="TextSegElementOperator">&amp;</span><span class="TextSegElementIdentifier">SystemAffinityMask</span><span class="TextSegElementOperator">))</span> <span class="TextSegElementOperator">{</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; <span class="TextSegElementIdentifier">LowBit</span> <span class="TextSegElementOperator">=</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">INT32</span><span class="TextSegElementOperator">)</span><span class="TextSegElementIdentifier">LowBitSet32</span> <span class="TextSegElementOperator">((</span><span class="TextSegElementIdentifier">UINT32</span><span class="TextSegElementOperator">)</span><span class="TextSegElementIdentifier">ProcessAffinityMask</span><span class="TextSegElementOperator">);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; <span class="TextSegElementIdentifier">LowBit</span> <span class="TextSegElementOperator">=</span> <span class="TextSegElementOperator">(</span><span class="TextSegElementIdentifier">INT32</span><span class="TextSegElementOperator">)</span><span class="TextSegElementIdentifier">LowBitSet32</span> <span class="TextSegElementOperator">((</span><span class="TextSegElementIdentifier">UINT32</span><span class="TextSegElementOperator">)</span><span class="TextSegElementIdentifier">ProcessAffinityMask</span><span class="TextSegElementOperator">);</span></td>
+</tr>
+</tbody></table>
+<br>
+
+
+</body></html>

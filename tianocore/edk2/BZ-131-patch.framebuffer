@@ -1,0 +1,183 @@
+commit fd2b5112b1b7f2acfe7803cb08479f707cbb8c92
+Author: Christian Ehrhardt <tianocore@c--e.de>
+Date:   Sun Jan 14 17:31:48 2018 +0100
+
+    FrameBufferLib: Correctly handle PixelsPerScanLine
+    
+    Correctly handle the case where GOP->PixelsPerScanLine differs
+    from GOP->HorizontalResolution: Configure->Width is the visible
+    width of the screen (in pixels) while Configure->BytesPerScanLine
+    is the size of a stride in the framebuffer (in bytes).
+    
+    While there fix copying of unaligned quantities of memory.
+    
+    Contributed-under: TianoCore Contribution Agreement 1.1
+    Signed-off-by: Christian Ehrhardt <tianocore@c--e.de>
+
+diff --git a/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c b/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
+index 011d9c5..57a103b 100644
+--- a/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
++++ b/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
+@@ -22,9 +22,9 @@
+ 
+ struct FRAME_BUFFER_CONFIGURE {
+   UINTN                           ColorDepth;
+-  UINTN                           WidthInBytes;
++  UINTN                           BytesPerScanLine;
+   UINTN                           BytesPerPixel;
+-  UINTN                           WidthInPixels;
++  UINTN                           Width;
+   UINTN                           Height;
+   UINT8                           *FrameBuffer;
+   EFI_GRAPHICS_PIXEL_FORMAT       PixelFormat;
+@@ -145,6 +145,10 @@ FrameBufferBltConfigure (
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
++  if (FrameBufferInfo->PixelsPerScanLine < FrameBufferInfo->HorizontalResolution) {
++    return RETURN_UNSUPPORTED;
++  }
++
+   FrameBufferBltLibConfigurePixelFormat (BitMask, &BytesPerPixel, PixelShl, PixelShr);
+ 
+   if (*ConfigureSize < sizeof (FRAME_BUFFER_CONFIGURE)
+@@ -164,9 +168,9 @@ FrameBufferBltConfigure (
+   Configure->BytesPerPixel = BytesPerPixel;
+   Configure->PixelFormat   = FrameBufferInfo->PixelFormat;
+   Configure->FrameBuffer   = (UINT8*) FrameBuffer;
+-  Configure->WidthInPixels = (UINTN) FrameBufferInfo->HorizontalResolution;
++  Configure->Width         = (UINTN) FrameBufferInfo->HorizontalResolution;
+   Configure->Height        = (UINTN) FrameBufferInfo->VerticalResolution;
+-  Configure->WidthInBytes  = Configure->WidthInPixels * Configure->BytesPerPixel;
++  Configure->BytesPerScanLine = FrameBufferInfo->PixelsPerScanLine * BytesPerPixel;
+ 
+   return RETURN_SUCCESS;
+ }
+@@ -216,7 +220,7 @@ FrameBufferBltLibVideoFill (
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+-  if (DestinationX + Width > Configure->WidthInPixels) {
++  if (DestinationX + Width > Configure->Width) {
+     DEBUG ((EFI_D_VERBOSE, "VideoFill: Past screen (X)\n"));
+     return RETURN_INVALID_PARAMETER;
+   }
+@@ -269,14 +273,17 @@ FrameBufferBltLibVideoFill (
+     }
+   }
+ 
+-  if (UseWideFill && (DestinationX == 0) && (Width == Configure->WidthInPixels)) {
++  if (UseWideFill && (DestinationX == 0)
++      && (Width * Configure->BytesPerPixel == Configure->BytesPerScanLine)
++      ) {
++
+     DEBUG ((EFI_D_VERBOSE, "VideoFill (wide, one-shot)\n"));
+-    Offset = DestinationY * Configure->WidthInPixels;
+-    Offset = Configure->BytesPerPixel * Offset;
++    Offset = DestinationY * Configure->BytesPerScanLine;
+     Destination = Configure->FrameBuffer + Offset;
+     SizeInBytes = WidthInBytes * Height;
+     if (SizeInBytes >= 8) {
+       SetMem32 (Destination, SizeInBytes & ~3, (UINT32) WideFill);
++      Destination += SizeInBytes & ~3;
+       SizeInBytes &= 3;
+     }
+     if (SizeInBytes > 0) {
+@@ -285,8 +292,8 @@ FrameBufferBltLibVideoFill (
+   } else {
+     LineBufferReady = FALSE;
+     for (IndexY = DestinationY; IndexY < (Height + DestinationY); IndexY++) {
+-      Offset = (IndexY * Configure->WidthInPixels) + DestinationX;
+-      Offset = Configure->BytesPerPixel * Offset;
++      Offset = (IndexY * Configure->BytesPerScanLine);
++      Offset = Offset + DestinationX * Configure->BytesPerPixel;
+       Destination = Configure->FrameBuffer + Offset;
+ 
+       if (UseWideFill && (((UINTN) Destination & 7) == 0)) {
+@@ -294,6 +301,7 @@ FrameBufferBltLibVideoFill (
+         SizeInBytes = WidthInBytes;
+         if (SizeInBytes >= 8) {
+           SetMem64 (Destination, SizeInBytes & ~7, WideFill);
++          Destination += SizeInBytes & ~7;
+           SizeInBytes &= 7;
+         }
+         if (SizeInBytes > 0) {
+@@ -369,7 +377,7 @@ FrameBufferBltLibVideoToBltBuffer (
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+-  if (SourceX + Width > Configure->WidthInPixels) {
++  if (SourceX + Width > Configure->Width) {
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+@@ -395,8 +403,8 @@ FrameBufferBltLibVideoToBltBuffer (
+        DstY < (Height + DestinationY);
+        SrcY++, DstY++) {
+ 
+-    Offset = (SrcY * Configure->WidthInPixels) + SourceX;
+-    Offset = Configure->BytesPerPixel * Offset;
++    Offset = SrcY * Configure->BytesPerScanLine;
++    Offset = Offset + SourceX * Configure->BytesPerPixel;
+     Source = Configure->FrameBuffer + Offset;
+ 
+     if (Configure->PixelFormat == PixelBlueGreenRedReserved8BitPerColor) {
+@@ -477,7 +485,7 @@ FrameBufferBltLibBufferToVideo (
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+-  if (DestinationX + Width > Configure->WidthInPixels) {
++  if (DestinationX + Width > Configure->Width) {
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+@@ -500,8 +508,8 @@ FrameBufferBltLibBufferToVideo (
+        SrcY < (Height + SourceY);
+        SrcY++, DstY++) {
+ 
+-    Offset = (DstY * Configure->WidthInPixels) + DestinationX;
+-    Offset = Configure->BytesPerPixel * Offset;
++    Offset = (DstY * Configure->BytesPerScanLine);
++    Offset = Offset + DestinationX * Configure->BytesPerPixel;
+     Destination = Configure->FrameBuffer + Offset;
+ 
+     if (Configure->PixelFormat == PixelBlueGreenRedReserved8BitPerColor) {
+@@ -573,7 +581,7 @@ FrameBufferBltLibVideoToVideo (
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+-  if (SourceX + Width > Configure->WidthInPixels) {
++  if (SourceX + Width > Configure->Width) {
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+@@ -581,7 +589,7 @@ FrameBufferBltLibVideoToVideo (
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+-  if (DestinationX + Width > Configure->WidthInPixels) {
++  if (DestinationX + Width > Configure->Width) {
+     return RETURN_INVALID_PARAMETER;
+   }
+ 
+@@ -591,15 +599,15 @@ FrameBufferBltLibVideoToVideo (
+ 
+   WidthInBytes = Width * Configure->BytesPerPixel;
+ 
+-  Offset = (SourceY * Configure->WidthInPixels) + SourceX;
+-  Offset = Configure->BytesPerPixel * Offset;
++  Offset = (SourceY * Configure->BytesPerScanLine);
++  Offset = Offset + SourceX * Configure->BytesPerPixel;
+   Source = Configure->FrameBuffer + Offset;
+ 
+-  Offset = (DestinationY * Configure->WidthInPixels) + DestinationX;
+-  Offset = Configure->BytesPerPixel * Offset;
++  Offset = (DestinationY * Configure->BytesPerScanLine);
++  Offset = Offset + DestinationX * Configure->BytesPerPixel;
+   Destination = Configure->FrameBuffer + Offset;
+ 
+-  LineStride = Configure->WidthInBytes;
++  LineStride = Configure->BytesPerScanLine;
+   if (Destination > Source) {
+     //
+     // Copy from last line to avoid source is corrupted by copying

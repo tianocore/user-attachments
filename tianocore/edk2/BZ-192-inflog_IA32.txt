@@ -1,0 +1,24 @@
+
+Dead code function in file: NetworkPkg/TcpDxe/TcpOption.c
+TcpPawsOK, line 357
+
+Dead code function in file: NetworkPkg/IpSecDxe/Ikev2/Utility.c
+Ikev2ChildSaSessionLookupByMid, line 672
+Ikev2ChildExchangeRekeySpi, line 1149
+Ikev2ChildSaSessionOnDeleting, line 788
+Ikev2SaSessionOnDeleting, line 302
+
+Dead code function in file: NetworkPkg/IpSecDxe/Ikev2/Payload.c
+Ikev2OnPacketAccepted, line 3117
+
+Dead code function in file: NetworkPkg/IScsiDxe/IScsiProto.c
+IScsiFindTcbByITT, line 2110
+
+Inf redundant definition in file: NetworkPkg/IScsiDxe/IScsiDxe.inf
+gEfiAcpi20TableGuid, line 127
+
+Dead code function in file: NetworkPkg/UefiPxeBcDxe/PxeBcDhcp6.c
+PxeBcFreeBootFileOption, line 213
+
+Inf redundant definition in file: NetworkPkg/TlsDxe/TlsDxe.inf
+NetLib, line 55

@@ -1,0 +1,121 @@
+commit 43b375e8d63a38b7e84d4e27f35917e5ce57b6c4
+Author: Dmitry Antipov <dmanti@microsoft.com>
+Date:   Mon Aug 12 22:57:27 2019 +0000
+
+    Merged PR 1425: Fix FV2 Hob creation when processing FV file in PrePiLib
+    
+    Fix FV2 Hob creation when processing FV file in PrePiLib
+
+diff --git a/EmbeddedPkg/Include/Library/PrePiLib.h b/EmbeddedPkg/Include/Library/PrePiLib.h
+index 54f8e1e582..85af3111b3 100644
+--- a/EmbeddedPkg/Include/Library/PrePiLib.h
++++ b/EmbeddedPkg/Include/Library/PrePiLib.h
+@@ -154,7 +154,8 @@ FfsGetVolumeInfo (
+ /**
+   Get Fv image from the FV type file, then add FV & FV2 Hob.
+ 
+-  @param FileHandle      File handle of a Fv type file.
++  @param FvFileHandle        File handle of a Fv type file.
++  @param ParentVolumeHandle  Parent volume handle, for filling out FvName field in FV2 Hob
+ 
+   @retval EFI_NOT_FOUND  FV image can't be found.
+   @retval EFI_SUCCESS    Successfully to process it.
+@@ -163,7 +164,8 @@ FfsGetVolumeInfo (
+ EFI_STATUS
+ EFIAPI
+ FfsProcessFvFile (
+-  IN  EFI_PEI_FILE_HANDLE   FvFileHandle
++  IN  EFI_PEI_FILE_HANDLE   FvFileHandle,
++  IN EFI_PEI_FV_HANDLE      ParentVolumeHandle // MU_CHANGE
+   );
+ 
+ 
+@@ -187,23 +189,6 @@ FfsAnyFvFindFirstFile (
+   );
+ 
+ 
+-/**
+-  Get Fv image from the FV type file, then add FV & FV2 Hob.
+-
+-  @param FileHandle  File handle of a Fv type file.
+-
+-
+-  @retval EFI_NOT_FOUND  FV image can't be found.
+-  @retval EFI_SUCCESS    Successfully to process it.
+-
+-**/
+-EFI_STATUS
+-EFIAPI
+-FfsProcessFvFile (
+-  IN  EFI_PEI_FILE_HANDLE   FvFileHandle
+-  );
+-
+-
+ /**
+   This service enables PEIMs to ascertain the present value of the boot mode.
+ 
+diff --git a/EmbeddedPkg/Library/PrePiLib/FwVol.c b/EmbeddedPkg/Library/PrePiLib/FwVol.c
+index 02d3f4a629..93e7ba3dcc 100644
+--- a/EmbeddedPkg/Library/PrePiLib/FwVol.c
++++ b/EmbeddedPkg/Library/PrePiLib/FwVol.c
+@@ -781,8 +781,8 @@ FfsAnyFvFindFirstFile (
+ /**
+   Get Fv image from the FV type file, then add FV & FV2 Hob.
+ 
+-  @param FileHandle  File handle of a Fv type file.
+-
++  @param FvFileHandle        File handle of a Fv type file.
++  @param ParentVolumeHandle  Parent volume handle, for filling out FvName field in FV2 Hob
+ 
+   @retval EFI_NOT_FOUND  FV image can't be found.
+   @retval EFI_SUCCESS    Successfully to process it.
+@@ -791,12 +791,14 @@ FfsAnyFvFindFirstFile (
+ EFI_STATUS
+ EFIAPI
+ FfsProcessFvFile (
+-  IN  EFI_PEI_FILE_HANDLE   FvFileHandle
++  IN  EFI_PEI_FILE_HANDLE   FvFileHandle,
++  IN EFI_PEI_FV_HANDLE      ParentVolumeHandle // MU_CHANGE
+   )
+ {
+   EFI_STATUS            Status;
+   EFI_PEI_FV_HANDLE     FvImageHandle;
+   EFI_FV_INFO           FvImageInfo;
++  EFI_FV_INFO           ParentVolumeInfo; // MU_CHANGE
+   UINT32                FvAlignment;
+   VOID                  *FvBuffer;
+   EFI_PEI_HOB_POINTERS  HobFv2;
+@@ -863,6 +865,11 @@ FfsProcessFvFile (
+   //
+   BuildFvHob ((EFI_PHYSICAL_ADDRESS) (UINTN) FvImageInfo.FvStart, FvImageInfo.FvSize);
+ 
++  // MU_CHANGE Start
++  Status = FfsGetVolumeInfo (ParentVolumeHandle, &ParentVolumeInfo);
++  ASSERT_EFI_ERROR (Status);
++  // MU_CHANGE End
++
+   //
+   // Makes the encapsulated volume show up in DXE phase to skip processing of
+   // encapsulated file again.
+@@ -870,7 +877,7 @@ FfsProcessFvFile (
+   BuildFv2Hob (
+     (EFI_PHYSICAL_ADDRESS) (UINTN) FvImageInfo.FvStart,
+     FvImageInfo.FvSize,
+-    &FvImageInfo.FvName,
++    &ParentVolumeInfo.FvName, // MU_CHANGE
+     &(((EFI_FFS_FILE_HEADER *)FvFileHandle)->Name)
+     );
+ 
+diff --git a/EmbeddedPkg/Library/PrePiLib/PrePiLib.c b/EmbeddedPkg/Library/PrePiLib/PrePiLib.c
+index afbe146632..192ace2508 100644
+--- a/EmbeddedPkg/Library/PrePiLib/PrePiLib.c
++++ b/EmbeddedPkg/Library/PrePiLib/PrePiLib.c
+@@ -242,7 +242,7 @@ DecompressFirstFv (
+ 
+   Status = FfsAnyFvFindFirstFile (EFI_FV_FILETYPE_FIRMWARE_VOLUME_IMAGE, &VolumeHandle, &FileHandle);
+   if (!EFI_ERROR (Status)) {
+-    Status = FfsProcessFvFile (FileHandle);
++    Status = FfsProcessFvFile (FileHandle, VolumeHandle); // MU_CHANGE
+   }
+ 
+   return Status;

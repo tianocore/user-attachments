@@ -1,0 +1,42 @@
+
+Inf redundant definition in file: SecurityPkg/Tcg/MemoryOverwriteControl/TcgMor.inf
+ReportStatusCodeLib, line 46
+
+Inf redundant definition in file: SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+gEfiBlockIoProtocolGuid, line 118
+gEfiFileInfoGuid, line 108
+
+Inf redundant definition in file: SecurityPkg/Tcg/TcgConfigDxe/TcgConfigDxe.inf
+gEfiIfrTianoGuid, line 62
+
+Inf redundant definition in file: SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigPei.inf
+MemoryAllocationLib, line 46
+
+Inf redundant definition in file: SecurityPkg/Tcg/Tcg2Dxe/Tcg2Dxe.inf
+gEfiAcpiTableProtocolGuid, line 95
+
+Inf redundant definition in file: SecurityPkg/Tcg/Tcg2Smm/Tcg2Smm.inf
+IoLib, line 60
+
+Dead code function in file: SecurityPkg/Tcg/Opal/OpalPassword/OpalHiiCallbacks.c
+OpalDriverGetOpalVarName, line 29
+HiiGetNumConfigRequiredOpalDisksCB, line 89
+
+Inf redundant definition in file: SecurityPkg/Tcg/Opal/OpalPassword/OpalPasswordDxe.inf
+gEfiPciIoProtocolGuid, line 74
+gEfiDevicePathToTextProtocolGuid, line 75
+
+Dead code function in file: SecurityPkg/Tcg/Opal/OpalPassword/OpalAhciMode.c
+AhciIdentify, line 988
+
+Dead code function in file: SecurityPkg/Tcg/Opal/OpalPassword/OpalNvmeMode.c
+NvmeHasFreeCmdSlot, line 808
+NvmeWriteSectors, line 1940
+NvmeWrite, line 2104
+NvmeFlush, line 2002
+NvmeIsAllCmdSlotClean, line 828
+NvmeReadSectors, line 1878
+NvmeRead, line 2050
+
+Inf redundant definition in file: SecurityPkg/Tcg/Opal/OpalPassword/OpalPasswordPei.inf
+HobLib, line 53

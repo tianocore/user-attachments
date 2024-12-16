@@ -1,0 +1,86 @@
+diff --git a/MdePkg/Library/FltUsedLib/FltUsedLib.c b/MdePkg/Library/FltUsedLib/FltUsedLib.c
+new file mode 100644
+index 0000000000..0f3586df91
+--- /dev/null
++++ b/MdePkg/Library/FltUsedLib/FltUsedLib.c
+@@ -0,0 +1,10 @@
++/** @file
++  Lib to include if using floats
++
++Copyright (C) Microsoft Corporation. All rights reserved..
++SPDX-License-Identifier: BSD-2-Clause-Patent
++
++**/
++
++//You need to include this to let the compiler know we are going to use floating point
++int   _fltused = 0x9875;
+diff --git a/MdePkg/Library/FltUsedLib/FltUsedLib.inf b/MdePkg/Library/FltUsedLib/FltUsedLib.inf
+new file mode 100644
+index 0000000000..794e57c56b
+--- /dev/null
++++ b/MdePkg/Library/FltUsedLib/FltUsedLib.inf
+@@ -0,0 +1,42 @@
++## @file
++#  Lib to include if using floats
++#
++# Copyright (C) Microsoft Corporation. All rights reserved..
++# SPDX-License-Identifier: BSD-2-Clause-Patent
++##
++
++[Defines]
++  INF_VERSION                    = 0x00010005
++  BASE_NAME                      = FltUsedLib
++  FILE_GUID                      = C004F180-9FE2-4D2B-8318-BADC2A231774
++  MODULE_TYPE                    = BASE
++  VERSION_STRING                 = 1.0
++  LIBRARY_CLASS                  = FltUsedLib
++
++#
++# The following information is for reference only and not required by the build tools.
++#
++#  VALID_ARCHITECTURES           = IA32 X64 AARCH64
++#
++
++[Sources]
++  FltUsedLib.c
++
++[Packages]
++  MdePkg/MdePkg.dec
++  MsCorePkg/MsCorePkg.dec
++
++[LibraryClasses]
++
++[Guids]
++
++[Protocols]
++
++[BuildOptions]
++  # Disable GL due to linker error LNK1237
++  # https://docs.microsoft.com/en-us/cpp/error-messages/tool-errors/linker-tools-error-lnk1237?view=vs-2017
++  MSFT:*_*_*_CC_FLAGS = /GL-
++
++[Depex]
++  TRUE
++
+diff --git a/MdePkg/Library/FltUsedLib/Readme.md b/MdePkg/Library/FltUsedLib/Readme.md
+new file mode 100644
+index 0000000000..99c5709f75
+--- /dev/null
++++ b/MdePkg/Library/FltUsedLib/Readme.md
+@@ -0,0 +1,15 @@
++# FltUsedLib
++
++This library provides a global (fltused) that needs to be defined anywhere floating point operations are used.
++The C compiler produces the _fltused symbol by default, this is just to satisfy the linker.
++
++## Using
++
++To use FltUsedLib, just include it in the INF of the module that uses floating point.
++
++```
++[LibraryClasses]
++  BaseLib
++  BaseMemoryLib
++  FltUsedLib 
++```
+\ No newline at end of file

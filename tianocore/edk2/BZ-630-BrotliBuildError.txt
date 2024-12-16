@@ -1,0 +1,644 @@
+
+
+Generate Region at Offset 0xE0000
+   Region Size = 0x370000
+   Region Name = FV
+
+Generating FVADVANCED FV
+
+Generating FVADVANCEDUNCOMPACT FV
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\A3F7091A-7771-4829-9E22-34D364AC88B1FVADVANCEDUNCOMPACT\\A3F7091A-7771-4829-9E22-34D364AC88B1SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\MultiPdt\\MultiPdtFile.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\MultiPdt\MultiPdtFile.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\A3F7091A-7771-4829-9E22-34D364AC88B1FVADVANCEDUNCOMPACT\A3F7091A-7771-4829-9E22-34D364AC88B1SEC1.raw
+the size of the created section file is 3148 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', 'A3F7091A-7771-4829-9E22-34D364AC88B1', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\A3F7091A-7771-4829-9E22-34D364AC88B1FVADVANCEDUNCOMPACT\\A3F7091A-7771-4829-9E22-34D364AC88B1.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\A3F7091A-7771-4829-9E22-34D364AC88B1FVADVANCEDUNCOMPACT\\A3F7091A-7771-4829-9E22-34D364AC88B1SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\A3F7091A-7771-4829-9E22-34D364AC88B1FVADVANCEDUNCOMPACT\\A3F7091A-7771-4829-9E22-34D364AC88B1SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\A3F7091A-7771-4829-9E22-34D364AC88B1FVADVANCEDUNCOMPACT\A3F7091A-7771-4829-9E22-34D364AC88B1.ffs
+FFS File Guid is A3F7091A-7771-4829-9E22-34D364AC88B1
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\A3F7091A-7771-4829-9E22-34D364AC88B1FVADVANCEDUNCOMPACT\A3F7091A-7771-4829-9E22-34D364AC88B1SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\A3F7091A-7771-4829-9E22-34D364AC88B1FVADVANCEDUNCOMPACT\A3F7091A-7771-4829-9E22-34D364AC88B1SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 3186 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7134e3ee-7fa6-4489-87a7-ae38984eaed8FVADVANCEDUNCOMPACT\\7134e3ee-7fa6-4489-87a7-ae38984eaed8SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\NiftyRock\\Debug\\Sps.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\NiftyRock\Debug\Sps.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7134e3ee-7fa6-4489-87a7-ae38984eaed8FVADVANCEDUNCOMPACT\7134e3ee-7fa6-4489-87a7-ae38984eaed8SEC1.raw
+the size of the created section file is 32772 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '7134e3ee-7fa6-4489-87a7-ae38984eaed8', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7134e3ee-7fa6-4489-87a7-ae38984eaed8FVADVANCEDUNCOMPACT\\7134e3ee-7fa6-4489-87a7-ae38984eaed8.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7134e3ee-7fa6-4489-87a7-ae38984eaed8FVADVANCEDUNCOMPACT\\7134e3ee-7fa6-4489-87a7-ae38984eaed8SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7134e3ee-7fa6-4489-87a7-ae38984eaed8FVADVANCEDUNCOMPACT\\7134e3ee-7fa6-4489-87a7-ae38984eaed8SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7134e3ee-7fa6-4489-87a7-ae38984eaed8FVADVANCEDUNCOMPACT\7134e3ee-7fa6-4489-87a7-ae38984eaed8.ffs
+FFS File Guid is 7134E3EE-7FA6-4489-87A7-AE38984EAED8
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7134e3ee-7fa6-4489-87a7-ae38984eaed8FVADVANCEDUNCOMPACT\7134e3ee-7fa6-4489-87a7-ae38984eaed8SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7134e3ee-7fa6-4489-87a7-ae38984eaed8FVADVANCEDUNCOMPACT\7134e3ee-7fa6-4489-87a7-ae38984eaed8SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 32824 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\943d4107-5d78-4233-a382-6260062c554cFVADVANCEDUNCOMPACT\\943d4107-5d78-4233-a382-6260062c554cSEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\NiftyRock\\Debug\\Ppam11.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\NiftyRock\Debug\Ppam11.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\943d4107-5d78-4233-a382-6260062c554cFVADVANCEDUNCOMPACT\943d4107-5d78-4233-a382-6260062c554cSEC1.raw
+the size of the created section file is 90116 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '943d4107-5d78-4233-a382-6260062c554c', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\943d4107-5d78-4233-a382-6260062c554cFVADVANCEDUNCOMPACT\\943d4107-5d78-4233-a382-6260062c554c.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\943d4107-5d78-4233-a382-6260062c554cFVADVANCEDUNCOMPACT\\943d4107-5d78-4233-a382-6260062c554cSEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\943d4107-5d78-4233-a382-6260062c554cFVADVANCEDUNCOMPACT\\943d4107-5d78-4233-a382-6260062c554cSEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\943d4107-5d78-4233-a382-6260062c554cFVADVANCEDUNCOMPACT\943d4107-5d78-4233-a382-6260062c554c.ffs
+FFS File Guid is 943D4107-5D78-4233-A382-6260062C554C
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\943d4107-5d78-4233-a382-6260062c554cFVADVANCEDUNCOMPACT\943d4107-5d78-4233-a382-6260062c554cSEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\943d4107-5d78-4233-a382-6260062c554cFVADVANCEDUNCOMPACT\943d4107-5d78-4233-a382-6260062c554cSEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 90174 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6c8faee0-6521-477a-83bf-0d6598dd28a2FVADVANCEDUNCOMPACT\\6c8faee0-6521-477a-83bf-0d6598dd28a2SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\NiftyRock\\Debug\\Ppam11Manifest.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\NiftyRock\Debug\Ppam11Manifest.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6c8faee0-6521-477a-83bf-0d6598dd28a2FVADVANCEDUNCOMPACT\6c8faee0-6521-477a-83bf-0d6598dd28a2SEC1.raw
+the size of the created section file is 1947 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '6c8faee0-6521-477a-83bf-0d6598dd28a2', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6c8faee0-6521-477a-83bf-0d6598dd28a2FVADVANCEDUNCOMPACT\\6c8faee0-6521-477a-83bf-0d6598dd28a2.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6c8faee0-6521-477a-83bf-0d6598dd28a2FVADVANCEDUNCOMPACT\\6c8faee0-6521-477a-83bf-0d6598dd28a2SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6c8faee0-6521-477a-83bf-0d6598dd28a2FVADVANCEDUNCOMPACT\\6c8faee0-6521-477a-83bf-0d6598dd28a2SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6c8faee0-6521-477a-83bf-0d6598dd28a2FVADVANCEDUNCOMPACT\6c8faee0-6521-477a-83bf-0d6598dd28a2.ffs
+FFS File Guid is 6C8FAEE0-6521-477A-83BF-0D6598DD28A2
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6c8faee0-6521-477a-83bf-0d6598dd28a2FVADVANCEDUNCOMPACT\6c8faee0-6521-477a-83bf-0d6598dd28a2SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6c8faee0-6521-477a-83bf-0d6598dd28a2FVADVANCEDUNCOMPACT\6c8faee0-6521-477a-83bf-0d6598dd28a2SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 2022 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7c7d635b-8b9c-463c-9f7f-91f60906848fFVADVANCEDUNCOMPACT\\7c7d635b-8b9c-463c-9f7f-91f60906848fSEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\NiftyRock\\Debug\\SpsSmmEntryPoint.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\NiftyRock\Debug\SpsSmmEntryPoint.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7c7d635b-8b9c-463c-9f7f-91f60906848fFVADVANCEDUNCOMPACT\7c7d635b-8b9c-463c-9f7f-91f60906848fSEC1.raw
+the size of the created section file is 2406 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '7c7d635b-8b9c-463c-9f7f-91f60906848f', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7c7d635b-8b9c-463c-9f7f-91f60906848fFVADVANCEDUNCOMPACT\\7c7d635b-8b9c-463c-9f7f-91f60906848f.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7c7d635b-8b9c-463c-9f7f-91f60906848fFVADVANCEDUNCOMPACT\\7c7d635b-8b9c-463c-9f7f-91f60906848fSEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7c7d635b-8b9c-463c-9f7f-91f60906848fFVADVANCEDUNCOMPACT\\7c7d635b-8b9c-463c-9f7f-91f60906848fSEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7c7d635b-8b9c-463c-9f7f-91f60906848fFVADVANCEDUNCOMPACT\7c7d635b-8b9c-463c-9f7f-91f60906848f.ffs
+FFS File Guid is 7C7D635B-8B9C-463C-9F7F-91F60906848F
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7c7d635b-8b9c-463c-9f7f-91f60906848fFVADVANCEDUNCOMPACT\7c7d635b-8b9c-463c-9f7f-91f60906848fSEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7c7d635b-8b9c-463c-9f7f-91f60906848fFVADVANCEDUNCOMPACT\7c7d635b-8b9c-463c-9f7f-91f60906848fSEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 2486 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\9fb2add7-534d-a64b-8d55-5d2891601019FVADVANCEDUNCOMPACT\\9fb2add7-534d-a64b-8d55-5d2891601019SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\NiftyRock\\SpaSmmEntryPoint.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\NiftyRock\SpaSmmEntryPoint.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\9fb2add7-534d-a64b-8d55-5d2891601019FVADVANCEDUNCOMPACT\9fb2add7-534d-a64b-8d55-5d2891601019SEC1.raw
+the size of the created section file is 1778 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '9fb2add7-534d-a64b-8d55-5d2891601019', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\9fb2add7-534d-a64b-8d55-5d2891601019FVADVANCEDUNCOMPACT\\9fb2add7-534d-a64b-8d55-5d2891601019.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\9fb2add7-534d-a64b-8d55-5d2891601019FVADVANCEDUNCOMPACT\\9fb2add7-534d-a64b-8d55-5d2891601019SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\9fb2add7-534d-a64b-8d55-5d2891601019FVADVANCEDUNCOMPACT\\9fb2add7-534d-a64b-8d55-5d2891601019SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\9fb2add7-534d-a64b-8d55-5d2891601019FVADVANCEDUNCOMPACT\9fb2add7-534d-a64b-8d55-5d2891601019.ffs
+FFS File Guid is 9FB2ADD7-534D-A64B-8D55-5D2891601019
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\9fb2add7-534d-a64b-8d55-5d2891601019FVADVANCEDUNCOMPACT\9fb2add7-534d-a64b-8d55-5d2891601019SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\9fb2add7-534d-a64b-8d55-5d2891601019FVADVANCEDUNCOMPACT\9fb2add7-534d-a64b-8d55-5d2891601019SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 1848 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7bb719e1-532a-7b40-a34c-c4f9e26c2774FVADVANCEDUNCOMPACT\\7bb719e1-532a-7b40-a34c-c4f9e26c2774SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\NiftyRock\\Spa.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\NiftyRock\Spa.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7bb719e1-532a-7b40-a34c-c4f9e26c2774FVADVANCEDUNCOMPACT\7bb719e1-532a-7b40-a34c-c4f9e26c2774SEC1.raw
+the size of the created section file is 40964 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '7bb719e1-532a-7b40-a34c-c4f9e26c2774', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7bb719e1-532a-7b40-a34c-c4f9e26c2774FVADVANCEDUNCOMPACT\\7bb719e1-532a-7b40-a34c-c4f9e26c2774.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7bb719e1-532a-7b40-a34c-c4f9e26c2774FVADVANCEDUNCOMPACT\\7bb719e1-532a-7b40-a34c-c4f9e26c2774SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\7bb719e1-532a-7b40-a34c-c4f9e26c2774FVADVANCEDUNCOMPACT\\7bb719e1-532a-7b40-a34c-c4f9e26c2774SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7bb719e1-532a-7b40-a34c-c4f9e26c2774FVADVANCEDUNCOMPACT\7bb719e1-532a-7b40-a34c-c4f9e26c2774.ffs
+FFS File Guid is 7BB719E1-532A-7B40-A34C-C4F9E26C2774
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7bb719e1-532a-7b40-a34c-c4f9e26c2774FVADVANCEDUNCOMPACT\7bb719e1-532a-7b40-a34c-c4f9e26c2774SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\7bb719e1-532a-7b40-a34c-c4f9e26c2774FVADVANCEDUNCOMPACT\7bb719e1-532a-7b40-a34c-c4f9e26c2774SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 41006 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_PE32', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14AFVADVANCEDUNCOMPACT\\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14ASEC1.pe32', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\UefiDriver\\Vmd\\Dxe\\RstVmdDriver.efi', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_PE32
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\UefiDriver\Vmd\Dxe\RstVmdDriver.efi
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14AFVADVANCEDUNCOMPACT\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14ASEC1.pe32
+the size of the created section file is 255748 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_DRIVER', '-g', '8D3168FD-8CD5-4B35-9AA0-3C964D4CC14A', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14AFVADVANCEDUNCOMPACT\\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14A.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14AFVADVANCEDUNCOMPACT\\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14ASEC1.pe32', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14AFVADVANCEDUNCOMPACT\\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14ASEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_DRIVER
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14AFVADVANCEDUNCOMPACT\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14A.ffs
+FFS File Guid is 8D3168FD-8CD5-4B35-9AA0-3C964D4CC14A
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14AFVADVANCEDUNCOMPACT\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14ASEC1.pe32 and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14AFVADVANCEDUNCOMPACT\8D3168FD-8CD5-4B35-9AA0-3C964D4CC14ASEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 255802 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67FVADVANCEDUNCOMPACT\\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf0DmicX1_38_4.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf0DmicX1_38_4.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67FVADVANCEDUNCOMPACT\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67SEC1.raw
+the size of the created section file is 6308 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67FVADVANCEDUNCOMPACT\\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67FVADVANCEDUNCOMPACT\\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67FVADVANCEDUNCOMPACT\\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67FVADVANCEDUNCOMPACT\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67.ffs
+FFS File Guid is 06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67FVADVANCEDUNCOMPACT\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67FVADVANCEDUNCOMPACT\06ADC9B7-837F-47DF-AC0C-A0EE18BFAD67SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 6378 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\54067565-B069-4260-87AC-416AC8159BD5FVADVANCEDUNCOMPACT\\54067565-B069-4260-87AC-416AC8159BD5SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf1DmicX2_38_4.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf1DmicX2_38_4.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\54067565-B069-4260-87AC-416AC8159BD5FVADVANCEDUNCOMPACT\54067565-B069-4260-87AC-416AC8159BD5SEC1.raw
+the size of the created section file is 6261 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '54067565-B069-4260-87AC-416AC8159BD5', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\54067565-B069-4260-87AC-416AC8159BD5FVADVANCEDUNCOMPACT\\54067565-B069-4260-87AC-416AC8159BD5.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\54067565-B069-4260-87AC-416AC8159BD5FVADVANCEDUNCOMPACT\\54067565-B069-4260-87AC-416AC8159BD5SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\54067565-B069-4260-87AC-416AC8159BD5FVADVANCEDUNCOMPACT\\54067565-B069-4260-87AC-416AC8159BD5SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\54067565-B069-4260-87AC-416AC8159BD5FVADVANCEDUNCOMPACT\54067565-B069-4260-87AC-416AC8159BD5.ffs
+FFS File Guid is 54067565-B069-4260-87AC-416AC8159BD5
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\54067565-B069-4260-87AC-416AC8159BD5FVADVANCEDUNCOMPACT\54067565-B069-4260-87AC-416AC8159BD5SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\54067565-B069-4260-87AC-416AC8159BD5FVADVANCEDUNCOMPACT\54067565-B069-4260-87AC-416AC8159BD5SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 6334 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\729D003A-0125-4489-B2EC-00415C88EFEBFVADVANCEDUNCOMPACT\\729D003A-0125-4489-B2EC-00415C88EFEBSEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf2DmicX4_38_4.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf2DmicX4_38_4.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\729D003A-0125-4489-B2EC-00415C88EFEBFVADVANCEDUNCOMPACT\729D003A-0125-4489-B2EC-00415C88EFEBSEC1.raw
+the size of the created section file is 6261 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '729D003A-0125-4489-B2EC-00415C88EFEB', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\729D003A-0125-4489-B2EC-00415C88EFEBFVADVANCEDUNCOMPACT\\729D003A-0125-4489-B2EC-00415C88EFEB.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\729D003A-0125-4489-B2EC-00415C88EFEBFVADVANCEDUNCOMPACT\\729D003A-0125-4489-B2EC-00415C88EFEBSEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\729D003A-0125-4489-B2EC-00415C88EFEBFVADVANCEDUNCOMPACT\\729D003A-0125-4489-B2EC-00415C88EFEBSEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\729D003A-0125-4489-B2EC-00415C88EFEBFVADVANCEDUNCOMPACT\729D003A-0125-4489-B2EC-00415C88EFEB.ffs
+FFS File Guid is 729D003A-0125-4489-B2EC-00415C88EFEB
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\729D003A-0125-4489-B2EC-00415C88EFEBFVADVANCEDUNCOMPACT\729D003A-0125-4489-B2EC-00415C88EFEBSEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\729D003A-0125-4489-B2EC-00415C88EFEBFVADVANCEDUNCOMPACT\729D003A-0125-4489-B2EC-00415C88EFEBSEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 6334 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\40801B42-4B8E-4CFC-90F6-8AAAEA82607CFVADVANCEDUNCOMPACT\\40801B42-4B8E-4CFC-90F6-8AAAEA82607CSEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf3Bt_38_4.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf3Bt_38_4.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\40801B42-4B8E-4CFC-90F6-8AAAEA82607CFVADVANCEDUNCOMPACT\40801B42-4B8E-4CFC-90F6-8AAAEA82607CSEC1.raw
+the size of the created section file is 726 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '40801B42-4B8E-4CFC-90F6-8AAAEA82607C', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\40801B42-4B8E-4CFC-90F6-8AAAEA82607CFVADVANCEDUNCOMPACT\\40801B42-4B8E-4CFC-90F6-8AAAEA82607C.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\40801B42-4B8E-4CFC-90F6-8AAAEA82607CFVADVANCEDUNCOMPACT\\40801B42-4B8E-4CFC-90F6-8AAAEA82607CSEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\40801B42-4B8E-4CFC-90F6-8AAAEA82607CFVADVANCEDUNCOMPACT\\40801B42-4B8E-4CFC-90F6-8AAAEA82607CSEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\40801B42-4B8E-4CFC-90F6-8AAAEA82607CFVADVANCEDUNCOMPACT\40801B42-4B8E-4CFC-90F6-8AAAEA82607C.ffs
+FFS File Guid is 40801B42-4B8E-4CFC-90F6-8AAAEA82607C
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\40801B42-4B8E-4CFC-90F6-8AAAEA82607CFVADVANCEDUNCOMPACT\40801B42-4B8E-4CFC-90F6-8AAAEA82607CSEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\40801B42-4B8E-4CFC-90F6-8AAAEA82607CFVADVANCEDUNCOMPACT\40801B42-4B8E-4CFC-90F6-8AAAEA82607CSEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 790 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\5F845818-7D38-4EBF-B410-922B8CE825BBFVADVANCEDUNCOMPACT\\5F845818-7D38-4EBF-B410-922B8CE825BBSEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf4I2sAlc274_38_4.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf4I2sAlc274_38_4.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\5F845818-7D38-4EBF-B410-922B8CE825BBFVADVANCEDUNCOMPACT\5F845818-7D38-4EBF-B410-922B8CE825BBSEC1.raw
+the size of the created section file is 565 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '5F845818-7D38-4EBF-B410-922B8CE825BB', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\5F845818-7D38-4EBF-B410-922B8CE825BBFVADVANCEDUNCOMPACT\\5F845818-7D38-4EBF-B410-922B8CE825BB.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\5F845818-7D38-4EBF-B410-922B8CE825BBFVADVANCEDUNCOMPACT\\5F845818-7D38-4EBF-B410-922B8CE825BBSEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\5F845818-7D38-4EBF-B410-922B8CE825BBFVADVANCEDUNCOMPACT\\5F845818-7D38-4EBF-B410-922B8CE825BBSEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\5F845818-7D38-4EBF-B410-922B8CE825BBFVADVANCEDUNCOMPACT\5F845818-7D38-4EBF-B410-922B8CE825BB.ffs
+FFS File Guid is 5F845818-7D38-4EBF-B410-922B8CE825BB
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\5F845818-7D38-4EBF-B410-922B8CE825BBFVADVANCEDUNCOMPACT\5F845818-7D38-4EBF-B410-922B8CE825BBSEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\5F845818-7D38-4EBF-B410-922B8CE825BBFVADVANCEDUNCOMPACT\5F845818-7D38-4EBF-B410-922B8CE825BBSEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 644 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7FVADVANCEDUNCOMPACT\\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf5DmicX1_24.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf5DmicX1_24.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7FVADVANCEDUNCOMPACT\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7SEC1.raw
+the size of the created section file is 3040 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7FVADVANCEDUNCOMPACT\\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7FVADVANCEDUNCOMPACT\\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7FVADVANCEDUNCOMPACT\\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7FVADVANCEDUNCOMPACT\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7.ffs
+FFS File Guid is 27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7FVADVANCEDUNCOMPACT\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7FVADVANCEDUNCOMPACT\27BDBE6F-4C7A-48AA-9289-4C5A2ECA28D7SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 3106 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CFVADVANCEDUNCOMPACT\\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CSEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf6DmicX2_24.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf6DmicX2_24.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CFVADVANCEDUNCOMPACT\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CSEC1.raw
+the size of the created section file is 6005 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', 'F1722F56-F045-4CA6-A84F-6A7CA1A14C8C', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CFVADVANCEDUNCOMPACT\\F1722F56-F045-4CA6-A84F-6A7CA1A14C8C.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CFVADVANCEDUNCOMPACT\\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CSEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CFVADVANCEDUNCOMPACT\\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CSEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CFVADVANCEDUNCOMPACT\F1722F56-F045-4CA6-A84F-6A7CA1A14C8C.ffs
+FFS File Guid is F1722F56-F045-4CA6-A84F-6A7CA1A14C8C
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CFVADVANCEDUNCOMPACT\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CSEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CFVADVANCEDUNCOMPACT\F1722F56-F045-4CA6-A84F-6A7CA1A14C8CSEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 6074 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5AFVADVANCEDUNCOMPACT\\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5ASEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf7DmicX4_24.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf7DmicX4_24.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5AFVADVANCEDUNCOMPACT\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5ASEC1.raw
+the size of the created section file is 6181 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '0046A325-B87B-4DD3-8A6F-6ABACC9EFD5A', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5AFVADVANCEDUNCOMPACT\\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5A.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5AFVADVANCEDUNCOMPACT\\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5ASEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5AFVADVANCEDUNCOMPACT\\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5ASEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5AFVADVANCEDUNCOMPACT\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5A.ffs
+FFS File Guid is 0046A325-B87B-4DD3-8A6F-6ABACC9EFD5A
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5AFVADVANCEDUNCOMPACT\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5ASEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5AFVADVANCEDUNCOMPACT\0046A325-B87B-4DD3-8A6F-6ABACC9EFD5ASEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 6258 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDFVADVANCEDUNCOMPACT\\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDSEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf8Bt_24.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf8Bt_24.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDFVADVANCEDUNCOMPACT\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDSEC1.raw
+the size of the created section file is 739 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EED', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDFVADVANCEDUNCOMPACT\\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EED.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDFVADVANCEDUNCOMPACT\\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDSEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDFVADVANCEDUNCOMPACT\\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDSEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDFVADVANCEDUNCOMPACT\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EED.ffs
+FFS File Guid is 4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EED
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDFVADVANCEDUNCOMPACT\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDSEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDFVADVANCEDUNCOMPACT\4D77B5D2-A3B5-4ABE-BF70-F982B2BB2EEDSEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 798 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_RAW', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4FVADVANCEDUNCOMPACT\\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4SEC1.raw', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\Hda\\NhltConf9I2sAlc274_24.bin', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_RAW
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\Hda\NhltConf9I2sAlc274_24.bin
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4FVADVANCEDUNCOMPACT\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4SEC1.raw
+the size of the created section file is 563 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_FREEFORM', '-g', '9E83AE47-0DB1-4BE0-9478-6E86366D5EA4', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4FVADVANCEDUNCOMPACT\\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4FVADVANCEDUNCOMPACT\\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4SEC1.raw', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4FVADVANCEDUNCOMPACT\\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4SEC2.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_FREEFORM
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4FVADVANCEDUNCOMPACT\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4.ffs
+FFS File Guid is 9E83AE47-0DB1-4BE0-9478-6E86366D5EA4
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4FVADVANCEDUNCOMPACT\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4SEC1.raw and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4FVADVANCEDUNCOMPACT\9E83AE47-0DB1-4BE0-9478-6E86366D5EA4SEC2.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 636 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_PE32', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\\73303035-D6D0-46b5-8ECA-139EE287C000SEC1.pe32', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\UefiDriver\\Raid\\RaidDriver.efi', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_PE32
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\UefiDriver\Raid\RaidDriver.efi
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\73303035-D6D0-46b5-8ECA-139EE287C000SEC1.pe32
+the size of the created section file is 243876 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_DXE_DEPEX', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\\73303035-D6D0-46b5-8ECA-139EE287C000SEC2.dpx', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\\73303035-D6D0-46b5-8ECA-139EE287C000SEC2.depex', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_DXE_DEPEX
+the 0th input file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\73303035-D6D0-46b5-8ECA-139EE287C000SEC2.depex
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\73303035-D6D0-46b5-8ECA-139EE287C000SEC2.dpx
+the size of the created section file is 22 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_DRIVER', '-g', '73303035-D6D0-46b5-8ECA-139EE287C000', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\\73303035-D6D0-46b5-8ECA-139EE287C000.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\\73303035-D6D0-46b5-8ECA-139EE287C000SEC1.pe32', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\\73303035-D6D0-46b5-8ECA-139EE287C000SEC2.dpx', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\\73303035-D6D0-46b5-8ECA-139EE287C000SEC3.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_DRIVER
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\73303035-D6D0-46b5-8ECA-139EE287C000.ffs
+FFS File Guid is 73303035-D6D0-46B5-8ECA-139EE287C000
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\73303035-D6D0-46b5-8ECA-139EE287C000SEC1.pe32 and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\73303035-D6D0-46b5-8ECA-139EE287C000SEC2.dpx and section alignment is 1
+the 2th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\73303035-D6D0-46b5-8ECA-139EE287C000FVADVANCEDUNCOMPACT\73303035-D6D0-46b5-8ECA-139EE287C000SEC3.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 243950 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_PE32', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC1.pe32', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\UefiDriver\\Raid\\SataDriverRste.efi', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_PE32
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\UefiDriver\Raid\SataDriverRste.efi
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC1.pe32
+the size of the created section file is 192932 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_DXE_DEPEX', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC2.dpx', 's:\\Intel\\AlderLakeBoardPkg\\Binaries\\UefiDriver\\Raid\\SataDriverRste.depex', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_DXE_DEPEX
+the 0th input file name is s:\Intel\AlderLakeBoardPkg\Binaries\UefiDriver\Raid\SataDriverRste.depex
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC2.dpx
+the size of the created section file is 22 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenFfs', '-t', 'EFI_FV_FILETYPE_DRIVER', '-g', '6339FA79-4B54-4783-B646-DDEA1E5BD385', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\\6339FA79-4B54-4783-B646-DDEA1E5BD385.ffs', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC1.pe32', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC2.dpx', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC3.ui', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFfs tool start.
+Fv File type is EFI_FV_FILETYPE_DRIVER
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\6339FA79-4B54-4783-B646-DDEA1E5BD385.ffs
+FFS File Guid is 6339FA79-4B54-4783-B646-DDEA1E5BD385
+FFS file alignment is 8
+the 0th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC1.pe32 and section alignment is 1
+the 1th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC2.dpx and section alignment is 1
+the 2th input section name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\6339FA79-4B54-4783-B646-DDEA1E5BD385FVADVANCEDUNCOMPACT\6339FA79-4B54-4783-B646-DDEA1E5BD385SEC3.ui and section alignment is 1
+the max alignment of all input sections is 1
+the alignment of the generated FFS file is 8
+the size of the generated FFS file is 193014 bytes
+GenFfs tool done with return code is 0x0.
+
+
+['GenFv', '-a', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\FVADVANCEDUNCOMPACT.inf', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\FVADVANCEDUNCOMPACT.Fv', '-i', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\FVADVANCEDUNCOMPACT.inf', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenFv tool start.
+the input FvInf or CapInf file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\FVADVANCEDUNCOMPACT.inf
+the output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\FVADVANCEDUNCOMPACT.Fv
+Create Fv image and its map file
+FV Map file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\FVADVANCEDUNCOMPACT.Fv.map
+the generated FV image size is 7143424 bytes
+GenFv tool done with return code is 0x0.
+
+
+['GenSec', '-s', 'EFI_SECTION_FIRMWARE_VOLUME_IMAGE', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.1fv.sec', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\FVADVANCEDUNCOMPACT.Fv', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_FIRMWARE_VOLUME_IMAGE
+the 0th input file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\FVADVANCEDUNCOMPACT.Fv
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.1fv.sec
+the size of the created section file is 7143428 bytes
+GenSec tool done with return code is 0x0.
+
+
+['GenSec', '--sectionalign', '16', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.guided.dummy', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.1fv.sec', '-v']
+Return Value = 0
+Verbose output Mode Set!
+GenSec tool start.
+Section type is (null)
+the 0th input file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.1fv.sec
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.guided.dummy
+the size of the created section file is 7143440 bytes
+GenSec tool done with return code is 0x0.
+
+
+['BrotliCompressPlatform', '-e', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.tmp', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.guided.dummy', '-v']
+Return Value = 0
+
+
+['GenSec', '-s', 'EFI_SECTION_GUID_DEFINED', '-g', '3D532050-5CDA-4FD0-879E-0F7F630D5AFB', '-r', 'PROCESSING_REQUIRED', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.guided', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.tmp', '-v']
+### ['GenSec', '-s', 'EFI_SECTION_GUID_DEFINED', '-g', '3D532050-5CDA-4FD0-879E-0F7F630D5AFB', '-r', 'PROCESSING_REQUIRED', '-o', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.guided', 's:\\Build\\AlderLakeBoardPkg\\DEBUG_VS2015x86\\FV\\Ffs\\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.tmp', '-v']
+Return Value = 2
+Verbose output Mode Set!
+GenSec tool start.
+Section type is EFI_SECTION_GUID_DEFINED
+Vendor Guid is 3D532050-5CDA-4FD0-879E-0F7F630D5AFB
+Guid Attribute is PROCESSING_REQUIRED
+the 0th input file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.tmp
+Output file name is s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.guided
+GenSec: ERROR 0001: Error opening file
+  s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.tmp
+GenSec: ERROR 0001: Error opening file for reading
+  s:\Build\AlderLakeBoardPkg\DEBUG_VS2015x86\FV\Ffs\AD198BA5-C330-41CD-B097-16488328B798FVADVANCED\AD198BA5-C330-41CD-B097-16488328B798SEC1.1.tmp
+GenSec: ERROR 2000: Status is not successful
+  Status value is 0x80000015
+GenSec tool done with return code is 0x2.
+
+
+
+
+build.py...
+ : error 7000: Failed to generate section
+
+
+
+build.py...
+ : error 7000: Failed to execute command
+
+
+- Failed -
+Build end time: 18:59:29, Dec.28 2020
+Build total time: 00:07:49

@@ -1,0 +1,35 @@
+From f43c52b90abd490f265b0a350fd1c4959bcbe46a Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 16:55:20 +0530
+Subject: [PATCH] MdeModulePkg/Library/SmmLockBoxLib: Fix DEADCODE Coverity
+ issue
+
+The function RestoreLockBox already has a NULL value check on Guid at
+the beginning of the function. So, at the else point Guid can't be 0.
+
+Hence,remove the redundant else block code.
+
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4317
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Library/SmmLockBoxLib/SmmLockBoxPeiLib.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/MdeModulePkg/Library/SmmLockBoxLib/SmmLockBoxPeiLib.c b/MdeModulePkg/Library/SmmLockBoxLib/SmmLockBoxPeiLib.c
+index 69d4c42ad1..3efeaa5912 100644
+--- a/MdeModulePkg/Library/SmmLockBoxLib/SmmLockBoxPeiLib.c
++++ b/MdeModulePkg/Library/SmmLockBoxLib/SmmLockBoxPeiLib.c
+@@ -599,8 +599,6 @@ RestoreLockBox (
+   LockBoxParameterRestore->Header.ReturnStatus = (UINT64)-1;
+   if (Guid != 0) {
+     CopyMem (&LockBoxParameterRestore->Guid, Guid, sizeof (*Guid));
+-  } else {
+-    ZeroMem (&LockBoxParameterRestore->Guid, sizeof (*Guid));
+   }
+ 
+   LockBoxParameterRestore->Buffer = (EFI_PHYSICAL_ADDRESS)(UINTN)Buffer;
+-- 
+2.36.1.windows.1
+

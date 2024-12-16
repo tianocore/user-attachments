@@ -1,0 +1,40 @@
+From 25a608936ba8d2ef2a40417d0533ca51fd839981 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:04:30 +0530
+Subject: [PATCH 1/1] MdeModulePkg/...FrameBufferBltLib: Fix
+ OVERFLOW_BEFORE_WIDEN Coverity issue
+
+Full pathname - MdeModulePkg/Library/FrameBufferBltLib
+
+"Configure->BytesPerPixel * Configure->PixelsPerScanLine"
+is a potentially overflowing expression with type "unsigned int" (32
+bits, unsigned) evaluated using 32-bit arithmetic, and then used in a
+context that expects an expression of type "INTN" (64 bits, signed).
+
+To avoid overflow, cast either "Configure->BytesPerPixel" or
+"Configure->PixelsPerScanLine" to type "INTN".
+
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4298
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c b/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
+index 432577bcfd6c..5ab2c5fb2f7b 100644
+--- a/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
++++ b/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
+@@ -618,7 +618,7 @@ FrameBufferBltLibVideoToVideo (
+   Offset      = Configure->BytesPerPixel * Offset;
+   Destination = Configure->FrameBuffer + Offset;
+ 
+-  LineStride = Configure->BytesPerPixel * Configure->PixelsPerScanLine;
++  LineStride = (INTN)Configure->BytesPerPixel * Configure->PixelsPerScanLine;
+   if (Destination > Source) {
+     //
+     // Copy from last line to avoid source is corrupted by copying
+-- 
+2.36.1.windows.1
+

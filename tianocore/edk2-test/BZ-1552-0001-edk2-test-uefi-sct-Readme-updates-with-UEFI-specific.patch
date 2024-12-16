@@ -1,0 +1,34 @@
+From fedd7a86095ce574651aed24308e25de826827b9 Mon Sep 17 00:00:00 2001
+From: G Edhaya Chandran <edhaya.chandran@arm.com>
+Date: Wed, 23 Oct 2024 23:51:34 +0530
+Subject: [PATCH v1 1/1] edk2-test: uefi-sct: Readme updates with UEFI
+ specifications and test case spec details
+
+Readme is updated with the UEFI specification tested by UEFI SCT.
+Also the new readthedocs.io link for SCT Case Spec is updated
+
+Signed-off-by: G Edhaya Chandran <edhaya.chandran@arm.com>
+---
+ uefi-sct/Readme.md | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/uefi-sct/Readme.md b/uefi-sct/Readme.md
+index 1a049b60aa7b..d0a4aeb22802 100644
+--- a/uefi-sct/Readme.md
++++ b/uefi-sct/Readme.md
+@@ -8,6 +8,12 @@ built-in UEFI Compliance Tests, as well as for integrating
+ user-defined tests that were developed using the
+ UEFI SCT open source code.
+ 
++Refer to [UEFI SCT Test Case Specification](https://uefi-sct-testcasespec.readthedocs.io/en/latest/) for detailed information for each assertion in the UEFI SCT fundamental service and protocol tests.
++The source of the test case specification is maintained here: [Doc/TestCaseSpec](Doc/TestCaseSpec)
++
++UEFI SCT verifies UEFI Specification version 2.7 (Errata A).
++There are tests developed that additionally cover supplementary features. For details, refer to the "New Features" on the [edk2-test Releases](https://github.com/tianocore/edk2-test/releases) page.
++
+ Contributions to the UEFI-SCT open source project are covered by the
+ TianoCore Contribution Agreement 1.1.
+ 
+-- 
+2.25.1
+

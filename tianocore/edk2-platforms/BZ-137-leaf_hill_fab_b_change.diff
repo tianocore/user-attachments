@@ -1,0 +1,13 @@
+diff --git a/Platform/BroxtonPlatformPkg/BuildBxtBios.sh b/Platform/BroxtonPlatformPkg/BuildBxtBios.sh
+index 4ea22bb..a0cd157 100755
+--- a/Platform/BroxtonPlatformPkg/BuildBxtBios.sh
++++ b/Platform/BroxtonPlatformPkg/BuildBxtBios.sh
+@@ -227,6 +227,9 @@ if [ $BoardId == "LH" ]; then
+   if [ $FabId == "D" ]; then
+     BOARD_REV=D
+     echo BOARD_REV = D >> $WORKSPACE/Conf/BiosId.env
++  else
++    BOARD_REV=B
++    echo BOARD_REV = B >> $WORKSPACE/Conf/BiosId.env
+   fi
+ fi

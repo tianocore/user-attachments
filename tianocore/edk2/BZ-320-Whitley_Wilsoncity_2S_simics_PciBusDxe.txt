@@ -1,0 +1,1072 @@
+PCI Platform Pre-Initialization (Before bus scanning)
+ Initialized SR-IOV Platform Data: PCIIovPolicy = 0x3; SystemPageSize = 0x1;
+PCI Bus First Scanning
+PciBus: Discovered PCI @ [00|00|00]
+
+PciBus: Discovered PCI @ [00|00|01]
+
+PciBus: Discovered PCI @ [00|00|02]
+
+PciBus: Discovered PCI @ [00|00|03]
+
+PciBus: Discovered PCI @ [00|00|04]
+
+PciBus: Discovered PCI @ [00|01|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|01]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|02]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|03]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|04]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|05]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|06]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|07]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|02|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFF;	Length = 0x2000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|02|01]
+   BAR[0]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|02|02]
+   BAR[0]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|02|04]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x18
+   BAR[2]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|03|00]
+
+PciBus: Discovered PPB @ [00|04|00]
+
+PciBus: Discovered PPB @ [00|04|00]
+
+PciBus: Discovered PPB @ [00|05|00]
+
+PciBus: Discovered PPB @ [00|05|00]
+
+PciBus: Discovered PPB @ [00|06|00]
+
+PciBus: Discovered PPB @ [00|06|00]
+
+PciBus: Discovered PPB @ [00|07|00]
+
+PciBus: Discovered PPB @ [00|07|00]
+
+PciBus: Discovered PCI @ [00|11|00]
+
+PciBus: Discovered PCI @ [00|11|01]
+
+PciBus: Discovered PCI @ [00|11|05]
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x800;	Offset = 0x24
+
+PciBus: Discovered PCI @ [00|14|00]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFF;	Length = 0x10000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|14|02]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|16|00]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|16|01]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|16|04]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|17|00]
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x800;	Offset = 0x24
+
+PciBus: Discovered PPB @ [00|1C|00]
+
+PciBus: Discovered PPB @ [00|1C|00]
+
+PciBus: Discovered PCI @ [05|00|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFFFFF;	Length = 0x1000000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [00|1C|04]
+
+PciBus: Discovered PPB @ [00|1C|04]
+
+PciBus: Discovered PPB @ [00|1C|05]
+
+PciBus: Discovered PPB @ [00|1C|05]
+
+PciBus: Discovered PCI @ [07|00|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[2]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x18
+
+PciBus: Discovered PCI @ [00|1F|00]
+
+PciBus: Discovered PCI @ [00|1F|02]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|1F|03]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+   BAR[2]: Type =   Io32; Alignment = 0x3;	Length = 0x4;	Offset = 0x1C
+   BAR[3]: Type =  Mem64; Alignment = 0xFFFF;	Length = 0x10000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|1F|04]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|1F|05]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|1F|07]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem64; Alignment = 0x1FFFFF;	Length = 0x200000;	Offset = 0x18
+   BAR[2]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x100;	Offset = 0x20
+
+PciBus: Discovered PCI @ [15|00|00]
+
+PciBus: Discovered PCI @ [15|00|01]
+
+PciBus: Discovered PCI @ [15|00|02]
+
+PciBus: Discovered PCI @ [15|00|03]
+
+PciBus: Discovered PCI @ [15|00|04]
+
+PciBus: Discovered PPB @ [15|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [15|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [2A|00|00]
+
+PciBus: Discovered PCI @ [2A|00|01]
+
+PciBus: Discovered PCI @ [2A|00|02]
+
+PciBus: Discovered PCI @ [2A|00|03]
+
+PciBus: Discovered PCI @ [2A|00|04]
+
+PciBus: Discovered PPB @ [2A|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [2A|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [3F|00|00]
+
+PciBus: Discovered PCI @ [3F|00|01]
+
+PciBus: Discovered PCI @ [3F|00|02]
+
+PciBus: Discovered PCI @ [3F|00|03]
+
+PciBus: Discovered PCI @ [3F|00|04]
+
+PciBus: Discovered PPB @ [3F|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [3F|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [54|00|00]
+
+PciBus: Discovered PCI @ [54|00|01]
+
+PciBus: Discovered PCI @ [54|00|02]
+
+PciBus: Discovered PCI @ [54|00|03]
+
+PciBus: Discovered PCI @ [54|00|04]
+
+PciBus: Discovered PPB @ [54|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [54|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [69|00|00]
+
+PciBus: Discovered PCI @ [69|00|01]
+
+PciBus: Discovered PCI @ [69|00|02]
+
+PciBus: Discovered PCI @ [69|00|03]
+
+PciBus: Discovered PCI @ [69|00|04]
+
+PciBus: Discovered PPB @ [69|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|03|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|03|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|04|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|04|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|05|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|05|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|00|00]
+
+PciBus: Discovered PCI @ [80|00|01]
+
+PciBus: Discovered PCI @ [80|00|02]
+
+PciBus: Discovered PCI @ [80|00|03]
+
+PciBus: Discovered PCI @ [80|00|04]
+
+PciBus: Discovered PCI @ [80|01|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|01]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|02]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|03]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|04]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|05]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|06]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|07]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|02|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFF;	Length = 0x2000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|02|01]
+   BAR[0]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [80|02|02]
+   BAR[0]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|02|04]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x18
+   BAR[2]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x20
+
+PciBus: Discovered PPB @ [80|04|00]
+
+PciBus: Discovered PPB @ [80|04|00]
+
+PciBus: Discovered PPB @ [80|05|00]
+
+PciBus: Discovered PPB @ [80|05|00]
+
+PciBus: Discovered PPB @ [80|06|00]
+
+PciBus: Discovered PPB @ [80|06|00]
+
+PciBus: Discovered PPB @ [80|07|00]
+
+PciBus: Discovered PPB @ [80|07|00]
+
+PciBus: Discovered PCI @ [98|00|00]
+
+PciBus: Discovered PCI @ [98|00|01]
+
+PciBus: Discovered PCI @ [98|00|02]
+
+PciBus: Discovered PCI @ [98|00|03]
+
+PciBus: Discovered PCI @ [98|00|04]
+
+PciBus: Discovered PPB @ [98|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [98|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [AC|00|00]
+
+PciBus: Discovered PCI @ [AC|00|01]
+
+PciBus: Discovered PCI @ [AC|00|02]
+
+PciBus: Discovered PCI @ [AC|00|03]
+
+PciBus: Discovered PCI @ [AC|00|04]
+
+PciBus: Discovered PPB @ [AC|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [AC|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [C0|00|00]
+
+PciBus: Discovered PCI @ [C0|00|01]
+
+PciBus: Discovered PCI @ [C0|00|02]
+
+PciBus: Discovered PCI @ [C0|00|03]
+
+PciBus: Discovered PCI @ [C0|00|04]
+
+PciBus: Discovered PPB @ [C0|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [C0|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [D4|00|00]
+
+PciBus: Discovered PCI @ [D4|00|01]
+
+PciBus: Discovered PCI @ [D4|00|02]
+
+PciBus: Discovered PCI @ [D4|00|03]
+
+PciBus: Discovered PCI @ [D4|00|04]
+
+PciBus: Discovered PPB @ [D4|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [D4|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [E8|00|00]
+
+PciBus: Discovered PCI @ [E8|00|01]
+
+PciBus: Discovered PCI @ [E8|00|02]
+
+PciBus: Discovered PCI @ [E8|00|03]
+
+PciBus: Discovered PCI @ [E8|00|04]
+
+PciBus: Discovered PPB @ [E8|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|03|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|03|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|04|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|04|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|05|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|05|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PCI Platform bus assigned
+PCI Platform Mid-Initialization (After bus number assignment)
+PciBus: Discovered PCI @ [00|00|00]
+
+PciBus: Discovered PCI @ [00|00|01]
+
+PciBus: Discovered PCI @ [00|00|02]
+
+PciBus: Discovered PCI @ [00|00|03]
+
+PciBus: Discovered PCI @ [00|00|04]
+
+PciBus: Discovered PCI @ [00|01|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|01]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|02]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|03]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|04]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|05]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|06]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|01|07]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|02|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFF;	Length = 0x2000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|02|01]
+   BAR[0]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|02|02]
+   BAR[0]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|02|04]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x18
+   BAR[2]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|03|00]
+
+PciBus: Discovered PPB @ [00|04|00]
+
+PciBus: Discovered PPB @ [00|05|00]
+
+PciBus: Discovered PPB @ [00|06|00]
+
+PciBus: Discovered PPB @ [00|07|00]
+
+PciBus: Discovered PCI @ [00|11|00]
+
+PciBus: Discovered PCI @ [00|11|01]
+
+PciBus: Discovered PCI @ [00|11|05]
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x800;	Offset = 0x24
+
+PciBus: Discovered PCI @ [00|14|00]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFF;	Length = 0x10000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|14|02]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|16|00]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|16|01]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|16|04]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|17|00]
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x800;	Offset = 0x24
+
+PciBus: Discovered PPB @ [00|1C|00]
+
+PciBus: Discovered PCI @ [05|00|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFFFFF;	Length = 0x1000000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [00|1C|04]
+
+PciBus: Discovered PPB @ [00|1C|05]
+
+PciBus: Discovered PCI @ [07|00|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[2]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x18
+
+PciBus: Discovered PCI @ [00|1F|00]
+
+PciBus: Discovered PCI @ [00|1F|02]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|1F|03]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+   BAR[2]: Type =   Io32; Alignment = 0x3;	Length = 0x4;	Offset = 0x1C
+   BAR[3]: Type =  Mem64; Alignment = 0xFFFF;	Length = 0x10000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|1F|04]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|1F|05]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|1F|07]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem64; Alignment = 0x1FFFFF;	Length = 0x200000;	Offset = 0x18
+   BAR[2]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x100;	Offset = 0x20
+
+PciBus: Discovered PCI @ [15|00|00]
+
+PciBus: Discovered PCI @ [15|00|01]
+
+PciBus: Discovered PCI @ [15|00|02]
+
+PciBus: Discovered PCI @ [15|00|03]
+
+PciBus: Discovered PCI @ [15|00|04]
+
+PciBus: Discovered PPB @ [15|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [2A|00|00]
+
+PciBus: Discovered PCI @ [2A|00|01]
+
+PciBus: Discovered PCI @ [2A|00|02]
+
+PciBus: Discovered PCI @ [2A|00|03]
+
+PciBus: Discovered PCI @ [2A|00|04]
+
+PciBus: Discovered PPB @ [2A|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [3F|00|00]
+
+PciBus: Discovered PCI @ [3F|00|01]
+
+PciBus: Discovered PCI @ [3F|00|02]
+
+PciBus: Discovered PCI @ [3F|00|03]
+
+PciBus: Discovered PCI @ [3F|00|04]
+
+PciBus: Discovered PPB @ [3F|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [54|00|00]
+
+PciBus: Discovered PCI @ [54|00|01]
+
+PciBus: Discovered PCI @ [54|00|02]
+
+PciBus: Discovered PCI @ [54|00|03]
+
+PciBus: Discovered PCI @ [54|00|04]
+
+PciBus: Discovered PPB @ [54|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [69|00|00]
+
+PciBus: Discovered PCI @ [69|00|01]
+
+PciBus: Discovered PCI @ [69|00|02]
+
+PciBus: Discovered PCI @ [69|00|03]
+
+PciBus: Discovered PCI @ [69|00|04]
+
+PciBus: Discovered PPB @ [69|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|03|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|04|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [69|05|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|00|00]
+
+PciBus: Discovered PCI @ [80|00|01]
+
+PciBus: Discovered PCI @ [80|00|02]
+
+PciBus: Discovered PCI @ [80|00|03]
+
+PciBus: Discovered PCI @ [80|00|04]
+
+PciBus: Discovered PCI @ [80|01|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|01]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|02]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|03]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|04]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|05]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|06]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|01|07]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|02|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFF;	Length = 0x2000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|02|01]
+   BAR[0]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [80|02|02]
+   BAR[0]: Type =  Mem32; Alignment = 0x7FFFF;	Length = 0x80000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [80|02|04]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x18
+   BAR[2]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x20
+
+PciBus: Discovered PPB @ [80|04|00]
+
+PciBus: Discovered PPB @ [80|05|00]
+
+PciBus: Discovered PPB @ [80|06|00]
+
+PciBus: Discovered PPB @ [80|07|00]
+
+PciBus: Discovered PCI @ [98|00|00]
+
+PciBus: Discovered PCI @ [98|00|01]
+
+PciBus: Discovered PCI @ [98|00|02]
+
+PciBus: Discovered PCI @ [98|00|03]
+
+PciBus: Discovered PCI @ [98|00|04]
+
+PciBus: Discovered PPB @ [98|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [AC|00|00]
+
+PciBus: Discovered PCI @ [AC|00|01]
+
+PciBus: Discovered PCI @ [AC|00|02]
+
+PciBus: Discovered PCI @ [AC|00|03]
+
+PciBus: Discovered PCI @ [AC|00|04]
+
+PciBus: Discovered PPB @ [AC|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [C0|00|00]
+
+PciBus: Discovered PCI @ [C0|00|01]
+
+PciBus: Discovered PCI @ [C0|00|02]
+
+PciBus: Discovered PCI @ [C0|00|03]
+
+PciBus: Discovered PCI @ [C0|00|04]
+
+PciBus: Discovered PPB @ [C0|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [D4|00|00]
+
+PciBus: Discovered PCI @ [D4|00|01]
+
+PciBus: Discovered PCI @ [D4|00|02]
+
+PciBus: Discovered PCI @ [D4|00|03]
+
+PciBus: Discovered PCI @ [D4|00|04]
+
+PciBus: Discovered PPB @ [D4|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [E8|00|00]
+
+PciBus: Discovered PCI @ [E8|00|01]
+
+PciBus: Discovered PCI @ [E8|00|02]
+
+PciBus: Discovered PCI @ [E8|00|03]
+
+PciBus: Discovered PCI @ [E8|00|04]
+
+PciBus: Discovered PPB @ [E8|02|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|03|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|04|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [E8|05|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->SubmitResources() - Success
+
+
+  Resource Type to assign :     1
+  Length to allocate:           1300000
+  Alignment:                    FFFFFF
+  Base Address:                 0
+Resource Type Assigned:   1
+  Base Address Assigned: 91000000
+  Length Assigned:       1300000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           500000
+  Alignment:                    1FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x200FFFA00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 200FFFA00000
+  Length Assigned:       500000
+
+
+  Resource Type to assign :     0
+  Length to allocate:           2000
+  Alignment:                    FFF
+  Base Address:                 0
+Resource Type Assigned:   0
+  Base Address Assigned: 2000
+  Length Assigned:       2000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x201FFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 201FFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x202FFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 202FFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x203FFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 203FFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x204FFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 204FFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x205FFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 205FFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           200000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x206FFFE00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 206FFFE00000
+  Length Assigned:       200000
+
+
+  Resource Type to assign :     1
+  Length to allocate:           200000
+  Alignment:                    FFFFF
+  Base Address:                 0
+Resource Type Assigned:   1
+  Base Address Assigned: C6000000
+  Length Assigned:       200000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x207FFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 207FFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x208FFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 208FFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x209FFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 209FFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x20AFFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 20AFFFF00000
+  Length Assigned:       100000
+
+
+  Resource Type to assign :     3
+  Length to allocate:           100000
+  Alignment:                    FFFFF
+  Base Address:                 0
+      Attempting 3 allocation at 0x20BFFFF00000 ........ Passed!!
+Resource Type Assigned:   3
+  Base Address Assigned: 20BFFFF00000
+  Length Assigned:       100000
+PciBus: HostBridge->NotifyPhase(AllocateResources) - Success
+PciBus: Resource Map for Root Bridge PciRoot(0x0)
+Type =   Io16; Base = 0x2000;	Length = 0x2000;	Alignment = 0xFFF
+   Base = 0x2000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PPB [00|1C|05:**]
+   Base = 0x3000;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [00|1F|04:20]
+   Base = 0x3020;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [00|17|00:20]
+   Base = 0x3040;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [00|11|05:20]
+   Base = 0x3060;	Length = 0x4;	Alignment = 0x3;	Owner = PCI [00|1F|03:1C]
+Type =  Mem32; Base = 0x91000000;	Length = 0x1300000;	Alignment = 0xFFFFFF
+   Base = 0x91000000;	Length = 0x1000000;	Alignment = 0xFFFFFF;	Owner = PPB [00|1C|00:**]
+   Base = 0x92000000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PPB [00|1C|05:**]
+   Base = 0x92100000;	Length = 0x80000;	Alignment = 0x7FFFF;	Owner = PCI [00|02|02:10]
+   Base = 0x92180000;	Length = 0x80000;	Alignment = 0x7FFFF;	Owner = PCI [00|02|01:14]
+   Base = 0x92200000;	Length = 0x80000;	Alignment = 0x7FFFF;	Owner = PCI [00|02|01:10]
+   Base = 0x92280000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|1F|02:10]
+   Base = 0x92284000;	Length = 0x2000;	Alignment = 0x1FFF;	Owner = PCI [00|02|00:10]
+   Base = 0x92286000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1F|05:10]
+   Base = 0x92287000;	Length = 0x800;	Alignment = 0xFFF;	Owner = PCI [00|17|00:24]
+   Base = 0x92288000;	Length = 0x800;	Alignment = 0xFFF;	Owner = PCI [00|11|05:24]
+Type =  Mem64; Base = 0x200FFFA00000;	Length = 0x500000;	Alignment = 0x1FFFFF
+   Base = 0x200FFFA00000;	Length = 0x200000;	Alignment = 0x1FFFFF;	Owner = PCI [00|1F|07:18]
+   Base = 0x200FFFC00000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PCI [00|1F|07:10]
+   Base = 0x200FFFD00000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PCI [00|02|04:10]
+   Base = 0x200FFFE00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PCI [00|02|04:20]
+   Base = 0x200FFFE20000;	Length = 0x10000;	Alignment = 0xFFFF;	Owner = PCI [00|1F|03:20]
+   Base = 0x200FFFE30000;	Length = 0x10000;	Alignment = 0xFFFF;	Owner = PCI [00|14|00:10]
+   Base = 0x200FFFE40000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|1F|03:10]
+   Base = 0x200FFFE44000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|02|04:18]
+   Base = 0x200FFFE48000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|07:10]
+   Base = 0x200FFFE4C000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|06:10]
+   Base = 0x200FFFE50000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|05:10]
+   Base = 0x200FFFE54000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|04:10]
+   Base = 0x200FFFE58000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|03:10]
+   Base = 0x200FFFE5C000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|02:10]
+   Base = 0x200FFFE60000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|01:10]
+   Base = 0x200FFFE64000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|00:10]
+   Base = 0x200FFFE68000;	Length = 0x100;	Alignment = 0xFFF;	Owner = PCI [00|1F|07:20]
+   Base = 0x200FFFE69000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|16|04:10]
+   Base = 0x200FFFE6A000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|16|01:10]
+   Base = 0x200FFFE6B000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|16|00:10]
+   Base = 0x200FFFE6C000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|14|02:10]
+
+PciBus: Resource Map for Bridge [00|04|00]
+
+PciBus: Resource Map for Bridge [00|05|00]
+
+PciBus: Resource Map for Bridge [00|06|00]
+
+PciBus: Resource Map for Bridge [00|07|00]
+
+PciBus: Resource Map for Bridge [00|1C|00]
+Type =  Mem32; Base = 0x91000000;	Length = 0x1000000;	Alignment = 0xFFFFFF
+   Base = 0x91000000;	Length = 0x1000000;	Alignment = 0xFFFFFF;	Owner = PCI [05|00|00:10]
+
+PciBus: Resource Map for Bridge [00|1C|04]
+
+PciBus: Resource Map for Bridge [00|1C|05]
+Type =   Io16; Base = 0x2000;	Length = 0x1000;	Alignment = 0xFFF
+   Base = 0x2000;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [07|00|00:18]
+Type =  Mem32; Base = 0x92000000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x92000000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PCI [07|00|00:10]
+   Base = 0x92020000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [07|00|00:14]
+
+PciBus: Resource Map for Root Bridge PciRoot(0x1)
+Type =  Mem64; Base = 0x201FFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x201FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [15|02|00:10]
+
+PciBus: Resource Map for Bridge [15|02|00]
+Type =  Mem64; Base = 0x201FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0x2)
+Type =  Mem64; Base = 0x202FFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x202FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [2A|02|00:10]
+
+PciBus: Resource Map for Bridge [2A|02|00]
+Type =  Mem64; Base = 0x202FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0x3)
+Type =  Mem64; Base = 0x203FFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x203FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [3F|02|00:10]
+
+PciBus: Resource Map for Bridge [3F|02|00]
+Type =  Mem64; Base = 0x203FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0x4)
+Type =  Mem64; Base = 0x204FFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x204FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [54|02|00:10]
+
+PciBus: Resource Map for Bridge [54|02|00]
+Type =  Mem64; Base = 0x204FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0x5)
+Type =  Mem64; Base = 0x205FFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x205FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [69|05|00:10]
+   Base = 0x205FFFF20000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [69|04|00:10]
+   Base = 0x205FFFF40000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [69|03|00:10]
+   Base = 0x205FFFF60000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [69|02|00:10]
+
+PciBus: Resource Map for Bridge [69|02|00]
+Type =  Mem64; Base = 0x205FFFF60000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Bridge [69|03|00]
+Type =  Mem64; Base = 0x205FFFF40000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Bridge [69|04|00]
+Type =  Mem64; Base = 0x205FFFF20000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Bridge [69|05|00]
+Type =  Mem64; Base = 0x205FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0x6)
+Type =  Mem32; Base = 0xC6000000;	Length = 0x200000;	Alignment = 0xFFFFF
+   Base = 0xC6000000;	Length = 0x80000;	Alignment = 0x7FFFF;	Owner = PCI [80|02|02:10]
+   Base = 0xC6080000;	Length = 0x80000;	Alignment = 0x7FFFF;	Owner = PCI [80|02|01:14]
+   Base = 0xC6100000;	Length = 0x80000;	Alignment = 0x7FFFF;	Owner = PCI [80|02|01:10]
+   Base = 0xC6180000;	Length = 0x2000;	Alignment = 0x1FFF;	Owner = PCI [80|02|00:10]
+Type =  Mem64; Base = 0x206FFFE00000;	Length = 0x200000;	Alignment = 0xFFFFF
+   Base = 0x206FFFE00000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PCI [80|02|04:10]
+   Base = 0x206FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PCI [80|02|04:20]
+   Base = 0x206FFFF20000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|02|04:18]
+   Base = 0x206FFFF24000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|01|07:10]
+   Base = 0x206FFFF28000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|01|06:10]
+   Base = 0x206FFFF2C000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|01|05:10]
+   Base = 0x206FFFF30000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|01|04:10]
+   Base = 0x206FFFF34000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|01|03:10]
+   Base = 0x206FFFF38000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|01|02:10]
+   Base = 0x206FFFF3C000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|01|01:10]
+   Base = 0x206FFFF40000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [80|01|00:10]
+
+PciBus: Resource Map for Bridge [80|04|00]
+
+PciBus: Resource Map for Bridge [80|05|00]
+
+PciBus: Resource Map for Bridge [80|06|00]
+
+PciBus: Resource Map for Bridge [80|07|00]
+
+PciBus: Resource Map for Root Bridge PciRoot(0x7)
+Type =  Mem64; Base = 0x207FFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x207FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [98|02|00:10]
+
+PciBus: Resource Map for Bridge [98|02|00]
+Type =  Mem64; Base = 0x207FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0x8)
+Type =  Mem64; Base = 0x208FFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x208FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [AC|02|00:10]
+
+PciBus: Resource Map for Bridge [AC|02|00]
+Type =  Mem64; Base = 0x208FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0x9)
+Type =  Mem64; Base = 0x209FFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x209FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [C0|02|00:10]
+
+PciBus: Resource Map for Bridge [C0|02|00]
+Type =  Mem64; Base = 0x209FFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0xA)
+Type =  Mem64; Base = 0x20AFFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x20AFFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [D4|02|00:10]
+
+PciBus: Resource Map for Bridge [D4|02|00]
+Type =  Mem64; Base = 0x20AFFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Root Bridge PciRoot(0xB)
+Type =  Mem64; Base = 0x20BFFFF00000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x20BFFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [E8|05|00:10]
+   Base = 0x20BFFFF20000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [E8|04|00:10]
+   Base = 0x20BFFFF40000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [E8|03|00:10]
+   Base = 0x20BFFFF60000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PPB [E8|02|00:10]
+
+PciBus: Resource Map for Bridge [E8|02|00]
+Type =  Mem64; Base = 0x20BFFFF60000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Bridge [E8|03|00]
+Type =  Mem64; Base = 0x20BFFFF40000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Bridge [E8|04|00]
+Type =  Mem64; Base = 0x20BFFFF20000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PciBus: Resource Map for Bridge [E8|05|00]
+Type =  Mem64; Base = 0x20BFFFF00000;	Length = 0x20000;	Alignment = 0x1FFFF
+
+PCI Platform Post-Initialization (After resource alloction)
+...

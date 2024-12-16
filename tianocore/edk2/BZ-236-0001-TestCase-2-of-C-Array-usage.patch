@@ -1,0 +1,72 @@
+From e87b5abecbdf135c9d3d5636719a127e4a2f1c7a Mon Sep 17 00:00:00 2001
+From: Liming Gao <liming.gao@intel.com>
+Date: Tue, 11 Dec 2018 08:47:01 +0800
+Subject: [Patch] TestCase 2 of C Array usage
+
+Array has no Array number
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Liming Gao <liming.gao@intel.com>
+---
+ MdePkg/Include/Dummy.h                        | 5 +++++
+ Nt32Pkg/Nt32Pkg.dec                           | 6 ++++++
+ Nt32Pkg/Nt32Pkg.dsc                           | 1 +
+ Nt32Pkg/WinNtFlashMapPei/WinNtFlashMapPei.inf | 1 +
+ 4 files changed, 13 insertions(+)
+ create mode 100644 MdePkg/Include/Dummy.h
+
+diff --git a/MdePkg/Include/Dummy.h b/MdePkg/Include/Dummy.h
+new file mode 100644
+index 0000000000..bad97c1cc3
+--- /dev/null
++++ b/MdePkg/Include/Dummy.h
+@@ -0,0 +1,5 @@
++
++typedef struct {
++  UINT8 Byte;
++} TEST_STRUCT;
++
+diff --git a/Nt32Pkg/Nt32Pkg.dec b/Nt32Pkg/Nt32Pkg.dec
+index 7b2cb8e8d0..39142e9e92 100644
+--- a/Nt32Pkg/Nt32Pkg.dec
++++ b/Nt32Pkg/Nt32Pkg.dec
+@@ -78,6 +78,12 @@
+   gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageFtwSpareBase|0x0|UINT32|0x00001015
+   gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageFtwWorkingBase|0x0|UINT32|0x00001016
+   gEfiNt32PkgTokenSpaceGuid.PcdWinNtFdBaseAddress|0x0|UINT32|0x00001017
++  gEfiNt32PkgTokenSpaceGuid.PcdMacAddress|{0x0}|TEST_STRUCT[]|0x00001018 {
++    <HeaderFiles>
++      Dummy.h
++    <Packages>
++      MdePkg/MdePkg.dec
++  }
+ 
+ [PcdsFixedAtBuild, PcdsPatchableInModule]
+   gEfiNt32PkgTokenSpaceGuid.PcdWinNtBootMode|1|UINT32|0x00001006
+diff --git a/Nt32Pkg/Nt32Pkg.dsc b/Nt32Pkg/Nt32Pkg.dsc
+index 4dbde0cc45..eaf8f4ca55 100644
+--- a/Nt32Pkg/Nt32Pkg.dsc
++++ b/Nt32Pkg/Nt32Pkg.dsc
+@@ -275,6 +275,7 @@
+   gEfiMdePkgTokenSpaceGuid.PcdReportStatusCodePropertyMask|0x0f
+   gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxVariableSize|0x2000
++  gEfiNt32PkgTokenSpaceGuid.PcdMacAddress|{CODE({0x1, 0x2, 0x3, 0x4, 0x1, 0x2, 0x3, 0x4, 0x1, 0x2, 0x3, 0x4, 0x1, 0x2, 0x3, 0x4})}
+ 
+ !if $(ALLOW_HTTP_CONNECTIONS) == TRUE
+   gEfiNetworkPkgTokenSpaceGuid.PcdAllowHttpConnections|TRUE
+diff --git a/Nt32Pkg/WinNtFlashMapPei/WinNtFlashMapPei.inf b/Nt32Pkg/WinNtFlashMapPei/WinNtFlashMapPei.inf
+index 4f1e02d8eb..a282b9346a 100644
+--- a/Nt32Pkg/WinNtFlashMapPei/WinNtFlashMapPei.inf
++++ b/Nt32Pkg/WinNtFlashMapPei/WinNtFlashMapPei.inf
+@@ -61,6 +61,7 @@
+   gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageFtwWorkingBase
+   gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageFtwSpareBase
+   gEfiNt32PkgTokenSpaceGuid.PcdWinNtFlashNvStorageVariableBase
++  gEfiNt32PkgTokenSpaceGuid.PcdMacAddress
+ 
+ [Depex]
+   gNtFwhPpiGuid
+-- 
+2.13.0.windows.1
+

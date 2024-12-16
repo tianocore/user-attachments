@@ -1,0 +1,109 @@
+From 41ae4a36a54b53b982514917ba53bdea387c7197 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Fri, 27 Jan 2023 13:15:05 +0530
+Subject: [PATCH 2/2] MdeModulePkg/Universal/DisplayEngineDxe: Fix FORWARD_NULL
+ Coverity issues
+
+The function UiDisplayMenu has ASSERT (MenuOption != NULL); or
+ASSERT (HotKey != NULL); checks at various places in the function.
+
+Similary, the function BrowserStatusProcess has a ASSERT check on
+ASSERT (OpCodeBuf != NULL && OpCodeBuf->OpCode == EFI_IFR_WARNING_IF_OP);
+
+However these are applicable only in DEBUG mode. In RELEASE mode,
+the code continues further to unconditionally dereference MenuOption /
+HotKey / OpCodeBuf as the case may be which can lead to CRASH.
+
+To avoid unconditional dereference usage, add due NULL checks for safety.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4292
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../Universal/DisplayEngineDxe/FormDisplay.c  | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/DisplayEngineDxe/FormDisplay.c b/MdeModulePkg/Universal/DisplayEngineDxe/FormDisplay.c
+index a7b7dc743a..f5909d7d9a 100644
+--- a/MdeModulePkg/Universal/DisplayEngineDxe/FormDisplay.c
++++ b/MdeModulePkg/Universal/DisplayEngineDxe/FormDisplay.c
+@@ -3257,6 +3257,10 @@ UiDisplayMenu (
+             // ignore the selection and go back to reading keys.
+             //
+             ASSERT (MenuOption != NULL);
++            if (MenuOption == NULL) {
++              return EFI_NOT_FOUND;
++            }
++
+             if (IsListEmpty (&gMenuOption) || MenuOption->GrayOut || MenuOption->ReadOnly) {
+               ControlFlag = CfReadKey;
+               break;
+@@ -3308,6 +3312,10 @@ UiDisplayMenu (
+             }
+ 
+             ASSERT (MenuOption != NULL);
++            if (MenuOption == NULL) {
++              return EFI_NOT_FOUND;
++            }
++
+             if ((MenuOption->ThisTag->OpCode->OpCode == EFI_IFR_CHECKBOX_OP) && !MenuOption->GrayOut && !MenuOption->ReadOnly) {
+               ScreenOperation = UiSelect;
+             }
+@@ -3394,6 +3402,10 @@ UiDisplayMenu (
+         ControlFlag = CfRepaint;
+ 
+         ASSERT (MenuOption != NULL);
++        if (MenuOption == NULL) {
++          return EFI_NOT_FOUND;
++        }
++
+         Statement = MenuOption->ThisTag;
+         if (Statement->OpCode->OpCode == EFI_IFR_TEXT_OP) {
+           break;
+@@ -3450,6 +3462,9 @@ UiDisplayMenu (
+         ControlFlag = CfRepaint;
+ 
+         ASSERT (HotKey != NULL);
++        if (HotKey == NULL) {
++          return EFI_NOT_FOUND;
++        }
+ 
+         if (FxConfirmPopup (HotKey->Action)) {
+           gUserInput->Action = HotKey->Action;
+@@ -3469,6 +3484,10 @@ UiDisplayMenu (
+       case CfUiLeft:
+         ControlFlag = CfRepaint;
+         ASSERT (MenuOption != NULL);
++        if (MenuOption == NULL) {
++          return EFI_NOT_FOUND;
++        }
++
+         if ((MenuOption->ThisTag->OpCode->OpCode == EFI_IFR_DATE_OP) || (MenuOption->ThisTag->OpCode->OpCode == EFI_IFR_TIME_OP)) {
+           if (MenuOption->Sequence != 0) {
+             //
+@@ -3484,6 +3503,10 @@ UiDisplayMenu (
+       case CfUiRight:
+         ControlFlag = CfRepaint;
+         ASSERT (MenuOption != NULL);
++        if (MenuOption == NULL) {
++          return EFI_NOT_FOUND;
++        }
++
+         if ((MenuOption->ThisTag->OpCode->OpCode == EFI_IFR_DATE_OP) || (MenuOption->ThisTag->OpCode->OpCode == EFI_IFR_TIME_OP)) {
+           if (MenuOption->Sequence != 2) {
+             //
+@@ -3940,6 +3963,10 @@ BrowserStatusProcess (
+   if (gFormData->BrowserStatus == (BROWSER_WARNING_IF)) {
+     ASSERT (OpCodeBuf != NULL && OpCodeBuf->OpCode == EFI_IFR_WARNING_IF_OP);
+ 
++    if ((OpCodeBuf == NULL) || (OpCodeBuf->OpCode != EFI_IFR_WARNING_IF_OP)) {
++      return;
++    }
++
+     TimeOut     = ((EFI_IFR_WARNING_IF *)OpCodeBuf)->TimeOut;
+     StringToken = ((EFI_IFR_WARNING_IF *)OpCodeBuf)->Warning;
+   } else {
+-- 
+2.36.1.windows.1
+

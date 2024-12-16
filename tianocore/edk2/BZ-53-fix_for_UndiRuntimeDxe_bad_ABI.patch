@@ -1,0 +1,25 @@
+diff --git a/OptionRomPkg/UndiRuntimeDxe/Decode.c b/OptionRomPkg/UndiRuntimeDxe/Decode.c
+index 5f85347..694bfab 100644
+--- a/OptionRomPkg/UndiRuntimeDxe/Decode.c
++++ b/OptionRomPkg/UndiRuntimeDxe/Decode.c
+@@ -1276,6 +1276,7 @@ UNDI_Receive (
+ **/
+ // TODO:    cdb - add argument and description to function comment
+ VOID
++EFIAPI
+ UNDI_APIEntry_new (
+   IN  UINT64 cdb
+   )
+diff --git a/OptionRomPkg/UndiRuntimeDxe/Undi32.h b/OptionRomPkg/UndiRuntimeDxe/Undi32.h
+index 18341dd..b441bac 100644
+--- a/OptionRomPkg/UndiRuntimeDxe/Undi32.h
++++ b/OptionRomPkg/UndiRuntimeDxe/Undi32.h
+@@ -338,7 +338,7 @@ UNDI_Receive (
+   IN  NIC_DATA_INSTANCE *AdapterInfo
+   );
+ 
+-VOID UNDI_APIEntry_new(UINT64);
++VOID EFIAPI UNDI_APIEntry_new(UINT64);
+ VOID UNDI_APIEntry_Common(UINT64);
+ 
+ PXE_IPV4 convert_mcip(PXE_MAC_ADDR *);

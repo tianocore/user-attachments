@@ -1,0 +1,36 @@
+From ebb4c7b4b2e01cc4e8a5db6dbe1fe243a44e13d5 Mon Sep 17 00:00:00 2001
+From: Jiwei Wei <weijiwei@byosoft.com.cn>
+Date: Wed, 16 Dec 2020 14:10:47 +0800
+Subject: [PATCH] MinPlatformPkg:Fixed MinPlatformPkg.dec
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3035
+
+Several new LibraryClasses are missing from MinPlatformPkg.dec,
+so i add some new interfaces.
+
+Signed-off-by: Jiwei Wei <weijiwei@byosoft.com.cn>
+Reviewed-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ Platform/Intel/MinPlatformPkg/MinPlatformPkg.dec | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Platform/Intel/MinPlatformPkg/MinPlatformPkg.dec b/Platform/Intel/MinPlatformPkg/MinPlatformPkg.dec
+index 7ef189da..03738fa9 100644
+--- a/Platform/Intel/MinPlatformPkg/MinPlatformPkg.dec
++++ b/Platform/Intel/MinPlatformPkg/MinPlatformPkg.dec
+@@ -77,6 +77,12 @@
+ 
+   ReportCpuHobLib|Include/Library/ReportCpuHobLib.h
+ 
++  BoardBootManagerLib|Include/Library/BoardBootManagerLib.h
++  CompressLib|Include/Library/CompressLib.h
++  HobVariableLib|Include/Library/HobVariableLib.h
++  MultiBoardAcpiSupportLib|Include/Library/MultiBoardAcpiSupportLib.h
++  ReportFvLib|Include/Library/ReportFvLib.h
++
+ [PcdsFixedAtBuild, PcdsPatchableInModule]
+ 
+   gMinPlatformPkgTokenSpaceGuid.PcdFspMaxUpdSize|0x00000000|UINT32|0x80000000
+-- 
+2.26.2.windows.1
+

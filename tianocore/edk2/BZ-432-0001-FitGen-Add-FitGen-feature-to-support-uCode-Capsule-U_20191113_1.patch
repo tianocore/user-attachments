@@ -1,0 +1,170 @@
+From d2b788ef111eeb91c8fffaf49ac7fa373daa71de Mon Sep 17 00:00:00 2001
+From: Kenji Chen <kenji.chen@intel.com>
+Date: Tue, 5 Nov 2019 11:01:32 +0800
+Subject: [PATCH] FitGen: Add FitGen feature to support uCode Capsule Update
+
+Add slot mode handling with a header array.
+
+Change-Id: Icee955a8cb4456ceb233e7a068fa7db733464626
+Signed-off-by: Kenji Chen <kenji.chen@intel.com>
+---
+ Silicon/Intel/Tools/FitGen/FitGen.c | 78 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 71 insertions(+), 7 deletions(-)
+
+diff --git a/Silicon/Intel/Tools/FitGen/FitGen.c b/Silicon/Intel/Tools/FitGen/FitGen.c
+index faf98800..3bacb192 100644
+--- a/Silicon/Intel/Tools/FitGen/FitGen.c
++++ b/Silicon/Intel/Tools/FitGen/FitGen.c
+@@ -315,6 +315,7 @@ Returns:
+           "\t[-F <FitTablePointerOffset>] [-F <FitTablePointerOffset>] [-V <FitHeaderVersion>]\n"
+           "\t[-NA]\n"
+           "\t[-CLEAR]\n"
++          "\t[-L <MicrocodeSlotSize>]\n"
+           "\t[-I <BiosInfoGuid>]\n"
+           "\t[-S <StartupAcmAddress StartupAcmSize>|<StartupAcmGuid>] [-V <StartupAcmVersion>]\n"
+           "\t[-B <BiosModuleAddress BiosModuleSize>] [-B ...] [-V <BiosModuleVersion>]\n"
+@@ -340,6 +341,7 @@ Returns:
+   printf ("\tMicrocodeRegionOffset  - Offset of Microcode region in input FD image.\n");
+   printf ("\tMicrocodeRegionSize    - Size of Microcode region in input FD image.\n");
+   printf ("\tMicrocodeGuid          - Guid of Microcode Module.\n");
++  printf ("\tMicrocodeSlotSize      - Occupied region size of each Microcode binary.\n");
+   printf ("\t-NA                    - No 0x800 aligned Microcode requirement. No -NA means Microcode is 0x800 aligned.\n");
+   printf ("\tRecordType             - FIT entry record type. User should ensure it is ordered.\n");
+   printf ("\tRecordDataAddress      - FIT entry record data address.\n");
+@@ -765,6 +767,7 @@ Returns:
+ {
+   EFI_GUID  Guid;
+   INTN      Index;
++  UINTN     MicrocodeIndex;
+   UINT8     *FileBuffer;
+   UINT32    FileSize;
+   UINT32    Type;
+@@ -774,8 +777,10 @@ Returns:
+   UINT32    MicrocodeBase;
+   UINT32    MicrocodeSize;
+   UINT8     *MicrocodeBuffer;
++  UINT8     *MicrocodeBufferEnd;
+   UINT32    MicrocodeRegionOffset;
+   UINT32    MicrocodeRegionSize;
++  UINT32    SlotSize;
+   STATUS    Status;
+   EFI_FIRMWARE_VOLUME_HEADER  *FvHeader;
+   UINTN                       FitEntryNumber;
+@@ -783,6 +788,7 @@ Returns:
+   BIOS_INFO_HEADER            *BiosInfo;
+   BIOS_INFO_STRUCT            *BiosInfoStruct;
+   UINTN                       BiosInfoIndex;
++  UINT32                      AlignmentByte;
+ 
+   //
+   // Init index
+@@ -900,7 +906,22 @@ Returns:
+   }
+ 
+   //
+-  // 0.5 BiosInfo
++  // 0.5 SlotSize
++  //
++  if ((Index + 1 >= argc) ||
++      ((strcmp (argv[Index], "-L") != 0) &&
++       (strcmp (argv[Index], "-l") != 0)) ) {
++    //
++    // Bypass
++    //
++    SlotSize = 0;
++  } else {
++    SlotSize = xtoi (argv[Index + 1]);
++    Index += 2;
++  }
++
++  //
++  // 0.6 BiosInfo
+   //
+   if ((Index + 1 >= argc) ||
+       ((strcmp (argv[Index], "-I") != 0) &&
+@@ -998,6 +1019,7 @@ Returns:
+ 
+             MicrocodeFileBuffer = FLASH_TO_MEMORY (MicrocodeRegionOffset, FdBuffer, FdSize);
+             MicrocodeFileSize = MicrocodeRegionSize;
++            MicrocodeBufferEnd = MicrocodeFileBuffer + MicrocodeFileSize;
+             MicrocodeBase = MicrocodeRegionOffset;
+ 
+             FvHeader = (EFI_FIRMWARE_VOLUME_HEADER *)MicrocodeFileBuffer;
+@@ -1007,13 +1029,26 @@ Returns:
+             } else {
+               MicrocodeBuffer = MicrocodeFileBuffer;
+             }
++
++            AlignmentByte = 1;
++            AlignmentByte = AlignmentByte << ((FvHeader->Attributes&0x000F0000) >> 16);
++
++            ///
++            /// Make MicrocodeBuffer address to alignment.
++            ///
++            if ((UINT32)MicrocodeBuffer % AlignmentByte != 0) {
++              MicrocodeBuffer = (UINT8 *)((UINT32)MicrocodeBuffer &~(AlignmentByte - 1));
++              MicrocodeBuffer += AlignmentByte;
++            }
++
+             while ((UINT32)(MicrocodeBuffer - MicrocodeFileBuffer) < MicrocodeFileSize) {
+-              if (*(UINT32 *)(MicrocodeBuffer) != 0x1) { // HeaderVersion
+-                break;
+-              }
+-              if (*(UINT32 *)(MicrocodeBuffer + 20) != 0x1) { // LoaderVersion
+-                break;
++              if (*(UINT32 *)(MicrocodeBuffer) != 0x1 ||
++                  *(UINT32 *)(MicrocodeBuffer + 20) != 0x1
++                 ) { // HeaderVersion
++                MicrocodeBuffer += 1024;
++                continue;
+               }
++
+               if (*(UINT32 *)(MicrocodeBuffer + 28) == 0) { // DataSize
+                 MicrocodeSize = 2048;
+               } else {
+@@ -1036,12 +1071,41 @@ Returns:
+               }
+               gFitTableContext.Microcode[gFitTableContext.MicrocodeNumber].Type = FIT_TABLE_TYPE_MICROCODE;
+               gFitTableContext.Microcode[gFitTableContext.MicrocodeNumber].Address = MicrocodeBase + ((UINT32) (UINTN) MicrocodeBuffer - (UINT32) (UINTN) MicrocodeFileBuffer);
+-              gFitTableContext.Microcode[gFitTableContext.MicrocodeNumber].Size = MicrocodeSize;
++              //
++              // No longer use.
++              //
++              //gFitTableContext.Microcode[gFitTableContext.MicrocodeNumber].Size = MicrocodeSize;
+               gFitTableContext.MicrocodeNumber++;
+               gFitTableContext.FitEntryNumber++;
+ 
+               MicrocodeBuffer += MicrocodeSize;
+             }
++
++            if (SlotSize != 0) {
++              ///
++              /// Check whether each uCode is alignment with SlotSize bytes.
++              ///
++              for (MicrocodeIndex = 1; MicrocodeIndex < (INTN)gFitTableContext.MicrocodeNumber; MicrocodeIndex++) {
++                if (gFitTableContext.Microcode[MicrocodeIndex].Address - gFitTableContext.Microcode[MicrocodeIndex - 1].Address != SlotSize) {
++                  printf ("uCode must be follow SlotSize(%lu) alignment.\n", SlotSize);
++                  ASSERT (FALSE);
++                }
++              }
++
++              ///
++              /// Assume the empty space follows the uCode array.
++              ///
++              MicrocodeBuffer = (UINT8 *)(gFitTableContext.Microcode[gFitTableContext.MicrocodeNumber - 1].Address - MicrocodeBase + MicrocodeFileBuffer);
++              MicrocodeBuffer += SlotSize;
++              while (MicrocodeBuffer + SlotSize <= MicrocodeBufferEnd) {
++                gFitTableContext.Microcode[gFitTableContext.MicrocodeNumber].Type = FIT_TABLE_TYPE_MICROCODE;
++                gFitTableContext.Microcode[gFitTableContext.MicrocodeNumber].Address = MicrocodeBase + ((UINT32) (UINTN) MicrocodeBuffer - (UINT32) (UINTN) MicrocodeFileBuffer);
++                gFitTableContext.MicrocodeNumber++;
++                gFitTableContext.FitEntryNumber++;
++
++                MicrocodeBuffer += SlotSize;
++              }
++            }
+           }
+           break;
+         case FIT_TABLE_TYPE_TPM_POLICY:
+-- 
+2.16.2.windows.1
+

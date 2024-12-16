@@ -1,0 +1,34 @@
+From 9b50c1efbf831c16d1a1461a48115959b1b4e6d3 Mon Sep 17 00:00:00 2001
+From: BrentHoltsclaw <brent.holtsclaw@intel.com>
+Date: Thu, 2 May 2019 16:51:02 -0700
+Subject: [PATCH 5/6] fix IScsiReceivePdu integer overflow
+
+---
+ NetworkPkg/IScsiDxe/IScsiProto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/NetworkPkg/IScsiDxe/IScsiProto.c b/NetworkPkg/IScsiDxe/IScsiProto.c
+index 6fbf973e35..45abec6120 100644
+--- a/NetworkPkg/IScsiDxe/IScsiProto.c
++++ b/NetworkPkg/IScsiDxe/IScsiProto.c
+@@ -1363,7 +1363,7 @@ IScsiReceivePdu (
+     // if the PDU is an iSCSI SCSI data.
+     //
+     InDataOffset = ISCSI_GET_BUFFER_OFFSET (Header);
+-    if ((Context == NULL) || ((InDataOffset + Len) > Context->InDataLen)) {
++    if ((Context == NULL)|| (Context->InDataLen < Len) || (InDataOffset  > (Context->InDataLen - Len)) ) {
+       Status = EFI_PROTOCOL_ERROR;
+       goto ON_EXIT;
+     }
+@@ -2685,7 +2685,7 @@ IScsiOnR2TRcvd (
+   XferContext->Offset             = R2THdr->BufferOffset;
+   XferContext->DesiredLength      = R2THdr->DesiredDataTransferLength;
+ 
+-  if (((XferContext->Offset + XferContext->DesiredLength) > Packet->OutTransferLength) ||
++  if ((XferContext->Offset  > (Packet->OutTransferLength - XferContext->DesiredLength)) || (Packet->OutTransferLength < XferContext->DesiredLength) ||
+       (XferContext->DesiredLength > Tcb->Conn->Session->MaxBurstLength)
+       ) {
+     return EFI_PROTOCOL_ERROR;
+-- 
+2.20.1.windows.1
+

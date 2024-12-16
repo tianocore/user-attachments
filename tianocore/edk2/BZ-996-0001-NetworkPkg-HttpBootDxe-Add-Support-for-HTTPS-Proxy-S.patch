@@ -1,0 +1,573 @@
+From db259a05c81c12e517265b999d9170deb1d603de Mon Sep 17 00:00:00 2001
+Message-Id: <db259a05c81c12e517265b999d9170deb1d603de.1655938417.git.saloni.kasbekar@intel.com>
+From: Saloni Kasbekar <saloni.kasbekar@intel.com>
+Date: Wed, 22 Jun 2022 11:36:30 -0700
+Subject: [PATCH 1/1] NetworkPkg/HttpBootDxe: Add Support for HTTPS Proxy
+ Server for HTTP Boot
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3951
+
+Add CONNECT HTTP command in order to create a tunnel from HTTPS
+Proxy Server to EndPoint Server.
+Add support to connect through proxy server using DevicePath
+sent to the Boot Manager.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Wu Jiaxin <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Signed-off-by: Saloni Kasbekar <saloni.kasbekar@intel.com>
+---
+ .../Library/UefiBootManagerLib/BmBoot.c       |  11 ++
+ MdePkg/Include/Protocol/Http.h                |   5 +
+ NetworkPkg/HttpBootDxe/HttpBootClient.c       | 168 +++++++++++++++++-
+ NetworkPkg/HttpBootDxe/HttpBootClient.h       |  16 ++
+ NetworkPkg/HttpBootDxe/HttpBootDxe.h          |   6 +
+ NetworkPkg/HttpBootDxe/HttpBootImpl.c         |  46 +++--
+ NetworkPkg/HttpBootDxe/HttpBootSupport.c      |  13 +-
+ NetworkPkg/HttpBootDxe/HttpBootSupport.h      |   8 +-
+ NetworkPkg/HttpDxe/HttpImpl.c                 |  21 ++-
+ NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c    |   5 +
+ 10 files changed, 273 insertions(+), 26 deletions(-)
+
+diff --git a/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c b/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
+index 962892d38f14..c5f09b619a89 100644
+--- a/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
++++ b/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
+@@ -1513,7 +1513,9 @@ BmExpandLoadFiles (
+   UINTN                     HandleCount;
+   UINTN                     Index;
+   EFI_DEVICE_PATH_PROTOCOL  *Node;
++  URI_DEVICE_PATH           *NullUriPath;
+ 
++  NullUriPath = NULL;
+   //
+   // Get file buffer from load file instance.
+   //
+@@ -1543,10 +1545,19 @@ BmExpandLoadFiles (
+       HandleCount = 0;
+     }
+ 
++    NullUriPath = (URI_DEVICE_PATH *)CreateDeviceNode (
++                                       MESSAGING_DEVICE_PATH,
++                                       MSG_URI_DP,
++                                       (UINT16)(sizeof (URI_DEVICE_PATH))
++                                       );
++
+     for (Index = 0; Index < HandleCount; Index++) {
+       if (BmMatchHttpBootDevicePath (DevicePathFromHandle (Handles[Index]), FilePath)) {
+         Handle = Handles[Index];
+         break;
++      } else if (BmMatchHttpBootDevicePath (AppendDevicePathNode (DevicePathFromHandle (Handles[Index]), (EFI_DEVICE_PATH_PROTOCOL *)NullUriPath), FilePath)) {
++        Handle = Handles[Index];
++        break;
+       }
+     }
+ 
+diff --git a/MdePkg/Include/Protocol/Http.h b/MdePkg/Include/Protocol/Http.h
+index 28e622159392..4cf8fa4c0c97 100644
+--- a/MdePkg/Include/Protocol/Http.h
++++ b/MdePkg/Include/Protocol/Http.h
+@@ -191,6 +191,11 @@ typedef struct {
+   /// is assumed. See RFC 3986 for more details on URI syntax.
+   ///
+   CHAR16             *Url;
++  ///
++  /// The URI of an endpoint host if the Url field contains the address of a proxy server.
++  /// This field will be NULL if a proxy server is not involved.
++  ///
++  CHAR16             *EndPointUrl;
+ } EFI_HTTP_REQUEST_DATA;
+ 
+ ///
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootClient.c b/NetworkPkg/HttpBootDxe/HttpBootClient.c
+index 62e87238fef7..2a4608414bd9 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootClient.c
++++ b/NetworkPkg/HttpBootDxe/HttpBootClient.c
+@@ -901,6 +901,168 @@ HttpBootGetBootFileCallback (
+   return EFI_SUCCESS;
+ }
+ 
++/**
++  This function establishes a connection through a proxy server
++
++  @param[in]       Private         The pointer to the driver's private data.
++
++  @retval EFI_SUCCESS              Connection successful.
++  @retval EFI_OUT_OF_RESOURCES     Could not allocate needed resources
++  @retval Others                   Unexpected error happened.
++
++**/
++EFI_STATUS
++HttpBootConnectProxy (
++  IN     HTTP_BOOT_PRIVATE_DATA  *Private
++  )
++{
++  EFI_STATUS             Status;
++  EFI_HTTP_STATUS_CODE   StatusCode;
++  CHAR8                  *HostName;
++  EFI_HTTP_REQUEST_DATA  *RequestData;
++  HTTP_IO_RESPONSE_DATA  *ResponseData;
++  HTTP_IO                *HttpIo;
++  HTTP_IO_HEADER         *HttpIoHeader;
++  CHAR16                 *Url;
++  CHAR16                 *EndPointUrl;
++  UINTN                  UrlSize;
++
++  UrlSize = AsciiStrSize (Private->BootFileUri);
++  Url     = AllocatePool (UrlSize * sizeof (CHAR16));
++  if (Url == NULL) {
++    return EFI_OUT_OF_RESOURCES;
++  }
++
++  AsciiStrToUnicodeStrS (Private->BootFileUri, Url, UrlSize);
++
++  UrlSize     = AsciiStrSize (Private->EndPointUri);
++  EndPointUrl = AllocatePool (UrlSize * (sizeof (CHAR16)));
++  if (EndPointUrl == NULL) {
++    return EFI_OUT_OF_RESOURCES;
++  }
++
++  CopyMem (EndPointUrl, Private->EndPointUri, UrlSize);
++
++  //
++  // 2. Send HTTP request message.
++  //
++
++  //
++  // 2.1 Build HTTP header for the request, 2 header is needed to send a CONNECT method:
++  //       Host
++  //       User
++  //
++  HttpIoHeader = HttpIoCreateHeader (2);
++  if (HttpIoHeader == NULL) {
++    Status = EFI_OUT_OF_RESOURCES;
++    goto ERROR_3;
++  }
++
++  //
++  // Add HTTP header field 1: Host (proxy)
++  //
++  HostName = Private->EndPointUri;
++  Status   = HttpIoSetHeader (
++               HttpIoHeader,
++               HTTP_HEADER_HOST,
++               HostName
++               );
++  if (EFI_ERROR (Status)) {
++    goto ERROR_3;
++  }
++
++  //
++  // Add HTTP header field 2: User-Agent
++  //
++  Status = HttpIoSetHeader (
++             HttpIoHeader,
++             HTTP_HEADER_USER_AGENT,
++             HTTP_USER_AGENT_EFI_HTTP_BOOT
++             );
++  if (EFI_ERROR (Status)) {
++    goto ERROR_3;
++  }
++
++  //
++  // 2.2 Build the rest of HTTP request info.
++  //
++  RequestData = AllocatePool (sizeof (EFI_HTTP_REQUEST_DATA));
++  if (RequestData == NULL) {
++    Status = EFI_OUT_OF_RESOURCES;
++    goto ERROR_3;
++  }
++
++  RequestData->Method      = HttpMethodConnect;
++  RequestData->Url         = Url;
++  RequestData->EndPointUrl = EndPointUrl;
++
++  //
++  // 2.4 Send out the request to HTTP server.
++  //
++  HttpIo = &Private->HttpIo;
++  Status = HttpIoSendRequest (
++             HttpIo,
++             RequestData,
++             HttpIoHeader->HeaderCount,
++             HttpIoHeader->Headers,
++             0,
++             NULL
++             );
++  if (EFI_ERROR (Status)) {
++    goto ERROR_4;
++  }
++
++  //
++  // 3. Receive HTTP response message.
++  //
++
++  //
++  // 3.1 First step, use zero BodyLength to only receive the response headers.
++  //
++  ResponseData = AllocateZeroPool (sizeof (HTTP_IO_RESPONSE_DATA));
++  if (ResponseData == NULL) {
++    Status = EFI_OUT_OF_RESOURCES;
++    goto ERROR_4;
++  }
++
++  Status = HttpIoRecvResponse (
++             &Private->HttpIo,
++             TRUE,
++             ResponseData
++             );
++
++  if (EFI_ERROR (Status) || EFI_ERROR (ResponseData->Status)) {
++    if (EFI_ERROR (ResponseData->Status)) {
++      StatusCode = HttpIo->RspToken.Message->Data.Response->StatusCode;
++      HttpBootPrintErrorMessage (StatusCode);
++      Status = ResponseData->Status;
++    }
++
++    goto ERROR_5;
++  }
++
++  return Status;
++
++ERROR_5:
++  if (ResponseData != NULL) {
++    FreePool (ResponseData);
++  }
++
++ERROR_4:
++  if (RequestData != NULL) {
++    FreePool (RequestData);
++  }
++
++ERROR_3:
++  HttpIoFreeHeader (HttpIoHeader);
++
++  if (Url != NULL) {
++    FreePool (Url);
++  }
++
++  return Status;
++}
++
+ /**
+   This function download the boot file by using UEFI HTTP protocol.
+ 
+@@ -922,6 +1084,7 @@ HttpBootGetBootFileCallback (
+   @retval EFI_BUFFER_TOO_SMALL     The BufferSize is too small to read the current directory entry.
+                                    BufferSize has been updated with the size needed to complete
+                                    the request.
++  @retval EFI_ACCESS_DENIED        The server needs to authenticate the client.
+   @retval Others                   Unexpected error happened.
+ 
+ **/
+@@ -1072,8 +1235,9 @@ HttpBootGetBootFile (
+     goto ERROR_3;
+   }
+ 
+-  RequestData->Method = HeaderOnly ? HttpMethodHead : HttpMethodGet;
+-  RequestData->Url    = Url;
++  RequestData->Method      = HeaderOnly ? HttpMethodHead : HttpMethodGet;
++  RequestData->Url         = Url;
++  RequestData->EndPointUrl = NULL;
+ 
+   //
+   // 2.3 Record the request info in a temp cache item.
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootClient.h b/NetworkPkg/HttpBootDxe/HttpBootClient.h
+index 406529dfd927..d702aa6e9f70 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootClient.h
++++ b/NetworkPkg/HttpBootDxe/HttpBootClient.h
+@@ -85,6 +85,21 @@ HttpBootCreateHttpIo (
+   IN     HTTP_BOOT_PRIVATE_DATA  *Private
+   );
+ 
++/**
++  This function establishes a connection through a proxy server
++
++  @param[in]       Private         The pointer to the driver's private data.
++
++  @retval EFI_SUCCESS              Connection successful.
++  @retval EFI_OUT_OF_RESOURCES     Could not allocate needed resources
++  @retval Others                   Unexpected error happened.
++
++**/
++EFI_STATUS
++HttpBootConnectProxy (
++  IN     HTTP_BOOT_PRIVATE_DATA  *Private
++  );
++
+ /**
+   This function download the boot file by using UEFI HTTP protocol.
+ 
+@@ -106,6 +121,7 @@ HttpBootCreateHttpIo (
+   @retval EFI_BUFFER_TOO_SMALL     The BufferSize is too small to read the current directory entry.
+                                    BufferSize has been updated with the size needed to complete
+                                    the request.
++  @retval EFI_ACCESS_DENIED        The server needs to authenticate the client.
+   @retval Others                   Unexpected error happened.
+ 
+ **/
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootDxe.h b/NetworkPkg/HttpBootDxe/HttpBootDxe.h
+index 5acbae9bfa76..cb3b7214f26e 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootDxe.h
++++ b/NetworkPkg/HttpBootDxe/HttpBootDxe.h
+@@ -217,6 +217,12 @@ struct _HTTP_BOOT_PRIVATE_DATA {
+   CHAR8                                        *FilePathUri;
+   VOID                                         *FilePathUriParser;
+ 
++  //
++  // URI string for the endpoint host if BootFileUri contains the path
++  // for a proxy server
++  //
++  CHAR8                                        *EndPointUri;
++
+   //
+   // Cached HTTP data
+   //
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootImpl.c b/NetworkPkg/HttpBootDxe/HttpBootImpl.c
+index 3da585a29164..2b112fb3ced8 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootImpl.c
++++ b/NetworkPkg/HttpBootDxe/HttpBootImpl.c
+@@ -116,8 +116,10 @@ HttpBootStart (
+   UINTN       Index;
+   EFI_STATUS  Status;
+   CHAR8       *Uri;
++  CHAR8       *EndPointUri;
+ 
+-  Uri = NULL;
++  Uri         = NULL;
++  EndPointUri = NULL;
+ 
+   if ((Private == NULL) || (FilePath == NULL)) {
+     return EFI_INVALID_PARAMETER;
+@@ -127,7 +129,7 @@ HttpBootStart (
+   // Check the URI in the input FilePath, in order to see whether it is
+   // required to boot from a new specified boot file.
+   //
+-  Status = HttpBootParseFilePath (FilePath, &Uri);
++  Status = HttpBootParseFilePath (FilePath, &Uri, &EndPointUri);
+   if (EFI_ERROR (Status)) {
+     return EFI_INVALID_PARAMETER;
+   }
+@@ -187,6 +189,7 @@ HttpBootStart (
+   // Record the specified URI and prepare the URI parser if needed.
+   //
+   Private->FilePathUri = Uri;
++  Private->EndPointUri = EndPointUri;
+   if (Private->FilePathUri != NULL) {
+     Status = HttpParseUrl (
+                Private->FilePathUri,
+@@ -306,6 +309,7 @@ HttpBootLoadFile (
+   )
+ {
+   EFI_STATUS  Status;
++  UINT8       Index;
+ 
+   if ((Private == NULL) || (ImageType == NULL) || (BufferSize == NULL)) {
+     return EFI_INVALID_PARAMETER;
+@@ -349,30 +353,40 @@ HttpBootLoadFile (
+     //
+     // Discover the information about the bootfile if we haven't.
+     //
++    for (Index = 0; Index < 2; Index++) {
++      if (Index == 1) {
++        Status = HttpBootConnectProxy (Private);
++      }
+ 
+-    //
+-    // Try to use HTTP HEAD method.
+-    //
+-    Status = HttpBootGetBootFile (
+-               Private,
+-               TRUE,
+-               &Private->BootFileSize,
+-               NULL,
+-               &Private->ImageType
+-               );
+-    if (EFI_ERROR (Status) && (Status != EFI_BUFFER_TOO_SMALL)) {
+       //
+-      // Failed to get file size by HEAD method, may be trunked encoding, try HTTP GET method.
++      // Try to use HTTP HEAD method.
+       //
+-      ASSERT (Private->BootFileSize == 0);
+       Status = HttpBootGetBootFile (
+                  Private,
+-                 FALSE,
++                 TRUE,
+                  &Private->BootFileSize,
+                  NULL,
+                  &Private->ImageType
+                  );
+       if (EFI_ERROR (Status) && (Status != EFI_BUFFER_TOO_SMALL)) {
++        //
++        // Failed to get file size by HEAD method, may be trunked encoding, try HTTP GET method.
++        //
++        ASSERT (Private->BootFileSize == 0);
++        Status = HttpBootGetBootFile (
++                   Private,
++                   FALSE,
++                   &Private->BootFileSize,
++                   NULL,
++                   &Private->ImageType
++                   );
++      }
++
++      if (Status == EFI_SUCCESS) {
++        break;
++      }
++
++      if (EFI_ERROR (Status) && (Status != EFI_BUFFER_TOO_SMALL) && (Index == 2)) {
+         AsciiPrint ("\n  Error: Could not retrieve NBP file size from HTTP server.\n");
+         goto ON_EXIT;
+       }
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootSupport.c b/NetworkPkg/HttpBootDxe/HttpBootSupport.c
+index 236ef259318b..1de36f61a98b 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootSupport.c
++++ b/NetworkPkg/HttpBootDxe/HttpBootSupport.c
+@@ -558,6 +558,7 @@ HttpBootCheckUriScheme (
+ 
+   @param[in]   FilePath         Pointer to the device path which contains a URI device path node.
+   @param[out]  UriAddress       The URI address string extract from the device path.
++  @param[out]  EndPointUriAddress The URI address string for the endpoint host if UriAddress contains the address of a proxy server
+ 
+   @retval EFI_SUCCESS            The URI string is returned.
+   @retval EFI_OUT_OF_RESOURCES   Failed to allocate memory.
+@@ -566,7 +567,8 @@ HttpBootCheckUriScheme (
+ EFI_STATUS
+ HttpBootParseFilePath (
+   IN     EFI_DEVICE_PATH_PROTOCOL  *FilePath,
+-  OUT CHAR8                        **UriAddress
++  OUT CHAR8                        **UriAddress,
++  OUT CHAR8                        **EndPointUriAddress
+   )
+ {
+   EFI_DEVICE_PATH_PROTOCOL  *TempDevicePath;
+@@ -578,8 +580,9 @@ HttpBootParseFilePath (
+     return EFI_INVALID_PARAMETER;
+   }
+ 
+-  *UriAddress = NULL;
+-
++  Uri                 = NULL;
++  *UriAddress         = NULL;
++  *EndPointUriAddress = NULL;
+   //
+   // Extract the URI address from the FilePath
+   //
+@@ -601,6 +604,10 @@ HttpBootParseFilePath (
+         break;
+       }
+ 
++      if (Uri != NULL) {
++        *EndPointUriAddress = Uri;
++      }
++
+       Uri = AllocatePool (UriStrLength + 1);
+       if (Uri == NULL) {
+         return EFI_OUT_OF_RESOURCES;
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootSupport.h b/NetworkPkg/HttpBootDxe/HttpBootSupport.h
+index 3698e5593642..6228f37e3676 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootSupport.h
++++ b/NetworkPkg/HttpBootDxe/HttpBootSupport.h
+@@ -138,8 +138,9 @@ HttpBootCheckUriScheme (
+ 
+   Caller need to free the buffer in the UriAddress pointer.
+ 
+-  @param[in]   FilePath         Pointer to the device path which contains a URI device path node.
+-  @param[out]  UriAddress       The URI address string extract from the device path.
++  @param[in]   FilePath           Pointer to the device path which contains a URI device path node.
++  @param[out]  UriAddress         The URI address string extract from the device path.
++  @param[out]  EndPointUriAddress The URI address string for the endpoint host if UriAddress contains the address of a proxy server
+ 
+   @retval EFI_SUCCESS            The URI string is returned.
+   @retval EFI_OUT_OF_RESOURCES   Failed to allocate memory.
+@@ -148,7 +149,8 @@ HttpBootCheckUriScheme (
+ EFI_STATUS
+ HttpBootParseFilePath (
+   IN     EFI_DEVICE_PATH_PROTOCOL  *FilePath,
+-  OUT CHAR8                        **UriAddress
++  OUT CHAR8                        **UriAddress,
++  OUT CHAR8                        **EndPointUriAddress
+   );
+ 
+ /**
+diff --git a/NetworkPkg/HttpDxe/HttpImpl.c b/NetworkPkg/HttpDxe/HttpImpl.c
+index 7c5c925cf78b..14084ba14a99 100644
+--- a/NetworkPkg/HttpDxe/HttpImpl.c
++++ b/NetworkPkg/HttpDxe/HttpImpl.c
+@@ -243,6 +243,7 @@ EfiHttpRequest (
+   BOOLEAN                TlsConfigure;
+   CHAR8                  *RequestMsg;
+   CHAR8                  *Url;
++  CHAR8                  *EndPointUrl;
+   UINTN                  UrlLen;
+   CHAR16                 *HostNameStr;
+   HTTP_TOKEN_WRAP        *Wrap;
+@@ -262,6 +263,7 @@ EfiHttpRequest (
+   Wrap         = NULL;
+   FileUrl      = NULL;
+   TlsConfigure = FALSE;
++  EndPointUrl  = NULL;
+ 
+   if ((This == NULL) || (Token == NULL)) {
+     return EFI_INVALID_PARAMETER;
+@@ -280,7 +282,7 @@ EfiHttpRequest (
+   if ((Request != NULL) && (Request->Method != HttpMethodGet) &&
+       (Request->Method != HttpMethodHead) && (Request->Method != HttpMethodDelete) &&
+       (Request->Method != HttpMethodPut) && (Request->Method != HttpMethodPost) &&
+-      (Request->Method != HttpMethodPatch))
++      (Request->Method != HttpMethodPatch) && (Request->Method != HttpMethodConnect))
+   {
+     return EFI_UNSUPPORTED;
+   }
+@@ -352,6 +354,17 @@ EfiHttpRequest (
+     }
+ 
+     UnicodeStrToAsciiStrS (Request->Url, Url, UrlLen);
++    if (Request->EndPointUrl != NULL) {
++      UrlLen = StrLen (Request->EndPointUrl) + 1;
++      if (UrlLen > HTTP_URL_BUFFER_LEN) {
++        EndPointUrl = AllocateZeroPool (UrlLen);
++        if (EndPointUrl == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++      }
++
++      EndPointUrl = (CHAR8 *)Request->EndPointUrl;
++    }
+ 
+     //
+     // From the information in Url, the HTTP instance will
+@@ -632,7 +645,11 @@ EfiHttpRequest (
+     }
+   }
+ 
+-  Status = HttpGenRequestMessage (HttpMsg, FileUrl, &RequestMsg, &RequestMsgSize);
++  if (HttpInstance->Method == HttpMethodConnect) {
++    Status = HttpGenRequestMessage (HttpMsg, EndPointUrl, &RequestMsg, &RequestMsgSize);
++  } else {
++    Status = HttpGenRequestMessage (HttpMsg, FileUrl, &RequestMsg, &RequestMsgSize);
++  }
+ 
+   if (EFI_ERROR (Status) || (NULL == RequestMsg)) {
+     goto Error3;
+diff --git a/NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c b/NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c
+index 6a5d78629bb3..45087a19350a 100644
+--- a/NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c
++++ b/NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c
+@@ -1927,6 +1927,11 @@ HttpGenRequestMessage (
+         CopyMem (RequestPtr, HTTP_METHOD_DELETE, StrLength);
+         RequestPtr += StrLength;
+         break;
++      case HttpMethodConnect:
++        StrLength = sizeof (HTTP_METHOD_CONNECT) - 1;
++        CopyMem (RequestPtr, HTTP_METHOD_CONNECT, StrLength);
++        RequestPtr += StrLength;
++        break;
+       default:
+         ASSERT (FALSE);
+         Status = EFI_INVALID_PARAMETER;
+-- 
+2.36.1.windows.1
+

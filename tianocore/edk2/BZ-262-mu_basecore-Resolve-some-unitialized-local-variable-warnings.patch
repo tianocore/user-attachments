@@ -1,0 +1,48 @@
+From c8175c818859a047a1ae311336f724140913f3a6 Mon Sep 17 00:00:00 2001
+From: Bret Barkelew <brbarkel@microsoft.com>
+Date: Sat, 23 Feb 2019 12:07:28 -0800
+Subject: [PATCH] Resolve some "unitialized local variable" warnings.
+
+---
+ MdeModulePkg/Bus/Pci/UhciPei/UhcPeim.c                    | 4 ++--
+ MdeModulePkg/Universal/Disk/UdfDxe/FileSystemOperations.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/UhciPei/UhcPeim.c b/MdeModulePkg/Bus/Pci/UhciPei/UhcPeim.c
+index 9bbb144ced..8bf647b800 100644
+--- a/MdeModulePkg/Bus/Pci/UhciPei/UhcPeim.c
++++ b/MdeModulePkg/Bus/Pci/UhciPei/UhcPeim.c
+@@ -2843,7 +2843,7 @@ InitializeMemoryManagement (
+   IN USB_UHC_DEV           *UhcDev
+   )
+ {
+-  MEMORY_MANAGE_HEADER  *MemoryHeader;
++  MEMORY_MANAGE_HEADER  *MemoryHeader = NULL;     // MU_CHANGE - TCBZ1559
+   EFI_STATUS            Status;
+   UINTN                 MemPages;
+ 
+@@ -2878,7 +2878,7 @@ UhcAllocatePool (
+ {
+   MEMORY_MANAGE_HEADER  *MemoryHeader;
+   MEMORY_MANAGE_HEADER  *TempHeaderPtr;
+-  MEMORY_MANAGE_HEADER  *NewMemoryHeader;
++  MEMORY_MANAGE_HEADER  *NewMemoryHeader = NULL;      // MU_CHANGE - TCBZ1559
+   UINTN                 RealAllocSize;
+   UINTN                 MemoryBlockSizeInPages;
+   EFI_STATUS            Status;
+diff --git a/MdeModulePkg/Universal/Disk/UdfDxe/FileSystemOperations.c b/MdeModulePkg/Universal/Disk/UdfDxe/FileSystemOperations.c
+index d38b6c911d..40b4bc76f4 100644
+--- a/MdeModulePkg/Universal/Disk/UdfDxe/FileSystemOperations.c
++++ b/MdeModulePkg/Universal/Disk/UdfDxe/FileSystemOperations.c
+@@ -1436,7 +1436,7 @@ InternalFindFile (
+   UDF_READ_DIRECTORY_INFO         ReadDirInfo;
+   BOOLEAN                         Found;
+   CHAR16                          FoundFileName[UDF_FILENAME_LENGTH];
+-  VOID                            *CompareFileEntry;
++  VOID                            *CompareFileEntry = NULL;     // MU_CHANGE - TCBZ1559
+ 
+   //
+   // Check if both Parent->FileIdentifierDesc and Icb are NULL.
+-- 
+2.20.1.windows.1
+

@@ -1,0 +1,508 @@
+C:\edk>dir
+ Volume in drive C is Windows
+ Volume Serial Number is 82FB-FD7B
+
+ Directory of C:\edk
+
+03/28/2018  10:24 AM    <DIR>          .
+03/28/2018  10:24 AM    <DIR>          ..
+09/21/2018  12:08 PM    <DIR>          build
+03/28/2018  10:23 AM    <DIR>          dl
+03/27/2018  05:18 PM    <DIR>          patch
+03/27/2018  05:20 PM    <DIR>          scripts
+03/27/2018  05:14 PM               272 setup.sh
+               1 File(s)            272 bytes
+               6 Dir(s)  21,070,192,640 bytes free
+
+C:\edk>cd build
+
+C:\edk\build>cd Vlv2TbltDevicePkg
+
+C:\edk\build\Vlv2TbltDevicePkg>Build_IFWI.bat AVU1 Release
+======================================================================
+Build_IFWI:  Calling BIOS build Script...
+
+Tue 09/25/2018  10:48:46.55
+
+Setting  AVU1  platform configuration and BIOS ID...
+
+Setting the Build environment for VS2008/VS2010/VS2012/VS2013...
+Ensuring correct build directory is present for GenBiosId...
+Modifing Conf files for this build...
+Creating BiosId...
+
+GenBiosId utility, version: v1.0 06/08/2005
+Copyright (c) 2005, Intel Corporation. All rights reserved.
+
+BIOS ID created: AVU1SHV1.X64.0106.R00.1809251048
+BIOS ID binary file created: ..\Build\Vlv2TbltDevicePkg\RELEASE_VS2008x86\IA32\BiosId.bin
+
+GenBiosId utility, version: v1.0 06/08/2005
+Copyright (c) 2005, Intel Corporation. All rights reserved.
+
+BIOS ID created: AVU1SHV1.X64.0106.R00.1809251048
+BIOS ID binary file created: ..\Build\Vlv2TbltDevicePkg\RELEASE_VS2008x86\X64\BiosId.bin
+
+Invoking EDK2 build...
+Build environment: Windows-post2008Server-6.2.9200
+Build start time: 10:48:47, Sep.25 2018
+
+WORKSPACE        = c:\edk\build
+ECP_SOURCE       = c:\edk\build\edkcompatibilitypkg
+EDK_SOURCE       = c:\edk\build\edkcompatibilitypkg
+EFI_SOURCE       = c:\edk\build\edkcompatibilitypkg
+EDK_TOOLS_PATH   = c:\edk\build\basetools
+
+
+Architecture(s)  = IA32 X64
+Build target     = RELEASE
+Toolchain        = VS2008x86
+
+Active Platform          = c:\edk\build\Vlv2TbltDevicePkg\PlatformPkgX64.dsc
+Flash Image Definition   = c:\edk\build\Vlv2TbltDevicePkg\PlatformPkg.fdf
+
+Processing meta-data ........... done!
+Building ... c:\edk\build\MdePkg\Library\BasePcdLibNull\BasePcdLibNull.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\PeiServicesTablePointerLibIdt\PeiServicesTablePointerLibIdt.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\PeiMemoryAllocationLib\PeiMemoryAllocationLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BaseDebugLibNull\BaseDebugLibNull.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BaseLib\BaseLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\PeiHobLib\PeiHobLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\PeiServicesLib\PeiServicesLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BaseMemoryLibRepStr\BaseMemoryLibRepStr.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Library\OemHookStatusCodeLibNull\OemHookStatusCodeLibNull.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BasePeCoffExtraActionLibNull\BasePeCoffExtraActionLibNull.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BasePeCoffGetEntryPointLib\BasePeCoffGetEntryPointLib.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Library\PeiReportStatusCodeLib\PeiReportStatusCodeLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BasePerformanceLibNull\BasePerformanceLibNull.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\PeiCoreEntryPoint\PeiCoreEntryPoint.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BaseCacheMaintenanceLib\BaseCacheMaintenanceLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BasePeCoffLib\BasePeCoffLib.inf [IA32]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\MonoStatusCode\MonoStatusCode.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\PeiPcdLib\PeiPcdLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BaseIoLibIntrinsic\BaseIoLibIntrinsic.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BasePciCf8Lib\BasePciCf8Lib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BasePciLibCf8\BasePciLibCf8.inf [IA32]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\PchPlatformLib\PchPlatformLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BaseCpuLib\BaseCpuLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BasePrintLib\BasePrintLib.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BaseSerialPortLibNull\BaseSerialPortLibNull.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\PeimEntryPoint\PeimEntryPoint.inf [IA32]
+Building ... c:\edk\build\CryptoPkg\Library\IntrinsicLib\IntrinsicLib.inf [IA32]
+Building ... c:\edk\build\CryptoPkg\Library\OpensslLib\OpensslLib.inf [IA32]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\MultiPlatformLib\MultiPlatformLib.inf [IA32]
+Building ... c:\edk\build\UefiCpuPkg\Library\MtrrLib\MtrrLib.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Core\Pei\PeiMain.inf [IA32]
+Building ... c:\edk\build\CryptoPkg\Library\BaseCryptLib\PeiCryptLib.inf [IA32]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\FvInfoPei\FvInfoPei.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Universal\PCD\Pei\Pcd.inf [IA32]
+Building ... c:\edk\build\UefiCpuPkg\CpuIoPei\CpuIoPei.inf [IA32]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\IntelPchAcpiTimerLib\IntelPchAcpiTimerLib.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Library\DebugAgentLibNull\DebugAgentLibNull.inf [IA32]
+Building ... c:\edk\build\UefiCpuPkg\Library\BaseXApicX2ApicLib\BaseXApicX2ApicLib.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Library\SmmLockBoxLib\SmmLockBoxPeiLib.inf [IA32]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\AcpiVariableHobOnSmramReserveHobThunk\AcpiVariableHobOnSmramReserveHobThunk.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\PeiExtractGuidedSectionLib\PeiExtractGuidedSectionLib.inf [IA32]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Library\BaseUefiTianoCustomDecompressLib\BaseUefiTianoCustomDecompressLib.inf [IA32]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Library\LzmaCustomDecompressLib\LzmaCustomDecompressLib.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Universal\Variable\Pei\VariablePei.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Universal\FaultTolerantWritePei\FaultTolerantWritePei.inf [IA32]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformPei\PlatformPei.inf [IA32]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformInitPei\PlatformInitPei.inf [IA32]
+Building ... c:\edk\build\UefiCpuPkg\Universal\Acpi\S3Resume2Pei\S3Resume2Pei.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Universal\CapsulePei\CapsulePei.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Core\DxeIplPeim\DxeIpl.inf [IA32]
+Building ... c:\edk\build\MdeModulePkg\Universal\Acpi\FirmwarePerformanceDataTablePei\FirmwarePerformancePei.inf [IA32]
+Building ... c:\edk\build\MdePkg\Library\BasePcdLibNull\BasePcdLibNull.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseDebugLibNull\BaseDebugLibNull.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseLib\BaseLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseMemoryLibRepStr\BaseMemoryLibRepStr.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseIoLibIntrinsic\BaseIoLibIntrinsic.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BasePrintLib\BasePrintLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DxeCoreMemoryAllocationLib\DxeCoreMemoryAllocationLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiBootServicesTableLib\UefiBootServicesTableLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BasePciCf8Lib\BasePciCf8Lib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiRuntimeServicesTableLib\UefiRuntimeServicesTableLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiDevicePathLib\UefiDevicePathLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\DxeExtractGuidedSectionLib\DxeExtractGuidedSectionLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\DxeCoreEntryPoint\DxeCoreEntryPoint.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BasePeCoffExtraActionLibNull\BasePeCoffExtraActionLibNull.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BasePciLibCf8\BasePciLibCf8.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiLib\UefiLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseCacheMaintenanceLib\BaseCacheMaintenanceLib.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Library\BaseUefiTianoCustomDecompressLib\BaseUefiTianoCustomDecompressLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BasePerformanceLibNull\BasePerformanceLibNull.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\DxeCoreHobLib\DxeCoreHobLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BasePeCoffLib\BasePeCoffLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BasePeCoffGetEntryPointLib\BasePeCoffGetEntryPointLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DxeReportStatusCodeLib\DxeReportStatusCodeLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\IntelPchAcpiTimerLib\IntelPchAcpiTimerLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\DxeServicesLib\DxeServicesLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DebugAgentLibNull\DebugAgentLibNull.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\CpuExceptionHandlerLibNull\CpuExceptionHandlerLibNull.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DxeCrc32GuidedSectionExtractLib\DxeCrc32GuidedSectionExtractLib.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Library\LzmaCustomDecompressLib\LzmaCustomDecompressLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\DxePcdLib\DxePcdLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiMemoryAllocationLib\UefiMemoryAllocationLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiDriverEntryPoint\UefiDriverEntryPoint.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\DxeHobLib\DxeHobLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\SmmLockBoxLib\SmmLockBoxDxeLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Core\Dxe\DxeMain.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\PCD\Dxe\Pcd.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\CpuIoDxe\CpuIoDxe.inf [X64]
+Building ... c:\edk\build\UefiCpuPkg\CpuIo2Dxe\CpuIo2Dxe.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiRuntimeLib\UefiRuntimeLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseSynchronizationLib\BaseSynchronizationLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseSerialPortLibNull\BaseSerialPortLibNull.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\RuntimeDxeReportStatusCodeLib\RuntimeDxeReportStatusCodeLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\PeiHobLib\PeiHobLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\PeiMemoryAllocationLib\PeiMemoryAllocationLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\PeiServicesTablePointerLibIdt\PeiServicesTablePointerLibIdt.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\PeiServicesLib\PeiServicesLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\PeiPcdLib\PeiPcdLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\SmmServicesTableLib\SmmServicesTableLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\SmmMemoryAllocationLib\SmmMemoryAllocationLib.inf [X64]
+Building ... c:\edk\build\CryptoPkg\Library\IntrinsicLib\IntrinsicLib.inf [X64]
+Building ... c:\edk\build\CryptoPkg\Library\OpensslLib\OpensslLib.inf [X64]
+Building ... c:\edk\build\SecurityPkg\Library\DxeTpmMeasurementLib\DxeTpmMeasurementLib.inf [X64]
+Building ... c:\edk\build\CryptoPkg\Library\BaseCryptLib\BaseCryptLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DxeSecurityManagementLib\DxeSecurityManagementLib.inf [X64]
+Building ... c:\edk\build\SecurityPkg\Library\DxeImageVerificationLib\DxeImageVerificationLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Metronome\Metronome.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseDebugPrintErrorLevelLib\BaseDebugPrintErrorLevelLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\SerialPortLib\SerialPortLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseDebugLibSerialPort\BaseDebugLibSerialPort.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\UefiHiiServicesLib\UefiHiiServicesLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\SmbusLib\SmbusLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\UefiSortLib\UefiSortLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\DxeServicesTableLib\DxeServicesTableLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\UefiHiiLib\UefiHiiLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DxeNetLib\DxeNetLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\PchPlatformLib\PchPlatformLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\PiDxeS3BootScriptLib\DxeS3BootScriptLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiFileHandleLib\UefiFileHandleLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\DxeTrEEPhysicalPresenceLibNull\DxeTrEEPhysicalPresenceLibNull.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\UefiBootManagerLib\UefiBootManagerLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Override\IntelFrameworkModulePkg\Library\GenericBdsLib\GenericBdsLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\PlatformBdsLib\PlatformBdsLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\DxeEsrtCapsuleBsLib\DxeEsrtCapsuleBsLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiApplicationEntryPoint\UefiApplicationEntryPoint.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\WatchdogTimerDxe\WatchdogTimer.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\FaultTolerantWriteDxe\FaultTolerantWriteDxe.inf [X64]
+Building ... c:\edk\build\SecurityPkg\Library\PlatformSecureLibNull\PlatformSecureLibNull.inf [X64]
+Building ... c:\edk\build\CryptoPkg\Library\BaseCryptLib\SmmCryptLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\VarCheckLib\VarCheckLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\SmmMemLib\SmmMemLib.inf [X64]
+Building ... c:\edk\build\SecurityPkg\Library\AuthVariableLib\AuthVariableLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\VarCheckUefiLib\VarCheckUefiLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\FlashDeviceLib\FlashDeviceLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\PchSmmLib\PchSmmLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\SmmReportStatusCodeLib\SmmReportStatusCodeLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\DxeEsrtCapsuleRtLib\DxeEsrtCapsuleRtLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\DevicePathDxe\DevicePathDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\BiosIdLib\BiosIdLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\CpuIA32Lib\CpuIA32Lib.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\DataHubDxe\DataHubDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\LegacyRegionDxe\LegacyRegionDxe.inf [X64]
+Building ... c:\edk\build\ShellPkg\Library\UefiShellLib\UefiShellLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseS3PciLib\BaseS3PciLib.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseS3IoLib\BaseS3IoLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\SmmLockBoxLib\SmmLockBoxSmmLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\StallSmmLib\StallSmmLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformCpuInfoDxe\PlatformCpuInfoDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\EfiRegTableLib\EfiRegTableLib.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\SaveMemoryConfig\SaveMemoryConfig.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\PiSmmCoreMemoryAllocationLib\PiSmmCoreMemoryAllocationLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\PiSmmCoreSmmServicesTableLib\PiSmmCoreSmmServicesTableLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\SmmCorePlatformHookLibNull\SmmCorePlatformHookLibNull.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\Acpi\AcpiSupportDxe\AcpiSupportDxe.inf [X64]
+Building ... c:\edk\build\Vlv2DeviceRefCodePkg\ValleyView2Soc\CPU\PowerManagement\AcpiTables\PowerManagementAcpiTables.inf [X64]
+Building ... c:\edk\build\Vlv2DeviceRefCodePkg\AcpiTablesPCAT\AcpiTables.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Pci\PciBusDxe\PciBusDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Bus\Isa\IsaBusDxe\IsaBusDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Bus\Isa\IsaIoDxe\IsaIoDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Bus\Isa\IsaSerialDxe\IsaSerialDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Bus\Isa\Ps2MouseDxe\Ps2MouseDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Bus\Isa\Ps2KeyboardDxe\Ps2keyboardDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Ata\AtaAtapiPassThru\AtaAtapiPassThru.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Bus\Pci\IdeBusDxe\IdeBusDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Disk\DiskIoDxe\DiskIoDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Disk\PartitionDxe\PartitionDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Disk\UnicodeCollation\EnglishDxe\EnglishDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Ata\AtaBusDxe\AtaBusDxe.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiScsiLib\UefiScsiLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Console\ConPlatformDxe\ConPlatformDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Console\ConSplitterDxe\ConSplitterDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\Console\VgaClassDxe\VgaClassDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Console\TerminalDxe\TerminalDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\HiiDatabaseDxe\HiiDatabaseDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\CustomizedDisplayLib\CustomizedDisplayLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Pci\EhciDxe\EhciDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Pci\UhciDxe\UhciDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Override\MdeModulePkg\Bus\Pci\XhciDxe\XhciDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Usb\UsbBusDxe\UsbBusDxe.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\UefiUsbLib\UefiUsbLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Usb\UsbMassStorageDxe\UsbMassStorageDxe.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\Library\UefiLanguageLib\UefiLanguageLib.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\LegacyRegion2OnLegacyRegionThunk\LegacyRegion2OnLegacyRegionThunk.inf [X64]
+Building ... c:\edk\build\MdePkg\Library\BaseCpuLib\BaseCpuLib.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\SmmAccess2OnSmmAccessThunk\SmmAccess2OnSmmAccessThunk.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\FvOnFv2Thunk\FvOnFv2Thunk.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\SmbiosDxe\SmbiosDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Library\I2CLib\I2CLibNull.inf [X64]
+Building ... c:\edk\build\Vlv2MiscBinariesPkg\Microcode\MicrocodeUpdates.inf [X64]
+Building ... c:\edk\build\PcAtChipsetPkg\8259InterruptControllerDxe\8259.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\DpcDxe\DpcDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DxeDpcLib\DxeDpcLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DxeUdpIoLib\DxeUdpIoLib.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Library\DxeIpIoLib\DxeIpIoLib.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\FirmwareVolume\FwVolDxe\FwVolDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformEsrt\PlatformEsrtDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\FmpSample\FmpSample.inf [X64]
+Building ... c:\edk\build\ShellPkg\Library\UefiShellCEntryLib\UefiShellCEntryLib.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\Acpi\AcpiS3SaveDxe\AcpiS3SaveDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\ReportStatusCodeRouter\RuntimeDxe\ReportStatusCodeRouterRuntimeDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\StatusCodeHandler\RuntimeDxe\StatusCodeHandlerRuntimeDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\CapsulePei\CapsuleX64.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\ReportStatusCodeRouter\Smm\ReportStatusCodeRouterSmm.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\SecurityStubDxe\SecurityStubDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\BdsDxe\BdsDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\UiApp\UiApp.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Core\RuntimeDxe\RuntimeDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Variable\RuntimeDxe\VariableSmmRuntimeDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Variable\RuntimeDxe\VariableSmm.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\FvbRuntimeDxe\FvbSmm.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\FaultTolerantWriteDxe\FaultTolerantWriteSmm.inf [X64]
+Building ... c:\edk\build\SecurityPkg\VariableAuthenticated\SecureBootConfigDxe\SecureBootConfigDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\CapsuleRuntimeDxe\CapsuleRuntimeDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\MonotonicCounterRuntimeDxe\MonotonicCounterRuntimeDxe.inf [X64]
+Building ... c:\edk\build\PcAtChipsetPkg\PcatRealTimeClockRuntimeDxe\PcatRealTimeClockRuntimeDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\FvbRuntimeDxe\FvbRuntimeDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformSetupDxe\PlatformSetupDxe.inf [X64]
+Building ... c:\edk\build\IntelFrameworkModulePkg\Universal\StatusCode\DatahubStatusCodeHandlerDxe\DatahubStatusCodeHandlerDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\MemoryTest\NullMemoryTestDxe\NullMemoryTestDxe.inf [X64]
+Building ... c:\edk\build\PerformancePkg\Dp_App\Dp.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\VlvPlatformInitDxe\VlvPlatformInitDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformSmm\PlatformSmm.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformInfoDxe\PlatformInfoDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformDxe\PlatformDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformRtcRuntimeDxe\PlatformRtcRuntimeDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PciPlatform\PciPlatform.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PpmPolicy\PpmPolicy.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\SmramSaveInfoHandlerSmm\SmramSaveInfoHandlerSmm.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\PlatformGopPolicy\PlatformGopPolicy.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Core\PiSmmCore\PiSmmIpl.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Core\PiSmmCore\PiSmmCore.inf [X64]
+Building ... c:\edk\build\UefiCpuPkg\CpuIo2Smm\CpuIo2Smm.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\LockBox\SmmLockBox\SmmLockBox.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\SmmSwDispatch2OnSmmSwDispatchThunk\SmmSwDispatch2OnSmmSwDispatchThunk.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Acpi\BootScriptExecutorDxe\BootScriptExecutorDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\BootScriptSaveDxe\BootScriptSaveDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\AcpiPlatform\AcpiPlatform.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Wpce791\Wpce791.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Acpi\FirmwarePerformanceDataTableDxe\FirmwarePerformanceDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Acpi\FirmwarePerformanceDataTableSmm\FirmwarePerformanceSmm.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Scsi\ScsiBusDxe\ScsiBusDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Scsi\ScsiDiskDxe\ScsiDiskDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Console\GraphicsConsoleDxe\GraphicsConsoleDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\DisplayEngineDxe\DisplayEngineDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\SetupBrowserDxe\SetupBrowserDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Usb\UsbKbDxe\UsbKbDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Bus\Usb\UsbMouseDxe\UsbMouseDxe.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\FrameworkHiiOnUefiHiiThunk\FrameworkHiiOnUefiHiiThunk.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\SmmBaseOnSmmBase2Thunk\SmmBaseOnSmmBase2Thunk.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\SmmBaseHelper\SmmBaseHelper.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\SmmControl2OnSmmControlThunk\SmmControl2OnSmmControlThunk.inf [X64]
+Building ... c:\edk\build\EdkCompatibilityPkg\Compatibility\FrameworkSmmStatusCodeOnPiSmmStatusCodeThunk\FrameworkSmmStatusCodeOnPiSmmStatusCodeThunk.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\SmBiosMiscDxe\SmBiosMiscDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\SnpDxe\SnpDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\MnpDxe\MnpDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\ArpDxe\ArpDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\Dhcp4Dxe\Dhcp4Dxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\Ip4Dxe\Ip4Dxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\Mtftp4Dxe\Mtftp4Dxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\Tcp4Dxe\Tcp4Dxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\Network\Udp4Dxe\Udp4Dxe.inf [X64]
+Building ... c:\edk\build\NetworkPkg\Ip6Dxe\Ip6Dxe.inf [X64]
+Building ... c:\edk\build\NetworkPkg\Dhcp6Dxe\Dhcp6Dxe.inf [X64]
+Building ... c:\edk\build\NetworkPkg\IpSecDxe\IpSecDxe.inf [X64]
+Building ... c:\edk\build\NetworkPkg\TcpDxe\TcpDxe.inf [X64]
+Building ... c:\edk\build\NetworkPkg\Udp6Dxe\Udp6Dxe.inf [X64]
+Building ... c:\edk\build\NetworkPkg\Mtftp6Dxe\Mtftp6Dxe.inf [X64]
+Building ... c:\edk\build\NetworkPkg\UefiPxeBcDxe\UefiPxeBcDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\UpdateDriverDxe\UpdateDriverDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\FaultTolerantWriteDxe\FaultTolerantWriteSmmDxe.inf [X64]
+Building ... c:\edk\build\MdeModulePkg\Universal\EsrtDxe\EsrtDxe.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Application\FirmwareUpdate\FirmwareUpdate.inf [X64]
+Building ... c:\edk\build\Vlv2TbltDevicePkg\Application\SsdtUpdate\SsdtUpdate.inf [X64]
+Fd File Name:VLV
+
+Generate Region at Offset 0x0
+   Region Size = 0x40000
+   Region Name = FV
+
+Generating MICROCODE_FV FV
+
+Generate Region at Offset 0x40000
+   Region Size = 0x3E000
+   Region Name = DATA
+
+Generate Region at Offset 0x7E000
+   Region Size = 0x2000
+   Region Name = DATA
+
+Generate Region at Offset 0x80000
+   Region Size = 0x40000
+   Region Name = None
+Padding region starting from offset 0xC0000, with size 0x50000
+
+Generate Region at Offset 0xC0000
+   Region Size = 0x50000
+   Region Name = None
+
+Generate Region at Offset 0x110000
+   Region Size = 0x210000
+   Region Name = FV
+
+Generating FVMAIN_COMPACT FV
+
+Generating FVMAIN FV
+#######################
+Generate Region at Offset 0x320000
+   Region Size = 0x70000
+   Region Name = FV
+
+Generating FVRECOVERY2 FV
+
+Generate Region at Offset 0x390000
+   Region Size = 0x70000
+   Region Name = FV
+
+Generating FVRECOVERY FV
+###
+Generate Region at Offset 0x0
+   Region Size = 0x40000
+   Region Name = FV
+
+Generate Region at Offset 0x40000
+   Region Size = 0x3E000
+   Region Name = DATA
+
+Generate Region at Offset 0x7E000
+   Region Size = 0x2000
+   Region Name = DATA
+
+Generate Region at Offset 0x80000
+   Region Size = 0x40000
+   Region Name = None
+Padding region starting from offset 0xC0000, with size 0x50000
+
+Generate Region at Offset 0xC0000
+   Region Size = 0x50000
+   Region Name = None
+
+Generate Region at Offset 0x110000
+   Region Size = 0x210000
+   Region Name = FV
+
+Generate Region at Offset 0x320000
+   Region Size = 0x70000
+   Region Name = FV
+
+Generate Region at Offset 0x390000
+   Region Size = 0x70000
+   Region Name = FV
+
+Generating BIOSUPDATE FV
+
+Generating BIOSUPDATECARGO FV
+##
+Generating BIOS_UPDATE_DATA FV
+#########
+Generating SETUP_DATA FV
+
+Generate CAPSULE_RESET Capsule
+#
+Generate CAPSULE_BOOT Capsule
+#
+GUID cross reference file can be found at c:\edk\build\Build\Vlv2TbltDevicePkg\RELEASE_VS2008x86\FV\Guid.xref
+
+FV Space Information
+FVMAIN [99%Full] 5369856 total, 5367696 used, 2160 free
+MICROCODE_FV [80%Full] 262144 total, 211040 used, 51104 free
+FVRECOVERY [27%Full] 458752 total, 127992 used, 330760 free
+BIOSUPDATE [99%Full] 2195456 total, 2191504 used, 3952 free
+FVMAIN_COMPACT [64%Full] 2162688 total, 1392104 used, 770584 free
+BIOSUPDATECARGO [99%Full] 2191360 total, 2188416 used, 2944 free
+FVRECOVERY2 [16%Full] 458752 total, 75784 used, 382968 free
+BIOS_UPDATE_DATA [99%Full] 2166784 total, 2162800 used, 3984 free
+
+- Done -
+Build end time: 10:49:58, Sep.25 2018
+Build total time: 00:01:11
+
+Running fce...
+
+The Guid Tool Definition comes from the build-in default configuration.
+
+Intel(R) Firmware Configuration Editor. (Intel(R) FCE) Version 0.29. .
+
+BfmLib Version: 0.30
+Decoding
+
+Start the Update Mode:
+
+
+                            -- Update List --
+
+
+[Results]: 0 question has been updated successfully in total.
+
+Congratulations. The output Fd file '..\Build\Vlv2TbltDevicePkg\RELEASE_VS2008x86\FV\VlvX64.fd' has been completed successfully.
+
+Build location:     Build\Vlv2TbltDevicePkg\RELEASE_VS2008x86
+BIOS ROM Created:   AVU1SHV_X64_R_0106_00.ROM
+
+-------------------- The EDKII BIOS build has successfully completed. --------------------
+
+Tue 09/25/2018  10:50:01.30
+
+Finished Building BIOS.
+BIOS_ID=AVU1SHV1.X64.0106.R00.1809251048
+======================================================================
+Build_IFWI:  Calling IFWI Stitching Script...
+Tue 09/25/2018  10:50:01.55
+
+Creating backup of original BIOS rom.
+
+Stitching IFWI for ..\..\AVU1SHV_X64_R_0106_00.ROM ...
+---------------------------------------------------------------------------
+IFWI  Header: IFWIHeader\IFWI_HEADER.bin,   SEC version: 1.0.3.1164,
+BIOS Version: 0106_00
+Platform Type: AVU1,     IFWI Prefix: AVU1SHV1.X64.0106.R00.1809251048
+---------------------------------------------------------------------------
+-----------------------------
+
+Generating IFWI... AVU1SHV1.X64.0106.R00.1809251048.bin
+
+IFWIHeader\IFWI_HEADER.bin
+..\..\Vlv2MiscBinariesPkg\SEC\1.0.3.1164\VLV_SEC_REGION.bin
+..\..\Vlv2MiscBinariesPkg\SEC\1.0.3.1164\Vacant.bin
+..\..\AVU1SHV_X64_R_0106_00.ROM
+        1 file(s) copied.
+
+===========================================================================
+
+ -- All specified ROM files Stitched. --
+
+ -- See Stitching.log for more info. --
+
+Tue 09/25/2018  10:50:01.66
+
+.
+
+Build_IFWI is finished.
+The final IFWI file is located in C:\edk\build\Vlv2TbltDevicePkg\Stitch\
+======================================================================
+
+C:\edk\build\Vlv2TbltDevicePkg>

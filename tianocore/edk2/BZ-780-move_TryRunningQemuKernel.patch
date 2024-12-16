@@ -1,0 +1,53 @@
+commit a7eb42d84fef6cc24e0379bbd3df1f32da99117c
+Author: Christoph Willing <chris.willing@linux.com>
+Date:   Mon Jul 26 12:04:28 2021 +1000
+
+    OvmfPkg PlatformBootManagerLib: Move TryRunningQemuKernel()
+    
+    Ref: https://bugzilla.tianocore.org/show_bug.cgi?id=3504
+    
+    This change ensures that PlatformBdsConnectSequence()  is run
+    before TryRunningQemuKernel().
+    
+    It reverses commit a34a886962561f6d8550b2a1bb193798ca456431 which aimed
+    to improve UEFI boot time. Unfortunately that commit now results in boot
+    failure when using qemu's -kernel option, therefore rendering the -initrd
+    & -append options useless.
+    
+    Such failures are seen in all releases from edk2-stable201808 to
+    edk2-stable202105 as well as the master branch.
+    
+    The last releases which actually work correctly are vUDK2017 and vUDK2018
+    as they don't contain the a34a88 commit.
+    
+    This change has been tested with edk2-stable201808, edk2-stable201811,
+    edk2-stable202105 as well as master (at 21/7/2021). It results in correct
+    booting using the -kernel option in all the test cases. No measurable
+    change in boot times was discernible compared with the unaffected vUDK2017
+    & vUDK2018 releases.
+    
+    Signed-off-by: Christoph Willing <chris.willing@linux.com>
+
+diff --git a/OvmfPkg/Library/PlatformBootManagerLib/BdsPlatform.c b/OvmfPkg/Library/PlatformBootManagerLib/BdsPlatform.c
+index b0e9742937..f08ace87b3 100644
+--- a/OvmfPkg/Library/PlatformBootManagerLib/BdsPlatform.c
++++ b/OvmfPkg/Library/PlatformBootManagerLib/BdsPlatform.c
+@@ -1517,14 +1517,14 @@ PlatformBootManagerAfterConsole (
+   Tcg2PhysicalPresenceLibProcessRequest (NULL);
+ 
+   //
+-  // Process QEMU's -kernel command line option
++  // Perform some platform specific connect sequence
+   //
+-  TryRunningQemuKernel ();
++  PlatformBdsConnectSequence ();
+ 
+   //
+-  // Perform some platform specific connect sequence
++  // Process QEMU's -kernel command line option
+   //
+-  PlatformBdsConnectSequence ();
++  TryRunningQemuKernel ();
+ 
+   EfiBootManagerRefreshAllBootOption ();
+ 

@@ -1,0 +1,76 @@
+From 0e7341094bb9f54a83d0381daae19a33aaa07e83 Mon Sep 17 00:00:00 2001
+Message-Id: <0e7341094bb9f54a83d0381daae19a33aaa07e83.1555538295.git.prince.agyeman@intel.com>
+In-Reply-To: <cover.1555538295.git.prince.agyeman@intel.com>
+References: <cover.1555538295.git.prince.agyeman@intel.com>
+From: Agyeman <prince.agyeman@intel.com>
+Date: Tue, 16 Apr 2019 17:07:50 -0700
+Subject: [edk2-platforms/devel-MinPlatform] [PATCH v2 2/3] ReadMe.md: Update the build instructions
+
+Updated the build instructions to include
+the python script build instructions
+
+Cc: Michael Kubacki <michael.a.kubacki@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Cc: Ankit Sinha <ankit.sinha@intel.com>
+Cc: Bowen Zhou<bowen.zhou@intel.com>
+Cc: Shifei A Lu <shifei.a.lu@intel.com>
+
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Agyeman <prince.agyeman@intel.com>
+---
+ ReadMe.md | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/ReadMe.md b/ReadMe.md
+index 72e332a476..a94d8051d6 100644
+--- a/ReadMe.md
++++ b/ReadMe.md
+@@ -105,6 +105,43 @@ return back to the minimum platform caller.
+ 
+ ### Build
+ 
++**Building with the python script**
++
++1. Open command window, go to the workspace directory, e.g. c:\Kabylake.
++2. Type "cd edk2-platforms\Platform\Intel
++3. Type "python BuildBios.py -p REPLACE_WITH_BOARD_NAME"
++
++* BuildBios.py Arguments:
++
++  | Argument              | Function                            |
++  | ----------------------|-------------------------------------|
++  | -h, --help            | Show this help message and exit     |
++  | --platform, -p        | The platform to build               |
++  | --toolchain, -t       | Tool Chain to use in build process  |
++  | --DEBUG, -d           | Debug flag                          |
++  | --RELEASE, -r         | Release flag                        |
++  | --TEST_RELEASE, -tr   | Test Release flag                   |
++  | --RELEASE_PDB, -rp    | Release flag                        |
++  | --list, -l            | Lists available platforms           |
++  | --cleanall            | Cleans all                          |
++  | --capsule             | Capsule build enabled               |
++  | --silent              | Silent build enabled                |
++  | --performance         | Performance build enabled           |
++  | --fsp                 | Fsp build enabled                   |
++  |                                                             |
++
++* For more information on build options
++  * ``Type "python BuildBios.py -h"``
++
++* Configuration Files
++  * ``The edk2-platforms\Platform\Intel\Build.json file contains the default settings used by BuildBios.py``
++  * ``The default settings are under the DEFAULT_CONFIG field``
++  * ``Each board can have a settings JSON file that will override the edk2-platforms\Platform\Intel\Build.json settings``
++  * ``An example of a board specific settings:``
++    * ``edk2-platforms\Platform\Intel\KabylakeOpenBoardPkg\KabylakeRvp3\BuildConfig.json``
++
++
++**Building with the batch scripts**
+ For KabylakeOpenBoardPkg
+ 1. Open command window, go to the workspace directory, e.g. c:\Kabylake.
+ 2. Type "cd edk2-platforms\Platform\Intel\KabylakeOpenBoardPkg\KabylakeRvp3".
+-- 
+2.19.1.windows.1
+

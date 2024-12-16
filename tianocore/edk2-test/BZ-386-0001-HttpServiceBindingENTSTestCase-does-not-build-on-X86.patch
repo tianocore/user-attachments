@@ -1,0 +1,62 @@
+From 00be904eab23dd92bcc5eba1bab04c43aaa8e98d Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Sat, 24 Aug 2019 17:39:37 +0200
+Subject: [PATCH 1/1] HttpServiceBindingENTSTestCase does not build on X86 with
+ GCC
+
+Due to conflicting definitions (using or not using EFIAPI) SCT cannot be
+built.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../Http/HttpServiceBinding/HttpServiceBindingENTSTest.c      | 4 ++--
+ .../Http/HttpServiceBinding/HttpServiceBindingENTSTestCase.h  | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTest.c
+index 5a538ca7..00a8eacd 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTest.c
+@@ -45,7 +45,7 @@ ENTS_INTERFACE    gHttpServiceBindingEntsInterfaceList[] = {
+ 
+ EFI_ENTS_PROTOCOL *gHttpServiceBindingEntsProtocolInterface = NULL;
+ 
+-EFI_STATUS
++EFIAPI EFI_STATUS
+ HttpServiceBindingENTSTestUnload (
+   IN EFI_HANDLE                ImageHandle
+   );
+@@ -135,7 +135,7 @@ Error:
+   return Status;
+ }
+ 
+-EFI_STATUS
++EFIAPI EFI_STATUS
+ HttpServiceBindingENTSTestUnload (
+   IN EFI_HANDLE                ImageHandle
+   )
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTestCase.h b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTestCase.h
+index d64b1605..d9a1a1e5 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTestCase.h
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpServiceBindingENTSTestCase.h
+@@ -30,7 +30,7 @@ Abstract:
+ #include "Eas.h"
+ #include <UEFI/Protocol/Http.h>
+ 
+-EFI_STATUS
++EFIAPI EFI_STATUS
+ HttpServiceBindingCreateChild_EntsTest (
+   VOID *ClientInterface
+   )
+@@ -52,7 +52,7 @@ Returns:
+ --*/
+ ;
+ 
+-EFI_STATUS
++EFIAPI EFI_STATUS
+ HttpServiceBindingDestroyChild_EntsTest (
+   VOID *ClientInterface
+   )
+-- 
+2.20.1
+

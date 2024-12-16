@@ -1,0 +1,30 @@
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c b/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c
+index 43c53bad4e..fc7f0e716b 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.c
+@@ -922,7 +922,9 @@ XhcControlTransfer (
+   // Check if the device is still enabled before every transaction.
+   //
+   SlotId = XhcBusDevAddrToSlotId (Xhc, DeviceAddress);
++  DEBUG ((EFI_D_ERROR, "XhcControlTransfer: SlotId == %d DeviceAddress=%d\n", SlotId, DeviceAddress));
+   if (SlotId == 0) {
++    DEBUG ((EFI_D_ERROR, "XhcControlTransfer: SlotId == 0\n"));
+     goto ON_EXIT;
+   }
+ 
+@@ -946,6 +948,7 @@ XhcControlTransfer (
+ 
+     if (Xhc->UsbDevContext[SlotId].XhciDevAddr == 0) {
+       Status = EFI_DEVICE_ERROR;
++      DEBUG ((EFI_D_ERROR, "XhcControlTransfer: Xhc->UsbDevContext[%d].XhciDevAddr\n", SlotId));
+       goto ON_EXIT;
+     }
+     //
+@@ -982,6 +985,7 @@ XhcControlTransfer (
+              );
+ 
+   if (EFI_ERROR (Status)) {
++    DEBUG ((EFI_D_ERROR, "XhcControlTransfer: XhcTransfer error\n"));
+     goto ON_EXIT;
+   }
+ 

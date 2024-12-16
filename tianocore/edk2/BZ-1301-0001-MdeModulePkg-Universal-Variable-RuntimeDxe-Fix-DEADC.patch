@@ -1,0 +1,91 @@
+From 44bd016fe3c910cc725d30c3ffc7f4bbbe9e1db9 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 11:43:52 +0530
+Subject: [PATCH 1/1] MdeModulePkg/Universal/Variable/RuntimeDxe: Fix DEADCODE
+ Coverity issues
+
+Due to parameter check already done at the beginning of the function
+SetVariableCheckHandlerMorLock, the value of DataSize later will be
+only one of the two - MOR_LOCK_V1_SIZE or MOR_LOCK_V2_KEY_SIZE. Hence,
+there is no scenario of else block coming into execution path and it
+can be safely removed.
+
+The value of the variable VirtualAddressChangeRegistered in the
+function VariablePolicySmmDxeMain remains as FALSE whenever it reaches
+the label Exit: with Status not equal to EFI_SUCCESS. Hence, remove the
+VirtualAddressChangeRegistered related redundant code statements.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4309
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../Universal/Variable/RuntimeDxe/TcgMorLockSmm.c         | 6 ++----
+ .../Universal/Variable/RuntimeDxe/VariablePolicySmmDxe.c  | 8 --------
+ 2 files changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/Variable/RuntimeDxe/TcgMorLockSmm.c b/MdeModulePkg/Universal/Variable/RuntimeDxe/TcgMorLockSmm.c
+index 296afd2ec414..6eabef1b4f0c 100644
+--- a/MdeModulePkg/Universal/Variable/RuntimeDxe/TcgMorLockSmm.c
++++ b/MdeModulePkg/Universal/Variable/RuntimeDxe/TcgMorLockSmm.c
+@@ -241,8 +241,9 @@ SetVariableCheckHandlerMorLock (
+       } else {
+         return EFI_INVALID_PARAMETER;
+       }
+-    } else if (DataSize == MOR_LOCK_V2_KEY_SIZE) {
++    } else {
+       //
++      // (DataSize == MOR_LOCK_V2_KEY_SIZE) =>
+       // V2 lock and provision the key
+       //
+ 
+@@ -267,9 +268,6 @@ SetVariableCheckHandlerMorLock (
+         //
+         return EFI_ALREADY_STARTED;
+       }
+-    } else {
+-      ASSERT (FALSE);
+-      return EFI_OUT_OF_RESOURCES;
+     }
+   } else {
+     //
+diff --git a/MdeModulePkg/Universal/Variable/RuntimeDxe/VariablePolicySmmDxe.c b/MdeModulePkg/Universal/Variable/RuntimeDxe/VariablePolicySmmDxe.c
+index b2094fbcd6ea..67291c96ef34 100644
+--- a/MdeModulePkg/Universal/Variable/RuntimeDxe/VariablePolicySmmDxe.c
++++ b/MdeModulePkg/Universal/Variable/RuntimeDxe/VariablePolicySmmDxe.c
+@@ -488,12 +488,10 @@ VariablePolicySmmDxeMain (
+ {
+   EFI_STATUS  Status;
+   BOOLEAN     ProtocolInstalled;
+-  BOOLEAN     VirtualAddressChangeRegistered;
+   EFI_EVENT   VirtualAddressChangeEvent;
+ 
+   Status                         = EFI_SUCCESS;
+   ProtocolInstalled              = FALSE;
+-  VirtualAddressChangeRegistered = FALSE;
+ 
+   // Update the minimum buffer size.
+   mMmCommunicationBufferSize = VAR_CHECK_POLICY_MM_COMM_BUFFER_SIZE;
+@@ -553,8 +551,6 @@ VariablePolicySmmDxeMain (
+   if (EFI_ERROR (Status)) {
+     DEBUG ((DEBUG_ERROR, "%a - Failed to create VirtualAddressChange event! %r\n", __FUNCTION__, Status));
+     goto Exit;
+-  } else {
+-    VirtualAddressChangeRegistered = TRUE;
+   }
+ 
+ Exit:
+@@ -565,10 +561,6 @@ Exit:
+     if (ProtocolInstalled) {
+       gBS->UninstallProtocolInterface (&ImageHandle, &gEdkiiVariablePolicyProtocolGuid, &mVariablePolicyProtocol);
+     }
+-
+-    if (VirtualAddressChangeRegistered) {
+-      gBS->CloseEvent (VirtualAddressChangeEvent);
+-    }
+   }
+ 
+   return Status;
+-- 
+2.36.1.windows.1
+

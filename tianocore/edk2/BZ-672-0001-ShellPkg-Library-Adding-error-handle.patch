@@ -1,0 +1,27 @@
+From 98c7730fa94fbed8579231777a977db498fecad7 Mon Sep 17 00:00:00 2001
+Message-Id: <98c7730fa94fbed8579231777a977db498fecad7.1615535078.git.vincentx.ke@intel.com>
+From: VincentX Ke <vincentx.ke@intel.com>
+Date: Fri, 12 Mar 2021 15:36:42 +0800
+Subject: [PATCH] ShellPkg/Library: Adding error handle
+
+Signed-off-by: VincentX Ke <vincentx.ke@intel.com>
+---
+ ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c
+index a2f04d8db5..cd295bb79b 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c
+@@ -5786,7 +5786,7 @@ PciExplainPciExpress (
+   }
+ 
+   ExtHdr = (PCI_EXP_EXT_HDR*)ExtendedConfigSpace;
+-  while (ExtHdr->CapabilityId != 0 && ExtHdr->CapabilityVersion != 0) {
++  while (ExtHdr->CapabilityId != 0 && ExtHdr->CapabilityVersion != 0 && ExtHdr->CapabilityId != 0xFFFF) {
+     //
+     // Process this item
+     //
+-- 
+2.18.0.windows.1
+

@@ -1,0 +1,50 @@
+From 2fa6392c86e3344c9b7637edb9108a7ab586d9b1 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:56:16 +0530
+Subject: [PATCH 2/2] NetworkPkg/Dhcp4Dxe: Fix DIVIDE_BY_ZERO Coverity issue
+
+In the function DhcpOptionIsValid, if Format->Type is not set to any
+of the values already handled in switch-case code above, then the Unit
+variable remains at value 0. This will get caught by
+
+  ASSERT (Unit != 0);
+
+but this comes into play only in DEBUG mode. However in Release mode,
+the code continues further to evaulate
+
+  if ((Len % Unit) != 0) {
+
+which will lead to DIVIDE_BY_ZERO coming into picture.
+
+Hence, for safety add a check if Unit is 0 before division operation.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4257
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Dhcp4Dxe/Dhcp4Option.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/NetworkPkg/Dhcp4Dxe/Dhcp4Option.c b/NetworkPkg/Dhcp4Dxe/Dhcp4Option.c
+index 5959eff17c53..459204226424 100644
+--- a/NetworkPkg/Dhcp4Dxe/Dhcp4Option.c
++++ b/NetworkPkg/Dhcp4Dxe/Dhcp4Option.c
+@@ -185,6 +185,13 @@ DhcpOptionIsValid (
+ 
+   ASSERT (Unit != 0);
+ 
++  //
++  // Validate that the option is valid.
++  //
++  if (Unit == 0) {
++    return FALSE;
++  }
++
+   //
+   // Validate that the option appears in the full units.
+   //
+-- 
+2.36.1.windows.1
+

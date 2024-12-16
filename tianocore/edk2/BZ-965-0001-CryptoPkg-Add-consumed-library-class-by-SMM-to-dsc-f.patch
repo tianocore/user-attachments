@@ -1,0 +1,31 @@
+From d655893a3d713477be716692b0fe0eb43bbece3c Mon Sep 17 00:00:00 2001
+Message-Id: <d655893a3d713477be716692b0fe0eb43bbece3c.1647946410.git.yi1.li@intel.com>
+In-Reply-To: <cover.1647946410.git.yi1.li@intel.com>
+References: <cover.1647946410.git.yi1.li@intel.com>
+From: yi1 li <yi1.li@intel.com>
+Date: Tue, 22 Mar 2022 18:49:11 +0800
+Subject: [PATCH 1/1] CryptoPkg: Add consumed library class by SMM to dsc file
+
+LibraryClass MmServicesTableLib SynchronizationLib in SmmCryptLib.inf should be list in CryptoPkg.dsc.
+
+Signed-off-by: yi1 li <yi1.li@intel.com>
+---
+ CryptoPkg/CryptoPkg.dsc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/CryptoPkg/CryptoPkg.dsc b/CryptoPkg/CryptoPkg.dsc
+index 0aa72ed87846..e88da4fd7e46 100644
+--- a/CryptoPkg/CryptoPkg.dsc
++++ b/CryptoPkg/CryptoPkg.dsc
+@@ -127,6 +127,8 @@
+   TlsLib|CryptoPkg/Library/TlsLib/TlsLib.inf
+ 
+ [LibraryClasses.common.DXE_SMM_DRIVER]
++  MmServicesTableLib|MdePkg/Library/MmServicesTableLib/MmServicesTableLib.inf
++  SynchronizationLib|MdePkg/Library/BaseSynchronizationLib/BaseSynchronizationLib.inf
+   ReportStatusCodeLib|MdeModulePkg/Library/SmmReportStatusCodeLib/SmmReportStatusCodeLib.inf
+   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/SmmCryptLib.inf
+   TlsLib|CryptoPkg/Library/TlsLibNull/TlsLibNull.inf
+-- 
+2.33.0.windows.2
+

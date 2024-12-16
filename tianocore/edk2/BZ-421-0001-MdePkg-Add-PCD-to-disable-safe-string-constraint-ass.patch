@@ -1,0 +1,94 @@
+From 08db40844673ed1c6ae70f03058ecbff63bb5b5b Mon Sep 17 00:00:00 2001
+From: Vitaly Cheptsov <vit9696@protonmail.com>
+Date: Sun, 20 Oct 2019 15:07:57 +0300
+Subject: [PATCH v3 1/1] MdePkg: Add PCD to disable safe string constraint
+ assertions
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=2054
+
+Runtime data checks are not meant to cause debug assertions
+unless explicitly needed by some debug code (thus the PCD)
+as this breaks debug builds validating data with BaseLib.
+
+Signed-off-by: Vitaly Cheptsov <vit9696@protonmail.com>>
+---
+ MdePkg/MdePkg.dec                   |  6 ++++++
+ MdePkg/Library/BaseLib/BaseLib.inf  | 11 ++++++-----
+ MdePkg/Library/BaseLib/SafeString.c |  4 +++-
+ MdePkg/MdePkg.uni                   |  6 ++++++
+ 4 files changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/MdePkg/MdePkg.dec b/MdePkg/MdePkg.dec
+index 3fd7d1634c..c1671333f6 100644
+--- a/MdePkg/MdePkg.dec
++++ b/MdePkg/MdePkg.dec
+@@ -2221,6 +2221,12 @@ [PcdsFixedAtBuild,PcdsPatchableInModule]
+   # @Prompt Memory Address of GuidedExtractHandler Table.
+   gEfiMdePkgTokenSpaceGuid.PcdGuidedExtractHandlerTableAddress|0x1000000|UINT64|0x30001015
+ 
++  ## Indicates if safe string constraint violation should assert.<BR><BR>
++  #   TRUE  - Safe string constraint violation causes assertion.<BR>
++  #   FALSE - Safe string constraint violation does not cause assertion.<BR>
++  # @Prompt Enable safe string constraint violation assertions.
++  gEfiMdePkgTokenSpaceGuid.PcdAssertOnSafeStringConstraints|TRUE|BOOLEAN|0x0000002e
++
+ [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
+   ## This value is used to set the base address of PCI express hierarchy.
+   # @Prompt PCI Express Base Address.
+diff --git a/MdePkg/Library/BaseLib/BaseLib.inf b/MdePkg/Library/BaseLib/BaseLib.inf
+index 3586beb0ab..bc98bc6134 100644
+--- a/MdePkg/Library/BaseLib/BaseLib.inf
++++ b/MdePkg/Library/BaseLib/BaseLib.inf
+@@ -390,11 +390,12 @@ [LibraryClasses]
+   BaseMemoryLib
+ 
+ [Pcd]
+-  gEfiMdePkgTokenSpaceGuid.PcdMaximumLinkedListLength      ## SOMETIMES_CONSUMES
+-  gEfiMdePkgTokenSpaceGuid.PcdMaximumAsciiStringLength     ## SOMETIMES_CONSUMES
+-  gEfiMdePkgTokenSpaceGuid.PcdMaximumUnicodeStringLength   ## SOMETIMES_CONSUMES
+-  gEfiMdePkgTokenSpaceGuid.PcdControlFlowEnforcementPropertyMask   ## SOMETIMES_CONSUMES
+-  gEfiMdePkgTokenSpaceGuid.PcdSpeculationBarrierType       ## SOMETIMES_CONSUMES
++  gEfiMdePkgTokenSpaceGuid.PcdAssertOnSafeStringConstraints       ## SOMETIMES_CONSUMES
++  gEfiMdePkgTokenSpaceGuid.PcdMaximumLinkedListLength             ## SOMETIMES_CONSUMES
++  gEfiMdePkgTokenSpaceGuid.PcdMaximumAsciiStringLength            ## SOMETIMES_CONSUMES
++  gEfiMdePkgTokenSpaceGuid.PcdMaximumUnicodeStringLength          ## SOMETIMES_CONSUMES
++  gEfiMdePkgTokenSpaceGuid.PcdControlFlowEnforcementPropertyMask  ## SOMETIMES_CONSUMES
++  gEfiMdePkgTokenSpaceGuid.PcdSpeculationBarrierType              ## SOMETIMES_CONSUMES
+ 
+ [FeaturePcd]
+   gEfiMdePkgTokenSpaceGuid.PcdVerifyNodeInList  ## CONSUMES
+diff --git a/MdePkg/Library/BaseLib/SafeString.c b/MdePkg/Library/BaseLib/SafeString.c
+index 7dc03d2caa..56b5e34a8d 100644
+--- a/MdePkg/Library/BaseLib/SafeString.c
++++ b/MdePkg/Library/BaseLib/SafeString.c
+@@ -14,7 +14,9 @@
+ 
+ #define SAFE_STRING_CONSTRAINT_CHECK(Expression, Status)  \
+   do { \
+-    ASSERT (Expression); \
++    if (PcdGetBool (PcdAssertOnSafeStringConstraints)) { \
++      ASSERT (Expression); \
++    } \
+     if (!(Expression)) { \
+       return Status; \
+     } \
+diff --git a/MdePkg/MdePkg.uni b/MdePkg/MdePkg.uni
+index 5c1fa24065..425b66bb43 100644
+--- a/MdePkg/MdePkg.uni
++++ b/MdePkg/MdePkg.uni
+@@ -287,6 +287,12 @@
+ 
+ #string STR_gEfiMdePkgTokenSpaceGuid_PcdGuidedExtractHandlerTableAddress_HELP  #language en-US "This value is used to set the available memory address to store Guided Extract Handlers. The required memory space is decided by the value of PcdMaximumGuidedExtractHandler."
+ 
++#string STR_gEfiMdePkgTokenSpaceGuid_PcdAssertOnSafeStringConstraints_PROMPT  #language en-US "Enable safe string constraint violation assertions"
++
++#string STR_gEfiMdePkgTokenSpaceGuid_PcdAssertOnSafeStringConstraints_HELP  #language en-US "Indicates if safe string constraint violation should assert.<BR><BR>\n"
++                                                                                   "TRUE  - Safe string constraint violation causes assertion.<BR>\n"
++                                                                                   "FALSE - Safe string constraint violation does not cause assertion.<BR>"
++
+ #string STR_gEfiMdePkgTokenSpaceGuid_PcdPciExpressBaseAddress_PROMPT  #language en-US "PCI Express Base Address"
+ 
+ #string STR_gEfiMdePkgTokenSpaceGuid_PcdPciExpressBaseAddress_HELP  #language en-US "This value is used to set the base address of PCI express hierarchy."
+-- 
+2.21.0 (Apple Git-122)
+

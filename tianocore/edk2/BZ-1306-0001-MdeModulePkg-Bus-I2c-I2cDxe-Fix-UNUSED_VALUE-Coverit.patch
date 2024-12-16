@@ -1,0 +1,34 @@
+From 53de21ec1041ee629c03927d4dcb09cc2dd91043 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 15:40:19 +0530
+Subject: [PATCH] MdeModulePkg/Bus/I2c/I2cDxe: Fix UNUSED_VALUE Coverity issue
+
+The return value from I2cHostRequestEnable is stored in Status, but
+it is not made of any use and later Status gets overriden.
+
+Assuming this is deliberate, remove the return value storage in Status.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4311
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/I2c/I2cDxe/I2cHost.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Bus/I2c/I2cDxe/I2cHost.c b/MdeModulePkg/Bus/I2c/I2cDxe/I2cHost.c
+index a4b3302b6b..825a89e09f 100644
+--- a/MdeModulePkg/Bus/I2c/I2cDxe/I2cHost.c
++++ b/MdeModulePkg/Bus/I2c/I2cDxe/I2cHost.c
+@@ -1034,7 +1034,7 @@ I2cHostQueueRequest (
+     //
+     // Start the first I2C request, then the subsequent of I2C request will continue
+     //
+-    Status = I2cHostRequestEnable (I2cHostContext);
++    I2cHostRequestEnable (I2cHostContext);
+   }
+ 
+   if (Event != NULL) {
+-- 
+2.36.1.windows.1
+

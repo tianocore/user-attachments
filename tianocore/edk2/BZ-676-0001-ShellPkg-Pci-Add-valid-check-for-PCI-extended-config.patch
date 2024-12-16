@@ -1,0 +1,87 @@
+From d7ee56f58a710d4b0aa11a567358f98723862888 Mon Sep 17 00:00:00 2001
+Message-Id: <d7ee56f58a710d4b0aa11a567358f98723862888.1616399160.git.vincentx.ke@intel.com>
+From: VincentX Ke <vincentx.ke@intel.com>
+Date: Fri, 12 Mar 2021 15:36:42 +0800
+Subject: [PATCH v5] ShellPkg/Pci: Add valid check for PCI extended config
+ space parser
+
+[edk2-devel] [PATCH v5]
+From: VincentX Ke <vincentx.ke@intel.com>
+
+Bugzilla: 3262 (https://bugzilla.tianocore.org/show_bug.cgi?id=3262)
+
+No need to print PCIe details while CapabilityId is 0xFFFF.
+Limit the NextCapabilityOffset to PCI/PCIe configuration space.
+
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Signed-off-by: VincentX Ke <vincentx.ke@intel.com>
+Change-Id: I951d0a040154873e6459730e76eccca36c31f6c2
+---
+ ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c
+index a2f04d8db5..1e5dc75e27 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/Pci.c
+@@ -2038,12 +2038,14 @@ LocatePciCapability (
+ 
+   @param[in] PciExpressCap       PCI Express capability buffer.
+   @param[in] ExtendedConfigSpace PCI Express extended configuration space.
++  @param[in] ExtendedConfigSize  PCI Express extended configuration size.
+   @param[in] ExtendedCapability  PCI Express extended capability ID to explain.
+ **/
+ VOID
+ PciExplainPciExpress (
+   IN  PCI_CAPABILITY_PCIEXP                  *PciExpressCap,
+   IN  UINT8                                  *ExtendedConfigSpace,
++  IN  UINTN                                  ExtendedConfigSize,
+   IN CONST UINT16                            ExtendedCapability
+   );
+ 
+@@ -2921,6 +2923,7 @@ ShellCommandRunPci (
+         PciExplainPciExpress (
+           (PCI_CAPABILITY_PCIEXP *) ((UINT8 *) &ConfigSpace + PcieCapabilityPtr),
+           ExtendedConfigSpace,
++          ExtendedConfigSize,
+           ExtendedCapability
+           );
+       }
+@@ -5698,12 +5701,14 @@ PrintPciExtendedCapabilityDetails(
+ 
+   @param[in] PciExpressCap       PCI Express capability buffer.
+   @param[in] ExtendedConfigSpace PCI Express extended configuration space.
++  @param[in] ExtendedConfigSize  PCI Express extended configuration size.
+   @param[in] ExtendedCapability  PCI Express extended capability ID to explain.
+ **/
+ VOID
+ PciExplainPciExpress (
+   IN  PCI_CAPABILITY_PCIEXP                  *PciExpressCap,
+   IN  UINT8                                  *ExtendedConfigSpace,
++  IN  UINTN                                  ExtendedConfigSize,
+   IN CONST UINT16                            ExtendedCapability
+   )
+ {
+@@ -5786,7 +5791,7 @@ PciExplainPciExpress (
+   }
+ 
+   ExtHdr = (PCI_EXP_EXT_HDR*)ExtendedConfigSpace;
+-  while (ExtHdr->CapabilityId != 0 && ExtHdr->CapabilityVersion != 0) {
++  while (ExtHdr->CapabilityId != 0 && ExtHdr->CapabilityVersion != 0 && ExtHdr->CapabilityId != 0xFFFF) {
+     //
+     // Process this item
+     //
+@@ -5800,7 +5805,8 @@ PciExplainPciExpress (
+     //
+     // Advance to the next item if it exists
+     //
+-    if (ExtHdr->NextCapabilityOffset != 0) {
++    if (ExtHdr->NextCapabilityOffset != 0 &&
++       (ExtHdr->NextCapabilityOffset <= (UINT32) (ExtendedConfigSize + EFI_PCIE_CAPABILITY_BASE_OFFSET - sizeof (PCI_EXP_EXT_HDR)))) {
+       ExtHdr = (PCI_EXP_EXT_HDR*)(ExtendedConfigSpace + ExtHdr->NextCapabilityOffset - EFI_PCIE_CAPABILITY_BASE_OFFSET);
+     } else {
+       break;
+-- 
+2.18.0.windows.1
+

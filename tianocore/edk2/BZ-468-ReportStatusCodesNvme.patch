@@ -1,0 +1,81 @@
+commit 34e78fcfd2301c762cfe075284101142db0320e0
+Author: Sean Brogan <sean.brogan@microsoft.com>
+Date:   Fri Apr 21 17:47:49 2017 -0700
+
+    Add Report status code events to Nvme to trigger when timeouts occur.
+    Make the NVME Enable Events public
+
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.h b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.h
+index 45a1447500..baab127f19 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.h
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.h
+@@ -41,6 +41,10 @@
+ #include <Library/UefiDriverEntryPoint.h>
+ #include <Library/ReportStatusCodeLib.h>
+ 
++// MS_CHANGE BEGIN -- UEFI_890
++#include <Library/ReportStatusCodeLib.h>
++// MS_CHANGE END -- UEFI_890
++
+ typedef struct _NVME_CONTROLLER_PRIVATE_DATA NVME_CONTROLLER_PRIVATE_DATA;
+ typedef struct _NVME_DEVICE_PRIVATE_DATA     NVME_DEVICE_PRIVATE_DATA;
+ 
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c
+index 95f8b18bc4..20975645fd 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c
+@@ -8,6 +8,7 @@
+ **/
+ 
+ #include "NvmExpress.h"
++#include <Guid/NVMeEventGroup.h>
+ 
+ #define NVME_SHUTDOWN_PROCESS_TIMEOUT 45
+ 
+@@ -1114,7 +1115,7 @@ NvmeUnregisterShutdownNotification (
+ {
+   EFI_STATUS                      Status;
+   EFI_RESET_NOTIFICATION_PROTOCOL *ResetNotify;
+-
++        ReportStatusCode((EFI_ERROR_MAJOR | EFI_ERROR_CODE), (EFI_IO_BUS_SCSI | EFI_IOB_EC_INTERFACE_ERROR));
+   mNvmeControllerNumber--;
+   if (mNvmeControllerNumber == 0) {
+     Status = gBS->LocateProtocol (&gEfiResetNotificationProtocolGuid, NULL, (VOID **) &ResetNotify);
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c
+index e9357b1239..8d193e5fdd 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c
+@@ -797,6 +797,10 @@ NvmExpressPassThru (
+     //
+     CopyMem(Packet->NvmeCompletion, Cq, sizeof(EFI_NVM_EXPRESS_COMPLETION));
+   } else {
++    // MS_CHANGE BEGIN UEFI_890
++    ReportStatusCode((EFI_ERROR_MAJOR | EFI_ERROR_CODE), (EFI_IO_BUS_SCSI | EFI_IOB_EC_INTERFACE_ERROR));
++    // MS_CHANGE END UEFI_890
++  
+     //
+     // Timeout occurs for an NVMe command. Reset the controller to abort the
+     // outstanding commands.
+diff --git a/MdeModulePkg/Include/Guid/NVMeEventGroup.h b/MdeModulePkg/Include/Guid/NVMeEventGroup.h
+new file mode 100644
+index 0000000000..84e22db234
+--- /dev/null
++++ b/MdeModulePkg/Include/Guid/NVMeEventGroup.h
+@@ -0,0 +1,16 @@
++/**
++
++Copyright (c) Microsoft Corporation. All rights reserved.
++SPDX-License-Identifier: BSD-2-Clause-Patent
++
++**/
++
++#ifndef __NVME_EVENT_GROUP_GUID__
++#define __NVME_EVENT_GROUP_GUID__
++
++//gNVMeEnableStartEventGroupGuid is used to signal the start of enabling the NVMe controller
++extern EFI_GUID gNVMeEnableStartEventGroupGuid;
++//gNVMeEnableCompleteEventGroupGuid is used to signal that the NVMe controller enable has finished
++extern EFI_GUID gNVMeEnableCompleteEventGroupGuid;
++
++#endif
+\ No newline at end of file

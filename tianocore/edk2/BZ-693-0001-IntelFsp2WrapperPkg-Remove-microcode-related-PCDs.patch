@@ -1,0 +1,121 @@
+From ef4904e92a04e95afb11db59a6e19eaf80f72715 Mon Sep 17 00:00:00 2001
+From: Ray Ni <ray.ni@intel.com>
+Date: Fri, 9 Apr 2021 17:37:28 +0800
+Subject: [PATCH] IntelFsp2WrapperPkg: Remove microcode related PCDs
+
+IntelFsp2WrapperPkg defines following PCDs:
+  PcdCpuMicrocodePatchAddress
+  PcdCpuMicrocodePatchRegionSize
+  PcdFlashMicrocodeOffset
+
+But the PCD name caused confusion because UefiCpuPkg defines:
+  PcdCpuMicrocodePatchAddress
+  PcdCpuMicrocodePatchRegionSize
+
+PcdCpuMicrocodePatchAddress in IntelFsp2WrapperPkg means the base
+address of the FV that holds the microcode.
+PcdCpuMicrocodePatchAddress in UefiCpuPkg means the address of the
+microcode.
+
+The relationship between the PCDs is:
+IntelFsp2WrapperPkg.PcdCpuMicrocodePatchAddress
+ +  IntelFsp2WrapperPkg.PcdFlashMicrocodeOffset
+ == UefiCpuPkg.PcdCpuMicrocodePatchAddress
+
+IntelFsp2WrapperPkg.PcdCpuMicrocodePatchRegionSize
+ -  IntelFsp2WrapperPkg.PcdFlashMicrocodeOffset
+ == UefiCpuPkg.PcdCpuMicrocodePatchRegionSize
+
+To avoid confusion and actually the PCDs in IntelFsp2WrapperPkg
+are only used by a sample FSP-T wrapper, this patch removes
+the 3 PCDs defined in IntelFsp2WrapperPkg.
+
+The FSP-T wrapper is updated to directly use the ones in UefiCpuPkg.
+
+Signed-off-by: Ray Ni <ray.ni@intel.com>
+Cc: Chasel Chiu <chasel.chiu@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+---
+ IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec               | 8 +-------
+ .../SecFspWrapperPlatformSecLibSample.inf                 | 7 +++----
+ .../SecFspWrapperPlatformSecLibSample/SecRamInitData.c    | 6 +++---
+ 3 files changed, 7 insertions(+), 14 deletions(-)
+
+diff --git a/IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec b/IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec
+index 6852bf1271..a3b9363779 100644
+--- a/IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec
++++ b/IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec
+@@ -1,7 +1,7 @@
+ ## @file
+ # Provides drivers and definitions to support fsp in EDKII bios.
+ #
+-# Copyright (c) 2014 - 2020, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+ # SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+ ##
+@@ -56,12 +56,6 @@ [PcdsFixedAtBuild, PcdsPatchableInModule]
+   ## Provides the size of the BIOS Flash Device.
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFlashCodeCacheSize|0x00200000|UINT32|0x10000002
+ 
+-  ## Indicates the base address of the first Microcode Patch in the Microcode Region
+-  gIntelFsp2WrapperTokenSpaceGuid.PcdCpuMicrocodePatchAddress|0x0|UINT64|0x10000005
+-  gIntelFsp2WrapperTokenSpaceGuid.PcdCpuMicrocodePatchRegionSize|0x0|UINT64|0x10000006
+-  ## Indicates the offset of the Cpu Microcode.
+-  gIntelFsp2WrapperTokenSpaceGuid.PcdFlashMicrocodeOffset|0x90|UINT32|0x10000007
+-
+   ## Indicate the PEI memory size platform want to report
+   gIntelFsp2WrapperTokenSpaceGuid.PcdPeiMinMemSize|0x1800000|UINT32|0x40000004
+   ## Indicate the PEI memory size platform want to report
+diff --git a/IntelFsp2WrapperPkg/Library/SecFspWrapperPlatformSecLibSample/SecFspWrapperPlatformSecLibSample.inf b/IntelFsp2WrapperPkg/Library/SecFspWrapperPlatformSecLibSample/SecFspWrapperPlatformSecLibSample.inf
+index d7f8301bef..027b127724 100644
+--- a/IntelFsp2WrapperPkg/Library/SecFspWrapperPlatformSecLibSample/SecFspWrapperPlatformSecLibSample.inf
++++ b/IntelFsp2WrapperPkg/Library/SecFspWrapperPlatformSecLibSample/SecFspWrapperPlatformSecLibSample.inf
+@@ -1,7 +1,7 @@
+ ## @file
+ #  Sample to provide FSP wrapper platform sec related function.
+ #
+-#  Copyright (c) 2014 - 2016, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -76,8 +76,7 @@ [Pcd]
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspmBaseAddress              ## CONSUMES
+ 
+ [FixedPcd]
+-  gIntelFsp2WrapperTokenSpaceGuid.PcdCpuMicrocodePatchAddress     ## CONSUMES
+-  gIntelFsp2WrapperTokenSpaceGuid.PcdCpuMicrocodePatchRegionSize  ## CONSUMES
+-  gIntelFsp2WrapperTokenSpaceGuid.PcdFlashMicrocodeOffset         ## CONSUMES
++  gUefiCpuPkgTokenSpaceGuid.PcdCpuMicrocodePatchAddress           ## CONSUMES
++  gUefiCpuPkgTokenSpaceGuid.PcdCpuMicrocodePatchRegionSize        ## CONSUMES
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFlashCodeCacheAddress        ## CONSUMES
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFlashCodeCacheSize           ## CONSUMES
+diff --git a/IntelFsp2WrapperPkg/Library/SecFspWrapperPlatformSecLibSample/SecRamInitData.c b/IntelFsp2WrapperPkg/Library/SecFspWrapperPlatformSecLibSample/SecRamInitData.c
+index 96b47e23da..e57b5b57be 100644
+--- a/IntelFsp2WrapperPkg/Library/SecFspWrapperPlatformSecLibSample/SecRamInitData.c
++++ b/IntelFsp2WrapperPkg/Library/SecFspWrapperPlatformSecLibSample/SecRamInitData.c
+@@ -1,7 +1,7 @@
+ /** @file
+   Sample to provide TempRamInitParams data.
+ 
+-  Copyright (c) 2014 - 2020, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -52,8 +52,8 @@ GLOBAL_REMOVE_IF_UNREFERENCED CONST FSPT_UPD_CORE_DATA FsptUpdDataPtr = {
+     }
+   },
+   {
+-    ((UINT32)FixedPcdGet64 (PcdCpuMicrocodePatchAddress) + FixedPcdGet32 (PcdFlashMicrocodeOffset)),
+-    ((UINT32)FixedPcdGet64 (PcdCpuMicrocodePatchRegionSize) - FixedPcdGet32 (PcdFlashMicrocodeOffset)),
++    FixedPcdGet32 (PcdCpuMicrocodePatchAddress),
++    FixedPcdGet32 (PcdCpuMicrocodePatchRegionSize),
+     FixedPcdGet32 (PcdFlashCodeCacheAddress),
+     FixedPcdGet32 (PcdFlashCodeCacheSize),
+   }
+-- 
+2.27.0.windows.1
+

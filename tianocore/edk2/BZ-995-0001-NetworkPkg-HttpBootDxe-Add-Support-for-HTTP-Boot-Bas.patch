@@ -1,0 +1,284 @@
+From 23405fd0316d53f7976b38f0576a70df34440df8 Mon Sep 17 00:00:00 2001
+Message-Id: <23405fd0316d53f7976b38f0576a70df34440df8.1655487158.git.saloni.kasbekar@intel.com>
+From: Saloni Kasbekar <saloni.kasbekar@intel.com>
+Date: Thu, 16 Jun 2022 12:33:01 -0700
+Subject: [PATCH] NetworkPkg/HttpBootDxe: Add Support for HTTP Boot Basic
+ Authentication
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2504
+
+Add support for TLS Client Authentication using Basic Authentication
+for HTTP Boot
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Wu Jiaxin <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+Signed-off-by: Saloni Kasbekar <saloni.kasbekar@intel.com>
+---
+ MdePkg/Include/IndustryStandard/Http11.h   |  8 +++
+ MdePkg/Include/Protocol/HttpBootCallback.h |  6 +-
+ NetworkPkg/HttpBootDxe/HttpBootClient.c    | 84 +++++++++++++++++++++-
+ NetworkPkg/HttpBootDxe/HttpBootClient.h    |  6 +-
+ NetworkPkg/HttpBootDxe/HttpBootDxe.h       |  6 ++
+ NetworkPkg/HttpBootDxe/HttpBootImpl.c      | 23 +++++-
+ 6 files changed, 128 insertions(+), 5 deletions(-)
+
+diff --git a/MdePkg/Include/IndustryStandard/Http11.h b/MdePkg/Include/IndustryStandard/Http11.h
+index f1f113e04b..2137ef1f1a 100644
+--- a/MdePkg/Include/IndustryStandard/Http11.h
++++ b/MdePkg/Include/IndustryStandard/Http11.h
+@@ -204,6 +204,14 @@
+ ///
+ #define HTTP_HEADER_IF_NONE_MATCH  "If-None-Match"
+ 
++///
++/// The WWW-Authenticate Response Header
++/// If a server receives a request for an access-protected object, and an
++/// acceptable Authorization header is not sent, the server responds with
++/// a "401 Unauthorized" status code, and a WWW-Authenticate header.
++///
++#define HTTP_HEADER_WWW_AUTHENTICATE  "WWW-Authenticate"
++
+ ///
+ /// Authorization Request Header
+ /// The Authorization field value consists of credentials
+diff --git a/MdePkg/Include/Protocol/HttpBootCallback.h b/MdePkg/Include/Protocol/HttpBootCallback.h
+index 926f6c1b30..b56c631b1f 100644
+--- a/MdePkg/Include/Protocol/HttpBootCallback.h
++++ b/MdePkg/Include/Protocol/HttpBootCallback.h
+@@ -32,7 +32,7 @@ typedef enum {
+   ///
+   HttpBootDhcp6,
+   ///
+-  /// Data points to an EFI_HTTP_MESSAGE structure, whichcontians a HTTP request message
++  /// Data points to an EFI_HTTP_MESSAGE structure, which contains a HTTP request message
+   /// to be transmitted.
+   ///
+   HttpBootHttpRequest,
+@@ -46,6 +46,10 @@ typedef enum {
+   /// buffer of the entity body data.
+   ///
+   HttpBootHttpEntityBody,
++  ///
++  /// Data points to the authentication information to provide to the HTTP server.
++  ///
++  HttpBootHttpAuthInfo,
+   HttpBootTypeMax
+ } EFI_HTTP_BOOT_CALLBACK_DATA_TYPE;
+ 
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootClient.c b/NetworkPkg/HttpBootDxe/HttpBootClient.c
+index 62e87238fe..448141fb7c 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootClient.c
++++ b/NetworkPkg/HttpBootDxe/HttpBootClient.c
+@@ -922,6 +922,7 @@ HttpBootGetBootFileCallback (
+   @retval EFI_BUFFER_TOO_SMALL     The BufferSize is too small to read the current directory entry.
+                                    BufferSize has been updated with the size needed to complete
+                                    the request.
++  @retval EFI_ACCESS_DENIED        The server needs to authenticate the client.
+   @retval Others                   Unexpected error happened.
+ 
+ **/
+@@ -951,6 +952,9 @@ HttpBootGetBootFile (
+   CHAR16                   *Url;
+   BOOLEAN                  IdentityMode;
+   UINTN                    ReceivedSize;
++  CHAR8                    BaseAuthValue[80];
++  EFI_HTTP_HEADER          *HttpHeader;
++  CHAR8                    *Data;
+ 
+   ASSERT (Private != NULL);
+   ASSERT (Private->HttpCreated);
+@@ -1009,8 +1013,9 @@ HttpBootGetBootFile (
+   //       Host
+   //       Accept
+   //       User-Agent
++  //       [Authorization]
+   //
+-  HttpIoHeader = HttpIoCreateHeader (3);
++  HttpIoHeader = HttpIoCreateHeader ((Private->AuthData != NULL) ? 4 : 3);
+   if (HttpIoHeader == NULL) {
+     Status = EFI_OUT_OF_RESOURCES;
+     goto ERROR_2;
+@@ -1063,6 +1068,35 @@ HttpBootGetBootFile (
+     goto ERROR_3;
+   }
+ 
++  //
++  // Add HTTP header field 4: Authorization
++  //
++  if (Private->AuthData != NULL) {
++    ASSERT (HttpIoHeader->MaxHeaderCount == 4);
++
++    if ((Private->AuthScheme != NULL) && (CompareMem (Private->AuthScheme, "Basic", 5) != 0)) {
++      Status = EFI_UNSUPPORTED;
++      goto ERROR_3;
++    }
++
++    AsciiSPrint (
++      BaseAuthValue,
++      sizeof (BaseAuthValue),
++      "%a %a",
++      "Basic",
++      Private->AuthData
++      );
++
++    Status = HttpIoSetHeader (
++               HttpIoHeader,
++               HTTP_HEADER_AUTHORIZATION,
++               BaseAuthValue
++               );
++    if (EFI_ERROR (Status)) {
++      goto ERROR_3;
++    }
++  }
++
+   //
+   // 2.2 Build the rest of HTTP request info.
+   //
+@@ -1111,6 +1145,7 @@ HttpBootGetBootFile (
+     goto ERROR_4;
+   }
+ 
++  Data   = NULL;
+   Status = HttpIoRecvResponse (
+              &Private->HttpIo,
+              TRUE,
+@@ -1121,6 +1156,53 @@ HttpBootGetBootFile (
+       StatusCode = HttpIo->RspToken.Message->Data.Response->StatusCode;
+       HttpBootPrintErrorMessage (StatusCode);
+       Status = ResponseData->Status;
++      if ((StatusCode == HTTP_STATUS_401_UNAUTHORIZED) || \
++          (StatusCode == HTTP_STATUS_407_PROXY_AUTHENTICATION_REQUIRED))
++      {
++        //
++        // Server indicates the user has to provide a user-id and password as a means of identification.
++        //
++        if (Private->HttpBootCallback != NULL) {
++          Data = AllocateZeroPool (sizeof (CHAR8) * HTTP_BOOT_AUTHENTICATION_INFO_MAX_LEN);
++          if (Data == NULL) {
++            Status = EFI_OUT_OF_RESOURCES;
++            goto ERROR_4;
++          }
++
++          Status = Private->HttpBootCallback->Callback (
++                                                Private->HttpBootCallback,
++                                                HttpBootHttpAuthInfo,
++                                                TRUE,
++                                                HTTP_BOOT_AUTHENTICATION_INFO_MAX_LEN,
++                                                Data
++                                                );
++          if (EFI_ERROR (Status)) {
++            if (Data != NULL) {
++              FreePool (Data);
++            }
++
++            goto ERROR_5;
++          }
++
++          Private->AuthData = (CHAR8 *)Data;
++        }
++
++        HttpHeader = HttpFindHeader (
++                       ResponseData->HeaderCount,
++                       ResponseData->Headers,
++                       HTTP_HEADER_WWW_AUTHENTICATE
++                       );
++        if (HttpHeader != NULL) {
++          Private->AuthScheme = AllocateZeroPool (AsciiStrLen (HttpHeader->FieldValue) + 1);
++          if (Private->AuthScheme == NULL) {
++            return EFI_OUT_OF_RESOURCES;
++          }
++
++          CopyMem (Private->AuthScheme, HttpHeader->FieldValue, AsciiStrLen (HttpHeader->FieldValue));
++        }
++
++        Status = EFI_ACCESS_DENIED;
++      }
+     }
+ 
+     goto ERROR_5;
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootClient.h b/NetworkPkg/HttpBootDxe/HttpBootClient.h
+index 406529dfd9..2fba713679 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootClient.h
++++ b/NetworkPkg/HttpBootDxe/HttpBootClient.h
+@@ -10,8 +10,9 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ #ifndef __EFI_HTTP_BOOT_HTTP_H__
+ #define __EFI_HTTP_BOOT_HTTP_H__
+ 
+-#define HTTP_BOOT_BLOCK_SIZE           1500
+-#define HTTP_USER_AGENT_EFI_HTTP_BOOT  "UefiHttpBoot/1.0"
++#define HTTP_BOOT_BLOCK_SIZE                   1500
++#define HTTP_USER_AGENT_EFI_HTTP_BOOT          "UefiHttpBoot/1.0"
++#define HTTP_BOOT_AUTHENTICATION_INFO_MAX_LEN  255
+ 
+ //
+ // Record the data length and start address of a data block.
+@@ -106,6 +107,7 @@ HttpBootCreateHttpIo (
+   @retval EFI_BUFFER_TOO_SMALL     The BufferSize is too small to read the current directory entry.
+                                    BufferSize has been updated with the size needed to complete
+                                    the request.
++  @retval EFI_ACCESS_DENIED        The server needs to authenticate the client.
+   @retval Others                   Unexpected error happened.
+ 
+ **/
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootDxe.h b/NetworkPkg/HttpBootDxe/HttpBootDxe.h
+index 5acbae9bfa..5ff8ad4698 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootDxe.h
++++ b/NetworkPkg/HttpBootDxe/HttpBootDxe.h
+@@ -183,6 +183,12 @@ struct _HTTP_BOOT_PRIVATE_DATA {
+   UINT64                                       ReceivedSize;
+   UINT32                                       Percentage;
+ 
++  //
++  // Data for the server to authenticate the client
++  //
++  CHAR8                                        *AuthData;
++  CHAR8                                        *AuthScheme;
++
+   //
+   // HII callback info block
+   //
+diff --git a/NetworkPkg/HttpBootDxe/HttpBootImpl.c b/NetworkPkg/HttpBootDxe/HttpBootImpl.c
+index 3da585a291..b4c61925b9 100644
+--- a/NetworkPkg/HttpBootDxe/HttpBootImpl.c
++++ b/NetworkPkg/HttpBootDxe/HttpBootImpl.c
+@@ -360,7 +360,18 @@ HttpBootLoadFile (
+                NULL,
+                &Private->ImageType
+                );
+-    if (EFI_ERROR (Status) && (Status != EFI_BUFFER_TOO_SMALL)) {
++    if ((Private->AuthData != NULL) && (Status == EFI_ACCESS_DENIED)) {
++      //
++      // Try to use HTTP HEAD method again since the Authentication information is provided.
++      //
++      Status = HttpBootGetBootFile (
++                 Private,
++                 TRUE,
++                 &Private->BootFileSize,
++                 NULL,
++                 &Private->ImageType
++                 );
++    } else if ((EFI_ERROR (Status)) && (Status != EFI_BUFFER_TOO_SMALL)) {
+       //
+       // Failed to get file size by HEAD method, may be trunked encoding, try HTTP GET method.
+       //
+@@ -489,6 +500,16 @@ HttpBootStop (
+     }
+   }
+ 
++  if (Private->AuthData != NULL) {
++    FreePool (Private->AuthData);
++    Private->AuthData = NULL;
++  }
++
++  if (Private->AuthScheme != NULL) {
++    FreePool (Private->AuthScheme);
++    Private->AuthScheme = NULL;
++  }
++
+   if (Private->DnsServerIp != NULL) {
+     FreePool (Private->DnsServerIp);
+     Private->DnsServerIp = NULL;
+-- 
+2.26.2.windows.1
+

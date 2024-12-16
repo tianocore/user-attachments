@@ -1,0 +1,41 @@
+From e6f295fdada384f1443a8ee4369e80766a75a91a Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:59:08 +0530
+Subject: [PATCH 1/1] MdeModulePkg/.../S3SaveStateDxe: Fix
+ OVERFLOW_BEFORE_WIDEN Coverity issue
+
+Full pathname - MdeModulePkg/Universal/Acpi/S3SaveStateDxe
+
+"NumberOfPml4EntriesNeeded * NumberOfPdpEntriesNeeded"
+is a potentially overflowing expression with type "unsigned int" (32
+bits, unsigned) evaluated using 32-bit arithmetic, and then used in a
+context that expects an expression of type "UINTN" (64 bits, unsigned).
+
+To avoid overflow, cast either "NumberOfPml4EntriesNeeded" or
+"NumberOfPdpEntriesNeeded" to type "UINTN".
+
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4295
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/Acpi/S3SaveStateDxe/AcpiS3ContextSave.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/AcpiS3ContextSave.c b/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/AcpiS3ContextSave.c
+index 70bee7a67b1f..d3e597e3158b 100644
+--- a/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/AcpiS3ContextSave.c
++++ b/MdeModulePkg/Universal/Acpi/S3SaveStateDxe/AcpiS3ContextSave.c
+@@ -196,7 +196,7 @@ S3AllocatePageTablesBuffer (
+     // We need calculate whole page size then allocate once, because S3 restore page table does not know each page in Nvs.
+     //
+     if (!Page1GSupport) {
+-      TotalPageTableSize = 1 + NumberOfPml4EntriesNeeded + NumberOfPml4EntriesNeeded * NumberOfPdpEntriesNeeded;
++      TotalPageTableSize = 1 + NumberOfPml4EntriesNeeded + (UINTN)NumberOfPml4EntriesNeeded * NumberOfPdpEntriesNeeded;
+     } else {
+       TotalPageTableSize = 1 + NumberOfPml4EntriesNeeded;
+     }
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,2052 @@
+From 3248acf28dcb5900bdf3da78c88432df8938c733 Mon Sep 17 00:00:00 2001
+Message-Id: <3248acf28dcb5900bdf3da78c88432df8938c733.1555538295.git.prince.agyeman@intel.com>
+In-Reply-To: <cover.1555538295.git.prince.agyeman@intel.com>
+References: <cover.1555538295.git.prince.agyeman@intel.com>
+From: Agyeman <prince.agyeman@intel.com>
+Date: Wed, 17 Apr 2019 14:28:08 -0700
+Subject: [edk2-platforms/devel-MinPlatform] [PATCH v2 3/3] Removing build batch files from ClevoOpenBoardPkg,
+ KabylakeOpenBoardPkg and PurleyOpenBoardPkg
+
+These are being removed as they have been replaced
+with the python build scripts
+
+Cc: Michael Kubacki <michael.a.kubacki@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Ankit Sinha <ankit.sinha@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Isaac W Oram <isaac.w.oram@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Cc: Bowen Zhou<bowen.zhou@intel.com>
+Cc: Shifei A Lu <shifei.a.lu@intel.com>
+
+Contributed-under: TianoCore Contribution Agreement 0.1
+Signed-off-by: Agyeman <prince.agyeman@intel.com>
+---
+ .../ClevoOpenBoardPkg/N1xxWU/GitEdk2Clevo.bat |  85 -------
+ .../Intel/ClevoOpenBoardPkg/N1xxWU/bld.bat    | 165 -------------
+ .../Intel/ClevoOpenBoardPkg/N1xxWU/cln.bat    |  54 -----
+ .../ClevoOpenBoardPkg/N1xxWU/postbuild.bat    |  45 ----
+ .../ClevoOpenBoardPkg/N1xxWU/prebuild.bat     | 220 -----------------
+ .../Intel/ClevoOpenBoardPkg/N1xxWU/prep.bat   |  85 -------
+ .../KabylakeRvp3/GitEdk2MinKabylake.bat       |  85 -------
+ .../KabylakeOpenBoardPkg/KabylakeRvp3/bld.bat | 165 -------------
+ .../KabylakeOpenBoardPkg/KabylakeRvp3/cln.bat |  54 -----
+ .../KabylakeRvp3/postbuild.bat                |  45 ----
+ .../KabylakeRvp3/prebuild.bat                 | 221 ------------------
+ .../KabylakeRvp3/prep.bat                     |  85 -------
+ .../BoardMtOlympus/GitEdk2MinMtOlympus.bat    |  86 -------
+ .../PurleyOpenBoardPkg/BoardMtOlympus/bld.bat | 144 ------------
+ .../BoardMtOlympus/postbuild.bat              | 101 --------
+ .../BoardMtOlympus/prebuild.bat               | 203 ----------------
+ ReadMe.md                                     |  27 ---
+ 17 files changed, 1870 deletions(-)
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/GitEdk2Clevo.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/bld.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/cln.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/postbuild.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prebuild.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prep.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/GitEdk2MinKabylake.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/bld.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/cln.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/postbuild.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prebuild.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prep.bat
+ delete mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/GitEdk2MinMtOlympus.bat
+ delete mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/bld.bat
+ delete mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/postbuild.bat
+ delete mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/prebuild.bat
+
+diff --git a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/GitEdk2Clevo.bat b/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/GitEdk2Clevo.bat
+deleted file mode 100644
+index 9a34a9a2d2..0000000000
+--- a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/GitEdk2Clevo.bat
++++ /dev/null
+@@ -1,85 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@echo off
+-
+-pushd ..\..\..\..\..\
+-
+-@REM Set WORKSPACE environment.
+-set WORKSPACE=%cd%
+-echo.
+-echo Set WORKSPACE as: %WORKSPACE%
+-echo.
+-
+-@REM Check whether Git has been installed and been added to system path.
+-git --help >nul 2>nul
+-if %ERRORLEVEL% NEQ 0 (
+-  echo.
+-  echo The 'git' command is not recognized.
+-  echo Please make sure that Git is installed and has been added to system path.
+-  echo.
+-  goto :EOF
+-)
+-
+-@REM Create the Conf directory under WORKSPACE
+-if not exist %WORKSPACE%\Conf (
+-  mkdir Conf
+-)
+-
+-@REM Set other environments.
+-@REM Basic Rule:
+-@REM   Platform override Silicon override Core
+-@REM   Source override Binary
+-
+-set PACKAGES_PATH=%WORKSPACE%\edk2-platforms\Platform\Intel;%WORKSPACE%\edk2-platforms\Silicon\Intel;%WORKSPACE%\edk2-non-osi\Silicon\Intel;%WORKSPACE%\FSP;%WORKSPACE%\edk2;%WORKSPACE%
+-set EDK_TOOLS_BIN=%WORKSPACE%\edk2-BaseTools-win32
+-
+-@if not defined PYTHON_HOME (
+-  @if exist C:\Python27 (
+-    set PYTHON_HOME=C:\Python27
+-  )
+-)
+-
+-set EDK_SETUP_OPTION=
+-@rem if python is installed, disable the binary base tools.
+-if defined PYTHON_HOME (
+-  set EDK_TOOLS_BIN=
+-  set EDK_SETUP_OPTION=--nt32
+-)
+-pushd %WORKSPACE%\edk2
+-call edksetup.bat %EDK_SETUP_OPTION%
+-popd
+-pushd %WORKSPACE%
+-@rem if python is installed, nmake BaseTools source and enable BaseTools source build
+-@if defined PYTHON_HOME (
+-  nmake -f %BASE_TOOLS_PATH%\Makefile
+-)
+-popd
+-
+-set openssl_path=%WORKSPACE%
+-
+-popd
+-
+-goto :EOF
+-
+-:Help
+-echo.
+-echo Usage:
+-echo GitEdk2.bat [-w Workspace_Directory] (optional) [-b Branch_Name] (optional)
+-echo.
+-echo -w    A absolute/relative path to be the workspace.
+-echo       Default value is the current directory.
+-echo.
+-echo -b    The branch name of the repository. Currently, only master, udk2015,
+-echo       trunk (same as master) and bp13 (same as udk2015) are supported.
+-echo       Default value is master.
+-echo.
+diff --git a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/bld.bat b/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/bld.bat
+deleted file mode 100644
+index 03c8f98d93..0000000000
+--- a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/bld.bat
++++ /dev/null
+@@ -1,165 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-:: Useage: bld [/s] [/f <FEATURE_PCD_NAME> <FALSE or TRUE>] [/r]
+-::
+-:: For a given build command, 3 options may be passed into this batch file via command prompt:
+-:: 1) /s = Redirects all output to a file called EDK2.log(Prep.log must be existed), which will be located at the root.
+-:: 2) /f = Defines the passing in of a single override to a feature PCD that is used in the platform
+-::    DSC file.  If this parameter is used, it is to be followed immediately after by both the feature
+-::    pcd name and value. FeaturePcd is the full PCD name, like gMinPlatformPkgTokenSpaceGuid.PcdOptimizeCompilerEnable
+-:: 3) /r = Useful for faster rebuilds when no changes have been made to .inf files. Passes -u to
+-::    build.exe to skip the generation of makefiles.
+-:: 4) rom = Build Bios.rom only and building SPIs will be skipped.
+-::
+-
+-@echo on
+-
+-cd %WORKSPACE%
+-
+-@REM
+-@REM Build FSP Binary
+-@REM
+-@if not defined FSP_BINARY_BUILD goto :SkipFspBinaryBuild
+-@if %FSP_BINARY_BUILD% EQU FALSE goto :SkipFspBinaryBuild
+-@set FSP_BUILD_PARAMETER=/d
+-@set FSP_PKG_NAME=KabylakeFspPkg
+-@if /I "%TARGET%" == "RELEASE" (
+-  @if "%FSP_TEST_RELEASE%"=="TRUE" (
+-    set FSP_BUILD_PARAMETER=/tr
+-  ) else (
+-    set FSP_BUILD_PARAMETER=/r
+-  )
+-)
+-
+-@if %FSP_WRAPPER_BUILD% EQU FALSE goto :BldEnd
+-:SkipFspBinaryBuild
+-
+-@if %FSP_WRAPPER_BUILD% EQU FALSE goto :SkipPatchFspBinFvsBaseAddress
+-del /f %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased*.fd
+-
+-cd %WORKSPACE%
+-
+-if exist %WORKSPACE_PLATFORM%\%PROJECT%\OpenBoardPkgPcd.dsc attrib -r %WORKSPACE_PLATFORM%\%PROJECT%\OpenBoardPkgPcd.dsc
+-@call %PYTHON_HOME%\python.exe %WORKSPACE_PLATFORM%\%PLATFORM_PACKAGE%\Tools\Fsp\RebaseAndPatchFspBinBaseAddress.py %WORKSPACE_PLATFORM%\%PROJECT%\Include\Fdf\FlashMapInclude.fdf %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg Fsp.fd %WORKSPACE_PLATFORM%\%PROJECT%\OpenBoardPkgPcd.dsc 0x0
+-
+-@if %ERRORLEVEL% NEQ 0 (
+-  @echo !!! ERROR:RebaseAndPatchFspBinBaseAddress failed!!!
+-  set SCRIPT_ERROR=1
+-  goto :BldFail
+-)
+-
+-cd %WORKSPACE%
+-
+-copy /y /b %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_S.fd+%WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_M.fd+%WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_T.fd %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased.fd
+-:SkipPatchFspBinFvsBaseAddress
+-
+-
+-@SET SILENT_MODE=FALSE
+-@SET REBUILD_MODE=
+-@SET BUILD_ROM_ONLY=
+-
+-:: Loop through arguements until all are processed
+-
+-:BUILD_FLAGS_LOOP
+-
+-@if "%~1" == "" goto BUILD_FLAGS_LOOP_DONE
+-
+-@if "%~1" == "/f" (
+-  shift
+-  goto BUILD_FLAGS_LOOP
+-)
+-@if "%~1" == "/s" (
+-  SET SILENT_MODE=TRUE
+-  shift
+-  goto BUILD_FLAGS_LOOP
+-)
+-@if "%~1" == "/r" (
+-  SET REBUILD_MODE=-u
+-  shift
+-  goto BUILD_FLAGS_LOOP
+-)
+-@if "%~1" == "rom" (
+-  SET BUILD_ROM_ONLY=rom
+-  shift
+-  goto BUILD_FLAGS_LOOP
+-)
+-:: Unknown build flag.
+-shift
+-goto BUILD_FLAGS_LOOP
+-:BUILD_FLAGS_LOOP_DONE
+-
+-:: Output the build variables the user has selected.
+-
+-@echo.
+-@echo  User Selected build options:
+-@echo    SILENT_MODE = %SILENT_MODE%
+-@echo    REBUILD_MODE = %REBUILD_MODE%
+-@echo    BUILD_ROM_ONLY = %BUILD_ROM_ONLY%
+-@echo.
+-
+-@if %SILENT_MODE% EQU TRUE goto BldSilent
+-
+-call build -n %NUMBER_OF_PROCESSORS% %REBUILD_MODE% %EXT_BUILD_FLAGS%
+-
+-@if %ERRORLEVEL% NEQ 0 goto BldFail
+-@echo.
+-@echo Running postbuild.bat to complete the build process.
+-@echo.
+-call %WORKSPACE_PLATFORM%\%PROJECT%\postbuild.bat %BUILD_ROM_ONLY%
+-@if %SCRIPT_ERROR% EQU 1 goto BldFail
+-@goto BldSuccess
+-
+-:BldSilent
+-@if exist Build.log del Build.log
+-
+-@echo. > Build.log
+-@echo ************************************************************************ >> Build.log
+-@echo ***********             Build.bat is launched here           *********** >> Build.log
+-@echo ************************************************************************ >> Build.log
+-@echo. >> Build.log
+-
+-call build -n %NUMBER_OF_PROCESSORS% %REBUILD_MODE% %EXT_BUILD_FLAGS% 1>>Build.log 2>&1
+-
+-@if %ERRORLEVEL% NEQ 0 goto BldFail
+-@echo. >> Build.log
+-@echo Running postbuild.bat to complete the build process. >> Build.log
+-@echo. >> Build.log
+-@call %WORKSPACE_PLATFORM%\%PROJECT%\postbuild.bat %BUILD_ROM_ONLY% 1>>Build.log 2>&1
+-@If %SCRIPT_ERROR% EQU 1 goto BldFail
+-
+-:BldSuccess
+-@echo.
+-@echo TARGET:               %TARGET%
+-@echo TOOL_CHAIN_TAG:       %TOOL_CHAIN_TAG%
+-@echo BIOS location:        %BUILD_DIR%\FV
+-@echo.
+-@echo The EDKII BIOS build has successfully completed!
+-@echo.
+-@REM
+-
+-@goto BldEnd
+-
+-:BldFail
+-cd %WORKSPACE_PLATFORM%\%PROJECT%
+-@echo.
+-@echo The EDKII BIOS Build has failed!
+-@echo.
+-@exit /b 1
+-
+-:BldEnd
+-@if %SILENT_MODE% EQU TRUE (
+-  @if exist EDK2.log del EDK2.log
+-  @if exist Prep.log if exist Build.log copy Prep.log+Build.log EDK2.log
+-)
+-
+-cd %WORKSPACE_PLATFORM%\%PROJECT%
+\ No newline at end of file
+diff --git a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/cln.bat b/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/cln.bat
+deleted file mode 100644
+index d4d98dd135..0000000000
+--- a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/cln.bat
++++ /dev/null
+@@ -1,54 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@echo off
+-echo.
+-echo Run build cleanall...
+-echo.
+-
+-cd ..
+-
+-if not defined WORKSPACE set WORKSPACE=%cd%
+-if not defined WORKSPACE_PLATFORM set WORKSPACE_PLATFORM=%cd%
+-if not defined WORKSPACE_SILICON set WORKSPACE_SILICON=%cd%
+-
+-REM build cleanall
+-
+-echo.
+-echo Directories to clean...
+-echo.
+-
+-if exist %WORKSPACE%\build rmdir /q /s %WORKSPACE%\build
+-if exist %WORKSPACE%\conf\.cache rmdir /q /s %WORKSPACE%\conf\.cache
+-
+-echo.
+-echo Files to clean...
+-echo.
+-
+-if exist %WORKSPACE%\edk2.log del %WORKSPACE%\edk2.log
+-if exist %WORKSPACE%\Conf\build_rule.txt del %WORKSPACE%\Conf\build_rule.txt
+-if exist %WORKSPACE%\Conf\FrameworkDatabase.db del %WORKSPACE%\Conf\FrameworkDatabase.db
+-if exist %WORKSPACE%\Conf\target.txt del %WORKSPACE%\Conf\target.txt
+-if exist %WORKSPACE%\Conf\tools_def.txt del %WORKSPACE%\Conf\tools_def.txt
+-@REM *.c.c is generated by Catalog Debug feature across code tree.
+-@REM
+-del /s *.c.c > nul 2>&1
+-
+-cd %WORKSPACE_PLATFORM%\%PROJECT%
+-
+-del /f /q Prep.log > nul 2>&1
+-del /f /q ..\Build.log > nul 2>&1
+-
+-echo.
+-echo All done...
+-echo.
+-@echo on
+diff --git a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/postbuild.bat b/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/postbuild.bat
+deleted file mode 100644
+index 70be663897..0000000000
+--- a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/postbuild.bat
++++ /dev/null
+@@ -1,45 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@REM #
+-@REM #  Module Name:
+-@REM #
+-@REM #    postbuild.bat
+-@REM #
+-@REM #  Abstract:
+-@REM #
+-@REM #    Post build script.
+-@REM #
+-@REM #--*/
+-
+-@set SCRIPT_ERROR=0
+-
+-@if /I not "%0" == "%WORKSPACE_PLATFORM%\%PROJECT%\postbuild.bat" (
+-  if /I not "%0" == "%WORKSPACE_PLATFORM%\%PROJECT%\postbuild" (
+-    echo.
+-    echo !!! ERROR !!! This postbuild.bat must run under workspace root using "%WORKSPACE_PLATFORM%\%PROJECT%\postbuild.bat" !!!
+-    echo.
+-    set SCRIPT_ERROR=1
+-    goto :EOF
+-  )
+-)
+-
+-@cd %WORKSPACE_PLATFORM%
+-
+-@cd %WORKSPACE%
+-
+-@if %FSP_WRAPPER_BUILD% EQU TRUE (
+-  del /f %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased*.fd
+-)
+-
+-@if %FSP_WRAPPER_BUILD% EQU TRUE exit /b
+-
+diff --git a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prebuild.bat b/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prebuild.bat
+deleted file mode 100644
+index c3360403f1..0000000000
+--- a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prebuild.bat
++++ /dev/null
+@@ -1,220 +0,0 @@
+-@REM @file
+-@REM  Pre build script.
+-@REM
+-@REM Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-cd ..
+-
+-@REM
+-@REM Set build capsule flag with default being OFF
+-@REM
+-
+-@set CAPSULE_BUILD=0
+-
+-@if /I "%2" == "TRUE" (
+-  @set CAPSULE_BUILD=1
+-  goto StartCapsulePrep
+-)
+-
+-:StartCapsulePrep
+-@REM
+-@REM Define platform specific environment variables.
+-@REM
+-if not defined WORKSPACE_PLATFORM set WORKSPACE_PLATFORM=%WORKSPACE%\edk2-platforms\Platform\Intel
+-if not defined WORKSPACE_SILICON set WORKSPACE_SILICON=%WORKSPACE%\edk2-platforms\Silicon\Intel
+-if not defined WORKSPACE_PLATFORM_BIN set WORKSPACE_PLATFORM_BIN=%WORKSPACE%\edk2-non-osi\Platform\Intel
+-if not defined WORKSPACE_SILICON_BIN set WORKSPACE_SILICON_BIN=%WORKSPACE%\edk2-non-osi\Silicon\Intel
+-if not defined WORKSPACE_FSP_BIN set WORKSPACE_FSP_BIN=%WORKSPACE%\FSP
+-if not defined WORKSPACE_CORE set WORKSPACE_CORE=%WORKSPACE%\edk2
+-if not defined PLATFORM_PACKAGE set PLATFORM_PACKAGE=MinPlatformPkg
+-if not defined PLATFORM_BOARD_PACKAGE set PLATFORM_BOARD_PACKAGE=ClevoOpenBoardPkg
+-if not defined BOARD set BOARD=N1xxWU
+-if not defined PROJECT set PROJECT=%PLATFORM_BOARD_PACKAGE%\%BOARD%
+-
+-@set SCRIPT_ERROR=0
+-
+-@set CATALOG_DEBUG=0
+-
+-@REM Set basic environment.
+-@echo.
+-@echo Prebuild:  Run edksetup.bat batch file.
+-@echo.
+-@if %CATALOG_DEBUG% == 0 (
+-  @del Conf\build_rule.txt
+-)
+-cd %WORKSPACE_CORE%
+-@call edksetup.bat
+-cd %WORKSPACE%
+-@set EFI_SOURCE=%WORKSPACE_CORE%
+-
+-@REM
+-@REM Setup Visual Studio environment. Order of precedence is 2012, 2013, 2010 and then 2008.
+-@REM
+-@REM NOTE: To override precedence set TOOL_CHAIN_TAG before calling prep.bat.
+-@REM       Example: set TOOL_CHAIN_TAG=VS2008
+-@REM
+-
+-@REM Check if tool chain has not been selected and Visual Studio 2014 is installed.
+-@if not defined TOOL_CHAIN_TAG (
+-  if defined VS140COMNTOOLS (
+-    set TOOL_CHAIN_TAG=VS2015
+-  )
+-)
+-
+-@REM If Visual Studio 2014 is selected by priority or by preference, setup the environment variables.
+-@if /I "%TOOL_CHAIN_TAG%"=="VS2015" (
+-  echo.
+-  echo Prebuild:  Set the VS2015 environment.
+-  echo.
+-  if not defined VSINSTALLDIR call "%VS140COMNTOOLS%\vsvars32.bat"
+-  if /I "%VS140COMNTOOLS%" == "C:\Program Files\Microsoft Visual Studio 14.0\Common7\Tools\" (
+-    set TOOL_CHAIN_TAG=VS2015
+-  ) else (
+-    set TOOL_CHAIN_TAG=VS2015x86
+-  )
+-)
+-
+-@REM Check if tool chain has not been selected and Visual Studio 2013 is installed.
+-@if not defined TOOL_CHAIN_TAG (
+-  if defined VS120COMNTOOLS (
+-    set TOOL_CHAIN_TAG=VS2013
+-  )
+-)
+-
+-@REM If Visual Studio 2013 is selected by priority or by preference, setup the environment variables.
+-@if /I "%TOOL_CHAIN_TAG%"=="VS2013" (
+-  echo.
+-  echo Prebuild:  Set the VS2013 environment.
+-  echo.
+-  if not defined VSINSTALLDIR call "%VS120COMNTOOLS%\vsvars32.bat"
+-  if /I "%VS120COMNTOOLS%" == "C:\Program Files\Microsoft Visual Studio 12.0\Common7\Tools\" (
+-    set TOOL_CHAIN_TAG=VS2013
+-  ) else (
+-    set TOOL_CHAIN_TAG=VS2013x86
+-  )
+-)
+-
+-@REM If no supported version of Visual Studio was detected, return an error.
+-@if not defined TOOL_CHAIN_TAG (
+-  echo.
+-  echo !!! ERROR !!! Visual Studio not installed correctly!!!
+-  echo.
+-  set SCRIPT_ERROR=1
+-  goto :EndPreBuild
+-)
+-
+-echo Show CL revision
+-cl
+-
+-@REM Set build TARGET.
+-@if /I "%1" == "" (
+-  set TARGET=DEBUG
+-  set TARGET_SHORT=D
+-) else if /I "%1" == "DEBUG" (
+-  set TARGET=DEBUG
+-  set TARGET_SHORT=D
+-) else if /I "%1" == "TEST_RELEASE" (
+-  set TARGET=RELEASE
+-  set TARGET_SHORT=R
+-) else if /I "%1" == "RELEASE" (
+-  set TARGET=RELEASE
+-  set TARGET_SHORT=R
+-) else if /I "%1" == "RELEASE_PDB" (
+-  set TARGET=RELEASE
+-  set TARGET_SHORT=R
+-) else (
+-  echo.
+-  echo !!! ERROR !!! Incorrect TARGET option for prebuild.bat. !!!
+-  echo.
+-  set SCRIPT_ERROR=1
+-  goto :EndPreBuild
+-)
+-
+-@set BUILD_DIR_PATH=%WORKSPACE%\Build\%PROJECT%\%TARGET%_%TOOL_CHAIN_TAG%
+-@set BUILD_DIR=Build\%PROJECT%\%TARGET%_%TOOL_CHAIN_TAG%
+-@set BUILD_X64=%BUILD_DIR_PATH%\X64
+-@set BUILD_IA32=%BUILD_DIR_PATH%\IA32
+-
+-
+-@echo.
+-@echo Prebuild:  Set build environment.
+-@echo.
+-@if not exist %BUILD_DIR_PATH% (
+-  mkdir %BUILD_DIR_PATH%
+-)
+-
+-@findstr /V "ACTIVE_PLATFORM TARGET TARGET_ARCH TOOL_CHAIN_TAG BUILD_RULE_CONF" %WORKSPACE%\Conf\target.txt > %BUILD_DIR_PATH%\target.txt
+-@echo ACTIVE_PLATFORM = %WORKSPACE_PLATFORM%/%PLATFORM_BOARD_PACKAGE%/%BOARD%/OpenBoardPkg.dsc        >> %BUILD_DIR_PATH%\target.txt
+-@echo TARGET          = %TARGET%                                  >> %BUILD_DIR_PATH%\target.txt
+-@echo TARGET_ARCH     = IA32 X64                                  >> %BUILD_DIR_PATH%\target.txt
+-@echo TOOL_CHAIN_TAG  = %TOOL_CHAIN_TAG%                          >> %BUILD_DIR_PATH%\target.txt
+-@echo BUILD_RULE_CONF = Conf/build_rule.txt                       >> %BUILD_DIR_PATH%\target.txt
+-@move /Y %BUILD_DIR_PATH%\target.txt Conf
+-
+-@if %CAPSULE_BUILD% == 1 (
+-  goto EndCapsulePrep
+-)
+-
+-@REM
+-@REM Set %FSP_WRAPPER_BUILD%
+-@REM
+-@set FSP_WRAPPER_BUILD=TRUE
+-
+-@if %FSP_WRAPPER_BUILD% EQU TRUE (
+-  @REM Create dummy Fsp_Rebased_S_padded.fd to build the BiosInfo.inf if it is wrapper build, due to the SECTION inclusion
+-  echo "" > %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_S_padded.fd
+-  attrib -r %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_S_padded.fd
+-)
+-
+-@REM
+-@REM Set %PERFORMANCE_BUILD%
+-@REM
+-@set PERFORMANCE_BUILD=FALSE
+-
+-@REM
+-@REM Set %FSP_BINARY_BUILD% and %FSP_TEST_RELEASE%
+-@REM
+-@set FSP_BINARY_BUILD=FALSE
+-@set FSP_TEST_RELEASE=FALSE
+-
+-@if "FSP_BINARY_BUILD"=="TRUE" (
+-  @if %FSP_WRAPPER_BUILD% EQU FALSE goto :EndPreBuild
+-)
+-
+-@if not exist %BUILD_X64% (
+-  mkdir %BUILD_X64%
+-)
+-
+-@set SECURE_BOOT_ENABLE=FALSE
+-
+-@REM
+-@REM Skip BIOS_SIZE_OPTION if it is predefined
+-@REM
+-@if NOT "%BIOS_SIZE_OPTION%" == "" goto BiosSizeDone
+-
+-@set BIOS_SIZE_OPTION=
+-
+-@REM default size option is 6M
+-@set BIOS_SIZE_OPTION=-DBIOS_SIZE_OPTION=SIZE_60
+-
+-:BiosSizeDone
+-@echo BIOS_SIZE_OPTION=%BIOS_SIZE_OPTION%
+-
+-@echo   EFI_SOURCE           = %EFI_SOURCE%
+-@echo   TARGET               = %TARGET%
+-@echo   TARGET_ARCH          = IA32 X64
+-@echo   TOOL_CHAIN_TAG       = %TOOL_CHAIN_TAG%
+-@echo   WORKSPACE            = %WORKSPACE%
+-@echo   WORKSPACE_CORE       = %WORKSPACE_CORE%
+-@echo   EXT_BUILD_FLAGS      = %EXT_BUILD_FLAGS%
+-@echo.
+-:EndPreBuild
+-cd %WORKSPACE_PLATFORM%\%PROJECT%
+diff --git a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prep.bat b/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prep.bat
+deleted file mode 100644
+index 46a514b9ed..0000000000
+--- a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prep.bat
++++ /dev/null
+@@ -1,85 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@echo OFF
+-@set PrepRELEASE=DEBUG
+-@set SILENT_MODE=FALSE
+-@set CapsuleBuild=FALSE
+-
+-@set EXT_CONFIG_CLEAR=
+-@set EXT_BUILD_FLAGS=
+-
+-:CmdLineParse
+-if "" == "%1" (
+-  goto Continue
+-) else if "r" == "%1" (
+-  set PrepRELEASE=RELEASE
+-) else if "tr" == "%1" (
+-  set PrepRELEASE=TEST_RELEASE
+-) else if "rp" == "%1" (
+-  set PrepRELEASE=RELEASE_PDB
+-) else if "s" == "%1" (
+-  set SILENT_MODE=TRUE
+-) else if "help" == "%1" (
+-  goto PrepHelp
+-) else (
+-  echo Invalid input arguments: %1
+-  echo.
+-  goto PrepHelp
+-)
+-SHIFT
+-goto CmdLineParse
+-
+-:PrepHelp
+-@echo Preparation for BIOS build.
+-@echo.
+-@echo prep [r][rp][s][help]
+-@echo.
+-@echo   r         To do release build. Default is debug build. See note 1
+-@echo   rp        To do release build with Symbols - For source level debugging. See note 1
+-@echo   s         To build in silent mode. . See note 1
+-@echo.
+-@echo 1) Re-running prep without these arguments cannot be used for
+-@echo    incremental build. Hence, these inputs must be supplied each time
+-@echo    prep are desired to be re-run.
+-@echo.
+-goto PrepDone
+-
+-:Continue
+-@echo ==============================================
+-
+-if exist %WORKSPACE%\Prep.log del %WORKSPACE%\Prep.log
+-
+-:PrepReleaseCheck
+-
+-@if %SILENT_MODE% EQU TRUE goto BldSilent
+-
+-call prebuild.bat %PrepRelease% %CapsuleBuild%
+-goto PrePrepDone
+-
+-:BldSilent
+-@echo ************************************************************************ >> %WORKSPACE%\Prep.log
+-@echo ***********           Prebuild.bat is launched here          *********** >> %WORKSPACE%\Prep.log
+-@echo ************************************************************************ >> %WORKSPACE%\Prep.log
+-call prebuild.bat %PrepRelease% %CapsuleBuild% 1>>%WORKSPACE%\Prep.log 2>&1
+-
+-:PrePrepDone
+-@If %SCRIPT_ERROR% EQU 1 goto PrepFail
+-@goto PrepDone
+-
+-:PrepFail
+-@echo.
+-@echo !! The EDKII BIOS build has failed in prep!
+-@echo.
+-@exit /b 1
+-
+-:PrepDone
+\ No newline at end of file
+diff --git a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/GitEdk2MinKabylake.bat b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/GitEdk2MinKabylake.bat
+deleted file mode 100644
+index 4e13ed18e5..0000000000
+--- a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/GitEdk2MinKabylake.bat
++++ /dev/null
+@@ -1,85 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2017, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@echo off
+-
+-pushd ..\..\..\..\..\
+-
+-@REM Set WORKSPACE environment.
+-set WORKSPACE=%cd%
+-echo.
+-echo Set WORKSPACE as: %WORKSPACE%
+-echo.
+-
+-@REM Check whether Git has been installed and been added to system path.
+-git --help >nul 2>nul
+-if %ERRORLEVEL% NEQ 0 (
+-  echo.
+-  echo The 'git' command is not recognized.
+-  echo Please make sure that Git is installed and has been added to system path.
+-  echo.
+-  goto :EOF
+-)
+-
+-@REM Create the Conf directory under WORKSPACE
+-if not exist %WORKSPACE%\Conf (
+-  mkdir Conf
+-)
+-
+-@REM Set other environments.
+-@REM Basic Rule:
+-@REM   Platform override Silicon override Core
+-@REM   Source override Binary
+-
+-set PACKAGES_PATH=%WORKSPACE%\edk2-platforms\Platform\Intel;%WORKSPACE%\edk2-platforms\Silicon\Intel;%WORKSPACE%\edk2-non-osi\Silicon\Intel;%WORKSPACE%\FSP;%WORKSPACE%\edk2;%WORKSPACE%
+-set EDK_TOOLS_BIN=%WORKSPACE%\edk2-BaseTools-win32
+-
+-@if not defined PYTHON_HOME (
+-  @if exist C:\Python27 (
+-    set PYTHON_HOME=C:\Python27
+-  )
+-)
+-
+-set EDK_SETUP_OPTION=
+-@rem if python is installed, disable the binary base tools.
+-if defined PYTHON_HOME (
+-  set EDK_TOOLS_BIN=
+-  set EDK_SETUP_OPTION=--nt32
+-)
+-pushd %WORKSPACE%\edk2
+-call edksetup.bat %EDK_SETUP_OPTION%
+-popd
+-pushd %WORKSPACE%
+-@rem if python is installed, nmake BaseTools source and enable BaseTools source build
+-@if defined PYTHON_HOME (
+-  nmake -f %BASE_TOOLS_PATH%\Makefile
+-)
+-popd
+-
+-set openssl_path=%WORKSPACE%
+-
+-popd
+-
+-goto :EOF
+-
+-:Help
+-echo.
+-echo Usage:
+-echo GitEdk2.bat [-w Workspace_Directory] (optional) [-b Branch_Name] (optional)
+-echo.
+-echo -w    A absolute/relative path to be the workspace.
+-echo       Default value is the current directory.
+-echo.
+-echo -b    The branch name of the repository. Currently, only master, udk2015,
+-echo       trunk (same as master) and bp13 (same as udk2015) are supported.
+-echo       Default value is master.
+-echo.
+diff --git a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/bld.bat b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/bld.bat
+deleted file mode 100644
+index e0ad5eefdc..0000000000
+--- a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/bld.bat
++++ /dev/null
+@@ -1,165 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2017, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-:: Useage: bld [/s] [/f <FEATURE_PCD_NAME> <FALSE or TRUE>] [/r]
+-::
+-:: For a given build command, 3 options may be passed into this batch file via command prompt:
+-:: 1) /s = Redirects all output to a file called EDK2.log(Prep.log must be existed), which will be located at the root.
+-:: 2) /f = Defines the passing in of a single override to a feature PCD that is used in the platform
+-::    DSC file.  If this parameter is used, it is to be followed immediately after by both the feature
+-::    pcd name and value. FeaturePcd is the full PCD name, like gMinPlatformPkgTokenSpaceGuid.PcdOptimizeCompilerEnable
+-:: 3) /r = Useful for faster rebuilds when no changes have been made to .inf files. Passes -u to
+-::    build.exe to skip the generation of makefiles.
+-:: 4) rom = Build Bios.rom only and building SPIs will be skipped.
+-::
+-
+-@echo on
+-
+-cd %WORKSPACE%
+-
+-@REM
+-@REM Build FSP Binary
+-@REM
+-@if not defined FSP_BINARY_BUILD goto :SkipFspBinaryBuild
+-@if %FSP_BINARY_BUILD% EQU FALSE goto :SkipFspBinaryBuild
+-@set FSP_BUILD_PARAMETER=/d
+-@set FSP_PKG_NAME=KabylakeFspPkg
+-@if /I "%TARGET%" == "RELEASE" (
+-  @if "%FSP_TEST_RELEASE%"=="TRUE" (
+-    set FSP_BUILD_PARAMETER=/tr
+-  ) else (
+-    set FSP_BUILD_PARAMETER=/r
+-  )
+-)
+-
+-@if %FSP_WRAPPER_BUILD% EQU FALSE goto :BldEnd
+-:SkipFspBinaryBuild
+-
+-@if %FSP_WRAPPER_BUILD% EQU FALSE goto :SkipPatchFspBinFvsBaseAddress
+-del /f %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased*.fd
+-
+-cd %WORKSPACE%
+-
+-if exist %WORKSPACE_PLATFORM%\%PROJECT%\OpenBoardPkgPcd.dsc attrib -r %WORKSPACE_PLATFORM%\%PROJECT%\OpenBoardPkgPcd.dsc
+-@call %PYTHON_HOME%\python.exe %WORKSPACE_PLATFORM%\%PLATFORM_PACKAGE%\Tools\Fsp\RebaseAndPatchFspBinBaseAddress.py %WORKSPACE_PLATFORM%\%PLATFORM_BOARD_PACKAGE%\Include\Fdf\FlashMapInclude.fdf %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg Fsp.fd %WORKSPACE_PLATFORM%\%PROJECT%\OpenBoardPkgPcd.dsc 0x0
+-
+-@if %ERRORLEVEL% NEQ 0 (
+-  @echo !!! ERROR:RebaseAndPatchFspBinBaseAddress failed!!!
+-  set SCRIPT_ERROR=1
+-  goto :BldFail
+-)
+-
+-cd %WORKSPACE%
+-
+-copy /y /b %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_S.fd+%WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_M.fd+%WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_T.fd %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased.fd
+-:SkipPatchFspBinFvsBaseAddress
+-
+-
+-@SET SILENT_MODE=FALSE
+-@SET REBUILD_MODE=
+-@SET BUILD_ROM_ONLY=
+-
+-:: Loop through arguements until all are processed
+-
+-:BUILD_FLAGS_LOOP
+-
+-@if "%~1" == "" goto BUILD_FLAGS_LOOP_DONE
+-
+-@if "%~1" == "/f" (
+-  shift
+-  goto BUILD_FLAGS_LOOP
+-)
+-@if "%~1" == "/s" (
+-  SET SILENT_MODE=TRUE
+-  shift
+-  goto BUILD_FLAGS_LOOP
+-)
+-@if "%~1" == "/r" (
+-  SET REBUILD_MODE=-u
+-  shift
+-  goto BUILD_FLAGS_LOOP
+-)
+-@if "%~1" == "rom" (
+-  SET BUILD_ROM_ONLY=rom
+-  shift
+-  goto BUILD_FLAGS_LOOP
+-)
+-:: Unknown build flag.
+-shift
+-goto BUILD_FLAGS_LOOP
+-:BUILD_FLAGS_LOOP_DONE
+-
+-:: Output the build variables the user has selected.
+-
+-@echo.
+-@echo  User Selected build options:
+-@echo    SILENT_MODE = %SILENT_MODE%
+-@echo    REBUILD_MODE = %REBUILD_MODE%
+-@echo    BUILD_ROM_ONLY = %BUILD_ROM_ONLY%
+-@echo.
+-
+-@if %SILENT_MODE% EQU TRUE goto BldSilent
+-
+-call build -n %NUMBER_OF_PROCESSORS% %REBUILD_MODE% %EXT_BUILD_FLAGS%
+-
+-@if %ERRORLEVEL% NEQ 0 goto BldFail
+-@echo.
+-@echo Running postbuild.bat to complete the build process.
+-@echo.
+-call %WORKSPACE_PLATFORM%\%PROJECT%\postbuild.bat %BUILD_ROM_ONLY%
+-@if %SCRIPT_ERROR% EQU 1 goto BldFail
+-@goto BldSuccess
+-
+-:BldSilent
+-@if exist Build.log del Build.log
+-
+-@echo. > Build.log
+-@echo ************************************************************************ >> Build.log
+-@echo ***********             Build.bat is launched here           *********** >> Build.log
+-@echo ************************************************************************ >> Build.log
+-@echo. >> Build.log
+-
+-call build -n %NUMBER_OF_PROCESSORS% %REBUILD_MODE% %EXT_BUILD_FLAGS% 1>>Build.log 2>&1
+-
+-@if %ERRORLEVEL% NEQ 0 goto BldFail
+-@echo. >> Build.log
+-@echo Running postbuild.bat to complete the build process. >> Build.log
+-@echo. >> Build.log
+-@call %WORKSPACE_PLATFORM%\%PROJECT%\postbuild.bat %BUILD_ROM_ONLY% 1>>Build.log 2>&1
+-@If %SCRIPT_ERROR% EQU 1 goto BldFail
+-
+-:BldSuccess
+-@echo.
+-@echo TARGET:               %TARGET%
+-@echo TOOL_CHAIN_TAG:       %TOOL_CHAIN_TAG%
+-@echo BIOS location:        %BUILD_DIR%\FV
+-@echo.
+-@echo The EDKII BIOS build has successfully completed!
+-@echo.
+-@REM
+-
+-@goto BldEnd
+-
+-:BldFail
+-cd %WORKSPACE_PLATFORM%\%PROJECT%
+-@echo.
+-@echo The EDKII BIOS Build has failed!
+-@echo.
+-@exit /b 1
+-
+-:BldEnd
+-@if %SILENT_MODE% EQU TRUE (
+-  @if exist EDK2.log del EDK2.log
+-  @if exist Prep.log if exist Build.log copy Prep.log+Build.log EDK2.log
+-)
+-
+-cd %WORKSPACE_PLATFORM%\%PROJECT%
+\ No newline at end of file
+diff --git a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/cln.bat b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/cln.bat
+deleted file mode 100644
+index 8c4e0f51e6..0000000000
+--- a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/cln.bat
++++ /dev/null
+@@ -1,54 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2017, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@echo off
+-echo.
+-echo Run build cleanall...
+-echo.
+-
+-cd ..
+-
+-if not defined WORKSPACE set WORKSPACE=%cd%
+-if not defined WORKSPACE_PLATFORM set WORKSPACE_PLATFORM=%cd%
+-if not defined WORKSPACE_SILICON set WORKSPACE_SILICON=%cd%
+-
+-REM build cleanall
+-
+-echo.
+-echo Directories to clean...
+-echo.
+-
+-if exist %WORKSPACE%\build rmdir /q /s %WORKSPACE%\build
+-if exist %WORKSPACE%\conf\.cache rmdir /q /s %WORKSPACE%\conf\.cache
+-
+-echo.
+-echo Files to clean...
+-echo.
+-
+-if exist %WORKSPACE%\edk2.log del %WORKSPACE%\edk2.log
+-if exist %WORKSPACE%\Conf\build_rule.txt del %WORKSPACE%\Conf\build_rule.txt
+-if exist %WORKSPACE%\Conf\FrameworkDatabase.db del %WORKSPACE%\Conf\FrameworkDatabase.db
+-if exist %WORKSPACE%\Conf\target.txt del %WORKSPACE%\Conf\target.txt
+-if exist %WORKSPACE%\Conf\tools_def.txt del %WORKSPACE%\Conf\tools_def.txt
+-@REM *.c.c is generated by Catalog Debug feature across code tree.
+-@REM
+-del /s *.c.c > nul 2>&1
+-
+-cd %WORKSPACE_PLATFORM%\%PROJECT%
+-
+-del /f /q Prep.log > nul 2>&1
+-del /f /q ..\Build.log > nul 2>&1
+-
+-echo.
+-echo All done...
+-echo.
+-@echo on
+diff --git a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/postbuild.bat b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/postbuild.bat
+deleted file mode 100644
+index a39319fd9f..0000000000
+--- a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/postbuild.bat
++++ /dev/null
+@@ -1,45 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2017, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@REM #
+-@REM #  Module Name:
+-@REM #
+-@REM #    postbuild.bat
+-@REM #
+-@REM #  Abstract:
+-@REM #
+-@REM #    Post build script.
+-@REM #
+-@REM #--*/
+-
+-@set SCRIPT_ERROR=0
+-
+-@if /I not "%0" == "%WORKSPACE_PLATFORM%\%PROJECT%\postbuild.bat" (
+-  if /I not "%0" == "%WORKSPACE_PLATFORM%\%PROJECT%\postbuild" (
+-    echo.
+-    echo !!! ERROR !!! This postbuild.bat must run under workspace root using "%WORKSPACE_PLATFORM%\%PROJECT%\postbuild.bat" !!!
+-    echo.
+-    set SCRIPT_ERROR=1
+-    goto :EOF
+-  )
+-)
+-
+-@cd %WORKSPACE_PLATFORM%
+-
+-@cd %WORKSPACE%
+-
+-@if %FSP_WRAPPER_BUILD% EQU TRUE (
+-  del /f %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased*.fd
+-)
+-
+-@if %FSP_WRAPPER_BUILD% EQU TRUE exit /b
+-
+diff --git a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prebuild.bat b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prebuild.bat
+deleted file mode 100644
+index 2861eec08f..0000000000
+--- a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prebuild.bat
++++ /dev/null
+@@ -1,221 +0,0 @@
+-@REM @file
+-@REM  Pre build script.
+-@REM
+-@REM Copyright (c) 2017, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-cd ..
+-
+-
+-@REM
+-@REM Set build capsule flag with default being OFF
+-@REM
+-
+-@set CAPSULE_BUILD=0
+-
+-@if /I "%2" == "TRUE" (
+-  @set CAPSULE_BUILD=1
+-  goto StartCapsulePrep
+-)
+-
+-:StartCapsulePrep
+-@REM
+-@REM Define platform specific environment variables.
+-@REM
+-if not defined WORKSPACE_PLATFORM set WORKSPACE_PLATFORM=%WORKSPACE%\edk2-platforms\Platform\Intel
+-if not defined WORKSPACE_SILICON set WORKSPACE_SILICON=%WORKSPACE%\edk2-platforms\Silicon\Intel
+-if not defined WORKSPACE_PLATFORM_BIN set WORKSPACE_PLATFORM_BIN=%WORKSPACE%\edk2-non-osi\Platform\Intel
+-if not defined WORKSPACE_SILICON_BIN set WORKSPACE_SILICON_BIN=%WORKSPACE%\edk2-non-osi\Silicon\Intel
+-if not defined WORKSPACE_FSP_BIN set WORKSPACE_FSP_BIN=%WORKSPACE%\FSP
+-if not defined WORKSPACE_CORE set WORKSPACE_CORE=%WORKSPACE%\edk2
+-if not defined PLATFORM_PACKAGE set PLATFORM_PACKAGE=MinPlatformPkg
+-if not defined PLATFORM_BOARD_PACKAGE set PLATFORM_BOARD_PACKAGE=KabylakeOpenBoardPkg
+-if not defined BOARD set BOARD=KabylakeRvp3
+-if not defined PROJECT set PROJECT=%PLATFORM_BOARD_PACKAGE%\%BOARD%
+-
+-@set SCRIPT_ERROR=0
+-
+-@set CATALOG_DEBUG=0
+-
+-@REM Set basic environment.
+-@echo.
+-@echo Prebuild:  Run edksetup.bat batch file.
+-@echo.
+-@if %CATALOG_DEBUG% == 0 (
+-  @del Conf\build_rule.txt
+-)
+-cd %WORKSPACE_CORE%
+-@call edksetup.bat
+-cd %WORKSPACE%
+-@set EFI_SOURCE=%WORKSPACE_CORE%
+-
+-@REM
+-@REM Setup Visual Studio environment. Order of precedence is 2012, 2013, 2010 and then 2008.
+-@REM
+-@REM NOTE: To override precedence set TOOL_CHAIN_TAG before calling prep.bat.
+-@REM       Example: set TOOL_CHAIN_TAG=VS2008
+-@REM
+-
+-@REM Check if tool chain has not been selected and Visual Studio 2014 is installed.
+-@if not defined TOOL_CHAIN_TAG (
+-  if defined VS140COMNTOOLS (
+-    set TOOL_CHAIN_TAG=VS2015
+-  )
+-)
+-
+-@REM If Visual Studio 2014 is selected by priority or by preference, setup the environment variables.
+-@if /I "%TOOL_CHAIN_TAG%"=="VS2015" (
+-  echo.
+-  echo Prebuild:  Set the VS2015 environment.
+-  echo.
+-  if not defined VSINSTALLDIR call "%VS140COMNTOOLS%\vsvars32.bat"
+-  if /I "%VS140COMNTOOLS%" == "C:\Program Files\Microsoft Visual Studio 14.0\Common7\Tools\" (
+-    set TOOL_CHAIN_TAG=VS2015
+-  ) else (
+-    set TOOL_CHAIN_TAG=VS2015x86
+-  )
+-)
+-
+-@REM Check if tool chain has not been selected and Visual Studio 2013 is installed.
+-@if not defined TOOL_CHAIN_TAG (
+-  if defined VS120COMNTOOLS (
+-    set TOOL_CHAIN_TAG=VS2013
+-  )
+-)
+-
+-@REM If Visual Studio 2013 is selected by priority or by preference, setup the environment variables.
+-@if /I "%TOOL_CHAIN_TAG%"=="VS2013" (
+-  echo.
+-  echo Prebuild:  Set the VS2013 environment.
+-  echo.
+-  if not defined VSINSTALLDIR call "%VS120COMNTOOLS%\vsvars32.bat"
+-  if /I "%VS120COMNTOOLS%" == "C:\Program Files\Microsoft Visual Studio 12.0\Common7\Tools\" (
+-    set TOOL_CHAIN_TAG=VS2013
+-  ) else (
+-    set TOOL_CHAIN_TAG=VS2013x86
+-  )
+-)
+-
+-@REM If no supported version of Visual Studio was detected, return an error.
+-@if not defined TOOL_CHAIN_TAG (
+-  echo.
+-  echo !!! ERROR !!! Visual Studio not installed correctly!!!
+-  echo.
+-  set SCRIPT_ERROR=1
+-  goto :EndPreBuild
+-)
+-
+-echo Show CL revision
+-cl
+-
+-@REM Set build TARGET.
+-@if /I "%1" == "" (
+-  set TARGET=DEBUG
+-  set TARGET_SHORT=D
+-) else if /I "%1" == "DEBUG" (
+-  set TARGET=DEBUG
+-  set TARGET_SHORT=D
+-) else if /I "%1" == "TEST_RELEASE" (
+-  set TARGET=RELEASE
+-  set TARGET_SHORT=R
+-) else if /I "%1" == "RELEASE" (
+-  set TARGET=RELEASE
+-  set TARGET_SHORT=R
+-) else if /I "%1" == "RELEASE_PDB" (
+-  set TARGET=RELEASE
+-  set TARGET_SHORT=R
+-) else (
+-  echo.
+-  echo !!! ERROR !!! Incorrect TARGET option for prebuild.bat. !!!
+-  echo.
+-  set SCRIPT_ERROR=1
+-  goto :EndPreBuild
+-)
+-
+-@set BUILD_DIR_PATH=%WORKSPACE%\Build\%PROJECT%\%TARGET%_%TOOL_CHAIN_TAG%
+-@set BUILD_DIR=Build\%PROJECT%\%TARGET%_%TOOL_CHAIN_TAG%
+-@set BUILD_X64=%BUILD_DIR_PATH%\X64
+-@set BUILD_IA32=%BUILD_DIR_PATH%\IA32
+-
+-
+-@echo.
+-@echo Prebuild:  Set build environment.
+-@echo.
+-@if not exist %BUILD_DIR_PATH% (
+-  mkdir %BUILD_DIR_PATH%
+-)
+-
+-@findstr /V "ACTIVE_PLATFORM TARGET TARGET_ARCH TOOL_CHAIN_TAG BUILD_RULE_CONF" %WORKSPACE%\Conf\target.txt > %BUILD_DIR_PATH%\target.txt
+-@echo ACTIVE_PLATFORM = %WORKSPACE_PLATFORM%/%PLATFORM_BOARD_PACKAGE%/%BOARD%/OpenBoardPkg.dsc        >> %BUILD_DIR_PATH%\target.txt
+-@echo TARGET          = %TARGET%                                  >> %BUILD_DIR_PATH%\target.txt
+-@echo TARGET_ARCH     = IA32 X64                                  >> %BUILD_DIR_PATH%\target.txt
+-@echo TOOL_CHAIN_TAG  = %TOOL_CHAIN_TAG%                          >> %BUILD_DIR_PATH%\target.txt
+-@echo BUILD_RULE_CONF = Conf/build_rule.txt                       >> %BUILD_DIR_PATH%\target.txt
+-@move /Y %BUILD_DIR_PATH%\target.txt Conf
+-
+-@if %CAPSULE_BUILD% == 1 (
+-  goto EndCapsulePrep
+-)
+-
+-@REM
+-@REM Set %FSP_WRAPPER_BUILD%
+-@REM
+-@set FSP_WRAPPER_BUILD=TRUE
+-
+-@if %FSP_WRAPPER_BUILD% EQU TRUE (
+-  @REM Create dummy Fsp_Rebased_S_padded.fd to build the BiosInfo.inf if it is wrapper build, due to the SECTION inclusion
+-  echo "" > %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_S_padded.fd
+-  attrib -r %WORKSPACE_FSP_BIN%\KabylakeFspBinPkg\Fsp_Rebased_S_padded.fd
+-)
+-
+-@REM
+-@REM Set %PERFORMANCE_BUILD%
+-@REM
+-@set PERFORMANCE_BUILD=FALSE
+-
+-@REM
+-@REM Set %FSP_BINARY_BUILD% and %FSP_TEST_RELEASE%
+-@REM
+-@set FSP_BINARY_BUILD=FALSE
+-@set FSP_TEST_RELEASE=FALSE
+-
+-@if "FSP_BINARY_BUILD"=="TRUE" (
+-  @if %FSP_WRAPPER_BUILD% EQU FALSE goto :EndPreBuild
+-)
+-
+-@if not exist %BUILD_X64% (
+-  mkdir %BUILD_X64%
+-)
+-
+-@set SECURE_BOOT_ENABLE=FALSE
+-
+-@REM
+-@REM Skip BIOS_SIZE_OPTION if it is predefined
+-@REM
+-@if NOT "%BIOS_SIZE_OPTION%" == "" goto BiosSizeDone
+-
+-@set BIOS_SIZE_OPTION=
+-
+-@REM default size option is 7M
+-@set BIOS_SIZE_OPTION=-DBIOS_SIZE_OPTION=SIZE_70
+-
+-:BiosSizeDone
+-@echo BIOS_SIZE_OPTION=%BIOS_SIZE_OPTION%
+-
+-@echo   EFI_SOURCE           = %EFI_SOURCE%
+-@echo   TARGET               = %TARGET%
+-@echo   TARGET_ARCH          = IA32 X64
+-@echo   TOOL_CHAIN_TAG       = %TOOL_CHAIN_TAG%
+-@echo   WORKSPACE            = %WORKSPACE%
+-@echo   WORKSPACE_CORE       = %WORKSPACE_CORE%
+-@echo   EXT_BUILD_FLAGS      = %EXT_BUILD_FLAGS%
+-@echo.
+-:EndPreBuild
+-cd %WORKSPACE_PLATFORM%\%PROJECT%
+diff --git a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prep.bat b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prep.bat
+deleted file mode 100644
+index 68e664e435..0000000000
+--- a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prep.bat
++++ /dev/null
+@@ -1,85 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2017, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@echo OFF
+-@set PrepRELEASE=DEBUG
+-@set SILENT_MODE=FALSE
+-@set CapsuleBuild=FALSE
+-
+-@set EXT_CONFIG_CLEAR=
+-@set EXT_BUILD_FLAGS=
+-
+-:CmdLineParse
+-if "" == "%1" (
+-  goto Continue
+-) else if "r" == "%1" (
+-  set PrepRELEASE=RELEASE
+-) else if "tr" == "%1" (
+-  set PrepRELEASE=TEST_RELEASE
+-) else if "rp" == "%1" (
+-  set PrepRELEASE=RELEASE_PDB
+-) else if "s" == "%1" (
+-  set SILENT_MODE=TRUE
+-) else if "help" == "%1" (
+-  goto PrepHelp
+-) else (
+-  echo Invalid input arguments: %1
+-  echo.
+-  goto PrepHelp
+-)
+-SHIFT
+-goto CmdLineParse
+-
+-:PrepHelp
+-@echo Preparation for BIOS build.
+-@echo.
+-@echo prep [r][rp][s][help]
+-@echo.
+-@echo   r         To do release build. Default is debug build. See note 1
+-@echo   rp        To do release build with Symbols - For source level debugging. See note 1
+-@echo   s         To build in silent mode. . See note 1
+-@echo.
+-@echo 1) Re-running prep without these arguments cannot be used for
+-@echo    incremental build. Hence, these inputs must be supplied each time
+-@echo    prep are desired to be re-run.
+-@echo.
+-goto PrepDone
+-
+-:Continue
+-@echo ==============================================
+-
+-if exist %WORKSPACE%\Prep.log del %WORKSPACE%\Prep.log
+-
+-:PrepReleaseCheck
+-
+-@if %SILENT_MODE% EQU TRUE goto BldSilent
+-
+-call prebuild.bat %PrepRelease% %CapsuleBuild%
+-goto PrePrepDone
+-
+-:BldSilent
+-@echo ************************************************************************ >> %WORKSPACE%\Prep.log
+-@echo ***********           Prebuild.bat is launched here          *********** >> %WORKSPACE%\Prep.log
+-@echo ************************************************************************ >> %WORKSPACE%\Prep.log
+-call prebuild.bat %PrepRelease% %CapsuleBuild% 1>>%WORKSPACE%\Prep.log 2>&1
+-
+-:PrePrepDone
+-@If %SCRIPT_ERROR% EQU 1 goto PrepFail
+-@goto PrepDone
+-
+-:PrepFail
+-@echo.
+-@echo !! The EDKII BIOS build has failed in prep!
+-@echo.
+-@exit /b 1
+-
+-:PrepDone
+\ No newline at end of file
+diff --git a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/GitEdk2MinMtOlympus.bat b/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/GitEdk2MinMtOlympus.bat
+deleted file mode 100644
+index d1d488c131..0000000000
+--- a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/GitEdk2MinMtOlympus.bat
++++ /dev/null
+@@ -1,86 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@echo off
+-
+-pushd ..\..\..\..\..\
+-
+-@REM Set WORKSPACE environment.
+-set WORKSPACE=%cd%
+-echo.
+-echo Set WORKSPACE as: %WORKSPACE%
+-echo.
+-
+-@REM Check whether Git has been installed and been added to system path.
+-git --help >nul 2>nul
+-if %ERRORLEVEL% NEQ 0 (
+-  echo.
+-  echo The 'git' command is not recognized.
+-  echo Please make sure that Git is installed and has been added to system path.
+-  echo.
+-  goto :EOF
+-)
+-
+-@REM Create the Conf directory under WORKSPACE
+-if not exist %WORKSPACE%\Conf (
+-  mkdir Conf
+-)
+-
+-@REM Set other environments.
+-@REM Basic Rule:
+-@REM   Platform override Silicon override Core
+-@REM   Source override Binary
+-
+-set PACKAGES_PATH=%WORKSPACE%\edk2-platforms\Platform\Intel;%WORKSPACE%\edk2-platforms\Silicon\Intel;%WORKSPACE%\edk2-non-osi\Silicon\Intel;%WORKSPACE%\edk2;%WORKSPACE%
+-
+-set EDK_TOOLS_BIN=%WORKSPACE%\edk2-BaseTools-win32
+-
+-@if not defined PYTHON_HOME (
+-  @if exist C:\Python27 (
+-    set PYTHON_HOME=C:\Python27
+-  )
+-)
+-
+-set EDK_SETUP_OPTION=
+-@rem if python is installed, disable the binary base tools.
+-if defined PYTHON_HOME (
+-  set EDK_TOOLS_BIN=
+-  set EDK_SETUP_OPTION=--nt32
+-)
+-pushd %WORKSPACE%\edk2
+-call edksetup.bat %EDK_SETUP_OPTION%
+-popd
+-pushd %WORKSPACE%
+-@rem if python is installed, nmake BaseTools source and enable BaseTools source build
+-@if defined PYTHON_HOME (
+-  nmake -f %BASE_TOOLS_PATH%\Makefile
+-)
+-popd
+-
+-set openssl_path=%WORKSPACE%
+-
+-popd
+-
+-goto :EOF
+-
+-:Help
+-echo.
+-echo Usage:
+-echo GitEdk2.bat [-w Workspace_Directory] (optional) [-b Branch_Name] (optional)
+-echo.
+-echo -w    A absolute/relative path to be the workspace.
+-echo       Default value is the current directory.
+-echo.
+-echo -b    The branch name of the repository. Currently, only master, udk2015,
+-echo       trunk (same as master) and bp13 (same as udk2015) are supported.
+-echo       Default value is master.
+-echo.
+diff --git a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/bld.bat b/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/bld.bat
+deleted file mode 100644
+index a66d19e66e..0000000000
+--- a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/bld.bat
++++ /dev/null
+@@ -1,144 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@echo off
+-
+-REM Run setlocal to take a snapshot of the environment variables.  endlocal is called to restore the environment.
+-setlocal
+-set SCRIPT_ERROR=0
+-
+-REM ---- Do NOT use :: for comments Inside of code blocks() ----
+-
+-::**********************************************************************
+-:: Initial Setup
+-::**********************************************************************
+-
+-:parseCmdLine
+-if "%1"=="" goto :argumentCheck
+-
+-if /I "%1"=="debug"          set TARGET=DEBUG
+-if /I "%1"=="release"        set TARGET=RELEASE
+-
+-if /I "%1"=="clean" (
+-  set BUILD_TYPE=cleantree
+-  call :cleantree
+-  goto :EOF
+-)
+-
+-shift
+-GOTO :parseCmdLine
+-
+-:argumentCheck:
+-
+-if /I "%TARGET%" == "" (
+-  echo Info: debug/release argument is empty, use DEBUG as default
+-  set TARGET=DEBUG
+-)
+-
+-REM Art to notify which board you're working on
+-echo.
+-type logo.txt
+-echo.
+-
+-::
+-:: Build configuration
+-::
+-set BUILD_REPORT_FLAGS=
+-set BUILD_CMD_LINE=
+-set BUILD_LOG=%WORKSPACE%\Build\build.log
+-set BUILD_REPORT=%WORKSPACE%\Build\BuildReport.txt
+-
+-del %BUILD_LOG% *.efi *.log 2>NUL
+-
+-echo --------------------------------------------------------------------------------------------
+-echo.
+-echo                                Purley Build Start
+-echo.
+-echo --------------------------------------------------------------------------------------------
+-
+-
+-:doPreBuild
+-echo.
+-echo --------------------------------------------------------------------
+-echo.
+-echo                          Prebuild Start
+-echo.
+-echo --------------------------------------------------------------------
+-call prebuild.bat
+-if %SCRIPT_ERROR% NEQ 0 EXIT /b %ERRORLEVEL%
+-
+-echo --------------------------------------------------------------------
+-echo.
+-echo                          Prebuild End
+-echo.
+-echo --------------------------------------------------------------------
+-if %ERRORLEVEL% NEQ 0 EXIT /b %ERRORLEVEL%
+-timeout 1
+-
+-:buildBios
+-set BUILD_CMD_LINE=%BUILD_CMD_LINE% -D MAX_SOCKET=%MAX_SOCKET% -y %BUILD_REPORT%
+-echo --------------------------------------------------------------------
+-echo.
+-echo                          Build Start
+-echo.
+-echo --------------------------------------------------------------------
+-echo.
+-echo build %BUILD_CMD_LINE% --log=%BUILD_LOG% %BUILD_REPORT_FLAGS%
+-call build %BUILD_CMD_LINE% --log=%BUILD_LOG% %BUILD_REPORT_FLAGS%
+-echo --------------------------------------------------------------------
+-echo.
+-echo                          Build End
+-echo.
+-echo --------------------------------------------------------------------
+-if %ERRORLEVEL% NEQ 0 EXIT /b %ERRORLEVEL%
+-timeout 1
+-
+-:postBuild
+-
+-echo --------------------------------------------------------------------
+-echo.
+-echo                          PostBuild Start
+-echo.
+-echo --------------------------------------------------------------------
+-echo.
+-call postbuild.bat
+-if %ERRORLEVEL% NEQ 0 EXIT /b %ERRORLEVEL%
+-timeout 1
+-echo --------------------------------------------------------------------
+-echo.
+-echo                          PostBuild End
+-echo.
+-echo --------------------------------------------------------------------
+-
+-echo %date%  %time%
+-echo.
+-
+-echo --------------------------------------------------------------------------------------------
+-echo.
+-echo                                Purley Build End
+-echo.
+-echo --------------------------------------------------------------------------------------------
+-
+-:done
+-endlocal & EXIT /b %SCRIPT_ERROR%
+-
+-::--------------------------------------------------------  
+-::-- Function section starts below here  
+-::-------------------------------------------------------- 
+-:cleantree
+-choice /t 3 /d y /m "Confirm: clean tree of intermediate files created in tree during build"
+-if %ERRORLEVEL% EQU 2 goto :EOF
+-goto :EOF
+-
+-
+-:ErrorHandler:
+-echo Error handler
+\ No newline at end of file
+diff --git a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/postbuild.bat b/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/postbuild.bat
+deleted file mode 100644
+index 5c787bb647..0000000000
+--- a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/postbuild.bat
++++ /dev/null
+@@ -1,101 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@set SCRIPT_ERROR=0
+-
+-set /a postbuildstep=0
+-
+-@echo.
+-@echo BoardPostBuild.%postbuildstep% python PatchBinFv.py
+-@set /a postbuildstep=%postbuildstep%+1
+-echo python %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvTempMemorySilicon
+-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvTempMemorySilicon
+-if %ERRORLEVEL% NEQ 0 (
+-  set SCRIPT_ERROR=1
+-  echo PatchBinFv Error. Exit
+-  goto :EOF
+-)
+-echo python %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvPreMemorySilicon
+-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvPreMemorySilicon
+-if %ERRORLEVEL% NEQ 0 (
+-  set SCRIPT_ERROR=1
+-  echo PatchBinFv Error. Exit
+-  goto :EOF
+-)
+-echo python %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvPostMemorySilicon
+-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvPostMemorySilicon
+-if %ERRORLEVEL% NEQ 0 (
+-  set SCRIPT_ERROR=1
+-  echo PatchBinFv Error. Exit
+-  goto :EOF
+-)
+-echo python %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvLateSilicon
+-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvLateSilicon
+-if %ERRORLEVEL% NEQ 0 (
+-  set SCRIPT_ERROR=1
+-  echo PatchBinFv Error. Exit
+-  goto :EOF
+-)
+-
+-@echo.
+-@echo BoardPostBuild.%postbuildstep% python RebaseBinFv.py
+-@set /a postbuildstep=%postbuildstep%+1
+-echo python %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\RebaseBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvPreMemorySilicon gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspMBase
+-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\RebaseBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvPreMemorySilicon gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspMBase
+-if %ERRORLEVEL% NEQ 0 (
+-  set SCRIPT_ERROR=1
+-  echo RebaseBinFv Error. Exit
+-  goto :EOF
+-)
+-
+-echo python %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\RebaseBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvPostMemorySilicon gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspSBase
+-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\RebaseBinFv.py %TARGET% %WORKSPACE%\edk2-non-osi\Silicon\Intel\PurleySiliconBinPkg %WORKSPACE%\Build\BuildReport.txt FvPostMemorySilicon gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspSBase
+-if %ERRORLEVEL% NEQ 0 (
+-  set SCRIPT_ERROR=1
+-  echo RebaseBinFv Error. Exit
+-  goto :EOF
+-)
+-
+-@echo.
+-@echo BoardPostBuild.%postbuildstep% re-generate FDS
+-@set /a postbuildstep=%postbuildstep%+1
+-echo build fds
+-@REM call build fds
+-if %ERRORLEVEL% NEQ 0 (
+-  set SCRIPT_ERROR=1
+-  echo gen FDS Error. Exit
+-  goto :EOF
+-)
+-
+-@echo.
+-@echo BoardPostBuild.%postbuildstep% python PatchBfv.py
+-@set /a postbuildstep=%postbuildstep%+1
+-echo python %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBfv.py %WORKSPACE%\Build\%BOARD_PKG%\%BOARD_NAME%\%TARGET%_%TOOL_CHAIN_TAG%\FV\PLATFORM.fd %WORKSPACE%\Build\BuildReport.txt gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPreMemoryBase
+-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\PatchFv\PatchBfv.py %WORKSPACE%\Build\%BOARD_PKG%\%BOARD_NAME%\%TARGET%_%TOOL_CHAIN_TAG%\FV\PLATFORM.fd %WORKSPACE%\Build\BuildReport.txt gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPreMemoryBase
+-if %ERRORLEVEL% NEQ 0 (
+-  set SCRIPT_ERROR=1
+-  echo PatchBfv Error. Exit
+-  goto :EOF
+-)
+-
+-:_done
+-
+-@echo.
+-@cd %WORKSPACE%
+-@if "%SCRIPT_ERROR%" == "0" (
+-  @echo PostBuild SUCCEEDED.
+-) else (
+-  @echo PostBuild FAILED.
+-  Pause 0
+-)
+-
+-EXIT /B %SCRIPT_ERROR%
+diff --git a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/prebuild.bat b/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/prebuild.bat
+deleted file mode 100644
+index 81a9634d51..0000000000
+--- a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/prebuild.bat
++++ /dev/null
+@@ -1,203 +0,0 @@
+-@REM @file
+-@REM
+-@REM Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
+-@REM This program and the accompanying materials
+-@REM are licensed and made available under the terms and conditions of the BSD License
+-@REM which accompanies this distribution.  The full text of the license may be found at
+-@REM http://opensource.org/licenses/bsd-license.php
+-@REM
+-@REM THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+-@REM WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+-@REM
+-
+-@set SCRIPT_ERROR=0
+-
+-set /a prebuildstep=0
+-
+-call :check_BuildTools
+-if %SCRIPT_ERROR% NEQ 0 GOTO :done
+-
+-call :setBuildEnv
+-if %SCRIPT_ERROR% NEQ 0 GOTO :done
+-
+-call :createTargetTxt
+-if %SCRIPT_ERROR% NEQ 0 GOTO :done
+-
+-call :genPlatformOffsetHeaderFile
+-if %SCRIPT_ERROR% NEQ 0 GOTO :done
+-
+-:prebuildFinish
+-echo.
+-echo   ACTIVE_PLATFORM              = %WORKSPACE%\edk2-platforms\Platform\Intel\%BOARD_PKG%\%BOARD_NAME%\PlatformPkg.dsc
+-echo   EDK_TOOLS_PATH               = %EDK_TOOLS_PATH%
+-echo   TARGET                       = %TARGET%
+-echo   TARGET_ARCH                  = IA32 X64
+-echo   TOOL_CHAIN_TAG               = %TOOL_CHAIN_TAG%
+-echo   WORKSPACE                    = %WORKSPACE%
+-echo   PACKAGES_PATH                = %PACKAGES_PATH%
+-echo   MAX_CONCURRENT_THREAD_NUMBER = %BUILD_MAX_CON_THREAD_NUM%
+-echo.
+-echo   Build Path                   = %OUTPUT_DIR%
+-echo.
+-
+-REM Remove environment variable because it's no longer needed.
+-set BUILD_MAX_CON_THREAD_NUM=
+-
+-:done
+-REM Use done label to exit batch file and run any final steps; GOTO :EOF immediately exits.
+-EXIT /B %SCRIPT_ERROR%
+-
+-::--------------------------------------------------------  
+-::-- Function section starts below here  
+-::-------------------------------------------------------- 
+-
+-:cleanup_check_VSTools
+-set COMPILER_VERSION_STRING=
+-del cloutput.txt > nul
+-REM cleanup_check_VSTools is called below. When a label is called, 'GOTO :EOF' is used to return to caller.
+-GOTO :EOF
+-
+-:check_BuildTools
+-echo PreBuild.%prebuildstep% check_BuildTools
+-echo ..VSTools
+-set /a prebuildstep=%prebuildstep%+1
+-set TOOL_CHAIN_TAG=
+-@if not defined TOOL_CHAIN_TAG (
+-  echo.
+-  echo Prebuild:  TOOL_CHAIN_TAG is not set before
+-  echo.
+-
+-  @if defined VS140COMNTOOLS (
+-    echo.
+-    echo Set the VS2015 environment.
+-    echo.
+-    set CL_SEL=VS2015
+-    if /I "%VS140COMNTOOLS%" == "C:\Program Files\Microsoft Visual Studio 14.0\Common7\Tools\" (
+-      set TOOL_CHAIN_TAG=VS2015
+-    ) else (
+-      set TOOL_CHAIN_TAG=VS2015x86
+-    )
+-    if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
+-      set CL_CMDLINE="%VS140COMNTOOLS:~0,-14%VC\bin\amd64\cl.exe"
+-    ) else (
+-      set CL_CMDLINE="%VS140COMNTOOLS:~0,-14%VC\bin\cl.exe"
+-    )
+-  ) else if defined VS120COMNTOOLS (
+-    echo.
+-    echo Set the VS2013 environment.
+-    echo.
+-    set CL_SEL=VS2013
+-    if /I "%VS120COMNTOOLS%" == "C:\Program Files\Microsoft Visual Studio 12.0\Common7\Tools\" (
+-      set TOOL_CHAIN_TAG=VS2013
+-    ) else (
+-      set TOOL_CHAIN_TAG=VS2013x86
+-    )
+-    if /I "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
+-      set CL_CMDLINE="%VS120COMNTOOLS:~0,-14%VC\bin\amd64\cl.exe"
+-    ) else (
+-      set CL_CMDLINE="%VS120COMNTOOLS:~0,-14%VC\bin\cl.exe"
+-    )
+-  ) else (
+-    echo.
+-    echo !!! ERROR !!! VS2015 or VS2013 not installed correctly. !!!
+-    echo.
+-    goto :ErrorExit
+-  )
+-)
+-
+-echo ..iASL
+-set CHECK_PATH_IASL=%IASL_PREFIX%
+-if not exist %CHECK_PATH_IASL%\iasl.exe (
+-  echo.
+-  echo !!! ERROR !!! Could not find iASL compiler at %CHECK_PATH_IASL%\iasl.exe. !!!
+-  echo.
+-  set SCRIPT_ERROR=1
+-)
+-set CHECK_PATH_IASL=
+-
+-echo ..NASM
+-set CHECK_PATH_NASM=c:\NASM
+-if not exist %CHECK_PATH_NASM%\nasm.exe (
+-  echo.
+-  echo !!! ERROR !!! Could not find NASM compiler at %CHECK_PATH_NASM%\nasm.exe. !!!
+-  echo.
+-  set SCRIPT_ERROR=1
+-)
+-set CHECK_PATH_NASM=
+-
+-echo ..Python
+-set CHECK_PATH_PYTHON=c:\Python27
+-if not exist %CHECK_PATH_PYTHON%\python.exe (
+-  echo.
+-  echo !!! ERROR !!! Could not find Python at %CHECK_PATH_PYTHON%\python.exe. !!!
+-  echo.
+-  set SCRIPT_ERROR=1
+-)
+-set CHECK_PATH_PYTHON=
+-set PYTHON_HOME=C:\Python27
+-
+-GOTO :EOF
+-
+-:setBuildEnv
+-echo PreBuild.%prebuildstep% SetBuildEnv
+-set /a prebuildstep=%prebuildstep%+1
+-
+-@set BOARD_PKG=PurleyOpenBoardPkg
+-@set BOARD_NAME=BoardMtOlympus
+-@set MAX_SOCKET=2
+-
+-echo.
+-echo BOARD_NAME=%BOARD_NAME%
+-echo BOARD_PKG=%BOARD_PKG%
+-echo MAX_SOCKET=%MAX_SOCKET%
+-echo TARGET=%TARGET%
+-
+-@set OUTPUT_DIR=%WORKSPACE%\Build\%BOARD_PKG%\%BOARD_NAME%\%TARGET%_%TOOL_CHAIN_TAG%
+-
+-if not exist %OUTPUT_DIR% mkdir %OUTPUT_DIR%
+-GOTO :EOF
+-
+-:createTargetTxt
+-echo PreBuild.%prebuildstep% CreateTargetTxt
+-set /a prebuildstep=%prebuildstep%+1
+-set /a BUILD_MAX_CON_THREAD_NUM = %NUMBER_OF_PROCESSORS%-1
+-@REM set /a BUILD_MAX_CON_THREAD_NUM = 1
+-findstr /V "ACTIVE_PLATFORM TARGET TARGET_ARCH TOOL_CHAIN_TAG BUILD_RULE_CONF MAX_CONCURRENT_THREAD_NUMBER" %WORKSPACE%\Conf\target.txt > %OUTPUT_DIR%\target.txt 2>NUL
+-echo ACTIVE_PLATFORM             = %WORKSPACE%/edk2-platforms/Platform/Intel/%BOARD_PKG%/%BOARD_NAME%/PlatformPkg.dsc >> %OUTPUT_DIR%\target.txt
+-echo TARGET                      = %TARGET%                       >> %OUTPUT_DIR%\target.txt
+-echo TARGET_ARCH                 = IA32 X64                       >> %OUTPUT_DIR%\target.txt
+-echo TOOL_CHAIN_TAG              = %TOOL_CHAIN_TAG%               >> %OUTPUT_DIR%\target.txt
+-echo BUILD_RULE_CONF             = Conf/build_rule.txt            >> %OUTPUT_DIR%\target.txt
+-echo MAX_CONCURRENT_THREAD_NUMBER = %BUILD_MAX_CON_THREAD_NUM%    >> %OUTPUT_DIR%\target.txt
+-if exist %WORKSPACE%\Conf\target.txt (
+-  del /f %WORKSPACE%\Conf\target.txt
+-)
+-move /Y %OUTPUT_DIR%\target.txt %WORKSPACE%\Conf\ > nul
+-if not exist %OUTPUT_DIR%\X64 mkdir %OUTPUT_DIR%\X64
+-GOTO :EOF
+-
+-
+-:genPlatformOffsetHeaderFile
+-echo.
+-echo PreBuild.%prebuildstep% GenPlatformOffsetHeaderFile
+-set /a prebuildstep=%prebuildstep%+1
+-
+-echo Info: re-generating PlatformOffset header files
+-
+-set PRE_BUILD_CMD_LINE=%BUILD_CMD_LINE% -D MAX_SOCKET=%MAX_SOCKET%
+-set PRE_BUILD_LOG=%WORKSPACE%\Build\prebuild.log
+-set PRE_BUILD_REPORT=%WORKSPACE%\Build\preBuildReport.txt
+-
+-echo build %PRE_BUILD_CMD_LINE% -m %BOARD_PKG%\Acpi\BoardAcpiDxe\Dsdt.inf -y %PRE_BUILD_REPORT% --log=%PRE_BUILD_LOG%
+-call build %PRE_BUILD_CMD_LINE% -m %BOARD_PKG%\Acpi\BoardAcpiDxe\Dsdt.inf -y %PRE_BUILD_REPORT% --log=%PRE_BUILD_LOG%
+-if %ERRORLEVEL% NEQ 0 EXIT /b %ERRORLEVEL%
+-
+-@REM PSYS == FIX0
+-@REM MCTL == FIX8
+-set AML_FILTER="\"PSYS\" .MCTL\" .FIX[0-9,A-Z]\""
+-echo AML_FILTER=%AML_FILTER%
+-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\AmlGenOffset\AmlGenOffset.py -d --aml_filter %AML_FILTER% -o %WORKSPACE%\edk2-platforms\Platform\Intel\%BOARD_PKG%\Acpi\BoardAcpiDxe\AmlOffsetTable.c %OUTPUT_DIR%\X64\PurleyOpenBoardPkg\Acpi\BoardAcpiDxe\DSDT\OUTPUT\Dsdt\WFPPlatform.offset.h
+-echo.
+-echo GenOffset done
+-
+-GOTO :EOF 
+\ No newline at end of file
+diff --git a/ReadMe.md b/ReadMe.md
+index a94d8051d6..588e6be3a1 100644
+--- a/ReadMe.md
++++ b/ReadMe.md
+@@ -105,8 +105,6 @@ return back to the minimum platform caller.
+ 
+ ### Build
+ 
+-**Building with the python script**
+-
+ 1. Open command window, go to the workspace directory, e.g. c:\Kabylake.
+ 2. Type "cd edk2-platforms\Platform\Intel
+ 3. Type "python BuildBios.py -p REPLACE_WITH_BOARD_NAME"
+@@ -141,31 +139,6 @@ return back to the minimum platform caller.
+     * ``edk2-platforms\Platform\Intel\KabylakeOpenBoardPkg\KabylakeRvp3\BuildConfig.json``
+ 
+ 
+-**Building with the batch scripts**
+-For KabylakeOpenBoardPkg
+-1. Open command window, go to the workspace directory, e.g. c:\Kabylake.
+-2. Type "cd edk2-platforms\Platform\Intel\KabylakeOpenBoardPkg\KabylakeRvp3".
+-3. Type "GitEdk2MinKabylake.bat" to setup GIT environment.
+-4. Type "prep" and make prebuild finish for debug build, "prep r" for release build.
+-5. Type "bld" to build Kaby Lake reference platform UEFI firmware image.
+-
+-For PurleyOpenBoardPkg
+-1. Open command window, go to the workspace directory, e.g. c:\Purley.
+-2. Type "cd edk2-platforms\Platform\Intel\PurleyOpenBoardPkg\BoardMtOlympus".
+-3. Type "GitEdk2MinMtOlympus.bat" to setup GIT environment.
+-4. Type "bld" to build Purley Mt Olympus board UEFI firmware image, "bld release" for release build, "bld clean" to
+-   remove intermediate files.
+-
+-The validated version of iasl compiler that can build MinPurley is 20180629. Older version may generate ACPI build
+-errors.
+-
+-For ClevoOpenBoardPkg
+-1. Open command window, go to the workspace directory, e.g. c:\Clevo.
+-2. Type "cd edk2-platforms\Platform\Intel\ClevoOpenBoardPkg\N1xxWU".
+-3. Type "GitEdk2Clevo.bat" to setup GIT environment.
+-4. Type "bld" to build Clevo UEFI firmware image, "bld release" for release build, "bld clean" to remove intermediate
+-files.
+-
+ Users with access to the Intel proprietary FITC tool and ME ingredients can build full images for flash  (BIOS + ME +
+ DESC).
+ 
+-- 
+2.19.1.windows.1
+

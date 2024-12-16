@@ -1,0 +1,38 @@
+From 963d3e68a85645e4227429880d33377928bbe11b Mon Sep 17 00:00:00 2001
+From: kuqin <kuqin@microsoft.com>
+Date: Sat, 21 Mar 2020 00:39:44 -0700
+Subject: [PATCH] Fix an issue could fail .bat run
+
+---
+ BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py b/BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py
+index 25d127496a..b2d7f57ba9 100644
+--- a/BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py
++++ b/BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py
+@@ -65,7 +65,9 @@ class WindowsVsToolChain(IUefiBuildPlugin):
+                     interesting_keys, "amd64", vs_version="vs2017")
+                 for (k, v) in vs_vars.items():
+                     if k.upper() == "PATH":
+-                        shell_env.insert_path(v)
++                        vs_vars_paths = v.split(os.pathsep)
++                        for elm in vs_vars_paths:
++                            shell_env.insert_path(elm)
+                     else:
+                         shell_env.set_shell_var(k, v)
+ 
+@@ -113,7 +115,9 @@ class WindowsVsToolChain(IUefiBuildPlugin):
+                     interesting_keys, "amd64", vs_version="vs2019")
+                 for (k, v) in vs_vars.items():
+                     if k.upper() == "PATH":
+-                        shell_env.insert_path(v)
++                        vs_vars_paths = v.split(os.pathsep)
++                        for elm in vs_vars_paths:
++                            shell_env.insert_path(elm)
+                     else:
+                         shell_env.set_shell_var(k, v)
+ 
+-- 
+2.24.1.windows.2
+

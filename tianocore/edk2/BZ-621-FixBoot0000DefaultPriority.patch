@@ -1,0 +1,13 @@
+diff --git a/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c b/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
+index aff620ad52..26d1fb0ea0 100644
+--- a/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
++++ b/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
+@@ -2505,7 +2505,7 @@ BmRegisterBootManagerMenu (
+     EfiBootManagerFreeLoadOptions (BootOptions, BootOptionCount);
+     );
+ 
+-  return EfiBootManagerAddLoadOptionVariable (BootOption, 0);
++  return EfiBootManagerAddLoadOptionVariable (BootOption, (UINTN) -1));
+ }
+ 
+ /**

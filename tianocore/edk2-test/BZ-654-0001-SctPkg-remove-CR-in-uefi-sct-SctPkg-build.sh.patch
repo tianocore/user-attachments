@@ -1,0 +1,35 @@
+From ec8bc7763f05a9c7ae27c2465ee97744654380e8 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Fri, 26 Feb 2021 12:35:18 +0100
+Subject: [PATCH edk2-test 1/1] SctPkg: remove CR in uefi-sct/SctPkg/build.sh
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3239
+
+A superfluous carriage return leads to an error:
+
+uefi-sct/SctPkg/build.sh: line 61:
+syntax error near unexpected token `fi'
+uefi-sct/SctPkg/build.sh: line 61:
+`    fi'
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ uefi-sct/SctPkg/build.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/uefi-sct/SctPkg/build.sh b/uefi-sct/SctPkg/build.sh
+index 2efc5535b8fc..de7a10034e3d 100755
+--- a/uefi-sct/SctPkg/build.sh
++++ b/uefi-sct/SctPkg/build.sh
+@@ -56,7 +56,7 @@ function get_gcc_version
+ {
+ 	gcc_version=$($1 -dumpversion)
+ 
+-	if [ ${gcc_version%%.*} -ge 5 ]; then
++	if [ ${gcc_version%%.*} -ge 5 ]; then
+ 		gcc_version=5
+ 	fi
+ 
+-- 
+2.30.0
+

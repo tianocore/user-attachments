@@ -1,0 +1,68 @@
+Microsoft (R) Program Maintenance Utility Version 14.28.29913.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Microsoft (R) Program Maintenance Utility Version 14.28.29913.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+######################
+# Build libraries
+######################
+
+Microsoft (R) Program Maintenance Utility Version 14.28.29913.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+        cl.exe -c  /nologo /Zi /c /O2 /MT /W4 /WX /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /nologo /Zi /c /O2 /MT /W4 /WX /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE  -I . -I d:\edk2\edk2\BaseTools\Source\C\Include -I d:\edk2\edk2\BaseTools\Source\C\Include\Ia32 -I d:\edk2\edk2\BaseTools\Source\C\Common -I . -I d:\edk2\edk2\BaseTools\Source\C\Include -I d:\edk2\edk2\BaseTools\Source\C\Include\Ia32 -I d:\edk2\edk2\BaseTools\Source\C\Common BasePeCoff.c -FoBasePeCoff.obj
+BasePeCoff.c
+BasePeCoff.c(129): error C2220: the following warning is treated as an error
+BasePeCoff.c(129): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(129): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_OPTIONAL_HEADER_UNION *' of greater size
+BasePeCoff.c(561): warning C4312: 'type cast': conversion from 'UINTN' to 'UINT8 *' of greater size
+BasePeCoff.c(629): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_OPTIONAL_HEADER_UNION *' of greater size
+BasePeCoff.c(703): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_TE_IMAGE_HEADER *' of greater size
+BasePeCoff.c(717): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_BASE_RELOCATION *' of greater size
+BasePeCoff.c(718): warning C4311: 'type cast': pointer truncation from 'EFI_IMAGE_BASE_RELOCATION *' to 'UINTN'
+BasePeCoff.c(718): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_BASE_RELOCATION *' of greater size
+BasePeCoff.c(740): warning C4312: 'type cast': conversion from 'UINTN' to 'CHAR8 *' of greater size
+BasePeCoff.c(743): warning C4312: 'type cast': conversion from 'UINTN' to 'CHAR8 *' of greater size
+BasePeCoff.c(745): warning C4312: 'type cast': conversion from 'UINTN' to 'CHAR8 *' of greater size
+BasePeCoff.c(782): warning C4311: 'type cast': pointer truncation from 'CHAR8 *' to 'UINTN'
+BasePeCoff.c(792): warning C4311: 'type cast': pointer truncation from 'CHAR8 *' to 'UINTN'
+BasePeCoff.c(954): warning C4312: 'type cast': conversion from 'UINTN' to 'void *' of greater size
+BasePeCoff.c(957): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_OPTIONAL_HEADER_UNION *' of greater size
+BasePeCoff.c(975): warning C4312: 'type cast': conversion from 'UINTN' to 'void *' of greater size
+BasePeCoff.c(977): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_TE_IMAGE_HEADER *' of greater size
+BasePeCoff.c(1017): warning C4311: 'type cast': pointer truncation from 'CHAR8 *' to 'UINTN'
+BasePeCoff.c(1018): warning C4311: 'type cast': pointer truncation from 'CHAR8 *' to 'UINTN'
+BasePeCoff.c(1077): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(1135): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_DEBUG_DIRECTORY_ENTRY *' of greater size
+BasePeCoff.c(1158): warning C4312: 'type cast': conversion from 'UINTN' to 'void *' of greater size
+BasePeCoff.c(1273): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(1273): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_NT_HEADERS32 *' of greater size
+BasePeCoff.c(1294): warning C4311: 'type cast': pointer truncation from 'EFI_TE_IMAGE_HEADER *' to 'UINTN'
+BasePeCoff.c(1298): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_DEBUG_DIRECTORY_ENTRY *' of greater size
+BasePeCoff.c(1363): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(1366): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_DEBUG_DIRECTORY_ENTRY *' of greater size
+BasePeCoff.c(1393): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(1397): warning C4312: 'type cast': conversion from 'UINTN' to 'void *' of greater size
+BasePeCoff.c(1441): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(1441): warning C4312: 'type cast': conversion from 'UINTN' to 'EFI_IMAGE_NT_HEADERS32 *' of greater size
+BasePeCoff.c(1454): warning C4312: 'type cast': conversion from 'UINTN' to 'void *' of greater size
+BasePeCoff.c(1455): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(1458): warning C4312: 'type cast': conversion from 'UINT32' to 'void *' of greater size
+BasePeCoff.c(1460): warning C4312: 'type cast': conversion from 'UINT32' to 'void *' of greater size
+BasePeCoff.c(1462): warning C4312: 'type cast': conversion from 'UINTN' to 'void *' of greater size
+BasePeCoff.c(1464): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(1464): warning C4311: 'type cast': pointer truncation from 'void *' to 'UINTN'
+BasePeCoff.c(1464): warning C4312: 'type cast': conversion from 'UINTN' to 'void *' of greater size
+NMAKE : fatal error U1077: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\bin\HostX64\x64\cl.exe"' : return code '0x2'
+Stop.
+NMAKE : fatal error U1077: 'if' : return code '0x1'
+Stop.
+NMAKE : fatal error U1077: 'if' : return code '0x1'
+Stop.
+
+!!! WARNING !!! No CYGWIN_HOME set, gcc build may not be used !!!
+
+

@@ -1,0 +1,98 @@
+From ddae3ea5f61290774cdb19280200ae529fbc437c Mon Sep 17 00:00:00 2001
+Message-Id: <ddae3ea5f61290774cdb19280200ae529fbc437c.1592534360.git.krishnadasx.veliyathuparambil.prakashan@intel.com>
+From: KrishnadasX Veliyathuparambil Prakashan
+ <krishnadasx.veliyathuparambil.prakashan@intel.com>
+Date: Fri, 19 Jun 2020 07:52:56 +0530
+Subject: [PATCH] MdeModulePkg: Upon BootOption failure, Destroy RamDisk memory
+ before RSC.
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2818
+
+For better memory management, re-ordered the DestroyRamDisk and
+ReportStatusCode calls inside the EfiBootManagerBoot() function.
+
+This will help to clean the unused memory before reporting the
+failure status, so that OEMs can use RSC Listener to launch
+custom boot option or application for recovering the failed
+hard drive.
+
+This change will help to ensure that the allocated pool of memory
+for the failed boot option is freed before executing OEM's RSC
+listener callback to handle every boot option failure.
+
+Signed-off-by: KrishnadasX Veliyathuparambil Prakashan <krishnadasx.veliyathuparambil.prakashan@intel.com>
+Cc: "Gao, Zhichao" <zhichao.gao@intel.com>
+Cc: "Ni, Ray" <ray.ni@intel.com>
+---
+ .../Library/UefiBootManagerLib/BmBoot.c       | 28 ++++++++++---------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
+
+diff --git a/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c b/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
+index 540d169ec1..aff620ad52 100644
+--- a/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
++++ b/MdeModulePkg/Library/UefiBootManagerLib/BmBoot.c
+@@ -2,7 +2,7 @@
+   Library functions which relates with booting.
+ 
+ Copyright (c) 2019, NVIDIA CORPORATION. All rights reserved.
+-Copyright (c) 2011 - 2019, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2011 - 2020, Intel Corporation. All rights reserved.<BR>
+ (C) Copyright 2015-2016 Hewlett Packard Enterprise Development LP<BR>
+ SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+@@ -1903,17 +1903,17 @@ EfiBootManagerBoot (
+         gBS->UnloadImage (ImageHandle);
+       }
+       //
+-      // Report Status Code with the failure status to indicate that the failure to load boot option
+-      //
+-      BmReportLoadFailure (EFI_SW_DXE_BS_EC_BOOT_OPTION_LOAD_ERROR, Status);
+-      BootOption->Status = Status;
+-      //
+       // Destroy the RAM disk
+       //
+       if (RamDiskDevicePath != NULL) {
+         BmDestroyRamDisk (RamDiskDevicePath);
+         FreePool (RamDiskDevicePath);
+       }
++      //
++      // Report Status Code with the failure status to indicate that the failure to load boot option
++      //
++      BmReportLoadFailure (EFI_SW_DXE_BS_EC_BOOT_OPTION_LOAD_ERROR, Status);
++      BootOption->Status = Status;
+       return;
+     }
+   }
+@@ -1982,13 +1982,6 @@ EfiBootManagerBoot (
+   Status = gBS->StartImage (ImageHandle, &BootOption->ExitDataSize, &BootOption->ExitData);
+   DEBUG ((DEBUG_INFO | DEBUG_LOAD, "Image Return Status = %r\n", Status));
+   BootOption->Status = Status;
+-  if (EFI_ERROR (Status)) {
+-    //
+-    // Report Status Code with the failure status to indicate that boot failure
+-    //
+-    BmReportLoadFailure (EFI_SW_DXE_BS_EC_BOOT_OPTION_FAILED, Status);
+-  }
+-  PERF_END_EX (gImageHandle, "BdsAttempt", NULL, 0, (UINT32) OptionNumber);
+ 
+   //
+   // Destroy the RAM disk
+@@ -1998,6 +1991,15 @@ EfiBootManagerBoot (
+     FreePool (RamDiskDevicePath);
+   }
+ 
++  if (EFI_ERROR (Status)) {
++    //
++    // Report Status Code with the failure status to indicate that boot failure
++    //
++    BmReportLoadFailure (EFI_SW_DXE_BS_EC_BOOT_OPTION_FAILED, Status);
++  }
++  PERF_END_EX (gImageHandle, "BdsAttempt", NULL, 0, (UINT32) OptionNumber);
++
++
+   //
+   // Clear the Watchdog Timer after the image returns
+   //
+-- 
+2.27.0.windows.1
+

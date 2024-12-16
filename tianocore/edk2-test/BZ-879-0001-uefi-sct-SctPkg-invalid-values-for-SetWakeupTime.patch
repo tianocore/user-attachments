@@ -1,0 +1,63 @@
+From d3a71c99df173e323941b388bb66f663e704c9fa Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Date: Thu, 11 Nov 2021 18:10:13 +0100
+Subject: [PATCH edk2-test 1/1] uefi-sct/SctPkg: invalid values for
+ SetWakeupTime()
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=2529
+
+According to the UEFI specification EFI_TIME.YEAR may take values in the
+range 1900-9999. The specification does not forbid to set a wakeup time in
+the past. We should not expect EFI_INVALID_PARAMETER to be returned by
+SetWakeupTime() for the years 1997 and 2100.
+
+Values 1899 and 10000 must lead to this error code.
+
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+ .../BlackBoxTest/TimeServicesBBTestConformance.c          | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TimeServices/BlackBoxTest/TimeServicesBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TimeServices/BlackBoxTest/TimeServicesBBTestConformance.c
+index fcc79548c07d..bdb150d02ea3 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TimeServices/BlackBoxTest/TimeServicesBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TimeServices/BlackBoxTest/TimeServicesBBTestConformance.c
+@@ -817,7 +817,7 @@ BBTestSetWakeupTimeConsistencyTest (
+                    );
+   } else {
+     Time = OldTime;
+-    Time.Year = 1997;
++    Time.Year = 1899;
+     Status = gtRT->SetWakeupTime (
+                      TRUE,
+                      &Time
+@@ -844,7 +844,7 @@ BBTestSetWakeupTimeConsistencyTest (
+                    StandardLib,
+                    AssertionType,
+                    gTimeServicesBBTestConformanceAssertionGuid026,
+-                   L"RT.SetWakeupTime - Time.Year is 1997",
++                   L"RT.SetWakeupTime - Time.Year is 1899",
+                    L"%a:%d:Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -852,7 +852,7 @@ BBTestSetWakeupTimeConsistencyTest (
+                    );
+ 
+     Time = OldTime;
+-    Time.Year = 2100;
++    Time.Year = 10000;
+     Status = gtRT->SetWakeupTime (
+                      TRUE,
+                      &Time
+@@ -866,7 +866,7 @@ BBTestSetWakeupTimeConsistencyTest (
+                    StandardLib,
+                    AssertionType,
+                    gTimeServicesBBTestConformanceAssertionGuid027,
+-                   L"RT.SetWakeupTime - Time.Year is 2100",
++                   L"RT.SetWakeupTime - Time.Year is 10000",
+                    L"%a:%d:Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-- 
+2.32.0
+

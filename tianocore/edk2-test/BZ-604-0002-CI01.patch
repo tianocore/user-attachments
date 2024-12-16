@@ -1,0 +1,131 @@
+From 36a53091ef787ee08e8d42e4966781e10b87469e Mon Sep 17 00:00:00 2001
+From: ArvinX Chen <arvinx.chen@intel.com>
+Date: Tue, 27 Oct 2020 10:02:40 +0800
+Subject: [PATCH 2/2] uefi-sct/SctPkg: Correct check image test behavior
+
+Now, in our SCT test case "CheckImage" behavior have some problems.Once
+tool need to check the "EFI_SECURITY_VIOLATION" have correct return from
+"EFI_FIRMWARE_MANAGEMENT_PROTOCOL->CheckImage" function, the function wil
+because tool behavior probability return EFI_BUFFER_TOO_SMALL,so we should
+gave it a correct header info to make the test item can process correctly.
+
+Cc: ArvinX Chen <arvinx.chen@intel.com>
+Cc: G Edhaya Chandran <Edhaya.Chandran@arm.com>
+Cc: Eric Jin <eric.jin@intel.com>
+Cc: Wei6 Xu <wei6.xu@intel.com>
+Signed-off-by: ArvinX Chen <arvinx.chen@intel.com>
+---
+ .../FirmwareManagementBBTestConformance.c     | 11 ++++++++-
+ .../FirmwareManagement/BlackBoxTest/Guid.c    |  1 +
+ .../FirmwareManagement/BlackBoxTest/Guid.h    |  5 ++++
+ .../SctPkg/UEFI/Protocol/FirmwareManagement.h | 23 +++++++++++++++++++
+ 4 files changed, 39 insertions(+), 1 deletion(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/FirmwareManagementBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/FirmwareManagementBBTestConformance.c
+index 720326d0..7c6c709b 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/FirmwareManagementBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/FirmwareManagementBBTestConformance.c
+@@ -2901,7 +2901,8 @@ BBTestCheckImageConformanceTestCheckpoint2 (
+   UINTN                                          i;
+   EFI_FIRMWARE_IMAGE_DESCRIPTOR                  *p;
+   UINTN                                          FunctionTested;
+-
++  EFI_FIRMWARE_IMAGE_AUTHENTICATION              *EFIA;
++  EFI_GUID                                       gEfiCertPkcs7Guid;
+   //
+   // Init
+   //
+@@ -2909,6 +2910,7 @@ BBTestCheckImageConformanceTestCheckpoint2 (
+   Status = EFI_SUCCESS;
+   AssertionType = EFI_TEST_ASSERTION_PASSED;
+   TestGuid = gFirmwareManagementBBTestConformanceAssertionGuid012;
++  gEfiCertPkcs7Guid = gFirmwareManagementBBTestConformanceSupportGuid005;
+   ResultMessageLabel = L"CheckImage, conformance checkpoint #2";
+ 
+   BufferImageInfo = NULL;
+@@ -3020,6 +3022,13 @@ BBTestCheckImageConformanceTestCheckpoint2 (
+       ResultMessageData = L"test case initialization failure.";
+       goto Exit;
+     }
++
++    EFIA                                = Image;
++    EFIA->AuthInfo.Hdr.dwLength         = sizeof(WIN_CERTIFICATE_UEFI_GUID)+0x10;
++    EFIA->AuthInfo.Hdr.wRevision        = 0x0200;
++    EFIA->AuthInfo.Hdr.wCertificateType = WIN_CERT_TYPE_EFI_GUID;
++    for (i=0; i<sizeof(EFI_GUID); ((UINT8*)&EFIA->AuthInfo.CertType)[i]=((UINT8*)&gEfiCertPkcs7Guid)[i], i++);
++
+     BufferImage = Image;
+     FunctionTested++;
+     Status = FirmwareManagement->CheckImage ( 
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/Guid.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/Guid.c
+index 91cf1ba6..cd541496 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/Guid.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/Guid.c
+@@ -43,6 +43,7 @@ EFI_GUID gFirmwareManagementBBTestConformanceSupportGuid001=EFI_TEST_FIRMWAREMAN
+ EFI_GUID gFirmwareManagementBBTestConformanceSupportGuid002=EFI_TEST_FIRMWAREMANAGEMENTBBTESTCONFORMANCE_SUPPORT_002_GUID;
+ EFI_GUID gFirmwareManagementBBTestConformanceSupportGuid003=EFI_TEST_FIRMWAREMANAGEMENTBBTESTCONFORMANCE_SUPPORT_003_GUID;
+ EFI_GUID gFirmwareManagementBBTestConformanceSupportGuid004=EFI_TEST_FIRMWAREMANAGEMENTBBTESTCONFORMANCE_SUPPORT_004_GUID;
++EFI_GUID gFirmwareManagementBBTestConformanceSupportGuid005=EFI_TEST_FIRMWAREMANAGEMENTBBTESTCONFORMANCE_SUPPORT_005_GUID;
+ 
+ EFI_GUID gFirmwareManagementBBTestConformanceAssertionGuid001=EFI_TEST_FIRMWAREMANAGEMENTBBTESTCONFORMANCE_ASSERTION_001_GUID;
+ EFI_GUID gFirmwareManagementBBTestConformanceAssertionGuid002=EFI_TEST_FIRMWAREMANAGEMENTBBTESTCONFORMANCE_ASSERTION_002_GUID;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/Guid.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/Guid.h
+index b5277f7e..b045021e 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/Guid.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/Guid.h
+@@ -67,6 +67,11 @@ extern EFI_GUID gFirmwareManagementBBTestConformanceSupportGuid003;
+ 
+ extern EFI_GUID gFirmwareManagementBBTestConformanceSupportGuid004;
+ 
++#define EFI_TEST_FIRMWAREMANAGEMENTBBTESTCONFORMANCE_SUPPORT_005_GUID \
++{ 0x4aafd29d, 0x68df, 0x49ee, {0x8a, 0xa9, 0x34, 0x7d, 0x37, 0x56, 0x65, 0xa7 }}
++
++extern EFI_GUID gFirmwareManagementBBTestConformanceSupportGuid005;
++
+ // ****************************************************************************
+ //   Conformance - Assertion
+ // ****************************************************************************
+diff --git a/uefi-sct/SctPkg/UEFI/Protocol/FirmwareManagement.h b/uefi-sct/SctPkg/UEFI/Protocol/FirmwareManagement.h
+index b8876a96..c35ed3f4 100644
+--- a/uefi-sct/SctPkg/UEFI/Protocol/FirmwareManagement.h
++++ b/uefi-sct/SctPkg/UEFI/Protocol/FirmwareManagement.h
+@@ -58,6 +58,22 @@ UINT64    AttributesSetting;
+ UINT64    Compatibilities;
+ } EFI_FIRMWARE_IMAGE_DESCRIPTOR;
+ 
++typedef struct {
++  ///
++  /// It is included in the signature of AuthInfo. It is used to ensure freshness/no replay.
++  /// It is incremented during each firmware image operation.
++  ///
++  UINT64                                  MonotonicCount;
++  ///
++  /// Provides the authorization for the firmware image operations. It is a signature across
++  /// the image data and the Monotonic Count value. Caller uses the private key that is
++  /// associated with a public key that has been provisioned via the key exchange.
++  /// Because this is defined as a signature, WIN_CERTIFICATE_UEFI_GUID.CertType must
++  /// be EFI_CERT_TYPE_PKCS7_GUID.
++  ///
++  WIN_CERTIFICATE_UEFI_GUID               AuthInfo;
++} EFI_FIRMWARE_IMAGE_AUTHENTICATION;
++
+ //
+ // Image Attribute Definitions
+ //
+@@ -79,6 +95,13 @@ UINT64    Compatibilities;
+ 
+ #define EFI_FIRMWARE_IMAGE_DESCRIPTOR_VERSION  1
+ 
++//
++// _WIN_CERTIFICATE.wCertificateType
++//
++#define WIN_CERT_TYPE_PKCS_SIGNED_DATA 0x0002
++#define WIN_CERT_TYPE_EFI_PKCS115      0x0EF0
++#define WIN_CERT_TYPE_EFI_GUID         0x0EF1
++
+ /*++
+ //
+ // Image Attribute Authentication Required
+-- 
+2.26.2.windows.1
+

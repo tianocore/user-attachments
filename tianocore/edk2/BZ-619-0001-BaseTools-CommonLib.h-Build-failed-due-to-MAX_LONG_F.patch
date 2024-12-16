@@ -1,0 +1,43 @@
+From 51f81bcb09ee9efdbd458017681722e73131e9ab Mon Sep 17 00:00:00 2001
+From: Enze Zhu <zhuenze@byosoft.com.cn>
+Date: Wed, 16 Dec 2020 10:24:00 +0800
+Subject: [PATCH] BaseTools/CommonLib.h: Build failed due to MAX_LONG_FILE_PATH
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3032
+
+We had a build fail due to the hard coded MAX_LONG_FILE_PATH value.
+We should use PATH_MAX if it is available.
+
+Cc: Bob Feng <bob.c.feng@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Yuwei Chen <yuwei.chen@intel.com>
+Signed-off-by: Enze Zhu <zhuenze@byosoft.com.cn>
+---
+ BaseTools/Source/C/Common/CommonLib.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/BaseTools/Source/C/Common/CommonLib.h b/BaseTools/Source/C/Common/CommonLib.h
+index e1cce985f7..0f05d88db2 100644
+--- a/BaseTools/Source/C/Common/CommonLib.h
++++ b/BaseTools/Source/C/Common/CommonLib.h
+@@ -12,9 +12,17 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ #include <Common/UefiBaseTypes.h>
+ #include <Common/BuildVersion.h>
+ #include <assert.h>
++#ifndef _WIN32
++#include <limits.h>
++#endif
++
+ #define PRINTED_GUID_BUFFER_SIZE  37  // including null-termination
+ 
++#ifdef PATH_MAX
++#define MAX_LONG_FILE_PATH PATH_MAX
++#else
+ #define MAX_LONG_FILE_PATH 500
++#endif
+ 
+ #define MAX_UINT64 ((UINT64)0xFFFFFFFFFFFFFFFFULL)
+ #define MAX_UINT32 ((UINT32)0xFFFFFFFF)
+-- 
+2.27.0.windows.1
+

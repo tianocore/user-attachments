@@ -1,0 +1,44 @@
+From ce7e3054205fb51f1bb9b4512c02136cc730f1a5 Mon Sep 17 00:00:00 2001
+From: Fu Siyuan <siyuan.fu@intel.com>
+Date: Tue, 9 Jan 2018 15:08:57 +0800
+Subject: [Patch] NetworkPkg: Fix incorrect parameter check in PXE.Mtftp()
+ function.
+
+According to UEFI spec, the PXE.Mtftp() should return invalid parameter if the
+BufferPtr parameter was NULL and the DontUseBuffer parameter was FALSE.
+The DontUseBuffer is only used when perform MTFTP/TFTP read operation.
+
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Fu Siyuan <siyuan.fu@intel.com>
+---
+ NetworkPkg/UefiPxeBcDxe/PxeBcImpl.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/NetworkPkg/UefiPxeBcDxe/PxeBcImpl.c b/NetworkPkg/UefiPxeBcDxe/PxeBcImpl.c
+index 93f3bfa5ba..9068e0686c 100644
+--- a/NetworkPkg/UefiPxeBcDxe/PxeBcImpl.c
++++ b/NetworkPkg/UefiPxeBcDxe/PxeBcImpl.c
+@@ -855,11 +855,19 @@ EfiPxeBcMtftp (
+       (Filename == NULL) ||
+       (BufferSize == NULL) ||
+       (ServerIp == NULL) ||
+-      ((BufferPtr == NULL) && DontUseBuffer) ||
+       ((BlockSize != NULL) && (*BlockSize < PXE_MTFTP_DEFAULT_BLOCK_SIZE))) {
+     return EFI_INVALID_PARAMETER;
+   }
+ 
++  if (Operation == EFI_PXE_BASE_CODE_TFTP_READ_FILE ||
++      Operation == EFI_PXE_BASE_CODE_TFTP_READ_DIRECTORY ||
++      Operation == EFI_PXE_BASE_CODE_MTFTP_READ_FILE ||
++      Operation == EFI_PXE_BASE_CODE_MTFTP_READ_DIRECTORY) {
++    if (BufferPtr == NULL && !DontUseBuffer) {
++      return EFI_INVALID_PARAMETER;
++    }
++  }
++
+   Config    = NULL;
+   Status    = EFI_DEVICE_ERROR;
+   Private   = PXEBC_PRIVATE_DATA_FROM_PXEBC (This);
+-- 
+2.13.0.windows.1
+

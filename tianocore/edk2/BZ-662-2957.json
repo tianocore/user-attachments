@@ -1,0 +1,41 @@
+[
+  {
+    "data_version": "3.1",
+    "cve_id": "CVE-2021-",
+    "products": [
+      {
+        "vendor_name": "TianoCore",
+        "product": [
+          {
+            "product_name": "EDK II",
+            "version": "EDK II Master",
+            "affects": "="
+          }
+        ]
+      }
+    ],
+    "problem_types": [
+      {
+        "description": [
+          {
+            "lang": "eng",
+            "value": "A case of CWE-587 occurs in function FpdtStatusCodeListenerPei()."
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "url": "https://bugzilla.tianocore.org/show_bug.cgi?id=2957"
+      }
+    ],
+    "description": [
+      {
+        "lang": "eng",
+        "value": " BootPerformanceTable pointer is read from an NVRAM variable in PEI for EDK II.",
+		"product_name": "EDK II",
+        "version": "EDK II Master"
+      }
+    ]
+  }
+]

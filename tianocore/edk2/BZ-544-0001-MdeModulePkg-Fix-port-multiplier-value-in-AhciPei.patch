@@ -1,0 +1,37 @@
+From 8046d36a53ec11f66c14e9d38776c41a1e2525ec Mon Sep 17 00:00:00 2001
+From: Baraneedharan Anbazhagan <anbazhgan@hp.com>
+Date: Wed, 12 Aug 2020 10:16:22 -0500
+Subject: [PATCH] MdeModulePkg: Fix port multiplier value in AhciPei
+
+Ref: https://bugzilla.tianocore.org/show_bug.cgi?id=2892
+
+AHCI port multiplier value of 0xFFFF is not converted to 0
+and cause read blocks failure.
+
+Signed-off-by: Baraneedharan Anbazhagan <anbazhagan@hp.com>
+---
+ MdeModulePkg/Bus/Ata/AhciPei/AhciPeiPassThru.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiPassThru.c b/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiPassThru.c
+index 191b78c885..0081cb0f38 100644
+--- a/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiPassThru.c
++++ b/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiPassThru.c
+@@ -91,6 +91,14 @@ AhciPassThruExecute (
+ {
+   EFI_STATUS    Status;
+ 
++  if (PortMultiplierPort == 0xFFFF) {
++    //
++    // If there is no port multiplier, PortMultiplierPort will be 0xFFFF
++    // according to UEFI spec. Here, we convert its value to 0 to follow
++    // AHCI spec.
++    //
++    PortMultiplierPort = 0;
++  }
+   switch (Packet->Protocol) {
+     case EFI_ATA_PASS_THRU_PROTOCOL_ATA_NON_DATA:
+       Status = AhciNonDataTransfer (
+-- 
+2.27.0.windows.1
+

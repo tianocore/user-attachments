@@ -1,0 +1,117 @@
+From 1a21c6df5760b56dc31ee7745daa9c9597a97802 Mon Sep 17 00:00:00 2001
+From: zengzhi <zengzhi@byosoft.com.cn>
+Date: Fri, 20 Nov 2020 15:00:51 +0800
+Subject: [PATCH] MdeModulePkg/Pcdpeim: Fixed PcdGetPtr() caused memory
+ wasting.
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2964
+
+GuidHob was added to cache the VariableGuid,VariableName,VariableData.
+
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+
+Signed-off-by: zengzhi <zengzhi@byosoft.com.cn>
+---
+ MdeModulePkg/Universal/PCD/Pei/Service.c | 55 ++++++++++++++++++++----
+ 1 file changed, 46 insertions(+), 9 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/PCD/Pei/Service.c b/MdeModulePkg/Universal/PCD/Pei/Service.c
+index 5b037353ad..c13be25a31 100644
+--- a/MdeModulePkg/Universal/PCD/Pei/Service.c
++++ b/MdeModulePkg/Universal/PCD/Pei/Service.c
+@@ -452,6 +452,7 @@ BuildPcdDatabase (
+   return Database;
+ }
+ 
++EFI_GUID mGetVariableGuid = { 0x2f5a9b0e, 0xc338, 0x4f95, { 0xa8, 0x39, 0xf3, 0x8d, 0x27, 0xa2, 0x80, 0xc2 } };
+ /**
+   The function is provided by PCD PEIM and PCD DXE driver to
+   do the work of reading a HII variable from variable service.
+@@ -474,13 +475,36 @@ GetHiiVariable (
+ {
+   UINTN      Size;
+   EFI_STATUS Status;
+-  VOID       *Buffer;
++  UINTN      DataLength;
++  VOID       *HobData;
++  UINT8      *GetGuidHobData;
++  EFI_HOB_GUID_TYPE               *GuidHob;
+   EFI_PEI_READ_ONLY_VARIABLE2_PPI *VariablePpi;
+-
++  // Get the variable from the Guid Hob first, return it if found,
++  // and use the getVarible() function if not found.
++  GuidHob =  GetFirstGuidHob (&mGetVariableGuid);
++  while (GuidHob != NULL) {
++    GetGuidHobData = GET_GUID_HOB_DATA (GuidHob);
++    if (CompareGuid((EFI_GUID *) (GetGuidHobData + sizeof(UINT32)), VariableGuid) &&
++      StrnCmp((VOID *) (GetGuidHobData + sizeof(UINT32) + sizeof(EFI_GUID)), VariableName, StrLen(VariableName)) == 0){
++      //  If the variableGuid and variableName in the HOB are the same as
++      //  the input variableGuid and variableName, the VariableData and Size
++      //  in the HOB are returned as output values.
++      *VariableSize = *((UINT32 *) GetGuidHobData);
++      *VariableData = (VOID *) (GetGuidHobData + sizeof(UINT32) + sizeof(EFI_GUID) + StrSize(VariableName));
++      return EFI_SUCCESS;
++    } else {
++      GuidHob = GetNextGuidHob (&mGetVariableGuid, GET_NEXT_HOB (GuidHob));
++     }
++  }
++  // Load the PeiReadOnlyVariable2 PPI, which provides a service to read EFI Variable.
++  // If the load is unsuccessful, the function cannot be continued.
+   Status = PeiServicesLocatePpi (&gEfiPeiReadOnlyVariable2PpiGuid, 0, NULL, (VOID **) &VariablePpi);
+   ASSERT_EFI_ERROR (Status);
+ 
+   Size = 0;
++  // EFI Variable is read with an empty Buffer, and if an EFI Variable exists,
++  // it returns the actual required Buffer size.
+   Status = VariablePpi->GetVariable (
+                           VariablePpi,
+                           VariableName,
+@@ -491,22 +515,35 @@ GetHiiVariable (
+                           );
+ 
+   if (Status == EFI_BUFFER_TOO_SMALL) {
+-    Status = PeiServicesAllocatePool (Size, &Buffer);
+-    ASSERT_EFI_ERROR (Status);
+-
++    //  DataLength
++    //  -------------------------------------------------------------
++    //  | VariableSize | VariableGuid | VariableName | VariableData |
++    //  -------------------------------------------------------------
++    DataLength = sizeof(UINT32) + sizeof(EFI_GUID) + StrSize(VariableName) + Size;
++    HobData = BuildGuidHob(
++                 &mGetVariableGuid,
++                 DataLength
++                 );
++    // The VariableSize VariableGuid, VariableName, VariableData copy to GuidHob in turn.
++    CopyMem (HobData, (VOID *) &Size, sizeof(Size));
++    HobData = (VOID *) ((UINT8 *) HobData + sizeof(UINT32));
++    CopyMem (HobData, VariableGuid, sizeof(EFI_GUID));
++    HobData = (VOID *) ((UINT8 *) HobData + sizeof (EFI_GUID));
++    CopyMem (HobData, VariableName, StrSize(VariableName));
++    HobData = (VOID *) ((UINT8 *) HobData + StrSize(VariableName));
++    // Read EFI Variable into Guidhob. After a successful read,
++    // the read data is returned as the output value.
+     Status = VariablePpi->GetVariable (
+                               VariablePpi,
+                               (UINT16 *) VariableName,
+                               (EFI_GUID *) VariableGuid,
+                               NULL,
+                               &Size,
+-                              Buffer
++                              HobData
+                               );
+     ASSERT_EFI_ERROR (Status);
+-
+     *VariableSize = Size;
+-    *VariableData = Buffer;
+-
++    *VariableData = HobData;
+     return EFI_SUCCESS;
+   }
+ 
+-- 
+2.26.2.windows.1
+

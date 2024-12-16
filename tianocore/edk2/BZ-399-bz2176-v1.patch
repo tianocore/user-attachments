@@ -1,0 +1,40 @@
+From 6626f0a1a5e4affd46a5420433059f45d79a1db8 Mon Sep 17 00:00:00 2001
+From: BrentHoltsclaw <brent.holtsclaw@intel.com>
+Date: Thu, 2 May 2019 16:37:38 -0700
+Subject: [PATCH 2/6] Fix IScsiDhcp6ExtractRootPath() out of bound Read
+
+---
+ NetworkPkg/IScsiDxe/IScsiDhcp.c  | 2 +-
+ NetworkPkg/IScsiDxe/IScsiDhcp6.c | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/NetworkPkg/IScsiDxe/IScsiDhcp.c b/NetworkPkg/IScsiDxe/IScsiDhcp.c
+index d8c9fff6c6..0a41b63e5e 100644
+--- a/NetworkPkg/IScsiDxe/IScsiDhcp.c
++++ b/NetworkPkg/IScsiDxe/IScsiDhcp.c
+@@ -122,7 +122,7 @@ IScsiDhcpExtractRootPath (
+   //
+   if ((!NET_IS_DIGIT (*(Field->Str))) && (*(Field->Str) != '[')) {
+     ConfigNvData->DnsMode = TRUE;
+-    if (Field->Len > sizeof (ConfigNvData->TargetUrl)) {
++    if (Field->Len >= sizeof (ConfigNvData->TargetUrl)-1) {
+       return EFI_INVALID_PARAMETER;
+     }
+     CopyMem (&ConfigNvData->TargetUrl, Field->Str, Field->Len);
+diff --git a/NetworkPkg/IScsiDxe/IScsiDhcp6.c b/NetworkPkg/IScsiDxe/IScsiDhcp6.c
+index 86a872adec..73364451ee 100644
+--- a/NetworkPkg/IScsiDxe/IScsiDhcp6.c
++++ b/NetworkPkg/IScsiDxe/IScsiDhcp6.c
+@@ -161,7 +161,8 @@ IScsiDhcp6ExtractRootPath (
+   // Server name is expressed as domain name, just save it.
+   //
+   if (ConfigNvData->DnsMode) {
+-    if (Field->Len > sizeof (ConfigNvData->TargetUrl)) {
++    //ConfigNvData->TargetUrl is sizeof 255 null is appended to end so must decrement 2 from sizeof results
++    if (Field->Len >= sizeof (ConfigNvData->TargetUrl)-1) {
+       return EFI_INVALID_PARAMETER;
+     }
+     CopyMem (&ConfigNvData->TargetUrl, Field->Str, Field->Len);
+-- 
+2.20.1.windows.1
+

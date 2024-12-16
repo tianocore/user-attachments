@@ -1,0 +1,32 @@
+Subject: [edk2] [PATCH v2] MdeModulePkg/Core: Fix MaxAddress in Gcd
+
+When BottomUp search is used the MaxAddress is incorrectly chosen to
+be BaseAddress instead of EndAddress.
+
+Cc: Ruiyu Ni <ruiyu.ni@intel.com>
+Cc: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Roman Bacik <roman.bacik@broadcom.com>
+
+---
+ MdeModulePkg/Core/Dxe/Gcd/Gcd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MdeModulePkg/Core/Dxe/Gcd/Gcd.c b/MdeModulePkg/Core/Dxe/Gcd/Gcd.c
+index e17e98230b79..9eeb2bd74599 100644
+--- a/MdeModulePkg/Core/Dxe/Gcd/Gcd.c
++++ b/MdeModulePkg/Core/Dxe/Gcd/Gcd.c
+@@ -1170,8 +1170,8 @@ CoreAllocateSpace (
+     //
+     // Compute the maximum address to use in the search algorithm
+     //
+-    if (GcdAllocateType == EfiGcdAllocateMaxAddressSearchBottomUp ||
+-        GcdAllocateType == EfiGcdAllocateMaxAddressSearchTopDown     ) {
++    if (GcdAllocateType == EfiGcdAllocateMaxAddressSearchTopDown ||
++        GcdAllocateType == EfiGcdAllocateAnySearchTopDown ) {
+       MaxAddress = *BaseAddress;
+     } else {
+       MaxAddress = Entry->EndAddress;
+-- 
+1.9.1
+

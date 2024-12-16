@@ -1,0 +1,2311 @@
+SecCoreStartupWithStack(0xFFFCC000, 0x818000)
+SEC: Normal boot
+DecompressMemFvs: OutputBuffer@A00000+0xAE0090 ScratchBuffer@1500000+0x10000 PcdOvmfDecompressionScratchEnd=0x1510000
+Register PPI Notify: [EfiPeiSecurity2Ppi]
+Install PPI: [EfiFirmwareFileSystem2]
+Install PPI: [EfiFirmwareFileSystem3]
+The 0th FV start address is 0x00000820000, size is 0x000E0000, handle is 0x0
+Register PPI Notify: [EfiPeiFirmwareVolumeInfoPpi]
+Register PPI Notify: [EfiPeiFirmwareVolumeInfo2Ppi]
+Install PPI: [EfiPeiLoadFilePpi]
+Install PPI: [EfiTemporaryRamSupportPpi]
+Loading PEIM at 0x000008346E0 EntryPoint=0x00000834900 PcdPeim.efi
+Install PPI: [PcdPpi]
+Install PPI: [EfiPeiPcdPpi]
+Install PPI: [GetPcdInfoPpi]
+Install PPI: [EfiGetPcdInfoPpi]
+Loading PEIM at 0x0000083BFA0 EntryPoint=0x0000083C1C0 ReportStatusCodeRouterPei.efi
+Install PPI: [EfiPeiRscHandlerPpi]
+Install PPI: [EfiPeiStatusCodePpi]
+Loading PEIM at 0x0000083FFA0 EntryPoint=0x000008401C0 StatusCodeHandlerPei.efi
+Loading PEIM at 0x00000844CA0 EntryPoint=0x00000844EC0 PlatformPei.efi
+Select Item: 0x0
+FW CFG Signature: 0x554D4551
+Select Item: 0x1
+FW CFG Revision: 0x3
+QemuFwCfg interface (DMA) is supported.
+Platform PEIM Loaded
+CMOS:
+00: 55 00 45 00 01 00 07 08 07 17 26 02 00 80 00 00
+10: 00 00 00 00 06 80 02 FF FF 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+30: FF FF 20 00 00 7F 00 20 30 00 00 00 00 12 00 00
+40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+50: 00 00 00 00 00 00 00 00 00 00 00 00 80 00 00 03
+60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Select Item: 0x19
+Select Item: 0x2B
+S3 support was detected on QEMU
+Install PPI: [EfiPeiMasterBootModePpi]
+Select Item: 0x5
+MaxCpuCountInitialization: QEMU reports 4 processor(s)
+Q35TsegMbytesInitialization: QEMU offers an extended TSEG (16 MB)
+PublishPeiMemory: mPhysMemAddressWidth=36 PeiMemoryCap=65536 KB
+PeiInstallPeiMemory MemoryBegin 0x7AF60000, MemoryLength 0x4000000
+QemuInitializeRam called
+Platform PEI Firmware Volume Initialization
+Install PPI: [EfiPeiFirmwareVolumeInfoPpi]
+Notify: PPI Guid: [EfiPeiFirmwareVolumeInfoPpi], Peim notify entry point: 823A3F
+The 1th FV start address is 0x00000900000, size is 0x00A00000, handle is 0x900000
+Select Item: 0x19
+Select Item: 0x19
+Select Item: 0x19
+Select Item: 0x30
+Select Item: 0x19
+Temp Stack : BaseAddress=0x814000 Length=0x4000
+Temp Heap  : BaseAddress=0x810000 Length=0x4000
+Total temporary memory:    32768 bytes.
+  temporary memory stack ever used: 16384 bytes.
+  temporary memory heap used:       5848 bytes.
+Old Stack size 16384, New stack size 131072
+Stack Hob: BaseAddress=0x7AF60000 Length=0x20000
+Heap Offset = 0x7A770000 Stack Offset = 0x7A768000
+TemporaryRamMigration(0x810000, 0x7AF7C000, 0x8000)
+Loading PEIM at 0x0007EF4A000 EntryPoint=0x0007EF4A220 PeiCore.efi
+Reinstall PPI: [EfiFirmwareFileSystem2]
+Reinstall PPI: [EfiFirmwareFileSystem3]
+Reinstall PPI: [EfiPeiLoadFilePpi]
+Install PPI: [EfiPeiMemoryDiscoveredPpi]
+Loading PEIM at 0x0007EF40000 EntryPoint=0x0007EF40220 DxeIpl.efi
+Install PPI: [EfiPeiDecompressPpi]
+Install PPI: [EfiDxeIplPpi]
+Loading PEIM at 0x0007EF36000 EntryPoint=0x0007EF36220 S3Resume2Pei.efi
+Install PPI: [EfiPeiS3Resume2Ppi]
+Loading PEIM at 0x0007EF30000 EntryPoint=0x0007EF30220 SmmAccessPei.efi
+SmmAccessPeiEntryPoint: SMRAM map follows, 2 entries
+   PhysicalStart(0x)     PhysicalSize(0x)         CpuStart(0x)      RegionState(0x)
+            7F000000                 1000             7F000000                   1A
+            7F001000               FFF000             7F001000                    A
+Install PPI: [PeiSmmAccessPpi]
+Loading PEIM at 0x0007EF22000 EntryPoint=0x0007EF22220 CpuMpPei.efi
+AP Loop Mode is 1
+WakeupBufferStart = 9F000, WakeupBufferSize = 1000
+TimedWaitForApFinish: reached FinishedApLimit=3 in 0 microseconds
+APIC MODE is 1
+MpInitLib: Find 4 processors in system.
+Does not find any stored CPU BIST information from PPI!
+  APICID - 0x00000000, BIST - 0x00000000
+  APICID - 0x00000001, BIST - 0x00000000
+  APICID - 0x00000002, BIST - 0x00000000
+  APICID - 0x00000003, BIST - 0x00000000
+Install PPI: [EfiSecPlatformInformation2Ppi]
+Install PPI: [EfiPeiMpServicesPpi]
+DXE IPL Entry
+Loading PEIM at 0x0007EECA000 EntryPoint=0x0007EECA220 DxeCore.efi
+Loading DXE CORE at 0x0007EECA000 EntryPoint=0x0007EECA220
+Install PPI: [EfiEndOfPeiSignalPpi]
+HandOffToDxeCore() Stack Base: 0x7EEAA000, Stack Size: 0x20000
+CoreInitializeMemoryServices:
+  BaseAddress - 0x7AF83000 Length - 0x3F27000 MinimalMemorySizeNeeded - 0x10F4000
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7EEFD4F8
+ProtectUefiImageCommon - 0x7EEFD4F8
+  - 0x000000007EECA000 - 0x0000000000037000
+HOBLIST address in DXE = 0x7ECC0010
+Memory Allocation 0x0000000A 0x7EF60000 - 0x7EFFFFFF
+Memory Allocation 0x0000000A 0x810000 - 0x817FFF
+Memory Allocation 0x0000000A 0x807000 - 0x807FFF
+Memory Allocation 0x00000000 0x7F000000 - 0x7FFFFFFF
+Memory Allocation 0x0000000A 0x820000 - 0x8FFFFF
+Memory Allocation 0x0000000A 0x900000 - 0x12FFFFF
+Memory Allocation 0x0000000A 0x1300000 - 0x150FFFF
+Memory Allocation 0x00000000 0x80000000 - 0x8FFFFFFF
+Memory Allocation 0x00000004 0x7EEAA000 - 0x7EEC9FFF
+Memory Allocation 0x00000003 0x7EF5F000 - 0x7EF5FFFF
+Memory Allocation 0x00000003 0x7EF4A000 - 0x7EF5EFFF
+Memory Allocation 0x00000003 0x7EF40000 - 0x7EF49FFF
+Memory Allocation 0x00000003 0x7EF36000 - 0x7EF3FFFF
+Memory Allocation 0x00000003 0x7EF30000 - 0x7EF35FFF
+Memory Allocation 0x00000003 0x7EF22000 - 0x7EF2FFFF
+Memory Allocation 0x00000004 0x7EF01000 - 0x7EF21FFF
+Memory Allocation 0x00000003 0x7EECA000 - 0x7EF00FFF
+Memory Allocation 0x00000003 0x7EECA000 - 0x7EF00FFF
+Memory Allocation 0x00000004 0x7EEAA000 - 0x7EEC9FFF
+Memory Allocation 0x00000004 0x7AF60000 - 0x7AF7FFFF
+FV Hob            0x900000 - 0x12FFFFF
+InstallProtocolInterface: [EfiDecompressProtocol] 7EEFD4B4
+InstallProtocolInterface: [EfiFirmwareVolumeBlockProtocol|EfiFirmwareVolumeBlock2Protocol] 7ECBCD1C
+InstallProtocolInterface: [EfiDevicePathProtocol] 7ECBCD90
+InstallProtocolInterface: [EfiFirmwareVolume2Protocol] 7ECBBF9C
+InstallProtocolInterface: [LzmaCustomDecompress] 7EEFD4C4
+Loading driver [DevicePathDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E7580A8
+Loading driver at 0x0007EE35000 EntryPoint=0x0007EE35254 DevicePathDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E758A90
+ProtectUefiImageCommon - 0x7E7580A8
+  - 0x000000007EE35000 - 0x000000000000F700
+InstallProtocolInterface: [EfiDevicePathUtilitiesProtocol] 7EE40340
+InstallProtocolInterface: [EfiDevicePathToTextProtocol] 7EE40360
+InstallProtocolInterface: [EfiDevicePathFromTextProtocol] 7EE40368
+Loading driver [PcdDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E7583A8
+Loading driver at 0x0007EE2B000 EntryPoint=0x0007EE2B254 PcdDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E74DF90
+ProtectUefiImageCommon - 0x7E7583A8
+  - 0x000000007EE2B000 - 0x0000000000009B60
+InstallProtocolInterface: [PcdProtocol] 7EE341C0
+InstallProtocolInterface: [EfiPcdProtocol] 7EE34240
+InstallProtocolInterface: [GetPcdInfoProtocol] 7EE34288
+InstallProtocolInterface: [EfiGetPcdInfoProtocol] 7EE34294
+Loading driver [ReportStatusCodeRouterRuntimeDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E74D328
+Loading driver at 0x0007EE6B000 EntryPoint=0x0007EE6C034 ReportStatusCodeRouterRuntimeDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E755B10
+ProtectUefiImageCommon - 0x7E74D328
+  - 0x000000007EE6B000 - 0x000000000000A000
+InstallProtocolInterface: [EfiRscHandlerProtocol] 7EE7300C
+InstallProtocolInterface: [EfiStatusCodeRuntimeProtocol] 7EE73008
+Loading driver [RuntimeDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E755828
+Loading driver at 0x0007EE63000 EntryPoint=0x0007EE64034 RuntimeDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E755690
+ProtectUefiImageCommon - 0x7E755828
+  - 0x000000007EE63000 - 0x0000000000008000
+InstallProtocolInterface: [EfiRuntimeArchProtocol] 7EE69000
+Loading driver [SecurityStubDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E754B28
+Loading driver at 0x0007EDAB000 EntryPoint=0x0007EDAB254 SecurityStubDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E754D10
+ProtectUefiImageCommon - 0x7E754B28
+  - 0x000000007EDAB000 - 0x000000000007F6E0
+InstallProtocolInterface: [EfiSecurity2ArchProtocol] 7EE255A4
+InstallProtocolInterface: [EfiSecurityArchProtocol] 7EE255A0
+InstallProtocolInterface: [EfiDeferredImageLoadProtocol] 7EE255A8
+Loading driver [EbcDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E754328
+Loading driver at 0x0007EDA0000 EntryPoint=0x0007EDA0254 EbcDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E753B10
+ProtectUefiImageCommon - 0x7E754328
+  - 0x000000007EDA0000 - 0x000000000000A3E0
+InstallProtocolInterface: [EfiEbcProtocol] 7E753D90
+InstallProtocolInterface: [EfiDebugSupportProtocol] 7E753D10
+InstallProtocolInterface: [EfiEbcVmTestProtocol] 7E753A90
+Loading driver [Legacy8259]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E7535A8
+Loading driver at 0x0007ED9C000 EntryPoint=0x0007ED9C254 Legacy8259.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E753510
+ProtectUefiImageCommon - 0x7E7535A8
+  - 0x000000007ED9C000 - 0x0000000000003B00
+InstallProtocolInterface: [EfiLegacy8259Protocol] 7ED9F680
+Loading driver [CpuIo2Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E752B28
+Loading driver at 0x0007ED97000 EntryPoint=0x0007ED97254 CpuIo2Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E752D10
+ProtectUefiImageCommon - 0x7E752B28
+  - 0x000000007ED97000 - 0x00000000000042C0
+InstallProtocolInterface: [EfiCpuIo2Protocol] 7ED9AE80
+Loading driver [CpuDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E752828
+Loading driver at 0x0007ED80000 EntryPoint=0x0007ED80254 CpuDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E752610
+ProtectUefiImageCommon - 0x7E752828
+  - 0x000000007ED80000 - 0x0000000000016200
+CurrentPagingContext:
+  MachineType   - 0x14C
+  PageTableBase - 0x0
+  Attributes    - 0x0
+InstallProtocolInterface: [EfiCpuArchProtocol] 7ED95620
+MemoryProtectionCpuArchProtocolNotify:
+ProtectUefiImageCommon - 0x7EEFD4F8
+  - 0x000000007EECA000 - 0x0000000000037000
+ProtectUefiImageCommon - 0x7E7580A8
+  - 0x000000007EE35000 - 0x000000000000F700
+ProtectUefiImageCommon - 0x7E7583A8
+  - 0x000000007EE2B000 - 0x0000000000009B60
+ProtectUefiImageCommon - 0x7E74D328
+  - 0x000000007EE6B000 - 0x000000000000A000
+SetUefiImageMemoryAttributes - 0x000000007EE6B000 - 0x0000000000001000 (0x0000000000004000)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE6C000 - 0x0000000000007000 (0x0000000000020000)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE73000 - 0x0000000000002000 (0x0000000000004000)
+PageTable is 0!
+ProtectUefiImageCommon - 0x7E755828
+  - 0x000000007EE63000 - 0x0000000000008000
+SetUefiImageMemoryAttributes - 0x000000007EE63000 - 0x0000000000001000 (0x0000000000004000)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE64000 - 0x0000000000005000 (0x0000000000020000)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE69000 - 0x0000000000002000 (0x0000000000004000)
+PageTable is 0!
+ProtectUefiImageCommon - 0x7E754B28
+  - 0x000000007EDAB000 - 0x000000000007F6E0
+ProtectUefiImageCommon - 0x7E754328
+  - 0x000000007EDA0000 - 0x000000000000A3E0
+ProtectUefiImageCommon - 0x7E7535A8
+  - 0x000000007ED9C000 - 0x0000000000003B00
+ProtectUefiImageCommon - 0x7E752B28
+  - 0x000000007ED97000 - 0x00000000000042C0
+ProtectUefiImageCommon - 0x7E752828
+  - 0x000000007ED80000 - 0x0000000000016200
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+  Flushing GCD
+AP Loop Mode is 1
+Detect CPU count: 4
+InstallProtocolInterface: [EfiMpServiceProtocol] 7ED956AC
+Loading driver [IncompatiblePciDeviceSupportDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E34BBA8
+Loading driver at 0x0007ED7C000 EntryPoint=0x0007ED7C254 IncompatiblePciDeviceSupportDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E34C990
+ProtectUefiImageCommon - 0x7E34BBA8
+  - 0x000000007ED7C000 - 0x0000000000003F20
+Error: Image at 0007ED7C000 start failed: Unsupported
+Loading driver [PciHotPlugInitDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E34BBA8
+Loading driver at 0x0007ED7C000 EntryPoint=0x0007ED7C254 PciHotPlugInitDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E34CA10
+ProtectUefiImageCommon - 0x7E34BBA8
+  - 0x000000007ED7C000 - 0x0000000000003E40
+InstallProtocolInterface: [EfiPciHotPlugInitProtocol] 7ED7FA00
+Loading driver [ResetSystemRuntimeDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E328B28
+Loading driver at 0x0007EE59000 EntryPoint=0x0007EE5A034 ResetSystemRuntimeDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E328090
+ProtectUefiImageCommon - 0x7E328B28
+  - 0x000000007EE59000 - 0x000000000000A000
+SetUefiImageMemoryAttributes - 0x000000007EE59000 - 0x0000000000001000 (0x0000000000004008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE5A000 - 0x0000000000007000 (0x0000000000020008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE61000 - 0x0000000000002000 (0x0000000000004008)
+PageTable is 0!
+InstallProtocolInterface: [EfiResetArchProtocol] 0
+InstallProtocolInterface: [EfiResetNotificationProtocol] 7EE61004
+Loading driver [Metronome]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E3282A8
+Loading driver at 0x0007ED77000 EntryPoint=0x0007ED77254 Metronome.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E322010
+ProtectUefiImageCommon - 0x7E3282A8
+  - 0x000000007ED77000 - 0x0000000000004220
+InstallProtocolInterface: [EfiMetronomeArchProtocol] 7ED7ADE0
+Loading driver [PrintDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E322C28
+Loading driver at 0x0007ED72000 EntryPoint=0x0007ED72254 PrintDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E322790
+ProtectUefiImageCommon - 0x7E322C28
+  - 0x000000007ED72000 - 0x0000000000004220
+InstallProtocolInterface: [EfiPrint2Protocol] 7ED74A00
+InstallProtocolInterface: [EfiPrint2SProtocol] 7ED74A40
+Loading driver [HiiDatabase]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E322228
+Loading driver at 0x0007ED4B000 EntryPoint=0x0007ED4B254 HiiDatabase.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E322510
+ProtectUefiImageCommon - 0x7E322228
+  - 0x000000007ED4B000 - 0x00000000000265E0
+InstallProtocolInterface: [EfiHiiFontProtocol] 7ED70174
+InstallProtocolInterface: [EfiHiiStringProtocol] 7ED701B0
+InstallProtocolInterface: [EfiHiiDatabaseProtocol] 7ED701C4
+InstallProtocolInterface: [EfiHiiConfigRoutingProtocol] 7ED701F0
+InstallProtocolInterface: [EfiConfigKeywordHandlerProtocol] 7ED70208
+InstallProtocolInterface: [EfiHiiImageProtocol] 7ED70184
+InstallProtocolInterface: [EfiHiiImageExProtocol] 7ED70198
+Loading driver [NullMemoryTestDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E3271A8
+Loading driver at 0x0007ED46000 EntryPoint=0x0007ED46254 NullMemoryTestDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E327510
+ProtectUefiImageCommon - 0x7E3271A8
+  - 0x000000007ED46000 - 0x0000000000004420
+InstallProtocolInterface: [EfiGenericMemTestProtocol] 7ED49F60
+Loading driver [SmbiosDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E326BA8
+Loading driver at 0x0007ED3D000 EntryPoint=0x0007ED3D254 SmbiosDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E326090
+ProtectUefiImageCommon - 0x7E326BA8
+  - 0x000000007ED3D000 - 0x0000000000008740
+Select Item: 0x0
+FW CFG Signature: 0x554D4551
+Select Item: 0x1
+FW CFG Revision: 0x3
+QemuFwCfg interface (DMA) is supported.
+Select Item: 0x19
+Select Item: 0x19
+Select Item: 0x26
+DetectSmbiosVersion: SMBIOS version from QEMU: 0x0208
+InstallProtocolInterface: [EfiSmbiosProtocol] 7ED45048
+Loading driver [AcpiTableDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E3265A8
+Loading driver at 0x0007ED31000 EntryPoint=0x0007ED31254 AcpiTableDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E326510
+ProtectUefiImageCommon - 0x7E3265A8
+  - 0x000000007ED31000 - 0x000000000000B240
+InstallProtocolInterface: [EfiAcpiTableProtocol] 7E325054
+InstallProtocolInterface: [EfiAcpiSdtProtocol] 7E32505C
+Loading driver [S3SaveStateDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E325CA8
+Loading driver at 0x0007ED26000 EntryPoint=0x0007ED26254 S3SaveStateDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E325B10
+ProtectUefiImageCommon - 0x7E325CA8
+  - 0x000000007ED26000 - 0x000000000000ADC0
+InstallProtocolInterface: [EfiS3SaveStateProtocol] 7ED30504
+Loading driver [DpcDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E325328
+Loading driver at 0x0007ED22000 EntryPoint=0x0007ED22254 DpcDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E324F10
+ProtectUefiImageCommon - 0x7E325328
+  - 0x000000007ED22000 - 0x0000000000003EC0
+InstallProtocolInterface: [EfiDpcProtocol] 7ED25960
+Loading driver [HttpUtilitiesDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E3240A8
+Loading driver at 0x0007ED1D000 EntryPoint=0x0007ED1D254 HttpUtilitiesDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E324910
+ProtectUefiImageCommon - 0x7E3240A8
+  - 0x000000007ED1D000 - 0x0000000000004EA0
+InstallProtocolInterface: [EfiHttpUtilitiesProtocol] 7ED21A40
+Loading driver [SmmAccess2Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E324328
+Loading driver at 0x0007ED18000 EntryPoint=0x0007ED18254 SmmAccess2Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E324610
+ProtectUefiImageCommon - 0x7E324328
+  - 0x000000007ED18000 - 0x0000000000004600
+InstallProtocolInterface: [EfiSmmAccess2Protocol] 7ED1C1A0
+Loading driver [SmmControl2Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E323C28
+Loading driver at 0x0007EE4F000 EntryPoint=0x0007EE50034 SmmControl2Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E323990
+ProtectUefiImageCommon - 0x7E323C28
+  - 0x000000007EE4F000 - 0x000000000000A000
+SetUefiImageMemoryAttributes - 0x000000007EE4F000 - 0x0000000000001000 (0x0000000000004008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE50000 - 0x0000000000007000 (0x0000000000020008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE57000 - 0x0000000000002000 (0x0000000000004008)
+PageTable is 0!
+Select Item: 0x0
+FW CFG Signature: 0x554D4551
+Select Item: 0x1
+FW CFG Revision: 0x3
+QemuFwCfg interface (DMA) is supported.
+Select Item: 0x19
+Select Item: 0x19
+Select Item: 0x19
+Select Item: 0x2A
+Select Item: 0x29
+Select Item: 0x28
+NegotiateSmiFeatures: using SMI broadcast
+Select Item: 0x19
+Select Item: 0x2B
+OnS3SaveStateInstalled: chipset boot script saved
+Select Item: 0x1
+SmmControl2Dxe: S3SaveStateInstalledNotify: DmaAccess@0x7EE9A010 ScratchBuffer@[0x7EE9A020+0x8]
+AppendFwCfgBootScript: SMI feature negotiation boot script saved
+InstallProtocolInterface: [EfiSmmControl2Protocol] 7EE57004
+Loading driver [StatusCodeHandlerRuntimeDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E3232A8
+Loading driver at 0x0007EE46000 EntryPoint=0x0007EE47034 StatusCodeHandlerRuntimeDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E317010
+ProtectUefiImageCommon - 0x7E3232A8
+  - 0x000000007EE46000 - 0x0000000000009000
+SetUefiImageMemoryAttributes - 0x000000007EE46000 - 0x0000000000001000 (0x0000000000004008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE47000 - 0x0000000000006000 (0x0000000000020008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007EE4D000 - 0x0000000000002000 (0x0000000000004008)
+PageTable is 0!
+Loading driver [Timer]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E317828
+Loading driver at 0x0007ED14000 EntryPoint=0x0007ED14254 Timer.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E317190
+ProtectUefiImageCommon - 0x7E317828
+  - 0x000000007ED14000 - 0x0000000000003CC0
+InstallProtocolInterface: [EfiTimerArchProtocol] 7ED17840
+Loading driver [PciHostBridgeDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E3172A8
+Loading driver at 0x0007ED04000 EntryPoint=0x0007ED04254 PciHostBridgeDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E321F10
+ProtectUefiImageCommon - 0x7E3172A8
+  - 0x000000007ED04000 - 0x000000000000FBC0
+Select Item: 0x0
+FW CFG Signature: 0x554D4551
+Select Item: 0x1
+FW CFG Revision: 0x3
+QemuFwCfg interface (DMA) is supported.
+Select Item: 0x19
+InitRootBridge: populated root bus 0, with room for 255 subordinate bus(es)
+RootBridge: PciRoot(0x0)
+  Support/Attr: 70069 / 70069
+    DmaAbove4G: No
+NoExtConfSpace: No
+     AllocAttr: 1 (CombineMemPMem )
+           Bus: 0 - FF
+            Io: 6000 - FFFF
+           Mem: 90000000 - FBFFFFFF
+    MemAbove4G: FFFFFFFFFFFFFFFF - 0
+          PMem: FFFFFFFFFFFFFFFF - 0
+   PMemAbove4G: FFFFFFFFFFFFFFFF - 0
+InstallProtocolInterface: [EfiPciHostBridgeResourceAllocationProtocol] 7E321D24
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E321D90
+InstallProtocolInterface: [EfiPciRootBridgeIoProtocol] 7E321918
+Loading driver [SetupBrowser]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E320028
+Loading driver at 0x0007ECE1000 EntryPoint=0x0007ECE1254 SetupBrowser.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E320F10
+ProtectUefiImageCommon - 0x7E320028
+  - 0x000000007ECE1000 - 0x0000000000022600
+InstallProtocolInterface: [EfiFormBrowser2Protocol] 7ED01E28
+InstallProtocolInterface: [EdkiiFormBrowserEx2Protocol] 7ED01E40
+InstallProtocolInterface: [EfiFormBrowserExProtocol] 7ED01E30
+Loading driver [SmbiosPlatformDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E320328
+Loading driver at 0x0007ECDB000 EntryPoint=0x0007ECDB254 SmbiosPlatformDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E320590
+ProtectUefiImageCommon - 0x7E320328
+  - 0x000000007ECDB000 - 0x0000000000005900
+Select Item: 0x0
+FW CFG Signature: 0x554D4551
+Select Item: 0x1
+FW CFG Revision: 0x3
+QemuFwCfg interface (DMA) is supported.
+Select Item: 0x19
+Select Item: 0x27
+SmbiosAdd: Smbios type 1 with size 0x4C is added to 32-bit table
+SmbiosCreateTable: Initialize 32-bit entry point structure
+SmbiosCreateTable() re-allocate SMBIOS 32-bit table
+SmbiosAdd: Smbios type 3 with size 0x27 is added to 32-bit table
+SmbiosAdd: Smbios type 4 with size 0x42 is added to 32-bit table
+SmbiosAdd: Smbios type 16 with size 0x19 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x35 is added to 32-bit table
+SmbiosAdd: Smbios type 19 with size 0x21 is added to 32-bit table
+SmbiosAdd: Smbios type 19 with size 0x21 is added to 32-bit table
+SmbiosAdd: Smbios type 32 with size 0xD is added to 32-bit table
+SmbiosAdd: Smbios type 0 with size 0x4A is added to 32-bit table
+Loading driver [AcpiPlatform]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E319328
+Loading driver at 0x0007ECCE000 EntryPoint=0x0007ECCE254 AcpiPlatform.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E319C10
+ProtectUefiImageCommon - 0x7E319328
+  - 0x000000007ECCE000 - 0x000000000000C3E0
+Select Item: 0x0
+FW CFG Signature: 0x554D4551
+Select Item: 0x1
+FW CFG Revision: 0x3
+QemuFwCfg interface (DMA) is supported.
+AcpiPlatformEntryPoint: waiting for root bridges to be connected, registered callback
+Loading driver [LogoDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E31FC28
+Loading driver at 0x0007ECC7000 EntryPoint=0x0007ECC7254 LogoDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E31FA90
+InstallProtocolInterface: [EfiHiiPackageListProtocol] 7ECCA3F0
+ProtectUefiImageCommon - 0x7E31FC28
+  - 0x000000007ECC7000 - 0x0000000000006600
+InstallProtocolInterface: [EdkiiPlatformLogoProtocol] 7ECCA2D0
+Loading driver [CpuS3DataDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E31F228
+Loading driver at 0x0007DDBC000 EntryPoint=0x0007DDBC254 CpuS3DataDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E31E410
+ProtectUefiImageCommon - 0x7E31F228
+  - 0x000000007DDBC000 - 0x0000000000004A80
+Loading driver [PiSmmIpl]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E31E4A8
+Loading driver at 0x0007DD8E000 EntryPoint=0x0007DD8F034 PiSmmIpl.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E31E690
+ProtectUefiImageCommon - 0x7E31E4A8
+  - 0x000000007DD8E000 - 0x000000000000E000
+SetUefiImageMemoryAttributes - 0x000000007DD8E000 - 0x0000000000001000 (0x0000000000004008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DD8F000 - 0x000000000000B000 (0x0000000000020008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DD9A000 - 0x0000000000002000 (0x0000000000004008)
+PageTable is 0!
+SMM IPL opened SMRAM window
+SMM IPL found SMRAM window 7F001000 - 7FFFFFFF
+SMM IPL loading SMM Core at SMRAM address 7FFDE000
+SMM IPL calling SMM Core at SMRAM address 7FFDF034
+PiSmmCoreImageBase - 0x000000007FFDE000
+PiSmmCoreImageSize - 0x0000000000021000
+SmmAddMemoryRegion
+  MemBase    - 0x7F001000
+  MemLength  - 0xFDD000
+  Type       - 0x7
+  Attributes - 0xA
+SmmAddMemoryRegion
+  MemBase    - 0x7F000000
+  MemLength  - 0x1000
+  Type       - 0x6
+  Attributes - 0x1A
+SmmAddMemoryRegion
+  MemBase    - 0x7FFDE000
+  MemLength  - 0x22000
+  Type       - 0x6
+  Attributes - 0x1A
+mSmmMemLibInternalMaximumSupportAddress = 0xFFFFFFFF
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E31AE10
+SmmInstallProtocolInterface: [EfiLoadedImageProtocol] 7FFDC980
+InstallProtocolInterface: [EfiSmmBase2Protocol] 7DD9A000
+InstallProtocolInterface: [EfiSmmCommunicationProtocol] 7DD9A008
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E318490
+SmmInstallProtocolInterface: [EfiLoadedImageProtocol] 7FFDC680
+Loading SMM driver at 0x0007FFD2000 EntryPoint=0x0007FFD3034 CpuIo2Smm.efi
+SmmInstallProtocolInterface: [EfiSmmCpuIo2Protocol] 7FFD7000
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E212E10
+SmmInstallProtocolInterface: [EfiLoadedImageProtocol] 7FFDC580
+Loading SMM driver at 0x0007FFC5000 EntryPoint=0x0007FFC6034 SmmLockBox.efi
+SmmLockBoxSmmLib SmmLockBoxSmmConstructor - Enter
+SmmLockBoxSmmLib SmmLockBoxContext - 7FFCE050
+SmmLockBoxSmmLib LockBoxDataAddress - 7FFCE004
+SmmLockBoxSmmLib SmmLockBoxSmmConstructor - Exit
+mSmmMemLibInternalMaximumSupportAddress = 0xFFFFFFFF
+InstallProtocolInterface: [EfiLockBoxProtocol] 0
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E212A10
+SmmInstallProtocolInterface: [EfiLoadedImageProtocol] 7FFDC480
+Loading SMM driver at 0x0007FFA7000 EntryPoint=0x0007FFA8034 PiSmmCpuDxeSmm.efi
+SMRR Base: 0x7F000000, SMRR Size: 0x1000000
+PcdCpuSmmCodeAccessCheckEnable = 1
+mAddressEncMask = 0x0
+SMRAM TileSize = 0x00002000 (0x00001000, 0x00001000)
+SMRAM SaveState Buffer (0x7FF99000, 0x0000E000)
+CPU[000]  APIC ID=0000  SMBASE=7FF91000  SaveState=7FFA0C00  Size=00000400
+CPU[001]  APIC ID=0001  SMBASE=7FF93000  SaveState=7FFA2C00  Size=00000400
+CPU[002]  APIC ID=0002  SMBASE=7FF95000  SaveState=7FFA4C00  Size=00000400
+CPU[003]  APIC ID=0003  SMBASE=7FF97000  SaveState=7FFA6C00  Size=00000400
+mXdSupported - 0x0
+One Semaphore Size    = 0x40
+Total Semaphores Size = 0x840
+InstallProtocolInterface: [gEfiSmmConfigurationProtocolGuid] 7FFC1040
+SMM IPL registered SMM Entry Point address 7FFDF99D
+SmmInstallProtocolInterface: [EfiSmmCpuProtocol] 7FFC1068
+SmmInstallProtocolInterface: [EfiSmmCpuServiceProtocol] 7FFC1084
+SMM S3 SMRAM Structure = 7ECC19C8
+SMM S3 Structure = 7F000000
+SMM CPU Module exit from SMRAM with EFI_SUCCESS
+SMM IPL closed SMRAM window
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E212710
+SmmInstallProtocolInterface: [EfiLoadedImageProtocol] 7FFDC380
+Loading SMM driver at 0x0007FF5E000 EntryPoint=0x0007FF5F034 FvbServicesSmm.efi
+QEMU Flash: Attempting flash detection at FFC00010
+QemuFlashDetected => FD behaves as FLASH
+QemuFlashDetected => Yes
+Installing QEMU flash SMM FVB
+SmmInstallProtocolInterface: [EfiSmmFirmwareVolumeBlockProtocol] 7FFD121C
+SmmInstallProtocolInterface: [EfiDevicePathProtocol] 7FFD1310
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E212190
+SmmInstallProtocolInterface: [EfiLoadedImageProtocol] 7FFDC180
+Loading SMM driver at 0x0007FED1000 EntryPoint=0x0007FED2034 VariableSmm.efi
+mSmmMemLibInternalMaximumSupportAddress = 0xFFFFFFFF
+VarCheckLibRegisterSetVariableCheckHandler - 0x7FEE1687 Success
+Variable driver common space: 0x3FF9C 0x3FF9C 0x3FF9C
+Variable driver will work with auth variable format!
+SmmInstallProtocolInterface: [EfiSmmVariableProtocol] 7FF56000
+SmmInstallProtocolInterface: [EdkiiSmmVarCheckProtocol] 7FF56010
+InstallProtocolInterface: [EfiSmmVariableProtocol] 7FF56000
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E21AF90
+SmmInstallProtocolInterface: [EfiLoadedImageProtocol] 7FFDC280
+Loading SMM driver at 0x0007FE2C000 EntryPoint=0x0007FE2D034 SmmFaultTolerantWriteDxe.efi
+mSmmMemLibInternalMaximumSupportAddress = 0xFFFFFFFF
+Ftw: FtwWorkSpaceLba - 0x41, WorkBlockSize  - 0x1000, FtwWorkSpaceBase - 0x0
+Ftw: FtwSpareLba     - 0x42, SpareBlockSize - 0x1000
+Ftw: NumberOfWorkBlock - 0x1, FtwWorkBlockLba - 0x41
+Ftw: WorkSpaceLbaInSpare - 0x0, WorkSpaceBaseInSpare - 0x0
+Ftw: Remaining work space size - FE0
+SmmInstallProtocolInterface: [EfiSmmFaultTolerantWriteProtocol] 7FE2A018
+Variable PK does not exist.
+Variable SetupMode is 1
+Variable SecureBoot is 0
+Variable SecureBootEnable is 0
+Variable CustomMode is 0
+Variable VendorKeys is 1
+Variable driver will work with auth variable support!
+InstallProtocolInterface: [SmmVariableWrite] 0
+InstallProtocolInterface: [EfiSmmFaultTolerantWriteProtocol] 0
+Loading driver [WatchdogTimer]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E21A7A8
+Loading driver at 0x0007DD8A000 EntryPoint=0x0007DD8A254 WatchdogTimer.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E21A710
+ProtectUefiImageCommon - 0x7E21A7A8
+  - 0x000000007DD8A000 - 0x0000000000003D20
+InstallProtocolInterface: [EfiWatchdogTimerArchProtocol] 7DD8D8A0
+Loading driver [DriverHealthManagerDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E219028
+Loading driver at 0x0007DD7F000 EntryPoint=0x0007DD7F254 DriverHealthManagerDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E219F90
+ProtectUefiImageCommon - 0x7E219028
+  - 0x000000007DD7F000 - 0x000000000000A800
+InstallProtocolInterface: [EfiDevicePathProtocol] 7DD88EF4
+InstallProtocolInterface: [EfiHiiConfigAccessProtocol] 7DD88ED8
+Loading driver [RamDiskDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E218DA8
+Loading driver at 0x0007DD6E000 EntryPoint=0x0007DD6E254 RamDiskDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E218810
+ProtectUefiImageCommon - 0x7E218DA8
+  - 0x000000007DD6E000 - 0x00000000000101E0
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E219810
+InstallProtocolInterface: [EfiHiiConfigAccessProtocol] 7DD7CD6C
+InstallProtocolInterface: [EfiDevicePathProtocol] 7DD7CA70
+InstallProtocolInterface: [EfiHiiConfigAccessProtocol] 7E216FA8
+InstallProtocolInterface: [EfiRamDiskProtocol] 7DD7CA20
+InstallProtocolInterface: [RamDiskDxe] 7E216F90
+Loading driver [DisplayEngine]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E217828
+Loading driver at 0x0007DD53000 EntryPoint=0x0007DD53254 DisplayEngine.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E217590
+ProtectUefiImageCommon - 0x7E217828
+  - 0x000000007DD53000 - 0x000000000001A740
+InstallProtocolInterface: [EdkiiFormDisplayEngineProtocol] 7DD6B9EC
+Loading driver [BootScriptExecutorDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E211328
+Loading driver at 0x0007DD3C000 EntryPoint=0x0007DD3C254 BootScriptExecutorDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E210010
+ProtectUefiImageCommon - 0x7E211328
+  - 0x000000007DD3C000 - 0x0000000000016080
+Loading driver [VariableSmmRuntimeDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2100A8
+Loading driver at 0x0007DD32000 EntryPoint=0x0007DD33034 VariableSmmRuntimeDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E210990
+ProtectUefiImageCommon - 0x7E2100A8
+  - 0x000000007DD32000 - 0x000000000000A000
+SetUefiImageMemoryAttributes - 0x000000007DD32000 - 0x0000000000001000 (0x0000000000004008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DD33000 - 0x0000000000007000 (0x0000000000020008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DD3A000 - 0x0000000000002000 (0x0000000000004008)
+PageTable is 0!
+InstallProtocolInterface: [EfiVariableArchProtocol] 0
+InstallProtocolInterface: [EdkiiVariableLockProtocol] 7DD3A05C
+InstallProtocolInterface: [EdkiiVarCheckProtocol] 7DD3A060
+InstallProtocolInterface: [EfiVariableWriteArchProtocol] 0
+Loading driver [PcRtc]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E20DD28
+Loading driver at 0x0007DD19000 EntryPoint=0x0007DD1A034 PcRtc.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E20D810
+ProtectUefiImageCommon - 0x7E20DD28
+  - 0x000000007DD19000 - 0x000000000000B000
+SetUefiImageMemoryAttributes - 0x000000007DD19000 - 0x0000000000001000 (0x0000000000004008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DD1A000 - 0x0000000000008000 (0x0000000000020008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DD22000 - 0x0000000000002000 (0x0000000000004008)
+PageTable is 0!
+InstallProtocolInterface: [EfiRealTimeClockArchProtocol] 0
+Loading driver [SecureBootConfigDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E20CB28
+Loading driver at 0x0007DCE0000 EntryPoint=0x0007DCE0254 SecureBootConfigDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E20CD10
+ProtectUefiImageCommon - 0x7E20CB28
+  - 0x000000007DCE0000 - 0x00000000000338C0
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E20CA90
+InstallProtocolInterface: [EfiHiiConfigAccessProtocol] 7DD1004C
+InstallProtocolInterface: [EfiDevicePathProtocol] 7DD0F780
+InstallProtocolInterface: [EfiHiiConfigAccessProtocol] 7E20AE94
+InstallProtocolInterface: [SecureBootConfigDxe] 7E20AE90
+Loading driver [MonotonicCounterRuntimeDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E209028
+Loading driver at 0x0007DCD9000 EntryPoint=0x0007DCDA034 MonotonicCounterRuntimeDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E209E90
+ProtectUefiImageCommon - 0x7E209028
+  - 0x000000007DCD9000 - 0x0000000000007000
+SetUefiImageMemoryAttributes - 0x000000007DCD9000 - 0x0000000000001000 (0x0000000000004008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DCDA000 - 0x0000000000004000 (0x0000000000020008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DCDE000 - 0x0000000000002000 (0x0000000000004008)
+PageTable is 0!
+InstallProtocolInterface: [EfiMonotonicCounterArchProtocol] 0
+Loading driver [CapsuleRuntimeDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2096A8
+Loading driver at 0x0007DCCC000 EntryPoint=0x0007DCCD034 CapsuleRuntimeDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E209510
+ProtectUefiImageCommon - 0x7E2096A8
+  - 0x000000007DCCC000 - 0x0000000000008000
+SetUefiImageMemoryAttributes - 0x000000007DCCC000 - 0x0000000000001000 (0x0000000000004008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DCCD000 - 0x0000000000005000 (0x0000000000020008)
+PageTable is 0!
+SetUefiImageMemoryAttributes - 0x000000007DCD2000 - 0x0000000000002000 (0x0000000000004008)
+PageTable is 0!
+InstallProtocolInterface: [EfiCapsuleArchProtocol] 0
+Loading driver [BdsDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E208CA8
+Loading driver at 0x0007DC9F000 EntryPoint=0x0007DC9F254 BdsDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E208A90
+ProtectUefiImageCommon - 0x7E208CA8
+  - 0x000000007DC9F000 - 0x0000000000027EC0
+Select Item: 0x0
+FW CFG Signature: 0x554D4551
+Select Item: 0x1
+FW CFG Revision: 0x3
+QemuFwCfg interface (DMA) is supported.
+InstallProtocolInterface: [EfiBdsArchProtocol] 7DCC4F40
+Loading driver [PlatformDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2081A8
+Loading driver at 0x0007DC96000 EntryPoint=0x0007DC96254 PlatformDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E208410
+ProtectUefiImageCommon - 0x7E2081A8
+  - 0x000000007DC96000 - 0x00000000000083C0
+InstallProtocolInterface: [EfiDevicePathProtocol] 7DC9DCA7
+InstallProtocolInterface: [EfiHiiConfigAccessProtocol] 7DC9DD94
+Loading driver [PciBusDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FD0A8
+Loading driver at 0x0007DC7B000 EntryPoint=0x0007DC7B254 PciBusDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FD690
+ProtectUefiImageCommon - 0x7E1FD0A8
+  - 0x000000007DC7B000 - 0x000000000001AEE0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC95160
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC9518C
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC95198
+InstallProtocolInterface: [EfiPciHotPlugRequestProtocol] 7DC95188
+Loading driver [BlockMmioToBlockIoDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2061A8
+Loading driver at 0x0007DC75000 EntryPoint=0x0007DC75254 BlockMmioToBlockIoDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E206310
+ProtectUefiImageCommon - 0x7E2061A8
+  - 0x000000007DC75000 - 0x0000000000005260
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC79D40
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC79D58
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC79D64
+Loading driver [VirtioPciDeviceDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FF028
+Loading driver at 0x0007DC6F000 EntryPoint=0x0007DC6F254 VirtioPciDeviceDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FFC90
+ProtectUefiImageCommon - 0x7E1FF028
+  - 0x000000007DC6F000 - 0x0000000000005560
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC73FFC
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC74024
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC74030
+Loading driver [Virtio10]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FF928
+Loading driver at 0x0007DC69000 EntryPoint=0x0007DC69254 Virtio10.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FF690
+ProtectUefiImageCommon - 0x7E1FF928
+  - 0x000000007DC69000 - 0x0000000000005C60
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC6E740
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC6E768
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC6E774
+Loading driver [VirtioBlkDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E205028
+Loading driver at 0x0007DC62000 EntryPoint=0x0007DC62254 VirtioBlkDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E205F10
+ProtectUefiImageCommon - 0x7E205028
+  - 0x000000007DC62000 - 0x00000000000061C0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC67CA0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC67CC8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC67CD4
+Loading driver [VirtioScsiDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2058A8
+Loading driver at 0x0007DC5B000 EntryPoint=0x0007DC5B254 VirtioScsiDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E205210
+ProtectUefiImageCommon - 0x7E2058A8
+  - 0x000000007DC5B000 - 0x00000000000064E0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC60FA0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC60FC8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC60FD4
+Loading driver [VirtioRngDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2053A8
+Loading driver at 0x0007DC55000 EntryPoint=0x0007DC55254 VirtioRngDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E204F90
+ProtectUefiImageCommon - 0x7E2053A8
+  - 0x000000007DC55000 - 0x00000000000058A0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC5A370
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC5A398
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC5A3A4
+Loading driver [XenIoPciDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2040A8
+Loading driver at 0x0007DC50000 EntryPoint=0x0007DC50254 XenIoPciDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E204990
+ProtectUefiImageCommon - 0x7E2040A8
+  - 0x000000007DC50000 - 0x00000000000049A0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC544C0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC544E8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC544F4
+Loading driver [XenBusDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E204328
+Loading driver at 0x0007DC42000 EntryPoint=0x0007DC42254 XenBusDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E203010
+ProtectUefiImageCommon - 0x7E204328
+  - 0x000000007DC42000 - 0x000000000000D380
+Error: Image at 0007DC42000 start failed: Aborted
+Loading driver [XenPvBlkDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E204328
+Loading driver at 0x0007DC47000 EntryPoint=0x0007DC47254 XenPvBlkDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E204510
+ProtectUefiImageCommon - 0x7E204328
+  - 0x000000007DC47000 - 0x0000000000008880
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC4F1C0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC4F1D8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC4F1E4
+Loading driver [ConPlatformDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2030A8
+Loading driver at 0x0007DC3F000 EntryPoint=0x0007DC3F254 ConPlatformDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E203910
+ProtectUefiImageCommon - 0x7E2030A8
+  - 0x000000007DC3F000 - 0x0000000000007440
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC45DA0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC45DD0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC45DDC
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC45DB8
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC45DD0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC45DDC
+Loading driver [ConSplitterDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E202028
+Loading driver at 0x0007DC32000 EntryPoint=0x0007DC32254 ConSplitterDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E202F90
+ProtectUefiImageCommon - 0x7E202028
+  - 0x000000007DC32000 - 0x000000000000C160
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC3D740
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC3D7B8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC3D7C4
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC3D788
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC3D7D0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC3D7DC
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC3D7A0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC3D7E8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC3D7F4
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC3D758
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC3D800
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC3D80C
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC3D770
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC3D818
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC3D824
+InstallProtocolInterface: [EfiSimpleTextInProtocol] 7DC3D4EC
+InstallProtocolInterface: [EfiSimpleTextInputExProtocol] 7DC3D504
+InstallProtocolInterface: [EfiSimplePointerProtocol] 7DC3D534
+InstallProtocolInterface: [EfiAbsolutePointerProtocol] 7DC3D574
+InstallProtocolInterface: [EfiSimpleTextOutProtocol] 7DC3D60C
+InstallProtocolInterface: [EfiSimpleTextOutProtocol] 7DC3D6AC
+Loading driver [GraphicsConsoleDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E2005A8
+Loading driver at 0x0007DC28000 EntryPoint=0x0007DC28254 GraphicsConsoleDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FE010
+ProtectUefiImageCommon - 0x7E2005A8
+  - 0x000000007DC28000 - 0x0000000000009E40
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC3029C
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC302B4
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC302C0
+Loading driver [TerminalDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FE828
+Loading driver at 0x0007DC1B000 EntryPoint=0x0007DC1B254 TerminalDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FE610
+ProtectUefiImageCommon - 0x7E1FE828
+  - 0x000000007DC1B000 - 0x000000000000CC60
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC26E60
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC27090
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC2709C
+Loading driver [DiskIoDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FC028
+Loading driver at 0x0007DC13000 EntryPoint=0x0007DC13254 DiskIoDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FCF90
+ProtectUefiImageCommon - 0x7E1FC028
+  - 0x000000007DC13000 - 0x0000000000007C60
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC1A5C0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC1A630
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC1A63C
+Loading driver [PartitionDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FC8A8
+Loading driver at 0x0007DC09000 EntryPoint=0x0007DC09254 PartitionDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FC810
+ProtectUefiImageCommon - 0x7E1FC8A8
+  - 0x000000007DC09000 - 0x00000000000098C0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC12200
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC12228
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC12234
+Loading driver [EnglishDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FC3A8
+Loading driver at 0x0007DC04000 EntryPoint=0x0007DC04254 EnglishDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FBB10
+ProtectUefiImageCommon - 0x7E1FC3A8
+  - 0x000000007DC04000 - 0x0000000000004040
+InstallProtocolInterface: [EfiUnicodeCollationProtocol] 7DC078A0
+InstallProtocolInterface: [EfiUnicodeCollation2Protocol] 7DC078BC
+Loading driver [ScsiBus]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FB828
+Loading driver at 0x0007DBFC000 EntryPoint=0x0007DBFC254 ScsiBus.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FB710
+ProtectUefiImageCommon - 0x7E1FB828
+  - 0x000000007DBFC000 - 0x0000000000007420
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DC02DC0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DC02DD8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DC02DE4
+Loading driver [ScsiDisk]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FB2A8
+Loading driver at 0x0007DBEC000 EntryPoint=0x0007DBEC254 ScsiDisk.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FAF90
+ProtectUefiImageCommon - 0x7E1FB2A8
+  - 0x000000007DBEC000 - 0x000000000000F520
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBFABA0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBFABE0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBFABEC
+Loading driver [SataController]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FA0A8
+Loading driver at 0x0007DBE6000 EntryPoint=0x0007DBE6254 SataController.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1FA990
+ProtectUefiImageCommon - 0x7E1FA0A8
+  - 0x000000007DBE6000 - 0x0000000000005E00
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBEB8A0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBEB8B8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBEB8C4
+Loading driver [AtaAtapiPassThruDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1FA328
+Loading driver at 0x0007DBD4000 EntryPoint=0x0007DBD4254 AtaAtapiPassThruDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F9010
+ProtectUefiImageCommon - 0x7E1FA328
+  - 0x000000007DBD4000 - 0x0000000000011560
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBE4B80
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBE4CF4
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBE4D00
+Loading driver [AtaBusDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F90A8
+Loading driver at 0x0007DBC9000 EntryPoint=0x0007DBC9254 AtaBusDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F9A90
+ProtectUefiImageCommon - 0x7E1F90A8
+  - 0x000000007DBC9000 - 0x000000000000ADC0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBD3460
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBD3618
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBD3624
+Loading driver [NvmExpressDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F92A8
+Loading driver at 0x0007DBB9000 EntryPoint=0x0007DBB9254 NvmExpressDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F9510
+ProtectUefiImageCommon - 0x7E1F92A8
+  - 0x000000007DBB9000 - 0x000000000000F760
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBC7C40
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBC7CA0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBC7CAC
+InstallProtocolInterface: [EfiDriverSupportedEfiVersionProtocol] 7DBC7C58
+Loading driver [IsaAcpi]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1E60A8
+Loading driver at 0x0007DBB4000 EntryPoint=0x0007DBB4254 IsaAcpi.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1E6990
+ProtectUefiImageCommon - 0x7E1E60A8
+  - 0x000000007DBB4000 - 0x0000000000004EA0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBB87A0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBB8954
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBB8948
+Loading driver [IsaBusDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1E62A8
+Loading driver at 0x0007DBAC000 EntryPoint=0x0007DBAC254 IsaBusDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1E6590
+ProtectUefiImageCommon - 0x7E1E62A8
+  - 0x000000007DBAC000 - 0x00000000000071A0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBB2B60
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBB2B78
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBB2B84
+Loading driver [IsaSerialDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EECA8
+Loading driver at 0x0007DBA3000 EntryPoint=0x0007DBA3254 IsaSerialDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1EE810
+ProtectUefiImageCommon - 0x7E1EECA8
+  - 0x000000007DBA3000 - 0x0000000000008C20
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBAB480
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBAB550
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBAB55C
+Loading driver [Ps2KeyboardDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EE228
+Loading driver at 0x0007DB98000 EntryPoint=0x0007DB98254 Ps2KeyboardDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1EE490
+ProtectUefiImageCommon - 0x7E1EE228
+  - 0x000000007DB98000 - 0x000000000000A380
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DBA17C0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DBA17D8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DBA17E4
+Loading driver [IsaFloppyDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F6BA8
+Loading driver at 0x0007DB8E000 EntryPoint=0x0007DB8E254 IsaFloppyDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F6D90
+ProtectUefiImageCommon - 0x7E1F6BA8
+  - 0x000000007DB8E000 - 0x00000000000092C0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB96C08
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB96C20
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB96C2C
+Loading driver [BootGraphicsResourceTableDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F6628
+Loading driver at 0x0007DB89000 EntryPoint=0x0007DB89254 BootGraphicsResourceTableDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F6290
+ProtectUefiImageCommon - 0x7E1F6628
+  - 0x000000007DB89000 - 0x0000000000004B40
+InstallProtocolInterface: [EfiBootLogoProtocol] 7DB8D618
+Loading driver [Fat]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F50A8
+Loading driver at 0x0007DB79000 EntryPoint=0x0007DB79254 Fat.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F5C10
+ProtectUefiImageCommon - 0x7E1F50A8
+  - 0x000000007DB79000 - 0x000000000000F400
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB87AE0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB87AF8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB87B04
+Loading driver [SnpDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F5228
+Loading driver at 0x0007DB6D000 EntryPoint=0x0007DB6D254 SnpDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F5490
+ProtectUefiImageCommon - 0x7E1F5228
+  - 0x000000007DB6D000 - 0x000000000000BE80
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB78750
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB78768
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB78774
+Loading driver [MnpDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F4B28
+Loading driver at 0x0007DB5C000 EntryPoint=0x0007DB5C254 MnpDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F4E10
+ProtectUefiImageCommon - 0x7E1F4B28
+  - 0x000000007DB5C000 - 0x0000000000010580
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB6BB40
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB6BBA8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB6BBB4
+Loading driver [VlanConfigDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F41A8
+Loading driver at 0x0007DB51000 EntryPoint=0x0007DB51254 VlanConfigDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F4310
+ProtectUefiImageCommon - 0x7E1F41A8
+  - 0x000000007DB51000 - 0x000000000000AF60
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB5B4E4
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB5B750
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB5B75C
+Loading driver [ArpDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F3028
+Loading driver at 0x0007DB46000 EntryPoint=0x0007DB46254 ArpDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F3F90
+ProtectUefiImageCommon - 0x7E1F3028
+  - 0x000000007DB46000 - 0x000000000000A020
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB4F8E0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB4F8F8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB4F904
+Loading driver [Dhcp4Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F3928
+Loading driver at 0x0007DB36000 EntryPoint=0x0007DB36254 Dhcp4Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F3790
+ProtectUefiImageCommon - 0x7E1F3928
+  - 0x000000007DB36000 - 0x000000000000FE80
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB44E80
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB44ED4
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB44EE0
+Loading driver [Ip4Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F2028
+Loading driver at 0x0007DB19000 EntryPoint=0x0007DB19254 Ip4Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F2D10
+ProtectUefiImageCommon - 0x7E1F2028
+  - 0x000000007DB19000 - 0x000000000001C2E0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB341EC
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB34240
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB3424C
+Loading driver [Mtftp4Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F28A8
+Loading driver at 0x0007DB0A000 EntryPoint=0x0007DB0A254 Mtftp4Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F2710
+ProtectUefiImageCommon - 0x7E1F28A8
+  - 0x000000007DB0A000 - 0x000000000000EBC0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB18220
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB18240
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB1824C
+Loading driver [Udp4Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F2428
+Loading driver at 0x0007DAFB000 EntryPoint=0x0007DAFB254 Udp4Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F1F90
+ProtectUefiImageCommon - 0x7E1F2428
+  - 0x000000007DAFB000 - 0x000000000000E440
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DB089A0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DB089C0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DB089CC
+Loading driver [Tcp4Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F17A8
+Loading driver at 0x0007DAE1000 EntryPoint=0x0007DAE1254 Tcp4Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F1110
+ProtectUefiImageCommon - 0x7E1F17A8
+  - 0x000000007DAE1000 - 0x0000000000019340
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DAF9478
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DAF950C
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DAF9518
+Loading driver [UefiPxe4BcDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F12A8
+Loading driver at 0x0007DAD1000 EntryPoint=0x0007DAD1254 UefiPxe4BcDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F0F90
+ProtectUefiImageCommon - 0x7E1F12A8
+  - 0x000000007DAD1000 - 0x000000000000FA20
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DADFF70
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DADFF88
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DADFF94
+Loading driver [IScsi4Dxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1F0128
+Loading driver at 0x0007DAB6000 EntryPoint=0x0007DAB6254 IScsi4Dxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1F0B10
+ProtectUefiImageCommon - 0x7E1F0128
+  - 0x000000007DAB6000 - 0x000000000001A660
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DACF4C8
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DACF4E0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DACF4EC
+InstallProtocolInterface: [EfiIScsiInitiatorNameProtocol] 7DACF570
+InstallProtocolInterface: [EfiDevicePathProtocol] 7DACF558
+InstallProtocolInterface: [EfiHiiConfigAccessProtocol] 7E1F0718
+Loading driver [DnsDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EFAA8
+Loading driver at 0x0007DAA3000 EntryPoint=0x0007DAA3254 DnsDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1EFA10
+ProtectUefiImageCommon - 0x7E1EFAA8
+  - 0x000000007DAA3000 - 0x00000000000121E0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DAB4640
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DAB46C0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DAB46CC
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DAB4658
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DAB46C0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DAB46CC
+Loading driver [HttpDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EC028
+Loading driver at 0x0007DA8E000 EntryPoint=0x0007DA8E254 HttpDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1ECF90
+ProtectUefiImageCommon - 0x7E1EC028
+  - 0x000000007DA8E000 - 0x0000000000014A60
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DAA1BE0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DAA1C28
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DAA1C34
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DAA1BF8
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DAA1C28
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DAA1C34
+Loading driver [HttpBootDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EC228
+Loading driver at 0x0007DA74000 EntryPoint=0x0007DA74254 HttpBootDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1EC710
+ProtectUefiImageCommon - 0x7E1EC228
+  - 0x000000007DA74000 - 0x0000000000019400
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA8C448
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA8C4B8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA8C4C4
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA8C460
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA8C4B8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA8C4C4
+Loading driver [VirtioNetDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EBCA8
+Loading driver at 0x0007DA6C000 EntryPoint=0x0007DA6C254 VirtioNetDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1EBA90
+ProtectUefiImageCommon - 0x7E1EBCA8
+  - 0x000000007DA6C000 - 0x0000000000007BA0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA735D8
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA735C0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA735CC
+Loading driver [UhciDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EB1A8
+Loading driver at 0x0007DA60000 EntryPoint=0x0007DA60254 UhciDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1EB790
+ProtectUefiImageCommon - 0x7E1EB1A8
+  - 0x000000007DA60000 - 0x000000000000BD20
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA6B5C0
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA6B5D8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA6B5E4
+Loading driver [EhciDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EA028
+Loading driver at 0x0007DA51000 EntryPoint=0x0007DA51254 EhciDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1EAD90
+ProtectUefiImageCommon - 0x7E1EA028
+  - 0x000000007DA51000 - 0x000000000000E560
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA5ED08
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA5ED20
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA5ED2C
+Loading driver [XhciDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1EA928
+Loading driver at 0x0007DA3B000 EntryPoint=0x0007DA3B254 XhciDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1EA790
+ProtectUefiImageCommon - 0x7E1EA928
+  - 0x000000007DA3B000 - 0x0000000000015AE0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA50068
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA500B8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA500C4
+Loading driver [UsbBusDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1E9028
+Loading driver at 0x0007DA2C000 EntryPoint=0x0007DA2C254 UsbBusDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1E9C90
+ProtectUefiImageCommon - 0x7E1E9028
+  - 0x000000007DA2C000 - 0x000000000000EA60
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA3A0B4
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA3A180
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA3A18C
+Loading driver [UsbKbDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1E98A8
+Loading driver at 0x0007DA21000 EntryPoint=0x0007DA21254 UsbKbDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1E9710
+ProtectUefiImageCommon - 0x7E1E98A8
+  - 0x000000007DA21000 - 0x000000000000AFE0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA2B000
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA2B7CC
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA2B7D8
+Loading driver [UsbMassStorageDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1E9428
+Loading driver at 0x0007DA17000 EntryPoint=0x0007DA17254 UsbMassStorageDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1E8F90
+ProtectUefiImageCommon - 0x7E1E9428
+  - 0x000000007DA17000 - 0x0000000000009160
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA1FA6C
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA1FAF8
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA1FB04
+Loading driver [QemuVideoDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1E87A8
+Loading driver at 0x0007DA0B000 EntryPoint=0x0007DA0B254 QemuVideoDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1E8110
+ProtectUefiImageCommon - 0x7E1E87A8
+  - 0x000000007DA0B000 - 0x000000000000B1E0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA15760
+InstallProtocolInterface: [EfiComponentNameProtocol] 7DA15ADC
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA15AE8
+InstallProtocolInterface: [EfiDriverSupportedEfiVersionProtocol] 7DA157E0
+Loading driver [VirtioGpuDxe]
+InstallProtocolInterface: [EfiLoadedImageProtocol] 7E1E8328
+Loading driver at 0x0007DA02000 EntryPoint=0x0007DA02254 VirtioGpuDxe.efi
+InstallProtocolInterface: [EfiLoadedImageDevicePathProtocol] 7E1E7B10
+ProtectUefiImageCommon - 0x7E1E8328
+  - 0x000000007DA02000 - 0x0000000000008FA0
+InstallProtocolInterface: [EfiDriverBindingProtocol] 7DA0A8E0
+InstallProtocolInterface: [EfiComponentName2Protocol] 7DA084FC
+[Bds] Entry...
+[BdsDxe] Locate Variable Lock protocol - Success
+[Variable] Lock: [EfiGlobalVariable]:PlatformLangCodes Success
+[Variable] Lock: [EfiGlobalVariable]:LangCodes Success
+[Variable] Lock: [EfiGlobalVariable]:BootOptionSupport Success
+[Variable] Lock: [EfiGlobalVariable]:HwErrRecSupport Success
+[Variable] Lock: [EfiGlobalVariable]:OsIndicationsSupported Success
+Variable Driver Auto Update PlatformLang, PlatformLang:en, Lang:eng Status: Success
+[Variable] Lock: [EfiGlobalVariable]:PlatformRecovery0000 Success
+PlatformBootManagerBeforeConsole
+Registered NotifyDevPath Event
+PCI Bus First Scanning
+PciBus: Discovered PCI @ [00|00|00]
+
+PciBus: Discovered PCI @ [00|01|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFFFFF;	Length = 0x4000000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0x3FFFFFF;	Length = 0x4000000;	Offset = 0x14
+   BAR[2]: Type =  Mem32; Alignment = 0x1FFF;	Length = 0x2000;	Offset = 0x18
+   BAR[3]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x1C
+
+PciBus: Discovered PPB @ [00|1E|00]
+
+PciBus: Discovered PPB @ [01|01|00]
+GetResourcePadding: Address=01:01.0 DevicePath=PciRoot(0x0)/Pci(0x1E,0x0)/Pci(0x1,0x0)
+   Padding: Type =  Mem64; Alignment = 0x1FFFFF;	Length = 0x200000
+   Padding: Type =     Io; Alignment = 0x1FF;	Length = 0x200
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x100;	Offset = 0x10
+
+PciBus: Discovered PCI @ [02|01|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|00]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|01]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|02]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|07]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [02|04|00]
+   BAR[0]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x10
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|05|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|06|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|1F|00]
+
+PciBus: Discovered PCI @ [00|1F|02]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x24
+
+PciBus: Discovered PCI @ [00|1F|03]
+   BAR[4]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x20
+
+PCI Bus Second Scanning
+PciBus: Discovered PCI @ [00|00|00]
+
+PciBus: Discovered PCI @ [00|01|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFFFFF;	Length = 0x4000000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0x3FFFFFF;	Length = 0x4000000;	Offset = 0x14
+   BAR[2]: Type =  Mem32; Alignment = 0x1FFF;	Length = 0x2000;	Offset = 0x18
+   BAR[3]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x1C
+
+PciBus: Discovered PPB @ [00|1E|00]
+
+PciBus: Discovered PPB @ [01|01|00]
+GetResourcePadding: Address=01:01.0 DevicePath=PciRoot(0x0)/Pci(0x1E,0x0)/Pci(0x1,0x0)
+   Padding: Type =  Mem64; Alignment = 0x1FFFFF;	Length = 0x200000
+   Padding: Type =     Io; Alignment = 0x1FF;	Length = 0x200
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x100;	Offset = 0x10
+
+PciBus: Discovered PCI @ [02|01|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|00]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|01]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|02]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|07]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [02|04|00]
+   BAR[0]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x10
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|05|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|06|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|1F|00]
+
+PciBus: Discovered PCI @ [00|1F|02]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x24
+
+PciBus: Discovered PCI @ [00|1F|03]
+   BAR[4]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|00|00]
+
+PciBus: Discovered PCI @ [00|01|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFFFFF;	Length = 0x4000000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0x3FFFFFF;	Length = 0x4000000;	Offset = 0x14
+   BAR[2]: Type =  Mem32; Alignment = 0x1FFF;	Length = 0x2000;	Offset = 0x18
+   BAR[3]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x1C
+
+PciBus: Discovered PPB @ [00|1E|00]
+
+PciBus: Discovered PPB @ [01|01|00]
+GetResourcePadding: Address=01:01.0 DevicePath=PciRoot(0x0)/Pci(0x1E,0x0)/Pci(0x1,0x0)
+   Padding: Type =  Mem64; Alignment = 0x1FFFFF;	Length = 0x200000
+   Padding: Type =     Io; Alignment = 0x1FF;	Length = 0x200
+   BAR[0]: Type =  Mem64; Alignment = 0xFFF;	Length = 0x100;	Offset = 0x10
+
+PciBus: Discovered PCI @ [02|01|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|00]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|01]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|02]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|02|07]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [02|04|00]
+   BAR[0]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x10
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|05|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [02|06|00]
+   BAR[0]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+   BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|1F|00]
+
+PciBus: Discovered PCI @ [00|1F|02]
+   BAR[4]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x24
+
+PciBus: Discovered PCI @ [00|1F|03]
+   BAR[4]: Type =   Io32; Alignment = 0x3F;	Length = 0x40;	Offset = 0x20
+
+PciHostBridge: SubmitResources for PciRoot(0x0)
+ I/O: Granularity/SpecificFlag = 0 / 01
+      Length/Alignment = 0x2000 / 0xFFF
+ Mem: Granularity/SpecificFlag = 32 / 00
+      Length/Alignment = 0x8500000 / 0x3FFFFFF
+PciBus: HostBridge->SubmitResources() - Success
+PciHostBridge: NotifyPhase (AllocateResources)
+ RootBridge: PciRoot(0x0)
+  Mem: Base/Length/Alignment = 90000000/8500000/3FFFFFF - Success
+  I/O: Base/Length/Alignment = 6000/2000/FFF - Success
+PciBus: HostBridge->NotifyPhase(AllocateResources) - Success
+PciBus: Resource Map for Root Bridge PciRoot(0x0)
+Type =   Io16; Base = 0x6000;	Length = 0x2000;	Alignment = 0xFFF
+   Base = 0x6000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PPB [00|1E|00:**]
+   Base = 0x7000;	Length = 0x40;	Alignment = 0x3F;	Owner = PCI [00|1F|03:20]
+   Base = 0x7040;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [00|1F|02:20]
+   Base = 0x7060;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [00|01|00:1C]
+Type =  Mem32; Base = 0x90000000;	Length = 0x8500000;	Alignment = 0x3FFFFFF
+   Base = 0x90000000;	Length = 0x4000000;	Alignment = 0x3FFFFFF;	Owner = PCI [00|01|00:14]
+   Base = 0x94000000;	Length = 0x4000000;	Alignment = 0x3FFFFFF;	Owner = PCI [00|01|00:10]
+   Base = 0x98000000;	Length = 0x300000;	Alignment = 0x1FFFFF;	Owner = PPB [00|1E|00:**]
+   Base = 0x98300000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PPB [00|1E|00:**]; Type = PMem32
+   Base = 0x98400000;	Length = 0x2000;	Alignment = 0x1FFF;	Owner = PCI [00|01|00:18]
+   Base = 0x98402000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1F|02:24]
+
+PciBus: Resource Map for Bridge [00|1E|00]
+Type =   Io16; Base = 0x6000;	Length = 0x1000;	Alignment = 0xFFF
+   Base = 0x6000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PPB [01|01|00:**]
+Type =  Mem32; Base = 0x98000000;	Length = 0x300000;	Alignment = 0x1FFFFF
+   Base = 0x98000000;	Length = 0x200000;	Alignment = 0x1FFFFF;	Owner = PPB [01|01|00:**]
+   Base = 0x98200000;	Length = 0x100;	Alignment = 0xFFF;	Owner = PPB [01|01|00:10]
+Type = PMem32; Base = 0x98300000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x98300000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PPB [01|01|00:**]
+
+PciBus: Resource Map for Bridge [01|01|00]
+Type =   Io16; Base = 0x6000;	Length = 0x1000;	Alignment = 0xFFF
+   Base = Padding;	Length = 0x200;	Alignment = 0x1FF
+   Base = 0x6000;	Length = 0x40;	Alignment = 0x3F;	Owner = PCI [02|06|00:10]
+   Base = 0x6040;	Length = 0x40;	Alignment = 0x3F;	Owner = PCI [02|05|00:10]
+   Base = 0x6080;	Length = 0x40;	Alignment = 0x3F;	Owner = PCI [02|01|00:10]
+   Base = 0x60C0;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [02|04|00:10]
+   Base = 0x60E0;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [02|02|02:20]
+   Base = 0x6100;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [02|02|01:20]
+   Base = 0x6120;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [02|02|00:20]
+Type =  Mem32; Base = 0x98000000;	Length = 0x200000;	Alignment = 0x1FFFFF
+   Base = Padding;	Length = 0x200000;	Alignment = 0x1FFFFF
+   Base = 0x98000000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [02|06|00:14]
+   Base = 0x98001000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [02|05|00:14]
+   Base = 0x98002000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [02|02|07:10]
+   Base = 0x98003000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [02|01|00:14]
+Type =  Mem32; Base = 0x98200000;	Length = 0x100;	Alignment = 0xFFF
+Type = PMem32; Base = 0x98300000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x98300000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [02|01|00:20]
+   Base = 0x98304000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [02|04|00:20]
+   Base = 0x98308000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [02|05|00:20]
+   Base = 0x9830C000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [02|06|00:20]
+
+InstallProtocolInterface: [EfiPciEnumerationCompleteProtocol] 0
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E5F90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E5818
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E5F10
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E5418
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E4E90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E4018
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E4F10
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E4418
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E4F90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E4818
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E5D10
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E3018
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E5D90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E3418
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E3E90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E3818
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E3F10
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E2018
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E3F90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E2418
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E2E90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E2818
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E2F10
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E1018
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E2F90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E1418
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E1E90
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E1818
+InstallProtocolInterface: [EfiDevicePathProtocol] 7E1E1F10
+InstallProtocolInterface: [EfiPciIoProtocol] 7E1E0018
+OnRootBridgesConnected: root bridges have been connected, installing ACPI tables
+Select Item: 0x19
+Select Item: 0x2C
+CollectAllocationsRestrictedTo32Bit: restricting blob "etc/acpi/tables" from 64-bit allocation
+Select Item: 0x19
+Select Item: 0x2B
+Select Item: 0x19
+Select Item: 0x21
+ProcessCmdAllocate: File="etc/acpi/rsdp" Alignment=0x10 Zone=2 Size=0x24 Address=0x7DA01000
+Select Item: 0x19
+Select Item: 0x22
+ProcessCmdAllocate: File="etc/acpi/tables" Alignment=0x40 Zone=1 Size=0x20000 Address=0x7D9E1000
+ProcessCmdAddChecksum: File="etc/acpi/tables" ResultOffset=0x49 Start=0x40 Length=0x1F68
+ProcessCmdAddPointer: PointerFile="etc/acpi/tables" PointeeFile="etc/acpi/tables" PointerOffset=0x1FCC PointerSize=4
+ProcessCmdAddPointer: PointerFile="etc/acpi/tables" PointeeFile="etc/acpi/tables" PointerOffset=0x1FD0 PointerSize=4
+ProcessCmdAddPointer: PointerFile="etc/acpi/tables" PointeeFile="etc/acpi/tables" PointerOffset=0x2034 PointerSize=8
+ProcessCmdAddChecksum: File="etc/acpi/tables" ResultOffset=0x1FB1 Start=0x1FA8 Length=0xF4
+ProcessCmdAddChecksum: File="etc/acpi/tables" ResultOffset=0x20A5 Start=0x209C Length=0x90
+ProcessCmdAddChecksum: File="etc/acpi/tables" ResultOffset=0x2135 Start=0x212C Length=0x38
+ProcessCmdAddChecksum: File="etc/acpi/tables" ResultOffset=0x216D Start=0x2164 Length=0x3C
+ProcessCmdAddPointer: PointerFile="etc/acpi/tables" PointeeFile="etc/acpi/tables" PointerOffset=0x21C4 PointerSize=4
+ProcessCmdAddPointer: PointerFile="etc/acpi/tables" PointeeFile="etc/acpi/tables" PointerOffset=0x21C8 PointerSize=4
+ProcessCmdAddPointer: PointerFile="etc/acpi/tables" PointeeFile="etc/acpi/tables" PointerOffset=0x21CC PointerSize=4
+ProcessCmdAddPointer: PointerFile="etc/acpi/tables" PointeeFile="etc/acpi/tables" PointerOffset=0x21D0 PointerSize=4
+ProcessCmdAddChecksum: File="etc/acpi/tables" ResultOffset=0x21A9 Start=0x21A0 Length=0x34
+ProcessCmdAddPointer: PointerFile="etc/acpi/rsdp" PointeeFile="etc/acpi/tables" PointerOffset=0x10 PointerSize=4
+ProcessCmdAddChecksum: File="etc/acpi/rsdp" ResultOffset=0x8 Start=0x0 Length=0x24
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+InstallQemuFwCfgTables: unknown loader command: 0x0
+Process2ndPassCmdAddPointer: checking for ACPI header in "etc/acpi/tables" at 0x7D9E1000 (remaining: 0x20000): found "FACS" size 0x40
+Process2ndPassCmdAddPointer: checking for ACPI header in "etc/acpi/tables" at 0x7D9E1040 (remaining: 0x1FFC0): found "DSDT" size 0x1F68
+Process2ndPassCmdAddPointer: PointerValue=0x7D9E1040 already processed, skipping.
+Process2ndPassCmdAddPointer: checking for ACPI header in "etc/acpi/tables" at 0x7D9E2FA8 (remaining: 0x1E058): found "FACP" size 0xF4
+Process2ndPassCmdAddPointer: checking for ACPI header in "etc/acpi/tables" at 0x7D9E309C (remaining: 0x1DF64): found "APIC" size 0x90
+Process2ndPassCmdAddPointer: checking for ACPI header in "etc/acpi/tables" at 0x7D9E312C (remaining: 0x1DED4): found "HPET" size 0x38
+Process2ndPassCmdAddPointer: checking for ACPI header in "etc/acpi/tables" at 0x7D9E3164 (remaining: 0x1DE9C): found "MCFG" size 0x3C
+Process2ndPassCmdAddPointer: checking for ACPI header in "etc/acpi/tables" at 0x7D9E31A0 (remaining: 0x1DE60): found "RSDT" size 0x34
+Select Item: 0x1
+InstallQemuFwCfgTables: installed 6 tables
+InstallQemuFwCfgTables: freeing "etc/acpi/rsdp"
+InstallQemuFwCfgTables: freeing "etc/acpi/tables"
+PcRtc: Write 0x20 to CMOS location 0x32
+AcpiPlatform: S3SaveStateInstalledNotify: DmaAccess@0x7EE9AF10 ScratchBuffer@[0x7EE9AF20+0x8]
+AppendFwCfgBootScript: boot script fragment saved
+SmmEndOfDxeHandler
+SmmInstallProtocolInterface: [EfiSmmEndOfDxeProtocol] 0
+LoadedImage - 0x7FFDE000 0x21000 (/home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/MdeModulePkg/Core/PiSmmCore/PiSmmCore/DEBUG/PiSmmCore.dll) 
+SMM InsertImageRecord - 0x7FF86ABC
+SMM InsertImageRecord - 0x000000007FFDE000 - 0x00000021
+SMM ImageRecordCount - 0x0
+SMM   Image - /home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/MdeModulePkg/Core/PiSmmCore/PiSmmCore/DEBUG/PiSmmCore.dll
+SMM   Section - '.text   '
+SMM   VirtualSize          - 0x0001D000
+SMM   VirtualAddress       - 0x00001000
+SMM   SizeOfRawData        - 0x0001D000
+SMM   PointerToRawData     - 0x00001000
+SMM   PointerToRelocations - 0x00000000
+SMM   PointerToLinenumbers - 0x00000000
+SMM   NumberOfRelocations  - 0x00000000
+SMM   NumberOfLinenumbers  - 0x00000000
+SMM   Characteristics      - 0x60000020
+SMM ImageCode: 0x000000007FFDF000 - 0x000000000001D000
+SMM   Section - '.data   '
+SMM   Section - '.reloc  '
+SMM ImageCode SegmentCount - 0x1
+LoadedImage - 0x7FFD2000 0x7000 (/home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/UefiCpuPkg/CpuIo2Smm/CpuIo2Smm/DEBUG/CpuIo2Smm.dll) 
+SMM InsertImageRecord - 0x7FF86ABC
+SMM InsertImageRecord - 0x000000007FFD2000 - 0x00000007
+SMM ImageRecordCount - 0x1
+SMM   Image - /home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/UefiCpuPkg/CpuIo2Smm/CpuIo2Smm/DEBUG/CpuIo2Smm.dll
+SMM   Section - '.text   '
+SMM   VirtualSize          - 0x00004000
+SMM   VirtualAddress       - 0x00001000
+SMM   SizeOfRawData        - 0x00004000
+SMM   PointerToRawData     - 0x00001000
+SMM   PointerToRelocations - 0x00000000
+SMM   PointerToLinenumbers - 0x00000000
+SMM   NumberOfRelocations  - 0x00000000
+SMM   NumberOfLinenumbers  - 0x00000000
+SMM   Characteristics      - 0x60000020
+SMM ImageCode: 0x000000007FFD3000 - 0x0000000000004000
+SMM   Section - '.data   '
+SMM   Section - '.reloc  '
+SMM ImageCode SegmentCount - 0x1
+LoadedImage - 0x7FFC5000 0xB000 (/home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/MdeModulePkg/Universal/LockBox/SmmLockBox/SmmLockBox/DEBUG/SmmLockBox.dll) 
+SMM InsertImageRecord - 0x7FF86ABC
+SMM InsertImageRecord - 0x000000007FFC5000 - 0x0000000B
+SMM ImageRecordCount - 0x2
+SMM   Image - /home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/MdeModulePkg/Universal/LockBox/SmmLockBox/SmmLockBox/DEBUG/SmmLockBox.dll
+SMM   Section - '.text   '
+SMM   VirtualSize          - 0x00008000
+SMM   VirtualAddress       - 0x00001000
+SMM   SizeOfRawData        - 0x00008000
+SMM   PointerToRawData     - 0x00001000
+SMM   PointerToRelocations - 0x00000000
+SMM   PointerToLinenumbers - 0x00000000
+SMM   NumberOfRelocations  - 0x00000000
+SMM   NumberOfLinenumbers  - 0x00000000
+SMM   Characteristics      - 0x60000020
+SMM ImageCode: 0x000000007FFC6000 - 0x0000000000008000
+SMM   Section - '.data   '
+SMM   Section - '.reloc  '
+SMM ImageCode SegmentCount - 0x1
+LoadedImage - 0x7FFA7000 0x1D000 (/home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm/DEBUG/PiSmmCpuDxeSmm.dll) 
+SMM InsertImageRecord - 0x7FF86ABC
+SMM InsertImageRecord - 0x000000007FFA7000 - 0x0000001D
+SMM ImageRecordCount - 0x3
+SMM   Image - /home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm/DEBUG/PiSmmCpuDxeSmm.dll
+SMM   Section - '.text   '
+SMM   VirtualSize          - 0x00019000
+SMM   VirtualAddress       - 0x00001000
+SMM   SizeOfRawData        - 0x00019000
+SMM   PointerToRawData     - 0x00001000
+SMM   PointerToRelocations - 0x00000000
+SMM   PointerToLinenumbers - 0x00000000
+SMM   NumberOfRelocations  - 0x00000000
+SMM   NumberOfLinenumbers  - 0x00000000
+SMM   Characteristics      - 0x60000020
+SMM ImageCode: 0x000000007FFA8000 - 0x0000000000019000
+SMM   Section - '.data   '
+SMM   Section - '.reloc  '
+SMM ImageCode SegmentCount - 0x1
+LoadedImage - 0x7FF5E000 0xA000 (/home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/OvmfPkg/QemuFlashFvbServicesRuntimeDxe/FvbServicesSmm/DEBUG/FvbServicesSmm.dll) 
+SMM InsertImageRecord - 0x7FF86ABC
+SMM InsertImageRecord - 0x000000007FF5E000 - 0x0000000A
+SMM ImageRecordCount - 0x4
+SMM   Image - /home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/OvmfPkg/QemuFlashFvbServicesRuntimeDxe/FvbServicesSmm/DEBUG/FvbServicesSmm.dll
+SMM   Section - '.text   '
+SMM   VirtualSize          - 0x00007000
+SMM   VirtualAddress       - 0x00001000
+SMM   SizeOfRawData        - 0x00007000
+SMM   PointerToRawData     - 0x00001000
+SMM   PointerToRelocations - 0x00000000
+SMM   PointerToLinenumbers - 0x00000000
+SMM   NumberOfRelocations  - 0x00000000
+SMM   NumberOfLinenumbers  - 0x00000000
+SMM   Characteristics      - 0x60000020
+SMM ImageCode: 0x000000007FF5F000 - 0x0000000000007000
+SMM   Section - '.data   '
+SMM   Section - '.reloc  '
+SMM ImageCode SegmentCount - 0x1
+LoadedImage - 0x7FED1000 0x8C000 (/home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmm/DEBUG/VariableSmm.dll) 
+SMM InsertImageRecord - 0x7FF86ABC
+SMM InsertImageRecord - 0x000000007FED1000 - 0x0000008C
+SMM ImageRecordCount - 0x5
+SMM   Image - /home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmm/DEBUG/VariableSmm.dll
+SMM   Section - '.text   '
+SMM   VirtualSize          - 0x00084000
+SMM   VirtualAddress       - 0x00001000
+SMM   SizeOfRawData        - 0x00084000
+SMM   PointerToRawData     - 0x00001000
+SMM   PointerToRelocations - 0x00000000
+SMM   PointerToLinenumbers - 0x00000000
+SMM   NumberOfRelocations  - 0x00000000
+SMM   NumberOfLinenumbers  - 0x00000000
+SMM   Characteristics      - 0x60000020
+SMM ImageCode: 0x000000007FED2000 - 0x0000000000084000
+SMM   Section - '.data   '
+SMM   Section - '.reloc  '
+SMM ImageCode SegmentCount - 0x1
+LoadedImage - 0x7FE2C000 0xF000 (/home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteSmm/DEBUG/SmmFaultTolerantWriteDxe.dll) 
+SMM InsertImageRecord - 0x7FF86ABC
+SMM InsertImageRecord - 0x000000007FE2C000 - 0x0000000F
+SMM ImageRecordCount - 0x6
+SMM   Image - /home/lacos/src/upstream/edk2/Build/OvmfIa32/NOOPT_GCC48/IA32/MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteSmm/DEBUG/SmmFaultTolerantWriteDxe.dll
+SMM   Section - '.text   '
+SMM   VirtualSize          - 0x0000C000
+SMM   VirtualAddress       - 0x00001000
+SMM   SizeOfRawData        - 0x0000C000
+SMM   PointerToRawData     - 0x00001000
+SMM   PointerToRelocations - 0x00000000
+SMM   PointerToLinenumbers - 0x00000000
+SMM   NumberOfRelocations  - 0x00000000
+SMM   NumberOfLinenumbers  - 0x00000000
+SMM   Characteristics      - 0x60000020
+SMM ImageCode: 0x000000007FE2D000 - 0x000000000000C000
+SMM   Section - '.data   '
+SMM   Section - '.reloc  '
+SMM ImageCode SegmentCount - 0x1
+SMM MemoryProtectionAttribute - 0x0000000000000001
+SMM Total Image Count - 0x7
+SMM Dump ImageRecord:
+SMM  Image[0]: 0x000000007FE2C000 - 0x000000000000F000
+SMM  Image[1]: 0x000000007FED1000 - 0x000000000008C000
+SMM  Image[2]: 0x000000007FF5E000 - 0x000000000000A000
+SMM  Image[3]: 0x000000007FFA7000 - 0x000000000001D000
+SMM  Image[4]: 0x000000007FFC5000 - 0x000000000000B000
+SMM  Image[5]: 0x000000007FFD2000 - 0x0000000000007000
+SMM  Image[6]: 0x000000007FFDE000 - 0x0000000000021000
+MemoryMapSize - 0x810
+MemoryMap - 0x7FE16010
+MemoryAttributesTable:
+  Version              - 0x00000001
+  NumberOfEntries      - 0x00000023
+  DescriptorSize       - 0x00000030
+Entry (0x7FE15820)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007F000000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15850)
+  Type              - 0x7
+  PhysicalStart     - 0x000000007F001000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000E15
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15880)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FE16000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000017
+  Attribute         - 0x0000000000004000
+Entry (0x7FE158B0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FE2D000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000C
+  Attribute         - 0x0000000000020000
+Entry (0x7FE158E0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FE39000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15910)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FE3B000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15940)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FE3C000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000096
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15970)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FED2000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000084
+  Attribute         - 0x0000000000020000
+Entry (0x7FE159A0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF56000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000004000
+Entry (0x7FE159D0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF5D000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15A00)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF5E000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15A30)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF5F000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15A60)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF66000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15A90)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF68000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15AC0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF69000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000E
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15AF0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF77000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15B20)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF78000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000008
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15B50)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF80000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15B80)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF81000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000018
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15BB0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF99000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000E
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15BE0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFA7000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15C10)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFA8000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000019
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15C40)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFC1000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000003
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15C70)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFC4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15CA0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFC5000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15CD0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFC6000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000008
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15D00)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFCE000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15D30)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFD0000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15D60)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFD1000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15D90)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFD3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000004
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15DC0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFD7000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15DF0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFD9000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15E20)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFDA000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15E50)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFDF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000001D
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15E80)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFFC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000004
+  Attribute         - 0x0000000000004000
+[Variable]SMM_END_OF_DXE is signaled
+Initialize variable error flag (FF)
+CpuS3DataOnEndOfDxe
+AcpiS3ContextSave!
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B84
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - [AcpiS3IdtrProfile], SmramBuffer - 0x7FE13000, Length - 0x6
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B8C
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+AcpiS3Context: AcpiFacsTable is 0x7D9E0000
+AcpiS3Context: IdtrProfile is 0x7DA01800
+AcpiS3Context: S3NvsPageTableAddress is 0x       0
+AcpiS3Context: S3DebugBufferAddress is 0x7D9F8000
+AcpiS3Context: BootScriptStackBase is 0x7D9F9000
+AcpiS3Context: BootScriptStackSize is 0x    8000
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B84
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - [EfiAcpiVariable], SmramBuffer - 0x7FE11000, Length - 0x8
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B84
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - [EfiAcpiS3Context], SmramBuffer - 0x7FE10000, Length - 0x30
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B8C
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+Select Item: 0x19
+Select Item: 0x2B
+InstallProtocolInterface: [EfiDxeSmmReadyToLockProtocol] 0
+InstallProtocolInterface: [BootScriptExecutorDxe] 0
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9A64
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - [EfiBootScriptExecutorVariable], SmramBuffer - 0x7FE0F000, Length - 0x8
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9A64
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - [EfiBootScriptExecutorContext], SmramBuffer - 0x7FE0E000, Length - 0x8
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9A6C
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B24
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - [BootScriptExecutorImage], SmramBuffer - 0x7FDF7000, Length - 0x16080
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B2C
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B94
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - [BootScriptData], SmramBuffer - 0x7FDF3000, Length - 0x4000
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B9C
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B94
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - [BootScriptTableBase], SmramBuffer - 0x7FDF2000, Length - 0x4
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 7EEC9B9C
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+SmmInstallProtocolInterface: [EfiSmmReadyToLockProtocol] 0
+GetUefiMemoryMap
+Patch page table start ...
+Patch page table done!
+MemoryAttributesTable:
+  Version                   - 0x00000001
+  NumberOfEntries           - 0x00000023
+  DescriptorSize            - 0x00000030
+Entry (0x7FE15820)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007F000000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15850)
+  Type              - 0x7
+  PhysicalStart     - 0x000000007F001000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000E15
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15880)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FE16000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000017
+  Attribute         - 0x0000000000004000
+Entry (0x7FE158B0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FE2D000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000C
+  Attribute         - 0x0000000000020000
+Entry (0x7FE158E0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FE39000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15910)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FE3B000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15940)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FE3C000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000096
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15970)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FED2000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000084
+  Attribute         - 0x0000000000020000
+Entry (0x7FE159A0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF56000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000004000
+Entry (0x7FE159D0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF5D000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15A00)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF5E000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15A30)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF5F000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15A60)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF66000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15A90)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF68000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15AC0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF69000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000E
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15AF0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF77000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15B20)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF78000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000008
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15B50)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF80000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15B80)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FF81000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000018
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15BB0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FF99000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000E
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15BE0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFA7000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15C10)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFA8000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000019
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15C40)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFC1000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000003
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15C70)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFC4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15CA0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFC5000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15CD0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFC6000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000008
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15D00)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFCE000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15D30)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFD0000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15D60)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFD1000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15D90)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFD3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000004
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15DC0)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFD7000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15DF0)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFD9000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15E20)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFDA000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000004000
+Entry (0x7FE15E50)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007FFDF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000001D
+  Attribute         - 0x0000000000020000
+Entry (0x7FE15E80)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007FFFC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000004
+  Attribute         - 0x0000000000004000
+PatchSmmSaveStateMap:
+PatchGdtIdtMap - GDT:
+PatchGdtIdtMap - IDT:
+SetUefiMemMapAttributes
+UefiMemory protection: 0x0 - 0x9F000
+UefiMemory protection: 0x100000 - 0x807000
+UefiMemory protection: 0x808000 - 0x810000
+UefiMemory protection: 0x818000 - 0x820000
+UefiMemory protection: 0x1510000 - 0x7AF80000
+UefiMemory protection: 0x7AF83000 - 0x7D9DF000
+UefiMemory protection: 0x7DA02000 - 0x7DCC7000
+UefiMemory protection: 0x7DCE0000 - 0x7DD14000
+UefiMemory protection: 0x7DD3C000 - 0x7DD8E000
+UefiMemory protection: 0x7DDBC000 - 0x7DDC1000
+UefiMemory protection: 0x7DDC5000 - 0x7EE45000
+UefiMemory protection: 0x7EE9D000 - 0x7EEA5000
+UefiMemory protection: 0x7EEA9000 - 0x7EF60000
+UefiMemory protection: 0x100000000 - 0x180000000
+CRASH

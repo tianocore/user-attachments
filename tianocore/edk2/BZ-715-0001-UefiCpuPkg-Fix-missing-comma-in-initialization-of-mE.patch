@@ -1,0 +1,34 @@
+From 25fa2943c7f648e81b73bf6cd22f911b6ba3f31d Mon Sep 17 00:00:00 2001
+From: Allen Wynn <Allen_Wynn@dell.com>
+Date: Mon, 3 May 2021 16:42:11 -0500
+Subject: [PATCH] UefiCpuPkg: Fix missing comma in initialization of
+ mExceptionNameStr[]
+
+mExceptionNameStr[] is missing a comma in the initialization strings for  "#CP - Control Protection".
+"#CP - Control protection" was the last initialization string in the structure until this SHA:
+  * SHA-1: 5277540e37e88a1a69f9517c4ad895051b4b3ed3
+  * UefiCpuPkg/CpuExceptionHandler: Add base support for the #VC exception
+When the additional strings were added.  Unfortunately, a comma was not placed at the end of "#CP - Control Protection", so the string for exception 21 "#CP - Control Protection" gets concatenated with the following "Reserved" ("#CP - Control ProtectionReserved").
+This also makes "#VC - VMM Communication" index 28 instead of 29.
+
+Signed-off-by: Allen Wynn <Allen_Wynn@Dell.com>
+---
+ UefiCpuPkg/Library/CpuExceptionHandlerLib/CpuExceptionCommon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/UefiCpuPkg/Library/CpuExceptionHandlerLib/CpuExceptionCommon.c b/UefiCpuPkg/Library/CpuExceptionHandlerLib/CpuExceptionCommon.c
+index c9003b10e5..49d0041e2f 100644
+--- a/UefiCpuPkg/Library/CpuExceptionHandlerLib/CpuExceptionCommon.c
++++ b/UefiCpuPkg/Library/CpuExceptionHandlerLib/CpuExceptionCommon.c
+@@ -44,7 +44,7 @@ CONST CHAR8 *mExceptionNameStr[] = {
+   "#MC - Machine-Check",
+   "#XM - SIMD floating-point",
+   "#VE - Virtualization",
+-  "#CP - Control Protection"
++  "#CP - Control Protection",
+   "Reserved",
+   "Reserved",
+   "Reserved",
+-- 
+2.27.0.windows.1
+

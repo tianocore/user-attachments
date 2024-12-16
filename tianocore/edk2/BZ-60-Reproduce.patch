@@ -1,0 +1,142 @@
+From f871cac683e76f2cea3488f60d606f0325441796 Mon Sep 17 00:00:00 2001
+From: Dandan Bi <dandan.bi@intel.com>
+Date: Tue, 9 May 2017 13:15:55 +0800
+Subject: [patch] MdeModulePkg/DriverSampleDxe: Construct case to show menu
+ incorrectly
+
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Dandan Bi <dandan.bi@intel.com>
+---
+ MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr     | 79 ++++++++++++++++++++++
+ .../Universal/DriverSampleDxe/VfrStrings.uni       | 10 ++-
+ 2 files changed, 88 insertions(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr b/MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr
+index 4bdaf76..e4c74cd 100644
+--- a/MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr
++++ b/MdeModulePkg/Universal/DriverSampleDxe/Vfr.vfr
+@@ -495,10 +495,14 @@ formset
+       
+     goto 6,
+       prompt = STRING_TOKEN(STR_GOTO_FORM6), //SixthSetupPage  // this too has no end-op and basically it's a jump to a form ONLY
+       help   = STRING_TOKEN(STR_GOTO_HELP);
+ 
++    goto 7,
++      prompt = STRING_TOKEN(STR_GOTO_FORM7),
++      help   = STRING_TOKEN(STR_GOTO_HELP);
++
+     goto 
+       formsetguid = DRIVER_SAMPLE_INVENTORY_GUID,
+       formid  = 0x1,
+       question = 0x1,
+       prompt  = STRING_TOKEN(STR_GOTO_ANOTHER_FORMSET),
+@@ -761,10 +765,85 @@ formset
+     label LABEL_UPDATE3;
+     label LABEL_END;
+ 
+   endform;
+ 
++  form formid = 7,            // Form to show the refresh guid group op-code
++   title = STRING_TOKEN(STR_FORM7_TITLE);
++
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++    text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++    text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),      // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_TEST);         // TextTwo
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),      // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++     text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++
++    text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++    text
++      help   = STRING_TOKEN(STR_TEXT_HELP),       // Help string
++      text   = STRING_TOKEN(STR_SUBTITLE_TEXT),   // Prompt string
++        text   = STRING_TOKEN(STR_CPU_STRING2);   // TextTwo
++
++  goto 8,
++      prompt = STRING_TOKEN(STR_TEST),
++      help   = STRING_TOKEN(STR_TEST_HELP);
++
++  endform;
++
++  form formid = 8,
++    title = STRING_TOKEN(STR_TEST_HELP);
++      subtitle text = STRING_TOKEN(STR_TEST_HELP);
++      subtitle text = STRING_TOKEN(STR_TEST_HELP);
++
++  endform;
++
+   form formid = 0x1234,            // Dynamically created page,
+        title = STRING_TOKEN(STR_DYNAMIC_TITLE);  // note formid is a variable (for readability) (UINT16) - also added Form to the line to signify the Op-Code
+ 
+     label LABEL_UPDATE1;
+     //
+diff --git a/MdeModulePkg/Universal/DriverSampleDxe/VfrStrings.uni b/MdeModulePkg/Universal/DriverSampleDxe/VfrStrings.uni
+index 8d24a47..9bd1583 100644
+--- a/MdeModulePkg/Universal/DriverSampleDxe/VfrStrings.uni
++++ b/MdeModulePkg/Universal/DriverSampleDxe/VfrStrings.uni
+@@ -364,6 +364,14 @@
+ #string STR_MATCH2_HELP                #language en-US  "This question used to test the match2 opcode."
+                                        #language fr-FR  "This question used to test the match2 opcode."
+ #string STR_STRING                     #language en-US  "Match2 Test"
+                                        #language fr-FR  "Match2 Test"
+ #string STR_PATTERN                    #language en-US  "Match2"
+-                                       #language fr-FR  "Match2"
+\ No newline at end of file
++                                       #language fr-FR  "Match2"
++#string STR_GOTO_FORM7                 #language en-US  "Enter Form 7"
++                                       #language fr-FR  "Enter Form 7"
++#string STR_FORM7_TITLE                #language en-US  "Test abnormal display issue"
++                                       #language fr-FR  "Test abnormal display issue"
++#string STR_TEST                       #language en-US  "EntertoIncorrectDisplayTest"
++                                       #language fr-FR  "EntertoIncorrectDisplayTest"
++#string STR_TEST_HELP                  #language en-US  "Press ESC to exit the form, then you will find the menu was shown incorrectly"
++                                       #language fr-FR  "Press ESC to exit the form, then you will find the menu was shown incorrectly"
+-- 
+1.9.5.msysgit.1
+

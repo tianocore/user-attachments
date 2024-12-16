@@ -1,0 +1,3 @@
+test-build:
+	+build -a X64 -p OvmfPkg/OvmfPkgX64.dsc -t GCC48 -b NOOPT -n 1 \
+		-m ShellPkg/Application/Shell/Shell.inf

@@ -1,0 +1,76 @@
+From fe97b2fae472c22d66900d827a7cdfa55e5b6abe Mon Sep 17 00:00:00 2001
+From: zhangtianyang <zhangtianyang@byosoft.com.cn>
+Date: Wed, 16 Dec 2020 16:58:36 +0800
+Subject: [PATCH] MinPlatformPkg/MinPlatformPkg.dsc:Add Missing Components
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3033
+
+Multiple missing components were added to the DSC.
+
+Cc: Chasel Chiu <chasel.chiu@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Eric Dong <eric.dong@intel.com>
+
+Signed-off-by: zhangtianyang <zhangtianyang@byosoft.com.cn>
+---
+ Platform/Intel/MinPlatformPkg/MinPlatformPkg.dsc | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/Platform/Intel/MinPlatformPkg/MinPlatformPkg.dsc b/Platform/Intel/MinPlatformPkg/MinPlatformPkg.dsc
+index 112ddff7..9558d4d9 100644
+--- a/Platform/Intel/MinPlatformPkg/MinPlatformPkg.dsc
++++ b/Platform/Intel/MinPlatformPkg/MinPlatformPkg.dsc
+@@ -143,7 +143,9 @@
+   MinPlatformPkg/Acpi/Library/BoardAcpiLibNull/BoardAcpiTableLibNull.inf
+   MinPlatformPkg/Acpi/Library/MultiBoardAcpiSupportLib/DxeMultiBoardAcpiSupportLib.inf
+   MinPlatformPkg/Acpi/Library/MultiBoardAcpiSupportLib/SmmMultiBoardAcpiSupportLib.inf
++  MinPlatformPkg/Acpi/MinDsdt/MinDsdt.inf
+ 
++  MinPlatformPkg/Bds/Library/BoardBootManagerLibNull/BoardBootManagerLibNull.inf
+   MinPlatformPkg/Bds/Library/DxePlatformBootManagerLib/DxePlatformBootManagerLib.inf
+ 
+   MinPlatformPkg/Flash/SpiFvbService/SpiFvbServiceSmm.inf
+@@ -157,7 +159,12 @@
+ 
+   MinPlatformPkg/Hsti/HstiIbvPlatformDxe/HstiIbvPlatformDxe.inf
+ 
++  MinPlatformPkg/Library/CompressLib/CompressLib.inf
++  MinPlatformPkg/Library/SetCacheMtrrLib/SetCacheMtrrLib.inf
++  MinPlatformPkg/Library/SetCacheMtrrLib/SetCacheMtrrLibNull.inf
++
+   MinPlatformPkg/Pci/Library/PciHostBridgeLibSimple/PciHostBridgeLibSimple.inf
++  MinPlatformPkg/Pci/Library/PciSegmentInfoLibSimple/PciSegmentInfoLibSimple.inf
+ 
+   MinPlatformPkg/PlatformInit/ReportFv/ReportFvPei.inf
+   MinPlatformPkg/PlatformInit/PlatformInitPei/PlatformInitPreMem.inf
+@@ -168,6 +175,8 @@
+   MinPlatformPkg/PlatformInit/Library/BoardInitLibNull/BoardInitLibNull.inf
+   MinPlatformPkg/PlatformInit/Library/MultiBoardInitSupportLib/PeiMultiBoardInitSupportLib.inf
+   MinPlatformPkg/PlatformInit/Library/MultiBoardInitSupportLib/DxeMultiBoardInitSupportLib.inf
++  MinPlatformPkg/PlatformInit/Library/PeiReportFvLib/PeiReportFvLib.inf
++  MinPlatformPkg/PlatformInit/Library/ReportCpuHobLib/ReportCpuHobLib.inf
+   MinPlatformPkg/PlatformInit/SiliconPolicyPei/SiliconPolicyPeiPreMem.inf
+   MinPlatformPkg/PlatformInit/SiliconPolicyPei/SiliconPolicyPeiPostMem.inf
+   MinPlatformPkg/PlatformInit/SiliconPolicyDxe/SiliconPolicyDxe.inf
+@@ -180,12 +189,17 @@
+   MinPlatformPkg/Test/Library/TestPointCheckLib/SecTestPointCheckLib.inf
+   MinPlatformPkg/Test/Library/TestPointCheckLib/PeiTestPointCheckLib.inf
+   MinPlatformPkg/Test/Library/TestPointCheckLib/DxeTestPointCheckLib.inf
++  MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.inf
+   MinPlatformPkg/Test/Library/TestPointLib/DxeTestPointLib.inf
+   MinPlatformPkg/Test/Library/TestPointLib/PeiTestPointLib.inf
+   MinPlatformPkg/Test/Library/TestPointLib/SmmTestPointLib.inf
+   MinPlatformPkg/Test/TestPointStubDxe/TestPointStubDxe.inf
+   MinPlatformPkg/Test/TestPointDumpApp/TestPointDumpApp.inf
+ 
++  MinPlatformPkg/Tcg/Library/TpmPlatformHierarchyLib/TpmPlatformHierarchyLib.inf
++  MinPlatformPkg/Tcg/Tcg2PlatformDxe/Tcg2PlatformDxe.inf
++  MinPlatformPkg/Tcg/Tcg2PlatformPei/Tcg2PlatformPei.inf
++
+ !if gMinPlatformPkgTokenSpaceGuid.PcdTpm2Enable == TRUE
+   MinPlatformPkg/Tcg/Tcg2PlatformPei/Tcg2PlatformPei.inf
+   MinPlatformPkg/Tcg/Tcg2PlatformDxe/Tcg2PlatformDxe.inf
+-- 
+2.29.0.windows.1
+

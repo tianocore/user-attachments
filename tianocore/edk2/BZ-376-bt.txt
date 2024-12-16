@@ -1,0 +1,215 @@
+daniel@srvbox:~/work/Intel/fuzzing/crashes$ cat
+Ping6OnEchoReplyReceived.log
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x000000003d36bd0b in InternalMemCompareMem ()
+=> 0x000000003d36bd0b <InternalMemCompareMem+11>: f3 a6
+repz cmps BYTE PTR ds:[rsi],BYTE PTR es:[rdi]Confidential. Proprietary. [203]
+Continuing.
+Loading symbol for address: 0x3d36bd0b
+add symbol table from file
+"/home/daniel/work/Intel/src/edk2/Build/OvmfX64/DEBUG_GCC5/X
+64/ShellPkg/Application/Shell/Shell/DEBUG/Shell.dll" at
+.text_addr = 0x3d309240
+.data_addr = 0x3d381680
+Target encountered an exception: Vector = 13, Error Code =
+00000000
+(udb) bt
+#0 0x000000003d13ec9b in InternalMemCompareMem ()
+#1 0x000000003d25e138 in ?? ()
+#2 0x000000003ebab0b0 in gEfiSmmCommunicationProtocolGuid
+()
+#3 0x000000003d0f1d51 in Ping6OnEchoReplyReceived
+(Event=<optimised out>, Context=<optimised out>,
+Event=<optimised out>, Context=<optimised out>)
+at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Library/UefiShellN
+etwork1CommandsLib/Ping.c:584
+#4 0x000000003efafeb3 in CoreDispatchEventNotifies
+(Priority=8) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Core/Dxe/Event
+/Event.c:200
+#5 CoreRestoreTpl (NewTpl=4) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Core/Dxe/Event
+/Tpl.c:137
+#6 0x000000003da10b21 in MnpPoll (This=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Universal/Netw
+ork/MnpDxe/MnpMain.c:793
+#7 0x000000003d0f1b09 in ShellPing (IpChoice=<optimised
+out>, DstAddress=0x3efaafd0, SrcAddress=0x3efaafc0,
+BufferSize=<optimised out>, SendNumber=<optimised out>)
+at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Library/UefiShellN
+etwork1CommandsLib/Ping.c:1477
+#8 ShellCommandRunPing (ImageHandle=<optimised out>,
+SystemTable=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Library/UefiShellN
+etwork1CommandsLib/Ping.c:1704
+#9 0x000000003d0e8ad5 in ShellCommandRunCommandHandler
+(CanAffectLE=<synthetic pointer>, RetVal=<synthetic
+pointer>, CommandString=0x3e00ee18)
+at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Library/UefiShellC
+ommandLib/UefiShellCommandLib.c:738
+#10 RunInternalCommand (CommandStatus=0x0,
+ParamProtocol=0x3d2e5218, FirstParameter=0x3e00ee18,
+CmdLine=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Application/Shell/
+Shell.c:2341
+#11 RunCommandOrFile (CommandStatus=0x0,
+ParamProtocol=0x3d2e5218, FirstParameter=0x3e00ee18,
+CmdLine=<optimised out>, Type=Internal_Command)Confidential. Proprietary. [204]
+at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Application/Shell/
+Shell.c:2440
+#12 SetupAndRunCommandOrFile (CommandStatus=0x0,
+ParamProtocol=0x3d2e5218, FirstParameter=0x3e00ee18,
+CmdLine=<optimised out>, Type=Internal_Command)
+at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Application/Shell/
+Shell.c:2574
+#13 RunShellCommand (CmdLine=<optimised out>,
+CommandStatus=<optimised out>, CmdLine=<optimised out>,
+CommandStatus=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Application/Shell/
+Shell.c:2698
+#14 0x000000003d0ec056 in RunCommand (CmdLine=0x3db1c018) at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Application/Shell/
+Shell.c:2750
+#15 DoShellPrompt () at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Application/Shell/
+Shell.c:1350
+#16 UefiMain (ImageHandle=<optimised out>,
+SystemTable=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/ShellPkg/Application/Shell/
+Shell.c:626
+#17 0x000000003d12e724 in ProcessModuleEntryPointList
+(SystemTable=0x3ebee018, ImageHandle=0x3d2f4f18)
+at
+/home/daniel/work/Intel/src/edk2/Build/OvmfX64/DEBUG_GCC5/X6
+4/ShellPkg/Application/Shell/Shell/DEBUG/AutoGen.c:1004
+#18 _ModuleEntryPoint (ImageHandle=0x3d2f4f18,
+SystemTable=0x3ebee018) at
+/home/daniel/work/Intel/src/edk2/MdePkg/Library/UefiApplicat
+ionEntryPoint/ApplicationEntryPoint.c:65
+#19 0x000000003efc471e in CoreStartImage
+(ImageHandle=0x3d2f4f18, ExitDataSize=0x3d2eb2d0,
+ExitData=0x3d2eb2c8) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Core/Dxe/Image
+/Image.c:1673
+#20 0x000000003d2bf2fc in EfiBootManagerBoot
+(BootOption=0x3d2eb280) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Library/UefiBo
+otManagerLib/BmBoot.c:1902
+#21 0x000000003d2b1c4f in BootManagerCallback
+(This=<optimised out>, Action=<optimised out>,
+QuestionId=<optimised out>, Type=<optimised out>,
+Value=<optimised out>, ActionRequest=<optimised out>,
+This=<optimised out>, Action=<optimised out>,
+QuestionId=<optimised out>, Type=<optimised out>,
+Value=<optimised out>, ActionRequest=<optimised out>)
+at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Library/BootMa
+nagerUiLib/BootManager.c:837
+#22 0x000000003eaaf956 in
+ProcessCallBackFunction.constprop.0 (Selection=0x3e02b018,Confidential. Proprietary. [205]
+FormSet=0x3e02cd18, Form=0x3db20698, Question=0x3d2e0e30,
+Action=1, SkipSaveOrDiscard=0 '\000')
+at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Universal/Setu
+pBrowserDxe/Presentation.c:2015
+#23 0x000000003eabefd8 in SetupBrowser
+(Selection=0x3e02b018) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Universal/Setu
+pBrowserDxe/Presentation.c:2521
+#24 SendForm (This=<optimised out>, Handles=<optimised out>,
+HandleCount=<optimised out>, FormSetGuid=<optimised out>,
+FormId=<optimised out>, ScreenDimensions=<optimised out>,
+ActionRequest=<optimised out>,
+This=<optimised out>, Handles=<optimised out>,
+HandleCount=<optimised out>, FormSetGuid=<optimised out>,
+FormId=<optimised out>, ScreenDimensions=<optimised out>,
+ActionRequest=<optimised out>)
+at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Universal/Setu
+pBrowserDxe/Setup.c:550
+#25 0x000000003d2bdf2e in CallFrontPage () at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Application/Ui
+App/FrontPage.c:331
+#26 UiEntry (ConnectAllHappened=0 '\000',
+ConnectAllHappened=0 '\000') at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Application/Ui
+App/FrontPage.c:1020
+#27 InitializeUserInterface (SystemTable=<optimised out>,
+ImageHandle=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Application/Ui
+App/FrontPage.c:964
+#28 ProcessModuleEntryPointList (SystemTable=<optimised
+out>, ImageHandle=<optimised out>)
+at
+/home/daniel/work/Intel/src/edk2/Build/OvmfX64/DEBUG_GCC5/X6
+4/MdeModulePkg/Application/UiApp/UiApp/DEBUG/AutoGen.c:542
+#29 _ModuleEntryPoint (ImageHandle=<optimised out>,
+SystemTable=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/MdePkg/Library/UefiApplicat
+ionEntryPoint/ApplicationEntryPoint.c:65
+#30 0x000000003efc471e in CoreStartImage
+(ImageHandle=0x3e04cd98, ExitDataSize=0x3ea53110
+<mBmHotkeyBootOption+80>, ExitData=0x3ea53108
+<mBmHotkeyBootOption+72>)
+at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Core/Dxe/Image
+/Image.c:1673
+#31 0x000000003ea4dea5 in EfiBootManagerBoot
+(BootOption=0x3ea530c0 <mBmHotkeyBootOption>) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Library/UefiBo
+otManagerLib/BmBoot.c:1902
+#32 0x000000003ea434f1 in EfiBootManagerHotkeyBoot () at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Library/UefiBo
+otManagerLib/BmHotkey.c:327Confidential. Proprietary. [206]
+#33 BdsEntry (This=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Universal/BdsD
+xe/BdsEntry.c:1049
+#34 0x000000003efb4918 in DxeMain (HobStart=<optimised out>)
+at
+/home/daniel/work/Intel/src/edk2/MdeModulePkg/Core/Dxe/DxeMa
+in/DxeMain.c:554
+#35 0x000000003efc5c4f in ProcessModuleEntryPointList
+(HobStart=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/Build/OvmfX64/DEBUG_GCC5/X6
+4/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/AutoGen.c:504
+#36 _ModuleEntryPoint (HobStart=<optimised out>) at
+/home/daniel/work/Intel/src/edk2/MdePkg/Library/DxeCoreEntry
+Point/DxeCoreEntryPoint.c:54
+#37 0x000000003eff246f in InternalSwitchStack ()
+#38 0x0000000000000000 in ?? ()
+(udb)
+(udb) i r
+rax 0xffffffffc2498537 -1035369161
+rbx 0x3db67a18 1035368984
+rcx 0x4 4
+rdx 0x3db67ac8 1035369160
+rsi 0xafafafafafafafbb -5787213827046133829
+rdi 0x3db67ac8 1035369160
+rbp 0xafafafafafafafaf 0xafafafafafafafaf
+rsp 0x3efab478 0x3efab478
+r8 0x4 4
+r9 0x78 120
+r10 0x1 1
+r11 0x1 1
+r12 0xafafafaf 2947526575
+r13 0x8 8
+r14 0x3efd45e0 1056785888
+r15 0x3dbb5798 1035687832
+rip 0x3d36bd0b 0x3d36bd0b
+<InternalMemCompareMem+11>
+eflags 0x202 [ IF ]
+cs 0x38 56
+ss 0x30 48
+ds 0x30 48
+es 0x30 48
+fs 0x30 48
+gs 0x30 48
+(udb) x/i $pc
+=> 0x3d36bd0b <InternalMemCompareMem+11>: repz cmps BYTE PTR
+ds:[rsi],BYTE PTR es:[rdi]
+(udb)

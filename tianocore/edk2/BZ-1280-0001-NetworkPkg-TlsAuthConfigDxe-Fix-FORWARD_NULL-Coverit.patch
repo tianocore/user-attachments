@@ -1,0 +1,51 @@
+From 5f7e09cecb088e08bf2e637745dbdfca9b8e1471 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:28:54 +0530
+Subject: [PATCH 1/1] NetworkPkg/TlsAuthConfigDxe: Fix FORWARD_NULL Coverity
+ issues
+
+The function UpdateDeletePage makes a jump to label ON_EXIT if
+StartOpCodeHandle is found to be NULL at its beginning. At label
+ON_EXIT, call is made to "HiiUpdateForm" unconditionally. In this
+scenario, passing null pointer "StartOpCodeHandle" to "HiiUpdateForm",
+will lead to CRASH which dereferences it.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4287
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/TlsAuthConfigDxe/TlsAuthConfigImpl.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/NetworkPkg/TlsAuthConfigDxe/TlsAuthConfigImpl.c b/NetworkPkg/TlsAuthConfigDxe/TlsAuthConfigImpl.c
+index 745155e6d758..2dfdf170e61f 100644
+--- a/NetworkPkg/TlsAuthConfigDxe/TlsAuthConfigImpl.c
++++ b/NetworkPkg/TlsAuthConfigDxe/TlsAuthConfigImpl.c
+@@ -260,15 +260,14 @@ UpdateDeletePage (
+   }
+ 
+ ON_EXIT:
+-  HiiUpdateForm (
+-    Private->RegisteredHandle,
+-    &gTlsAuthConfigGuid,
+-    FormId,
+-    StartOpCodeHandle,
+-    EndOpCodeHandle
+-    );
+-
+   if (StartOpCodeHandle != NULL) {
++    HiiUpdateForm (
++      Private->RegisteredHandle,
++      &gTlsAuthConfigGuid,
++      FormId,
++      StartOpCodeHandle,
++      EndOpCodeHandle
++      );
+     HiiFreeOpCodeHandle (StartOpCodeHandle);
+   }
+ 
+-- 
+2.36.1.windows.1
+

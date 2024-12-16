@@ -1,0 +1,41 @@
+From a9459e20a8379c58ae3bf6be949573e6530564ef Mon Sep 17 00:00:00 2001
+From: Jian J Wang <jian.j.wang@intel.com>
+Date: Tue, 24 Sep 2019 15:03:38 +0800
+Subject: [PATCH 2/2] SecurityPkg/DxeTpmMeasureBootLib: Validate GPT table
+ header before use
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=2168
+
+GPT disk partition should be considered untrusted. A malicious GPT disk
+partition could cause an out of bound read. This patch add more check
+to those partition data used afterwards to avoid potential problem.
+
+Cc: Jian Wang <jian.j.wang@intel.com>
+Cc: Chao Zhang <chao.b.zhang@intel.com>
+Signed-off-by: Jian J Wang <jian.j.wang@intel.com>
+---
+ .../Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c   | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
+index a2d3923ca6..c5f0ea29ac 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
+@@ -163,8 +163,12 @@ TcgMeasureGptTable (
+                      BlockIo->Media->BlockSize,
+                      (UINT8 *)PrimaryHeader
+                      );
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((EFI_D_ERROR, "Failed to Read Partition Table Header!\n"));
++  if (EFI_ERROR (Status) ||
++      PrimaryHeader->Header.Signature != EFI_PTAB_HEADER_ID ||
++      PrimaryHeader->PartitionEntryLBA > DivU64x32 (MAX_UINTN, BlockIo->Media->BlockSize) ||
++      PrimaryHeader->SizeOfPartitionEntry != sizeof (EFI_PARTITION_ENTRY) ||
++      PrimaryHeader->NumberOfPartitionEntries > DivU64x32 (MAX_UINTN, PrimaryHeader->SizeOfPartitionEntry)) {
++    DEBUG ((EFI_D_ERROR, "Failed to read Partition Table Header or invalid Partition Table Header!\n"));
+     FreePool (PrimaryHeader);
+     return EFI_DEVICE_ERROR;
+   }
+-- 
+2.17.1.windows.2
+

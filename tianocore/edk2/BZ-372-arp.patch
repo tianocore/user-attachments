@@ -1,0 +1,12 @@
+diff --git a/NetworkPkg/ArpDxe/ArpImpl.c b/NetworkPkg/ArpDxe/ArpImpl.c
+index 0e9ef103ef..274480c992 100644
+--- a/NetworkPkg/ArpDxe/ArpImpl.c
++++ b/NetworkPkg/ArpDxe/ArpImpl.c
+@@ -125,6 +125,7 @@ ArpOnFrameRcvdDpc (
+   Head->OpCode    = NTOHS (Head->OpCode);
+ 
+   if (RxData->DataLength < (sizeof (ARP_HEAD) + 2 * Head->HwAddrLen + 2 * Head->ProtoAddrLen)) {
++    gBS->SignalEvent (RxData->RecycleEvent);
+     goto RESTART_RECEIVE;
+   }
+ 

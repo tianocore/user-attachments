@@ -1,0 +1,154 @@
+From b2b3463525a8e7343da74f0a38ecca46420e448f Mon Sep 17 00:00:00 2001
+From: Jiewen Yao <jiewen.yao@intel.com>
+Date: Tue, 19 Sep 2017 12:19:00 +0800
+Subject: [PATCH] Rebase FvInfo
+
+---
+ MdeModulePkg/Core/Pei/Ppi/Ppi.c | 124 ++++++++++++++++++++
+ 1 file changed, 124 insertions(+)
+
+diff --git a/MdeModulePkg/Core/Pei/Ppi/Ppi.c b/MdeModulePkg/Core/Pei/Ppi/Ppi.c
+index 082c379..5f13535 100644
+--- a/MdeModulePkg/Core/Pei/Ppi/Ppi.c
++++ b/MdeModulePkg/Core/Pei/Ppi/Ppi.c
+@@ -103,6 +103,70 @@ ConvertSinglePpiPointer (
+ 
+ /**
+ 
++  If the PPI is known by PeiCore, the PEI core helps to convert the data pointer.
++
++  @param PpiPointer      Pointer to Ppi
++  @param TempBottom      Base of old temporary memory
++  @param TempTop         Top of old temporary memory
++  @param Offset          Offset of new memory to old temporary memory.
++  @param OffsetPositive  Positive flag of Offset value. 
++
++**/
++VOID
++ConvertSinglePpiDataPointer (
++  IN PEI_PPI_LIST_POINTERS *PpiPointer,
++  IN UINTN                 TempBottom,
++  IN UINTN                 TempTop,
++  IN UINTN                 Offset,
++  IN BOOLEAN               OffsetPositive
++  )
++{
++  EFI_PEI_FIRMWARE_VOLUME_INFO_PPI   *FvInfo;
++  EFI_PEI_FIRMWARE_VOLUME_INFO2_PPI  *FvInfo2;
++
++  DEBUG ((DEBUG_INFO, "ConvertSinglePpiDataPointer - (%x-%x) (GUID - %g)\n", TempBottom, TempTop, PpiPointer->Ppi->Guid));
++
++  if (CompareGuid (PpiPointer->Ppi->Guid, &gEfiPeiFirmwareVolumeInfoPpiGuid)) {
++    FvInfo = PpiPointer->Ppi->Ppi;
++    if (((UINTN)FvInfo->ParentFvName < TempTop) &&
++        ((UINTN)FvInfo->ParentFvName >= TempBottom)) {
++      if (OffsetPositive) {
++        FvInfo->ParentFvName = (VOID *) ((UINTN)FvInfo->ParentFvName + Offset);
++      } else {
++        FvInfo->ParentFvName = (VOID *) ((UINTN)FvInfo->ParentFvName - Offset);
++      }
++    }
++    if (((UINTN)FvInfo->ParentFileName < TempTop) &&
++        ((UINTN)FvInfo->ParentFileName >= TempBottom)) {
++      if (OffsetPositive) {
++        FvInfo->ParentFileName = (VOID *) ((UINTN)FvInfo->ParentFileName + Offset);
++      } else {
++        FvInfo->ParentFileName = (VOID *) ((UINTN)FvInfo->ParentFileName - Offset);
++      }
++    }
++  } else if (CompareGuid (PpiPointer->Ppi->Guid, &gEfiPeiFirmwareVolumeInfo2PpiGuid)) {
++    FvInfo2 = PpiPointer->Ppi->Ppi;
++    if (((UINTN)FvInfo2->ParentFvName < TempTop) &&
++        ((UINTN)FvInfo2->ParentFvName >= TempBottom)) {
++      if (OffsetPositive) {
++        FvInfo2->ParentFvName = (VOID *) ((UINTN)FvInfo2->ParentFvName + Offset);
++      } else {
++        FvInfo2->ParentFvName = (VOID *) ((UINTN)FvInfo2->ParentFvName - Offset);
++      }
++    }
++    if (((UINTN)FvInfo2->ParentFileName < TempTop) &&
++        ((UINTN)FvInfo2->ParentFileName >= TempBottom)) {
++      if (OffsetPositive) {
++        FvInfo2->ParentFileName = (VOID *) ((UINTN)FvInfo2->ParentFileName + Offset);
++      } else {
++        FvInfo2->ParentFileName = (VOID *) ((UINTN)FvInfo2->ParentFileName - Offset);
++      }
++    }
++  }
++}
++
++/**
++
+   Migrate PPI Pointers from the temporary memory to PEI installed memory.
+ 
+   @param SecCoreData     Points to a data structure containing SEC to PEI handoff data, such as the size 
+@@ -175,6 +239,66 @@ ConvertPpiPointers (
+       }
+     }
+   }
++
++  //
++  // Now all the PPI descriptors are converted, PeiCore need convert the PPI data pointer.
++  //
++  for (Index = 0; Index < PcdGet32 (PcdPeiCoreMaxPpiSupported); Index++) {
++    if (Index < PrivateData->PpiData.PpiListEnd) {
++      if (PrivateData->MemoryPages.Size != 0) {
++        //
++        // Convert PPI pointer in old memory pages
++        // It needs to be done before Convert PPI pointer in old Heap
++        //
++        ConvertSinglePpiDataPointer (
++          &PrivateData->PpiData.PpiListPtrs[Index],
++          (UINTN)PrivateData->MemoryPages.Base,
++          (UINTN)PrivateData->MemoryPages.Base + PrivateData->MemoryPages.Size,
++          PrivateData->MemoryPages.Offset,
++          PrivateData->MemoryPages.OffsetPositive
++          );
++      }
++
++      //
++      // Convert PPI pointer in old Heap
++      //
++      ConvertSinglePpiDataPointer (
++        &PrivateData->PpiData.PpiListPtrs[Index],
++        (UINTN)SecCoreData->PeiTemporaryRamBase,
++        (UINTN)SecCoreData->PeiTemporaryRamBase + SecCoreData->PeiTemporaryRamSize,
++        PrivateData->HeapOffset,
++        PrivateData->HeapOffsetPositive
++        );
++        
++      //
++      // Convert PPI pointer in old Stack
++      //
++      ConvertSinglePpiDataPointer (
++        &PrivateData->PpiData.PpiListPtrs[Index],
++        (UINTN)SecCoreData->StackBase,
++        (UINTN)SecCoreData->StackBase + SecCoreData->StackSize,
++        PrivateData->StackOffset,
++        PrivateData->StackOffsetPositive
++        );
++        
++      //
++      // Convert PPI pointer in old TempRam Hole
++      //
++      for (IndexHole = 0; IndexHole < HOLE_MAX_NUMBER; IndexHole ++) {
++        if (PrivateData->HoleData[IndexHole].Size == 0) {
++          continue;
++        }
++        
++        ConvertSinglePpiDataPointer (
++          &PrivateData->PpiData.PpiListPtrs[Index],
++          (UINTN)PrivateData->HoleData[IndexHole].Base,
++          (UINTN)PrivateData->HoleData[IndexHole].Base + PrivateData->HoleData[IndexHole].Size,
++          PrivateData->HoleData[IndexHole].Offset,
++          PrivateData->HoleData[IndexHole].OffsetPositive
++          );
++      }
++    }
++  }
+ }
+ 
+ /**
+-- 
+2.7.4.windows.1
+

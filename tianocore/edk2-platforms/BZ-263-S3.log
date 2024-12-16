@@ -1,0 +1,3268 @@
+1A1-9562-11D2-8E3F-00A0C969723B 7755D940
+Loading driver at 0x000781EF000 EntryPoint=0x000781EF410 SmbiosMemory.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 77561E98
+ProtectUefiImageCommon - 0x7755D940
+  - 0x00000000781EF000 - 0x0000000000008280
+SMBIOS,MemInfoHob->MemInfoData.dimmSize[DimmIndex] 800 
+SMBIOS,MemInfoHob->MemInfoData.dimmSize[DimmIndex] 0 
+SMBIOS,DimmMemorySize 80000000 
+SmbusExecute() Start, SmbusDeviceAddress=A2, Command=2, Operation=6
+Evaluate SMM DEPEX for FFS(ACAEAA7A-C039-4424-88DA-F42212EA0E55)
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  PUSH GUID(3920405B-C897-44DA-88F3-4C498A6FF736) = TRUE
+  PUSH GUID(D31F0400-7D16-4316-BF88-6065883B402B) = FALSE
+  PUSH GUID(4B0165A9-61D6-4E23-A0B5-3EC79C2E30D5) = TRUE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(C2702B74-800C-4131-8746-8FB5B89CE4AC) = TRUE
+  AND
+  AND
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Evaluate SMM DEPEX for FFS(99C20A37-042A-46E2-80F4-E4027FDBC86F)
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  PUSH GUID(C2702B74-800C-4131-8746-8FB5B89CE4AC) = TRUE
+  PUSH GUID(B709EFA0-47A6-4B41-B931-12ECE7A8EE56) = TRUE
+  PUSH GUID(14FC52BE-01DC-426C-91AE-A23C3E220AE8) = TRUE
+  PUSH GUID(C50B323E-9075-4F2A-AC8E-D2596A1085CC) = TRUE
+  PUSH GUID(E541B773-DD11-420C-B026-DF993653F8BF) = TRUE
+  PUSH GUID(1E5668E2-8481-11D4-BCF1-0080C73C8881) = TRUE
+  PUSH GUID(6441F818-6362-4E44-B570-7DBA31DD2453) = TRUE
+  PUSH GUID(074E1E48-8132-47A1-8C2C-3F14AD9A66DC) = FALSE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  AND
+  AND
+  AND
+  AND
+  AND
+  AND
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Evaluate SMM DEPEX for FFS(63296C52-01CF-4EEA-A47C-782A14DA6894)
+  PUSH GUID(E541B773-DD11-420C-B026-DF993653F8BF) = TRUE
+  PUSH GUID(8D12E231-C667-4FD1-98F2-2449A7E7B2E5) = FALSE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Evaluate SMM DEPEX for FFS(A3FF0EF5-0C28-42F5-B544-8C7DE1E80014)
+  PUSH GUID(3FDDA605-A76E-4F46-AD29-12F4531B3D08) = TRUE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  PUSH GUID(C2702B74-800C-4131-8746-8FB5B89CE4AC) = TRUE
+  AND
+  AND
+  AND
+  END
+  RESULT = TRUE
+Evaluate SMM DEPEX for FFS(E21F35A8-42FF-4050-82D6-93F7CDFA7073)
+  PUSH GUID(18A3C6DC-5EEA-48C8-A1C1-B53389F98999) = FALSE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  PUSH GUID(C2702B74-800C-4131-8746-8FB5B89CE4AC) = TRUE
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Evaluate SMM DEPEX for FFS(1410C6AC-9F4B-495B-9C23-8A5AEB0165E9)
+  PUSH GUID(E541B773-DD11-420C-B026-DF993653F8BF) = TRUE
+  PUSH GUID(8D12E231-C667-4FD1-98F2-2449A7E7B2E5) = FALSE
+  PUSH GUID(EB346B97-975F-4A9F-8B22-F8E92BB3D569) = FALSE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  AND
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7755D798
+SmmInstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7A7E84C0
+Loading SMM driver at 0x0007A631000 EntryPoint=0x0007A632F94 PiSmmCpuDxeSmm.efi
+SMRAM Map Buffer too small
+SMRAM Map Buffer installed complet
+SMRAM Map Buffer too small
+SMRAM Map Buffer installed complet
+SMRR Base: 0x7A000000, SMRR Size: 0x800000
+PcdCpuSmmCodeAccessCheckEnable = 1
+mAddressEncMask = 0x0
+SMRAM TileSize = 0x00002000 (0x00001000, 0x00001000)
+SMRAM SaveState Buffer (0x7A627000, 0x0000A000)
+CPU[000]  APIC ID=0000  SMBASE=7A61F000  SaveState=7A62EC00  Size=00000400
+CPU[001]  APIC ID=0004  SMBASE=7A621000  SaveState=7A630C00  Size=00000400
+mXdSupported - 0x1
+One Semaphore Size    = 0x40
+Total Semaphores Size = 0x2C0
+1GPageTableSupport - 0x0
+PcdCpuSmmStaticPageTable - 0x1
+PhysicalAddressBits - 0x24
+InstallProtocolInterface: 26EEB3DE-B689-492E-80F0-BE8BD7DA4BA7 7A643310
+SMM IPL registered SMM Entry Point address 7A7EDAD8
+SmmInstallProtocolInterface: EB346B97-975F-4A9F-8B22-F8E92BB3D569 7A643320
+SmmInstallProtocolInterface: 69B792EA-39CE-402D-A2A6-F721DE351DFE 7A643240
+SmmInstallProtocolInterface: 1D202CAB-C8AB-4D5C-94F7-3CFCC0D3D335 7A643390
+SMM S3 SMRAM Structure = 77DB7AA0
+SMM S3 Structure = 7A000000
+SMM CPU Module exit from SMRAM with EFI_SUCCESS
+SMM IPL closed SMRAM window
+Evaluate SMM DEPEX for FFS(ACAEAA7A-C039-4424-88DA-F42212EA0E55)
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  PUSH GUID(3920405B-C897-44DA-88F3-4C498A6FF736) = TRUE
+  PUSH GUID(D31F0400-7D16-4316-BF88-6065883B402B) = FALSE
+  PUSH GUID(4B0165A9-61D6-4E23-A0B5-3EC79C2E30D5) = TRUE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(C2702B74-800C-4131-8746-8FB5B89CE4AC) = TRUE
+  AND
+  AND
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Evaluate SMM DEPEX for FFS(99C20A37-042A-46E2-80F4-E4027FDBC86F)
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  PUSH GUID(C2702B74-800C-4131-8746-8FB5B89CE4AC) = TRUE
+  PUSH GUID(B709EFA0-47A6-4B41-B931-12ECE7A8EE56) = TRUE
+  PUSH GUID(14FC52BE-01DC-426C-91AE-A23C3E220AE8) = TRUE
+  PUSH GUID(C50B323E-9075-4F2A-AC8E-D2596A1085CC) = TRUE
+  PUSH GUID(E541B773-DD11-420C-B026-DF993653F8BF) = TRUE
+  PUSH GUID(1E5668E2-8481-11D4-BCF1-0080C73C8881) = TRUE
+  PUSH GUID(6441F818-6362-4E44-B570-7DBA31DD2453) = TRUE
+  PUSH GUID(074E1E48-8132-47A1-8C2C-3F14AD9A66DC) = FALSE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  AND
+  AND
+  AND
+  AND
+  AND
+  AND
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Evaluate SMM DEPEX for FFS(63296C52-01CF-4EEA-A47C-782A14DA6894)
+  PUSH GUID(E541B773-DD11-420C-B026-DF993653F8BF) = TRUE
+  PUSH GUID(8D12E231-C667-4FD1-98F2-2449A7E7B2E5) = FALSE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Evaluate SMM DEPEX for FFS(E21F35A8-42FF-4050-82D6-93F7CDFA7073)
+  PUSH GUID(18A3C6DC-5EEA-48C8-A1C1-B53389F98999) = FALSE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  PUSH GUID(C2702B74-800C-4131-8746-8FB5B89CE4AC) = TRUE
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Evaluate SMM DEPEX for FFS(1410C6AC-9F4B-495B-9C23-8A5AEB0165E9)
+  PUSH GUID(E541B773-DD11-420C-B026-DF993653F8BF) = TRUE
+  PUSH GUID(8D12E231-C667-4FD1-98F2-2449A7E7B2E5) = FALSE
+  PUSH GUID(EB346B97-975F-4A9F-8B22-F8E92BB3D569) = TRUE
+  PUSH GUID(13A3F0F6-264A-3EF0-F2E0-DEC512342F34) = TRUE
+  PUSH GUID(F4CCBFB7-F6E0-47FD-9DD4-10A8F150C191) = TRUE
+  AND
+  AND
+  AND
+  AND
+  END
+  RESULT = FALSE
+Loading driver 2BDED685-F733-455F-A840-43A22B791FB3
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7755C340
+Loading driver at 0x000781EB000 EntryPoint=0x000781EB384 AcpiS3SaveDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 77563F18
+ProtectUefiImageCommon - 0x7755C340
+  - 0x00000000781EB000 - 0x0000000000003100
+FvbProtocolWrite: Lba: 0x0 Offset: 0x38DA NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x3944 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x3946 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x3980 NumBytes: 0x2E, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x3946 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x38DA NumBytes: 0x1, Buffer: 0x7A61F720
+[Variable] Lock: C020489E-6DB2-4EF2-9AA5-CA06FC11D36A:AcpiGlobalVariable Success
+AcpiVariableSetCompatibility is 0x79143000
+InstallProtocolInterface: 125F2DE1-FB85-440C-A54C-4D99358A8D38 781EDE80
+Loading driver 90CB75DB-71FC-489D-AACF-943477EC7212
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7755C6C0
+Loading driver at 0x000781E5000 EntryPoint=0x000781E53F0 SmartTimer.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 77555F98
+ProtectUefiImageCommon - 0x7755C6C0
+  - 0x00000000781E5000 - 0x0000000000005DE0
+TimerDriverInitialize() Start
+InstallProtocolInterface: 26BACCB3-6F42-11D4-BCE7-0080C73C8881 781EA890
+TimerDriverInitialize() End
+Loading driver 2EE72E7C-FB9E-4318-B888-33A315C7A91D
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 775557C0
+Loading driver at 0x000781E2000 EntryPoint=0x000781E23BC PpmPolicy.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 77555618
+ProtectUefiImageCommon - 0x775557C0
+  - 0x00000000781E2000 - 0x00000000000026A0
+InstallProtocolInterface: DDABFEAC-EF63-452C-8F39-ED7FAED8265E 781E44C0
+Loading driver F0F6F006-DAB4-44B2-A7A1-0F72EEDCA716
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7755BB40
+Loading driver at 0x000781DB000 EntryPoint=0x000781DB3A4 AcpiPlatform.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7755B098
+ProtectUefiImageCommon - 0x7755BB40
+  - 0x00000000781DB000 - 0x0000000000006120
+mGlobalNvsArea.Area is at 0x791AEB18
+XHCI is enabled as default. SOC 0x7
+ACPI NVS XHCI:0x1
+GlobalNvsArea.Area->I2CTouchAddress: [00]
+Auto detect mode------------start
+SOC B0 and later: eMMC 4.5 Configuration
+mGlobalNvsArea.Area->emmcVersion = 1
+JP1 is not set to be MSFT IOT configuration.
+InstallProtocolInterface: 074E1E48-8132-47A1-8C2C-3F14AD9A66DC 781E0E48
+ApicPtr->AcpiLocalApic.AcpiProcessorId = 1, MaximumNumberOfCPUs = 2
+ApicPtr->AcpiLocalApic.AcpiProcessorId = 2, MaximumNumberOfCPUs = 2
+ApicPtr->AcpiLocalApic.AcpiProcessorId = 3, MaximumNumberOfCPUs = 2
+ApicPtr->AcpiLocalApic.AcpiProcessorId = 4, MaximumNumberOfCPUs = 2
+Loading driver 0565365C-2FE1-4F88-B3BE-624C04623A20
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7755A1C0
+Loading driver at 0x000781D3000 EntryPoint=0x000781D3404 MicrocodeUpdateDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7755A518
+ProtectUefiImageCommon - 0x7755A1C0
+  - 0x00000000781D3000 - 0x0000000000007200
+PcdFlashAreaBaseAddress - 0xFFC00000
+GetLastAttempt - Not Found
+GetLastAttempt Version - 0x0, State - 0x0
+Microcode Region - 0xFFC00060 - 0x3FFA0
+Microcode Region - 0xFFC00060 - 0x3FFA0
+ProcessorInfo:
+  ProcessorCount - 0x2
+  BspIndex - 0x0
+  ProcessorInfo[0x0] - 0x00030679, 0x00, 0x00000909, (0x0)
+  ProcessorInfo[0x1] - 0x00030679, 0x00, 0x00000909, (0x0)
+MicrocodeInfo:
+  MicrocodeRegion - 0 Offset: 0x41C6 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x411A NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x41C6 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4290 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4292 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x42CC NumBytes: 0xCE, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4292 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x41C6 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x3FF2 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x439C NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x439E NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x43D8 NumBytes: 0x96, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x439E NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x3FF2 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4086 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4470 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4472 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x44AC NumBytes: 0x96, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4472 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4086 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4292 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4544 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4546 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4580 NumBytes: 0xDD, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4546 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4292 NumBytes: 0x1, Buffer: 0x7A61F720
+PCI Bus First Scanning
+PciBus: Discovered PCI @ [00|00|00]
+
+PciBus: Discovered PCI @ [00|02|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFFFF;	Length = 0x400000;	Offset = 0x10
+   BAR[2]: Type = PMem32; Alignment = 0xFFFFFFF;	Length = 0x10000000;	Offset = 0x18
+   BAR[4]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|11|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|12|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|13|00]
+   BAR[0]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x10
+   BAR[1]: Type =   Io16; Alignment = 0x3;	Length = 0x4;	Offset = 0x14
+   BAR[2]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x18
+   BAR[3]: Type =   Io16; Alignment = 0x3;	Length = 0x4;	Offset = 0x1C
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x800;	Offset = 0x24
+
+PciBus: Discovered PCI @ [00|14|00]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFF;	Length = 0x10000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|17|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|06]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|07]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1A|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1B|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [00|1C|00]
+
+PciBus: Discovered PPB @ [00|1C|02]
+
+PciBus: Discovered PCI @ [02|00|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+   BAR[2]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x18
+   BAR[3]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x1C
+
+PciBus: Discovered PPB @ [00|1C|03]
+
+PciBus: Discovered PCI @ [00|1E|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|01]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|02]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|03]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|04]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|05]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1F|00]
+
+PciBus: Discovered PCI @ [00|1F|03]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x20;	Offset = 0x10
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|00|00]
+
+PciBus: Discovered PCI @ [00|02|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFFFF;	Length = 0x400000;	Offset = 0x10
+   BAR[2]: Type = PMem32; Alignment = 0xFFFFFFF;	Length = 0x10000000;	Offset = 0x18
+   BAR[4]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|11|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|12|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|13|00]
+   BAR[0]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x10
+   BAR[1]: Type =   Io16; Alignment = 0x3;	Length = 0x4;	Offset = 0x14
+   BAR[2]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x18
+   BAR[3]: Type =   Io16; Alignment = 0x3;	Length = 0x4;	Offset = 0x1C
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x800;	Offset = 0x24
+
+PciBus: Discovered PCI @ [00|14|00]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFF;	Length = 0x10000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|17|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|06]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|07]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1A|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1B|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [00|1C|00]
+
+PciBus: Discovered PPB @ [00|1C|02]
+
+PciBus: Discovered PCI @ [02|00|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+   BAR[2]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x18
+   BAR[3]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x1C
+
+PciBus: Discovered PPB @ [00|1C|03]
+
+PciBus: Discovered PCI @ [00|1E|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|01]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|02]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|03]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|04]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|05]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1F|00]
+
+PciBus: Discovered PCI @ [00|1F|03]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x20;	Offset = 0x10
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+PciBus: HostBridge->SubmitResources() - Success
+PciBus: HostBridge->NotifyPhase(AllocateResources) - Success
+Process Option ROM: BAR Base/Length = 0/0
+PciBus: Resource Map for Root Bridge PciRoot(0x0)
+Type =   Io16; Base = 0x1000;	Length = 0x2000;	Alignment = 0xFFF
+   Base = 0x1000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PPB [00|1C|02:**]
+   Base = 0x2000;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [00|1F|03:20]
+   Base = 0x2020;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [00|13|00:20]
+   Base = 0x2040;	Length = 0x8;	Alignment = 0x7;	Owner = PCI [00|13|00:18]
+   Base = 0x2048;	Length = 0x8;	Alignment = 0x7;	Owner = PCI [00|13|00:10]
+   Base = 0x2050;	Length = 0x8;	Alignment = 0x7;	Owner = PCI [00|02|00:20]
+   Base = 0x2058;	Length = 0x4;	Alignment = 0x3;	Owner = PCI [00|13|00:1C]
+   Base = 0x205C;	Length = 0x4;	Alignment = 0x3;	Owner = PCI [00|13|00:14]
+Type =  Mem32; Base = 0x80000000;	Length = 0x10800000;	Alignment = 0xFFFFFFF
+   Base = 0x80000000;	Length = 0x10000000;	Alignment = 0xFFFFFFF;	Owner = PCI [00|02|00:18]; Type = PMem32
+   Base = 0x90000000;	Length = 0x400000;	Alignment = 0x3FFFFF;	Owner = PCI [00|02|00:10]
+   Base = 0x90400000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PPB [00|1C|02:**]
+   Base = 0x90500000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PCI [00|1A|00:14]
+   Base = 0x90600000;	Length = 0x100000;	Alignment = 0xFFFFF;	Owner = PCI [00|1A|00:10]
+   Base = 0x90700000;	Length = 0x10000;	Alignment = 0xFFFF;	Owner = PCI [00|14|00:10]
+   Base = 0x90710000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|1B|00:10]
+   Base = 0x90714000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|1E|00:10]
+   Base = 0x90718000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|18|00:10]
+   Base = 0x9071C000;	Length = 0x20;	Alignment = 0xFFF;	Owner = PCI [00|1F|03:10]
+   Base = 0x9071D000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|05:14]
+   Base = 0x9071E000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|05:10]
+   Base = 0x9071F000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|04:14]
+   Base = 0x90720000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|04:10]
+   Base = 0x90721000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|03:14]
+   Base = 0x90722000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|03:10]
+   Base = 0x90723000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|02:14]
+   Base = 0x90724000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|02:10]
+   Base = 0x90725000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|01:14]
+   Base = 0x90726000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|01:10]
+   Base = 0x90727000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|1E|00:14]
+   Base = 0x90728000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|18|07:14]
+   Base = 0x90729000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|18|07:10]
+   Base = 0x9072A000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|18|06:14]
+   Base = 0x9072B000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|18|06:10]
+   Base = 0x9072C000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|18|00:14]
+   Base = 0x9072D000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|17|00:14]
+   Base = 0x9072E000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|17|00:10]
+   Base = 0x9072F000;	Length = 0x800;	Alignment = 0xFFF;	Owner = PCI [00|13|00:24]
+   Base = 0x90730000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|12|00:14]
+   Base = 0x90731000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|12|00:10]
+   Base = 0x90732000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|11|00:14]
+   Base = 0x90733000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|11|00:10]
+
+PciBus: Resource Map for Bridge [00|1C|00]
+
+PciBus: Resource Map for Bridge [00|1C|02]
+Type =   Io16; Base = 0x1000;	Length = 0x1000;	Alignment = 0xFFF
+   Base = 0x1000;	Length = 0x20;	Alignment = 0x1F;	Owner = PCI [02|00|00:18]
+Type =  Mem32; Base = 0x90400000;	Length = 0x100000;	Alignment = 0xFFFFF
+   Base = 0x90400000;	Length = 0x20000;	Alignment = 0x1FFFF;	Owner = PCI [02|00|00:10]
+   Base = 0x90420000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [02|00|00:1C]
+
+PciBus: Resource Map for Bridge [00|1C|03]
+
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77510A98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 775106A8
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77513E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750B028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750BE98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750B428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750BF18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750B828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750BF98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750A028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750AE98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750A428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750AF18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750A828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750AF98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77509028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77509E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77509428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77509F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77509828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77509F98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77508028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77508E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77508428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77508F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77508828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77508F98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77507028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77507E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77507428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77507F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77507828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77507F98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77506028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77506E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77506428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77506F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77506828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77506F98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77505028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77505E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77505428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77505F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77505828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77505F98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77504028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77504E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77504428
+InstallProtocolInterface: 30CFE3E7-3DE1-4586-BE20-DEABA1B3B793 0
+Update onboard PCI VGA ...
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774F8098
+InstallProtocolInterface: 39487C79-236D-4666-87E5-09547CAAE1BC 774F8B98
+InstallProtocolInterface: 1C0C34F6-D380-41FA-A049-8AD06C1A66AA 774F8BD0
+InstallProtocolInterface: 9042A9DE-23DC-4A38-96FB-7ADED080516A 774F8BB0
+InstallProtocolInterface: BD8C1056-9F36-44EC-92A8-A6337F817986 774F8BE0
+FvbProtocolWrite: Lba: 0x0 Offset: 0x439E NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4660 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4662 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x469C NumBytes: 0xB4, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4662 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x439E NumBytes: 0x1, Buffer: 0x7A61F720
+DISPLAY INIT DONE
+InstallProtocolInterface: 64A892DC-5561-4536-92C7-799BFC183355 7850A730
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774E2E18
+InstallProtocolInterface: 7EE2BD44-3DA0-11D4-9A38-0090273FC14D 774E2D28
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774E2B98
+InstallProtocolInterface: 7EE2BD44-3DA0-11D4-9A38-0090273FC14D 774E2AA8
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774E2598
+InstallProtocolInterface: 7EE2BD44-3DA0-11D4-9A38-0090273FC14D 774E2428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774E1218
+InstallProtocolInterface: BB25CF6F-F1D4-11D2-9A0C-0090273FC1FD 774E10A8
+Terminal - Mode 0, Column = 80, Row = 25
+Terminal - Mode 1, Column = 80, Row = 50
+Terminal - Mode 2, Column = 100, Row = 31
+InstallProtocolInterface: 387477C1-69C7-11D2-8E39-00A0C969723B 774E02C0
+InstallProtocolInterface: DD9E7534-7762-4698-8C14-F58517A625AA 774E03A8
+InstallProtocolInterface: 387477C2-69C7-11D2-8E39-00A0C969723B 774E02D8
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774E0E98
+InstallProtocolInterface: D3B36F2B-D551-11D4-9A46-0090273FC14D 0
+InstallProtocolInterface: D3B36F2C-D551-11D4-9A46-0090273FC14D 0
+InstallProtocolInterface: D3B36F2D-D551-11D4-9A46-0090273FC14D 0
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4662 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4750 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4752 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x478C NumBytes: 0x75, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4752 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4662 NumBytes: 0x1, Buffer: 0x7A61F720
+GraphicsConsole video resolution 800 x 600
+Graphics - Mode 0, Column = 80, Row = 25
+Graphics - Mode 1, Column = 0, Row = 0
+Graphics - Mode 2, Column = 100, Row = 31
+InstallProtocolInterface: 387477C2-69C7-11D2-8E39-00A0C969723B 774DE630
+InstallProtocolInterface: D3B36F2C-D551-11D4-9A46-0090273FC14D 0
+InstallProtocolInterface: 9042A9DE-23DC-4A38-96FB-7ADED080516A 7810F0D0
+InstallProtocolInterface: 982C298B-F4FA-41CB-B838-77AA688FB839 7810F0A8
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4546 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4804 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4806 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4840 NumBytes: 0xC5, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4806 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4546 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4806 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4908 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x490A NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4944 NumBytes: 0x86, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x490A NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4806 NumBytes: 0x1, Buffer: 0x7A61F720
+XhcCreateUsb3Hc: Capability length 0x80
+XhcCreateUsb3Hc: HcSParams1 0x7000820
+XhcCreateUsb3Hc: HcSParams2 0x84000054
+XhcCreateUsb3Hc: HcCParams 0x200077C1
+XhcCreateUsb3Hc: DBOff 0x3000
+XhcCreateUsb3Hc: RTSOff 0x2000
+XhcCreateUsb3Hc: UsbLegSupOffset 0x460
+XhcCreateUsb3Hc: DebugCapSupOffset 0x480
+XhcSetBiosOwnership: called to set BIOS ownership
+XhcResetHC!
+XhcInitSched:DCBAA=0x77483000
+XhcInitSched: Created CMD ring [77483140~77484140) EVENT ring [77484140~77486140)
+InstallProtocolInterface: 3E745226-9818-45B6-A2AC-D7CD0E8BA2BC 77493038
+XhcDriverBindingStart: XHCI started for controller @ 77510B18
+InstallProtocolInterface: 240612B7-A063-11D4-9A3A-0090273FC14D 7747D020
+XhcGetCapability: 7 ports, 64 bit 1
+UsbRootHubInit: root hub 774B7418 - max speed 3, 7 ports
+XhcClearRootHubPortFeature: status Success
+UsbEnumeratePort: port 0 state - 201, change - 01 on 774B7418
+UsbEnumeratePort: Device Connect/Disconnect Normally
+UsbEnumeratePort: new device connected at port 0
+XhcUsbPortReset!
+XhcSetRootHubPortFeature: status Success
+XhcClearRootHubPortFeature: status Success
+XhcClearRootHubPortFeature: status Success
+Enable Slot Successfully, The Slot ID = 0x1
+    Address 1 assigned successfully
+UsbEnumerateNewDev: hub port 0 is reset
+UsbEnumerateNewDev: device is of 1 speed
+UsbEnumerateNewDev: device uses translator (0, 0)
+UsbEnumerateNewDev: device is now ADDRESSED at 1
+UsbEnumerateNewDev: max packet size for EP 0 is 8
+Evaluate context
+UsbBuildDescTable: device has 1 configures
+UsbGetOneConfig: total length is 34
+UsbParseConfigDesc: config 1 has 1 interfaces
+UsbParseInterfaceDesc: interface 0(setting 0) has 1 endpoints
+Endpoint[81]: Created INT ring [774879C0~774889C0)
+Configure Endpoint
+UsbEnumerateNewDev: device 1 is now in CONFIGED state
+UsbSelectConfig: config 1 selected for device 1
+UsbSelectSetting: setting 0 selected for interface 0
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7747BF98
+InstallProtocolInterface: 2B2F68D6-0CD2-44CF-8E8B-BBA20B1B5B75 7747BB40
+UsbConnectDriver: TPL before connect is 8, 7747BD98
+InstallProtocolInterface: 387477C1-69C7-11D2-8E39-00A0C969723B 7747A038
+InstallProtocolInterface: DD9E7534-7762-4698-8C14-F58517A625AA 7747A050
+InstallProtocolInterface: D3B36F2B-D551-11D4-9A46-0090273FC14D 0
+UsbConnectDriver: TPL after connect is 8
+XhcClearRootHubPortFeature: status Success
+UsbEnumeratePort: port 1 state - 201, change - 01 on 774B7418
+UsbEnumeratePort: Device Connect/Disconnect Normally
+UsbEnumeratePort: new device connected at port 1
+XhcUsbPortReset!
+XhcSetRootHubPortFeature: status Success
+XhcClearRootHubPortFeature: status Success
+XhcClearRootHubPortFeature: status Success
+Enable Slot Successfully, The Slot ID = 0x2
+    Address 2 assigned successfully
+UsbEnumerateNewDev: hub port 1 is reset
+UsbEnumerateNewDev: device is of 1 speed
+UsbEnumerateNewDev: device uses translator (0, 0)
+UsbEnumerateNewDev: device is now ADDRESSED at 2
+UsbEnumerateNewDev: max packet size for EP 0 is 8
+Evaluate context
+UsbBuildDescTable: device has 1 configures
+UsbGetOneConfig: total length is 34
+UsbParseConfigDesc: config 1 has 1 interfaces
+UsbParseInterfaceDesc: interface 0(setting 0) has 1 endpoints
+Endpoint[81]: Created INT ring [7748A200~7748B200)
+Configure Endpoint
+UsbEnumerateNewDev: device 2 is now in CONFIGED state
+UsbSelectConfig: config 1 selected for device 2
+UsbSelectSetting: setting 0 selected for interface 0
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77476F98
+InstallProtocolInterface: 2B2F68D6-0CD2-44CF-8E8B-BBA20B1B5B75 7747B3C0
+UsbBusStart: usb bus started on 77510B18, root hub 774B7418
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4472 NumBytes: 0x1, Buffer: 0x7A61F720
+FvbProtocolWrite: Lba: 0x0 Offset: 0x49CC NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x49CE NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4A08 NumBytes: 0x57, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x49CE NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4472 NumBytes: 0x1, Buffer: 0x7A61F720
+**********************************
+**  WARNING: Test Key is used.  **
+**********************************
+**  WARNING: Test Key is used.  **
+Start to reconnect all driver.
+UsbDisconnectDriver: old TPL is 8, 7747BD98
+Stop Slot = 1,Dci = 3
+XhcStopEndpoint: Slot = 0x1, Dci = 0x3
+XhcSetTrDequeuePointer: Slot = 0x1, Dci = 0x3, Urb = 0x77478B98
+XhcAsyncInterruptTransfer: remove old transfer for addr 1, Status = Success
+UsbDisconnectDriver: TPL after disconnect is 8, 0
+UsbRemoveDevice: device 1 removed
+UsbRemoveDevice: device 2 removed
+UsbBusStop: usb bus stopped on 77510B18
+UsbRootHubRelease: root hub released for hub 774B7418
+Disable device slot 1!
+Disable device slot 2!
+XhcClearBiosOwnership: called to clear BIOS ownership
+PciBus: Discovered PCI @ [00|00|00]
+
+PciBus: Discovered PCI @ [00|02|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFFFF;	Length = 0x400000;	Offset = 0x10
+   BAR[2]: Type = PMem32; Alignment = 0xFFFFFFF;	Length = 0x10000000;	Offset = 0x18
+   BAR[4]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x20
+
+PciBus: Discovered PCI @ [00|11|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|12|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|13|00]
+   BAR[0]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x10
+   BAR[1]: Type =   Io16; Alignment = 0x3;	Length = 0x4;	Offset = 0x14
+   BAR[2]: Type =   Io16; Alignment = 0x7;	Length = 0x8;	Offset = 0x18
+   BAR[3]: Type =   Io16; Alignment = 0x3;	Length = 0x4;	Offset = 0x1C
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+   BAR[5]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x800;	Offset = 0x24
+
+PciBus: Discovered PCI @ [00|14|00]
+   BAR[0]: Type =  Mem64; Alignment = 0xFFFF;	Length = 0x10000;	Offset = 0x10
+
+PciBus: Discovered PCI @ [00|17|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|06]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|18|07]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1A|00]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFFFF;	Length = 0x100000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1B|00]
+   BAR[0]: Type =  Mem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+
+PciBus: Discovered PPB @ [00|1C|00]
+
+PciBus: Discovered PPB @ [00|1C|02]
+
+PciBus: Discovered PCI @ [02|00|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x1FFFF;	Length = 0x20000;	Offset = 0x10
+   BAR[2]: Type =   Io32; Alignment = 0x1F;	Length = 0x20;	Offset = 0x18
+   BAR[3]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x1C
+
+PciBus: Discovered PPB @ [00|1C|03]
+
+PciBus: Discovered PCI @ [00|1E|00]
+   BAR[0]: Type =  Mem32; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|01]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|02]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|03]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|04]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1E|05]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x10
+   BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+
+PciBus: Discovered PCI @ [00|1F|00]
+
+PciBus: Discovered PCI @ [00|1F|03]
+   BAR[0]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x20;	Offset = 0x10
+   BAR[4]: Type =   Io16; Alignment = 0x1F;	Length = 0x20;	Offset = 0x20
+
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77507F98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77504428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77507F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77504028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77508F98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77505828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77507E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77505428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77508F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77505028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77508E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77506828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77509F98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77506428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77509F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77506028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77509E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77507828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750AF98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77507028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750AF18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77507428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750AE98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77508828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750BF98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77508428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750BF18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77508028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7750BE98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77509828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77513E98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77509428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77510A98
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 77509028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77513398
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750A828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77513F18
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750A428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77513898
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750A028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774FE318
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750B828
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774FE398
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750B428
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774FE618
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7750B028
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774FD018
+InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 775106A8
+InstallProtocolInterface: 64A892DC-5561-4536-92C7-799BFC183355 7850A730
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77500398
+InstallProtocolInterface: 7EE2BD44-3DA0-11D4-9A38-0090273FC14D 7747B5A8
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 774FFC98
+InstallProtocolInterface: 7EE2BD44-3DA0-11D4-9A38-0090273FC14D 7747AD28
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77500998
+InstallProtocolInterface: 7EE2BD44-3DA0-11D4-9A38-0090273FC14D 7747AE28
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77501698
+InstallProtocolInterface: BB25CF6F-F1D4-11D2-9A0C-0090273FC1FD 774E10A8
+Terminal - Mode 0, Column = 80, Row = 25
+Terminal - Mode 1, Column = 80, Row = 50
+Terminal - Mode 2, Column = 100, Row = 31
+InstallProtocolInterface: 387477C1-69C7-11D2-8E39-00A0C969723B 7747A6C0
+InstallProtocolInterface: DD9E7534-7762-4698-8C14-F58517A625AA 7747A7A8
+InstallProtocolInterface: 387477C2-69C7-11D2-8E39-00A0C969723B 7747A6D8
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77501118
+InstallProtocolInterface: D3B36F2B-D551-11D4-9A46-0090273FC14D 0
+InstallProtocolInterface: D3B36F2C-D551-11D4-9A46-0090273FC14D 0
+InstallProtocolInterface: D3B36F2D-D551-11D4-9A46-0090273FC14D 0
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77476F98
+InstallProtocolInterface: 39487C79-236D-4666-87E5-09547CAAE1BC 7747D618
+InstallProtocolInterface: 1C0C34F6-D380-41FA-A049-8AD06C1A66AA 7747D650
+InstallProtocolInterface: 9042A9DE-23DC-4A38-96FB-7ADED080516A 7747D630
+InstallProtocolInterface: BD8C1056-9F36-44EC-92A8-A6337F817986 7747D660
+GraphicsConsole video resolution 800 x 600
+Graphics - Mode 0, Column = 80, Row = 25
+Graphics - Mode 1, Column = 0, Row = 0
+Graphics - Mode 2, Column = 100, Row = 31
+InstallProtocolInterface: 387477C2-69C7-11D2-8E39-00A0C969723B 77477AB0
+InstallProtocolInterface: D3B36F2C-D551-11D4-9A46-0090273FC14D 0
+InstallProtocolInterface: 9042A9DE-23DC-4A38-96FB-7ADED080516A 7810F0D0
+InstallProtocolInterface: 982C298B-F4FA-41CB-B838-77AA688FB839 7810F0A8
+XhcCreateUsb3Hc: Capability length 0x80
+XhcCreateUsb3Hc: HcSParams1 0x7000820
+XhcCreateUsb3Hc: HcSParams2 0x84000054
+XhcCreateUsb3Hc: HcCParams 0x200077C1
+XhcCreateUsb3Hc: DBOff 0x3000
+XhcCreateUsb3Hc: RTSOff 0x2000
+XhcCreateUsb3Hc: UsbLegSupOffset 0x460
+XhcCreateUsb3Hc: DebugCapSupOffset 0x480
+XhcSetBiosOwnership: called to set BIOS ownership
+XhcResetHC!
+XhcInitSched:DCBAA=0x77450000
+XhcInitSched: Created CMD ring [77450140~77451140) EVENT ring [77451140~77453140)
+InstallProtocolInterface: 3E745226-9818-45B6-A2AC-D7CD0E8BA2BC 77460038
+XhcDriverBindingStart: XHCI started for controller @ 774FD298
+InstallProtocolInterface: 240612B7-A063-11D4-9A3A-0090273FC14D 7744C0A0
+XhcGetCapability: 7 ports, 64 bit 1
+UsbRootHubInit: root hub 7744BC18 - max speed 3, 7 ports
+XhcClearRootHubPortFeature: status Success
+UsbEnumeratePort: port 0 state - 201, change - 01 on 7744BC18
+UsbEnumeratePort: Device Connect/Disconnect Normally
+UsbEnumeratePort: new device connected at port 0
+XhcUsbPortReset!
+XhcSetRootHubPortFeature: status Success
+XhcClearRootHubPortFeature: status Success
+XhcClearRootHubPortFeature: status Success
+Enable Slot Successfully, The Slot ID = 0x1
+    Address 1 assigned successfully
+UsbEnumerateNewDev: hub port 0 is reset
+UsbEnumerateNewDev: device is of 1 speed
+UsbEnumerateNewDev: device uses translator (0, 0)
+UsbEnumerateNewDev: device is now ADDRESSED at 1
+UsbEnumerateNewDev: max packet size for EP 0 is 8
+Evaluate context
+UsbBuildDescTable: device has 1 configures
+UsbGetOneConfig: total length is 34
+UsbParseConfigDesc: config 1 has 1 interfaces
+UsbParseInterfaceDesc: interface 0(setting 0) has 1 endpoints
+Endpoint[81]: Created INT ring [774549C0~774559C0)
+Configure Endpoint
+UsbEnumerateNewDev: device 1 is now in CONFIGED state
+UsbSelectConfig: config 1 selected for device 1
+UsbSelectSetting: setting 0 selected for interface 0
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7744AF98
+InstallProtocolInterface: 2B2F68D6-0CD2-44CF-8E8B-BBA20B1B5B75 7744B740
+UsbConnectDriver: TPL before connect is 8, 7744AA98
+InstallProtocolInterface: 387477C1-69C7-11D2-8E39-00A0C969723B 774492B8
+InstallProtocolInterface: DD9E7534-7762-4698-8C14-F58517A625AA 774492D0
+InstallProtocolInterface: D3B36F2B-D551-11D4-9A46-0090273FC14D 0
+UsbConnectDriver: TPL after connect is 8
+XhcClearRootHubPortFeature: status Success
+UsbEnumeratePort: port 1 state - 201, change - 01 on 7744BC18
+UsbEnumeratePort: Device Connect/Disconnect Normally
+UsbEnumeratePort: new device connected at port 1
+XhcUsbPortReset!
+XhcSetRootHubPortFeature: status Success
+XhcClearRootHubPortFeature: status Success
+XhcClearRootHubPortFeature: status Success
+Enable Slot Successfully, The Slot ID = 0x2
+    Address 2 assigned successfully
+UsbEnumerateNewDev: hub port 1 is reset
+UsbEnumerateNewDev: device is of 1 speed
+UsbEnumerateNewDev: device uses translator (0, 0)
+UsbEnumerateNewDev: device is now ADDRESSED at 2
+UsbEnumerateNewDev: max packet size for EP 0 is 8
+Evaluate context
+UsbBuildDescTable: device has 1 configures
+UsbGetOneConfig: total length is 34
+UsbParseConfigDesc: config 1 has 1 interfaces
+UsbParseInterfaceDesc: interface 0(setting 0) has 1 endpoints
+Endpoint[81]: Created INT ring [77457200~77458200)
+Configure Endpoint
+UsbEnumerateNewDev: device 2 is now in CONFIGED state
+UsbSelectConfig: config 1 selected for device 2
+UsbSelectSetting: setting 0 selected for interface 0
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77445F98
+InstallProtocolInterface: 2B2F68D6-0CD2-44CF-8E8B-BBA20B1B5B75 77445B40
+UsbBusStart: usb bus started on 774FD298, root hub 7744BC18
+**********************************
+**  WARNING: Test Key is used.  **
+**********************************
+**  WARNING: Test Key is used.  **
+SataControllerStart() Start
+InstallProtocolInterface: BB929DA9-68F7-4035-B22C-A3BB3F23DA55 77442018
+InstallProtocolInterface: A1E37052-80D9-4E65-A317-3E9A55C43EC9 77442020
+SataControllerStart() End
+==AtaAtapiPassThru Start== Controller = 774E2798
+IDENTIFY DEVICE: [0] = 0000000000000040, [2] = 000000000000C837, [83] = 0000000000007701, [86] = 000000000000B401
+port [0] port mulitplier [0] has a [harddisk]
+Enabled S.M.A.R.T feature at port [0] PortMultiplier [0]!
+CalculateBestPioMode() End
+InstallProtocolInterface: 1D3DE7F0-0807-424F-AA69-11A54E19A46F 77441040
+InstallProtocolInterface: 143B7632-B81B-4CB7-ABD3-B625A5B9BFFE 77441090
+InstallProtocolInterface: 19DF145A-B1D4-453F-8507-38816676D7F6 77441998
+AtaBus - Identify Device: Port 0 PortMultiplierPort FFFF
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77441518
+InstallProtocolInterface: 964E5B21-6459-11D2-8E39-00A0C969723B 7733D028
+InstallProtocolInterface: A77B2472-E282-4E9F-A245-C2C0E27BBCC1 7733D058
+InstallProtocolInterface: D432A67F-14DC-484B-B3BB-3F0291849327 7733D0B0
+InstallProtocolInterface: 0167CCC4-D0F7-4F21-A3EF-9E64B7CDCE8B 7733D320
+InstallProtocolInterface: CE345171-BA0B-11D2-8E4F-00A0C969723B 77443820
+InstallProtocolInterface: 151C8EAE-7F2C-472C-9E54-9828194F6A88 77443838
+ BlockSize : 512 
+ LastBlock : EE7C2AF 
+ Valid efi partition table header
+ Valid efi partition table header
+ Valid primary and Valid backup partition table
+ Partition entries read block success
+ Number of partition entries: 128
+ start check partition entries
+ End check partition entries
+ Index : 0
+ Start LBA : 800
+ End LBA : F9FFF
+ Partition size: F9800
+ Start : 100000 End : 1F3FFE00
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 77332A98
+InstallProtocolInterface: 964E5B21-6459-11D2-8E39-00A0C969723B 773326B0
+InstallProtocolInterface: A77B2472-E282-4E9F-A245-C2C0E27BBCC1 773326E0
+InstallProtocolInterface: 8CF2F62C-BC9B-4821-808D-EC9EC421A1A0 77332768
+InstallProtocolInterface: DE94BBA4-06D1-4D40-A16A-BFD50179D6AC 0
+ Index : 1
+ Start LBA : FA000
+ End LBA : 12BFFF
+ Partition size: 32000
+ Start : 1F400000 End : 257FFE00
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7732CA18
+InstallProtocolInterface: 964E5B21-6459-11D2-8E39-00A0C969723B 7732CBB0
+InstallProtocolInterface: A77B2472-E282-4E9F-A245-C2C0E27BBCC1 7732CBE0
+InstallProtocolInterface: 8CF2F62C-BC9B-4821-808D-EC9EC421A1A0 7732CC68
+InstallProtocolInterface: C12A7328-F81F-11D2-BA4B-00A0C93EC93B 0
+ Index : 2
+ Start LBA : 12C000
+ End LBA : 133FFF
+ Partition size: 8000
+ Start : 25800000 End : 267FFE00
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7732C498
+InstallProtocolInterface: 964E5B21-6459-11D2-8E39-00A0C969723B 7732C1B0
+InstallProtocolInterface: A77B2472-E282-4E9F-A245-C2C0E27BBCC1 7732C1E0
+InstallProtocolInterface: 8CF2F62C-BC9B-4821-808D-EC9EC421A1A0 7732C268
+InstallProtocolInterface: E3C9E316-0B5C-4DB8-817D-F92DF00215AE 0
+ Index : 3
+ Start LBA : 134000
+ End LBA : EE7BFFF
+ Partition size: ED48000
+ Start : 26800000 End : 1DCF7FFE00
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7732B198
+InstallProtocolInterface: 964E5B21-6459-11D2-8E39-00A0C969723B 7732BD30
+InstallProtocolInterface: A77B2472-E282-4E9F-A245-C2C0E27BBCC1 7732BD60
+InstallProtocolInterface: 8CF2F62C-BC9B-4821-808D-EC9EC421A1A0 7732BDE8
+InstallProtocolInterface: EBD0A0A2-B9E5-4433-87C0-68B6B72699C7 0
+Prepare to Free Pool
+InstallProtocolInterface: CE345171-BA0B-11D2-8E4F-00A0C969723B 7733D4A0
+InstallProtocolInterface: 151C8EAE-7F2C-472C-9E54-9828194F6A88 7733D4B8
+ BlockSize : 512 
+ LastBlock : F97FF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(F97FF)
+InstallProtocolInterface: CE345171-BA0B-11D2-8E4F-00A0C969723B 7732B6A0
+InstallProtocolInterface: 151C8EAE-7F2C-472C-9E54-9828194F6A88 7732B6B8
+ BlockSize : 512 
+ LastBlock : 31FFF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(D99299D3) > LastLBA(31FFF)
+InstallProtocolInterface: 964E5B22-6459-11D2-8E39-00A0C969723B 77330030
+InstallProtocolInterface: CE345171-BA0B-11D2-8E4F-00A0C969723B 77331020
+InstallProtocolInterface: 151C8EAE-7F2C-472C-9E54-9828194F6A88 77331038
+ BlockSize : 512 
+ LastBlock : 7FFF 
+InstallProtocolInterface: CE345171-BA0B-11D2-8E4F-00A0C969723B 773315A0
+InstallProtocolInterface: 151C8EAE-7F2C-472C-9E54-9828194F6A88 773315B8
+ BlockSize : 512 
+ LastBlock : ED47FFF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(ED47FFF)
+UsbBusRecursivelyConnectWantedUsbIo: TPL before connect is 4
+InstallProtocolInterface: 31878C87-0B75-11D5-9A4F-0090273FC14D 7732F6E0
+UsbBusRecursivelyConnectWantedUsbIo: TPL after connect is 4
+ BlockSize : 512 
+ LastBlock : EE7C2AF 
+ Valid efi partition table header
+ Valid efi partition table header
+ Valid primary and Valid backup partition table
+ Partition entries read block success
+ Number of partition entries: 128
+ start check partition entries
+ End check partition entries
+ Index : 0
+ Start LBA : 800
+ End LBA : F9FFF
+ Partition size: F9800
+ Start : 100000 End : 1F3FFE00
+ Index : 1
+ Start LBA : FA000
+ End LBA : 12BFFF
+ Partition size: 32000
+ Start : 1F400000 End : 257FFE00
+ Index : 2
+ Start LBA : 12C000
+ End LBA : 133FFF
+ Partition size: 8000
+ Start : 25800000 End : 267FFE00
+ Index : 3
+ Start LBA : 134000
+ End LBA : EE7BFFF
+ Partition size: ED48000
+ Start : 26800000 End : 1DCF7FFE00
+Prepare to Free Pool
+ BlockSize : 512 
+ LastBlock : F97FF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(F97FF)
+ BlockSize : 512 
+ LastBlock : 7FFF 
+ BlockSize : 512 
+ LastBlock : ED47FFF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(ED47FFF)
+**********************************
+**  WARNING: Test Key is used.  **
+**********************************
+**  WARNING: Test Key is used.  **
+End to reconnect all driver.
+**********************************
+**  WARNING: Test Key is used.  **
+**********************************
+**  WARNING: Test Key is used.  **
+ BlockSize : 512 
+ LastBlock : EE7C2AF 
+ Valid efi partition table header
+ Valid efi partition table header
+ Valid primary and Valid backup partition table
+ Partition entries read block success
+ Number of partition entries: 128
+ start check partition entries
+ End check partition entries
+ Index : 0
+ Start LBA : 800
+ End LBA : F9FFF
+ Partition size: F9800
+ Start : 100000 End : 1F3FFE00
+ Index : 1
+ Start LBA : FA000
+ End LBA : 12BFFF
+ Partition size: 32000
+ Start : 1F400000 End : 257FFE00
+ Index : 2
+ Start LBA : 12C000
+ End LBA : 133FFF
+ Partition size: 8000
+ Start : 25800000 End : 267FFE00
+ Index : 3
+ Start LBA : 134000
+ End LBA : EE7BFFF
+ Partition size: ED48000
+ Start : 26800000 End : 1DCF7FFE00
+Prepare to Free Pool
+ BlockSize : 512 
+ LastBlock : F97FF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(F97FF)
+ BlockSize : 512 
+ LastBlock : 7FFF 
+ BlockSize : 512 
+ LastBlock : ED47FFF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(ED47FFF)
+ BlockSize : 512 
+ LastBlock : EE7C2AF 
+ Valid efi partition table header
+ Valid efi partition table header
+ Valid primary and Valid backup partition table
+ Partition entries read block success
+ Number of partition entries: 128
+ start check partition entries
+ End check partition entries
+ Index : 0
+ Start LBA : 800
+ End LBA : F9FFF
+ Partition size: F9800
+ Start : 100000 End : 1F3FFE00
+ Index : 1
+ Start LBA : FA000
+ End LBA : 12BFFF
+ Partition size: 32000
+ Start : 1F400000 End : 257FFE00
+ Index : 2
+ Start LBA : 12C000
+ End LBA : 133FFF
+ Partition size: 8000
+ Start : 25800000 End : 267FFE00
+ Index : 3
+ Start LBA : 134000
+ End LBA : EE7BFFF
+ Partition size: ED48000
+ Start : 26800000 End : 1DCF7FFE00
+Prepare to Free Pool
+ BlockSize : 512 
+ LastBlock : F97FF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(F97FF)
+ BlockSize : 512 
+ LastBlock : 7FFF 
+ BlockSize : 512 
+ LastBlock : ED47FFF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(ED47FFF)
+ BlockSize : 512 
+ LastBlock : EE7C2AF 
+ Valid efi partition table header
+ Valid efi partition table header
+ Valid primary and Valid backup partition table
+ Partition entries read block success
+ Number of partition entries: 128
+ start check partition entries
+ End check partition entries
+ Index : 0
+ Start LBA : 800
+ End LBA : F9FFF
+ Partition size: F9800
+ Start : 100000 End : 1F3FFE00
+ Index : 1
+ Start LBA : FA000
+ End LBA : 12BFFF
+ Partition size: 32000
+ Start : 1F400000 End : 257FFE00
+ Index : 2
+ Start LBA : 12C000
+ End LBA : 133FFF
+ Partition size: 8000
+ Start : 25800000 End : 267FFE00
+ Index : 3
+ Start LBA : 134000
+ End LBA : EE7BFFF
+ Partition size: ED48000
+ Start : 26800000 End : 1DCF7FFE00
+Prepare to Free Pool
+ BlockSize : 512 
+ LastBlock : F97FF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(F97FF)
+ BlockSize : 512 
+ LastBlock : 7FFF 
+ BlockSize : 512 
+ LastBlock : ED47FFF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(ED47FFF)
+ BlockSize : 512 
+ LastBlock : F97FF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(F97FF)
+ BlockSize : 512 
+ LastBlock : 7FFF 
+ BlockSize : 512 
+ LastBlock : ED47FFF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(ED47FFF)
+**********************************
+**  WARNING: Test Key is used.  **
+**********************************
+**  WARNING: Test Key is used.  **
+S3Ready!
+S3ReadyThunkPlatform
+AcpiVariableThunkPlatform: AcpiMemoryBase is 0x7908B000
+AcpiVariableThunkPlatform: AcpiMemorySize is 0x   10000
+AcpiVariableThunkPlatform: SystemMemoryLength is 0x7A000000
+InstallProtocolInterface: D088A413-0A70-4217-BA55-9A3CB65C41B3 0
+LegacyRegion NonCSM - 9E000
+LegacyRegion: 0x0009E000
+InitSmramDataContent
+SMRAM Map Buffer too small
+SMRAM Map Buffer installed complet
+LockBoxSize - 36F94
+SmramCpuData.GdtrProfileSize            - A
+SmramCpuData.GdtSize                    - 48
+SmramCpuData.IdtrProfileSize            - A
+SmramCpuData.IdtSize                    - 48
+SmramCpuData.CpuPrivateDataSize         - C
+SmramCpuData.S3BootScriptTableSize      - 4000
+SmramCpuData.S3BspMtrrTableSize         - 200
+SmramCpuData.MicrocodePointerBufferSize - C
+SmramCpuData.MicrocodeDataBufferSize    - 32C00
+SmramCpuData.GdtrProfileOffset            - D8
+SmramCpuData.GdtOffset                    - E2
+SmramCpuData.IdtrProfileOffset            - 12A
+SmramCpuData.IdtOffset                    - 134
+SmramCpuData.CpuPrivateDataOffset         - 17C
+SmramCpuData.S3BootScriptTableOffset      - 188
+SmramCpuData.S3BspMtrrTableOffset         - 4188
+SmramCpuData.MicrocodePointerBufferOffset - 4388
+SmramCpuData.MicrocodeDataBufferOffset    - 4394
+CPU SMRAM NVS Data - 7885E000
+Get BIOS ID from FV
+Get BIOS ID from FV successfully
+BIOS ID: MNW2MAX1.X64.0084.D01.1902261555
+Day:26 Month:2 Year:2019 
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4A60 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4A62 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4A9C NumBytes: 0xC, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4A62 NumBytes: 0x1, Buffer: 0x7A70601A
+Disable AHCI event is signalled
+VLV2: FmpDeviceLock() for system FLASH
+FmpDxe: FmpDeviceLock() returned error.  Status = Unsupported
+SmmEndOfDxeHandler
+SmmInstallProtocolInterface: 24E70042-D5C5-4260-8C39-0AD3AA32E93D 0
+SMM MemoryProtectionAttribute - 0x0000000000000001
+MemoryMapSize - 0x1290
+MemoryMap - 0x7A59F018
+MemoryAttributesTable:
+  Version              - 0x00000001
+  NumberOfEntries      - 0x0000003B
+  DescriptorSize       - 0x00000030
+Entry (0x7A59E028)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A000000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E058)
+  Type              - 0x7
+  PhysicalStart     - 0x000000007A001000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000059E
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E088)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A59F000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E0B8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5A4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000B
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E0E8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5AF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E118)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5B5000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E148)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5B6000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E178)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5B8000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E1A8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5BD000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E1D8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5C3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E208)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5C4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000F
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E238)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5D3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E268)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5D4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000045
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E298)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A619000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E2C8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A61A000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000D
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E2F8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A627000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000A
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E328)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A631000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E358)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A632000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000D
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E388)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A63F000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000009
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E3B8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A648000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E3E8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A649000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000028
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E418)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A671000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E448)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A677000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E478)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A67E000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E4A8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A67F000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E4D8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A680000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000003
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E508)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A683000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E538)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A68A000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E568)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A68B000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E598)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A68D000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000004
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E5C8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A691000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E5F8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A697000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E628)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A698000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E658)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A699000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000004
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E688)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A69D000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E6B8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6A3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E6E8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6A4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E718)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6A5000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E748)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6A7000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E778)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6AC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E7A8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6AD000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E7D8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6AF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000009
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E808)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6B8000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E838)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6BF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E868)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6C0000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E898)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6C1000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000B
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E8C8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6CC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E8F8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6D2000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E928)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6D3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000098
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E958)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A76B000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000041
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E988)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7AC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000002F
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E9B8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A7DB000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E9E8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7DC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59EA18)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A7DD000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000020000
+Entry (0x7A59EA48)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7DF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000004000
+Entry (0x7A59EA78)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A7E4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59EAA8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7E5000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000008
+  Attribute         - 0x0000000000004000
+Entry (0x7A59EAD8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A7ED000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000B
+  Attribute         - 0x0000000000020000
+Entry (0x7A59EB08)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7F8000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000008
+  Attribute         - 0x0000000000004000
+[Variable]SMM_END_OF_DXE is signaled
+[Variable] Lock: E20939BE-32D4-41BE-A150-897F85D49829:MemoryOverwriteRequestControl Success
+[Variable] Lock: BB983CCF-151D-40E1-A07B-4A17BE168292:MemoryOverwriteRequestControlLock Success
+Initialize variable error flag (FF)
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4AA8 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4AAA NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4AE4 NumBytes: 0x1B, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4AAA NumBytes: 0x1, Buffer: 0x7A70601A
+InstallProtocolInterface: 60FF8964-E906-41D0-AFED-F241E974E08E 0
+InstallProtocolInterface: FA20568B-548B-4B2B-81EF-1BA08D4A3CEC 0
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 79540618
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - 3079818C-46D4-4A73-AEF3-E3E46CF1EEDB, SmramBuffer - 0x7A59A000, Length - 0x8
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 79540618
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - 79CB58C4-AC51-442F-AFD7-98E47D2E9908, SmramBuffer - 0x7A599000, Length - 0x8
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 79540638
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 79540688
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - 9A8D3433-9FE8-42B6-870B-1E31C84EBE3B, SmramBuffer - 0x7A58D000, Length - 0xB720
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 795406A8
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 79540768
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - AEA6B965-DCF5-4311-B4B8-0F12464494D2, SmramBuffer - 0x7A587000, Length - 0x6000
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 79540778
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+SmmLockBoxDxeLib SaveLockBox - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 79540768
+SmmLockBox Command - 1
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - 1810AB4A-2314-4DF6-81EB-67C6EC058591, SmramBuffer - 0x7A586000, Length - 0x8
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SaveLockBox - Exit (Success)
+SmmLockBoxDxeLib SetLockBoxAttributes - Enter
+SmmLockBox SmmLockBoxHandler Enter
+SmmLockBox LockBoxParameterHeader - 79540778
+SmmLockBox Command - 4
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SmmLockBox SmmLockBoxHandler Exit
+SmmLockBoxDxeLib SetLockBoxAttributes - Exit (Success)
+SmmInstallProtocolInterface: 47B7FA8C-F4BD-4AF6-8200-333086F0D2C8 0
+GetUefiMemoryMap
+SMM Driver 63296C52-01CF-4EEA-A47C-782A14DA6894 was discovered but not loaded!!
+SMM Driver E21F35A8-42FF-4050-82D6-93F7CDFA7073 was discovered but not loaded!!
+SMM Driver 1410C6AC-9F4B-495B-9C23-8A5AEB0165E9 was discovered but not loaded!!
+Patch page table start ...
+Patch page table done!
+MemoryAttributesTable:
+  Version                   - 0x00000001
+  NumberOfEntries           - 0x0000003B
+  DescriptorSize            - 0x00000030
+Entry (0x7A59E028)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A000000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E058)
+  Type              - 0x7
+  PhysicalStart     - 0x000000007A001000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000059E
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E088)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A59F000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E0B8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5A4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000B
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E0E8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5AF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E118)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5B5000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E148)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5B6000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E178)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5B8000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E1A8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5BD000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E1D8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5C3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E208)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5C4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000F
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E238)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A5D3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E268)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A5D4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000045
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E298)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A619000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E2C8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A61A000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000D
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E2F8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A627000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000A
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E328)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A631000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E358)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A632000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000D
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E388)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A63F000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000009
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E3B8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A648000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E3E8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A649000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000028
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E418)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A671000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E448)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A677000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E478)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A67E000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E4A8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A67F000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E4D8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A680000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000003
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E508)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A683000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E538)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A68A000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E568)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A68B000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E598)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A68D000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000004
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E5C8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A691000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E5F8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A697000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E628)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A698000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E658)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A699000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000004
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E688)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A69D000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E6B8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6A3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E6E8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6A4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E718)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6A5000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E748)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6A7000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E778)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6AC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E7A8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6AD000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E7D8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6AF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000009
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E808)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6B8000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000007
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E838)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6BF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E868)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6C0000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E898)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6C1000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000B
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E8C8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6CC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000006
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E8F8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A6D2000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E928)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A6D3000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000098
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E958)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A76B000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000041
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E988)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7AC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000002F
+  Attribute         - 0x0000000000004000
+Entry (0x7A59E9B8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A7DB000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59E9E8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7DC000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000004000
+Entry (0x7A59EA18)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A7DD000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000002
+  Attribute         - 0x0000000000020000
+Entry (0x7A59EA48)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7DF000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000005
+  Attribute         - 0x0000000000004000
+Entry (0x7A59EA78)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A7E4000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000001
+  Attribute         - 0x0000000000020000
+Entry (0x7A59EAA8)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7E5000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000008
+  Attribute         - 0x0000000000004000
+Entry (0x7A59EAD8)
+  Type              - 0x5
+  PhysicalStart     - 0x000000007A7ED000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x000000000000000B
+  Attribute         - 0x0000000000020000
+Entry (0x7A59EB08)
+  Type              - 0x6
+  PhysicalStart     - 0x000000007A7F8000
+  VirtualStart      - 0x0000000000000000
+  NumberOfPages     - 0x0000000000000008
+  Attribute         - 0x0000000000004000
+PatchSmmSaveStateMap:
+PatchGdtIdtMap - GDT:
+PatchGdtIdtMap - IDT:
+SetUefiMemMapAttributes
+UefiMemory protection: 0x0 - 0x8F000 Success
+UefiMemory protection: 0x90000 - 0x9E000 Success
+UefiMemory protection: 0x100000 - 0x20000000 Success
+UefiMemory protection: 0x20100000 - 0x7885D000 Success
+UefiMemory protection: 0x791BE000 - 0x7A000000 Success
+UefiMemoryAttribute protection: 0x78A25000 - 0x78A29000 Success
+UefiMemoryAttribute protection: 0x78A30000 - 0x78A32000 Success
+UefiMemoryAttribute protection: 0x78A38000 - 0x78A3D000 Success
+UefiMemoryAttribute protection: 0x78A45000 - 0x78A4A000 Success
+UefiMemoryAttribute protection: 0x78A50000 - 0x78A54000 Success
+UefiMemoryAttribute protection: 0x78A5B000 - 0x78A60000 Success
+UefiMemoryAttribute protection: 0x78A67000 - 0x78A6A000 Success
+UefiMemoryAttribute protection: 0x78A72000 - 0x78A7C000 Success
+UefiMemoryAttribute protection: 0x78A83000 - 0x78A89000 Success
+UefiMemoryAttribute protection: 0x78A90000 - 0x78A95000 Success
+UefiMemoryAttribute protection: 0x78A9C000 - 0x78A9E000 Success
+UefiMemoryAttribute protection: 0x78AA5000 - 0x78AA7000 Success
+UefiMemoryAttribute protection: 0x78AAD000 - 0x78AAF000 Success
+UefiMemoryAttribute protection: 0x78AB5000 - 0x78AB8000 Success
+SetPageTableAttributes
+Start...
+SMM IPL locked SMRAM window
+VBT data found
+Buffer: EFI Hard Drive
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4B00 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4B02 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4B3C NumBytes: 0x56, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4B02 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4B94 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4B96 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4BD0 NumBytes: 0x16, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4B96 NumBytes: 0x1, Buffer: 0x7A70601A
+
+
+Start showing progress bar... Press any key to stop it, or press <F2> or <DEL> to enter setup page! ...Zzz....
+Showing progress bar...Remaining 5 second!
+Showing progress bar...Remaining 4 second!
+Showing progress bar...Remaining 3 second!
+Showing progress bar...Remaining 2 second!
+Showing progress bar...Remaining 1 second!
+OSIndication Variable Value 0
+S3Ready!
+FPDT: ACPI Boot Performance Table address = 0x790B9000
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4BE8 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4BEA NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4C24 NumBytes: 0x38, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4BEA NumBytes: 0x1, Buffer: 0x7A70601A
+PcRtc: Write 0x20 to CMOS location 0x32
+=============ISPBase=90800000==============
+
+S3Ready!
+PchInitAfterPciEnumeration - Callback.
+ConfigureMiscAtBoot() Start
+ConfigureMiscAtBoot() End
+ConfigureLpeAtBoot() Start
+ConfigureLpeAtBoot() End
+ConfigureOtgAtBoot() Start
+ConfigureOtgAtBoot() End
+ConfigureLpssAtBoot() Start
+RootBridgeHandle 77689718 1
+  8A 2B 1 0 0 0 1000 0 0 2000
+  8A 2B 0 0 0 20 80000000 0 0 10800000
+Update Device 0 11 0
+Devices  8A 2B 0 0 0 20 90733000 FFF 0 1000
+New Resource is 0 90C00000
+Devices  8A 2B 0 0 0 20 90732000 FFF 0 1000
+New Resource is 1 90C01000
+Update Device 0 18 0
+Devices  8A 2B 0 0 0 20 90718000 3FFF 0 4000
+New Resource is 0 90C04000
+Devices  8A 2B 0 0 0 20 9072C000 FFF 0 1000
+New Resource is 1 90C02000
+Update Device 0 18 6
+Devices  8A 2B 0 0 0 20 9072B000 FFF 0 1000
+New Resource is 0 90C03000
+Devices  8A 2B 0 0 0 20 9072A000 FFF 0 1000
+New Resource is 1 90C08000
+Update Device 0 18 7
+Devices  8A 2B 0 0 0 20 90729000 FFF 0 1000
+New Resource is 0 90C09000
+Devices  8A 2B 0 0 0 20 90728000 FFF 0 1000
+New Resource is 1 90C0A000
+Update Device 0 1E 0
+Devices  8A 2B 0 0 0 20 90714000 3FFF 0 4000
+New Resource is 0 90C0C000
+Devices  8A 2B 0 0 0 20 90727000 FFF 0 1000
+New Resource is 1 90C0B000
+Update Device 0 1E 1
+Devices  8A 2B 0 0 0 20 90726000 FFF 0 1000
+New Resource is 0 90C10000
+Devices  8A 2B 0 0 0 20 90725000 FFF 0 1000
+New Resource is 1 90C11000
+Update Device 0 1E 2
+Devices  8A 2B 0 0 0 20 90724000 FFF 0 1000
+New Resource is 0 90C12000
+Devices  8A 2B 0 0 0 20 90723000 FFF 0 1000
+New Resource is 1 90C13000
+Update Device 0 1E 3
+Devices  8A 2B 0 0 0 20 90722000 FFF 0 1000
+New Resource is 0 90C14000
+Devices  8A 2B 0 0 0 20 90721000 FFF 0 1000
+New Resource is 1 90C15000
+Update Device 0 1E 4
+Devices  8A 2B 0 0 0 20 90720000 FFF 0 1000
+New Resource is 0 90C16000
+Devices  8A 2B 0 0 0 20 9071F000 FFF 0 1000
+New Resource is 1 90C17000
+Update Device 0 1E 5
+Devices  8A 2B 0 0 0 20 9071E000 FFF 0 1000
+New Resource is 0 90C18000
+Devices  8A 2B 0 0 0 20 9071D000 FFF 0 1000
+New Resource is 1 90C19000
+Initialize CSRT Start
+Initialize CSRT End,LpssDMA0Bar0=90C0C000,LpssDMA1Bar0=0
+gLpssDummyProtocolGuid
+InstallProtocolInterface: AF4CC162-D41C-455A-AB45-6DBCC1CD32F3 0
+ConfigureLpssAtBoot() End
+ConfigureSccAtBoot() Start
+ConfigSccBootableDevicesAtBootForS3() Start
+Update Device 0 12 0
+Devices  8A 2B 0 0 0 20 90731000 FFF 0 1000
+New Resource is 0 90C1A000
+Devices  8A 2B 0 0 0 20 90730000 FFF 0 1000
+New Resource is 1 90C1B000
+Update Device 0 17 0
+Devices  8A 2B 0 0 0 20 9072E000 FFF 0 1000
+New Resource is 0 90C1C000
+Devices  8A 2B 0 0 0 20 9072D000 FFF 0 1000
+New Resource is 1 90C1D000
+ConfigSccBootableDevicesAtBootForS3() End
+ConfigureSccAtBoot() End
+ConfigureIrqAtBoot() Start
+InitPciDevPME mSystemConfiguration.EhciPllCfgEnable = 0x1 
+ConfigureAdditionalPm() EhciPciMmBase = 0xE00E8000 
+ConfigureAdditionalPm() R_PCH_EHCI_PWR_CNTL_STS = 0xFFFFFFFF 
+SmmInstallProtocolInterface: 6E057ECF-FA99-4F39-95BC-59F9921D17E4 0
+Warning: Failed to get the Lowest Supported Version from variable.  Status = Not Found
+Warning: Failed to get the Last Attempt Version from variable.  Status = Not Found
+Warning: Failed to get the Last Attempt Status from variable.  Status = Not Found
+Failed to get the Version from variable.  Status = Not Found
+FmpDxe: GetVersionString() unsupported in FmpDeviceLib.
+Warning: Failed to get the Lowest Supported Version from variable.  Status = Not Found
+Warning: Failed to get the Last Attempt Version from variable.  Status = Not Found
+Warning: Failed to get the Last Attempt Status from variable.  Status = Not Found
+Failed to get the Version from variable.  Status = Not Found
+FmpDxe: GetVersionString() unsupported in FmpDeviceLib.
+Warning: Failed to get the Lowest Supported Version from variable.  Status = Not Found
+Warning: Failed to get the Last Attempt Version from variable.  Status = Not Found
+Warning: Failed to get the Last Attempt Status from variable.  Status = Not Found
+Failed to get the Version from variable.  Status = Not Found
+FmpDxe: GetVersionString() unsupported in FmpDeviceLib.
+Warning: Failed to get the Lowest Supported Version from variable.  Status = Not Found
+Warning: Failed to get the Last Attempt Version from variable.  Status = Not Found
+Warning: Failed to get the Last Attempt Status from variable.  Status = Not Found
+ESRT Table Information:
++--------------------------------------------------------+
+| Firmware Resource Count          : 0x00000005          |
+| Firmware Resource Count Max      : 0x0000000A          |
+| Firmware Resource Entry Version  : 0x0000000000000001  |
++--------------------------------------------------------+
+ESRT Table Entries:
++--------------------------------------+--------------+------------+------------+------------+------------+------------+
+|                                      |              |            | Lowest     |            | Last       | Last       |
+|                                      | Firmware     |            | Supported  | Capsule    | Attempted  | Attempted  |
+| CLASS GUID                           | Type         | Version    | Version    | Flags      | Version    | Status     |
++--------------------------------------+--------------+------------+------------+------------+------------+------------+
+| 4096267B-DA0A-42EB-B5EB-FEF31D207CB4 | Device FW    | 0x00000000 | 0x00000000 | 0x00000000 | 0x00000000 | 0x00000000 |
+| 79179BFD-704D-4C90-9E02-0AB8D968C18A | Device FW    | 0x00000001 | 0x00000000 | 0x00000000 | 0x00000000 | 0x00000000 |
+| 149DA854-7D19-4FAA-A91E-862EA1324BE6 | Device FW    | 0x00000001 | 0x00000000 | 0x00000000 | 0x00000000 | 0x00000000 |
+| 72E2945A-00DA-448E-9AA7-075AD840F9D4 | Device FW    | 0x00000001 | 0x00000000 | 0x00000000 | 0x00000000 | 0x00000000 |
+| 96D4FDCD-1502-424D-9D4C-9B12D2DCAE5C | Device FW    | 0x00000909 | 0x00000909 | 0x00000000 | 0x00000000 | 0x00000000 |
++--------------------------------------+--------------+------------+------------+------------+------------+------------+
+EsrtFmpDxe: Installed ESRT table. 
+Get BIOS ID from FV
+Get BIOS ID from FV successfully
+BIOS ID: MNW2MAX1.X64.0084.D01.1902261555
+GetBiosVersionDateTime :MNW2MAX1.X64.0084.D01.1902261555 02/26/2019 15:55 
+update STR_BIOS_VERSION_VALUE
+update STR_BIOS_BUILD_TIME_VALUE
+Memory  Previous  Current    Next   
+ Type    Pages     Pages     Pages  
+======  ========  ========  ========
+  09    00000040  00000013  00000040
+  0A    00000100  0000007F  00000100
+  00    00000600  0000003E  00000600
+  0B    00000000  00000000  00000000
+  0C    00000000  00000000  00000000
+  0D    00000000  00000000  00000000
+  05    00000200  0000009A  00000200
+  06    00000100  00000083  00000100
+  01    00000100  00000000  00000100
+  02    00000100  00000000  00000100
+  03    00000800  00000663  00000800
+  04    00002500  00000FA6  00002500
+  07    00000000  00000000  00000000
+  08    00000000  00000000  00000000
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4C5C NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4C5E NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4C98 NumBytes: 0xA4, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4C5E NumBytes: 0x1, Buffer: 0x7A70601A
+Booting EFI Hard Drive
+ BlockSize : 512 
+ LastBlock : EE7C2AF 
+ Valid efi partition table header
+ Valid efi partition table header
+ Valid primary and Valid backup partition table
+ Partition entries read block success
+ Number of partition entries: 128
+ start check partition entries
+ End check partition entries
+ Index : 0
+ Start LBA : 800
+ End LBA : F9FFF
+ Partition size: F9800
+ Start : 100000 End : 1F3FFE00
+ Index : 1
+ Start LBA : FA000
+ End LBA : 12BFFF
+ Partition size: 32000
+ Start : 1F400000 End : 257FFE00
+ Index : 2
+ Start LBA : 12C000
+ End LBA : 133FFF
+ Partition size: 8000
+ Start : 25800000 End : 267FFE00
+ Index : 3
+ Start LBA : 134000
+ End LBA : EE7BFFF
+ Partition size: ED48000
+ Start : 26800000 End : 1DCF7FFE00
+Prepare to Free Pool
+ BlockSize : 512 
+ LastBlock : F97FF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(F97FF)
+ BlockSize : 512 
+ LastBlock : 7FFF 
+ BlockSize : 512 
+ LastBlock : ED47FFF 
+PartitionValidMbr: Bad MBR partition size EndingLBA(DEB56E8B) > LastLBA(ED47FFF)
+FSOpen: Open '\EFI\BOOT\BOOTX64.EFI' Success
+FSOpen: Open '\EFI\BOOT\BOOTX64.EFI' Success
+[Security] 3rd party image[0] can be loaded after EndOfDxe: PciRoot(0x0)/Pci(0x13,0x0)/Sata(0x0,0xFFFF,0x0)/HD(2,GPT,96AF141C-E549-4051-BD3A-30F59C1C0979,0xFA000,0x32000)/\EFI\BOOT\BOOTX64.EFI.
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 76E3F040
+Loading driver at 0x00010000000 EntryPoint=0x0001001BAD0 bootmgfw.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 76E41018
+ProtectUefiImageCommon - 0x76E3F040
+  - 0x0000000010000000 - 0x000000000017B000
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4D3C NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4D3E NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4D78 NumBytes: 0x29, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4D3E NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x1EFE NumBytes: 0x1, Buffer: 0x7A61F4B0
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4DA4 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4DA6 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4DE0 NumBytes: 0x68, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4DA6 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x1EFE NumBytes: 0x1, Buffer: 0x7A61F4B0
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4E48 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4E4A NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4E84 NumBytes: 0x1D, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4E4A NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4EA4 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4EA6 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4EE0 NumBytes: 0x2F, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4EA6 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4F10 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4F12 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4F4C NumBytes: 0x24, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4F12 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4F70 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4F72 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4FAC NumBytes: 0x2A, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4F72 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4FD8 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4FDA NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5014 NumBytes: 0x2A, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x4FDA NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5040 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5042 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x507C NumBytes: 0x2A, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5042 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x50A8 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x50AA NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x50E4 NumBytes: 0x2A, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x50AA NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5110 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5112 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x514C NumBytes: 0x36, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5112 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5184 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5186 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x51C0 NumBytes: 0x2C, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5186 NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x51EC NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x51EE NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5228 NumBytes: 0x30, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x51EE NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5258 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x525A NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5294 NumBytes: 0x32, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x525A NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x52C8 NumBytes: 0x3C, Buffer: 0x7A706018
+FvbProtocolWrite: Lba: 0x0 Offset: 0x52CA NumBytes: 0x1, Buffer: 0x7A70601A
+FvbProtocolWrite: Lba: 0x0 Offset: 0x5304 NumBytes: 0x3A, Buffer: 0x7A706054
+FvbProtocolWrite: Lba: 0x0 Offset: 0x52CA NumBytes: 0x1, Buffer: 0x7A70601A
+XhcClearBiosOwnership: called to clear BIOS ownership
+EnableAcpiCallback: AcpiBase = 400
+FPDT: Boot Performance - ResetEnd                = 0
+FPDT: Boot Performance - OsLoaderLoadImageStart  = 3830677641
+FPDT: Boot Performance - OsLoaderStartImageStart = 3899404253
+FPDT: Boot Performance - ExitBootServicesEntry   = 1747232958
+ConfigureXhciAtBoot() Start
+ConfigureXhciAtBoot() End
+EFI Memory Map Start.
+
+PhysicalStart= 0
+NumberOfPages= 1
+Type= 7
+
+
+PhysicalStart= 1000
+NumberOfPages= 1
+Type= 1
+
+
+PhysicalStart= 2000
+NumberOfPages= 8D
+Type= 7
+
+
+PhysicalStart= 8F000
+NumberOfPages= 1
+Type= A
+
+
+PhysicalStart= 90000
+NumberOfPages= E
+Type= 7
+
+
+PhysicalStart= 9E000
+NumberOfPages= 62
+Type= 0
+
+
+PhysicalStart= 100000
+NumberOfPages= 2
+Type= 1
+
+
+PhysicalStart= 102000
+NumberOfPages= 1
+Type= 2
+
+
+PhysicalStart= 103000
+NumberOfPages= E1
+Type= 1
+
+
+PhysicalStart= 1E4000
+NumberOfPages= 1
+Type= 7
+
+
+PhysicalStart= 1E5000
+NumberOfPages= 8
+Type= 1
+
+
+PhysicalStart= 1ED000
+NumberOfPages= 6
+Type= 7
+
+
+PhysicalStart= 1F3000
+NumberOfPages= 14
+Type= 1
+
+
+PhysicalStart= 207000
+NumberOfPages= 17
+Type= 7
+
+
+PhysicalStart= 21E000
+NumberOfPages= 8
+Type= 1
+
+
+PhysicalStart= 226000
+NumberOfPages= 1
+Type= 7
+
+
+PhysicalStart= 227000
+NumberOfPages= 1
+Type= 1
+
+
+PhysicalStart= 228000
+NumberOfPages= 1
+Type= 7
+
+
+PhysicalStart= 229000
+NumberOfPages= D
+Type= 1
+
+
+PhysicalStart= 236000
+NumberOfPages= 55
+Type= 7
+
+
+PhysicalStart= 28B000
+NumberOfPages= 1
+Type= 1
+
+
+PhysicalStart= 28C000
+NumberOfPages= B
+Type= 7
+
+
+PhysicalStart= 297000
+NumberOfPages= 83
+Type= 1
+
+
+PhysicalStart= 31A000
+NumberOfPages= 4D2
+Type= 7
+
+
+PhysicalStart= 7EC000
+NumberOfPages= 1A5
+Type= 1
+
+
+PhysicalStart= 991000
+NumberOfPages= 26F
+Type= 7
+
+
+PhysicalStart= C00000
+NumberOfPages= 1240
+Type= 1
+
+
+PhysicalStart= 1E40000
+NumberOfPages= 1C0
+Type= 7
+
+
+PhysicalStart= 2000000
+NumberOfPages= DF1
+Type= 1
+
+
+PhysicalStart= 2DF1000
+NumberOfPages= 20F
+Type= 7
+
+
+PhysicalStart= 3000000
+NumberOfPages= 400
+Type= 1
+
+
+PhysicalStart= 3400000
+NumberOfPages= 2AE
+Type= 7
+
+
+PhysicalStart= 36AE000
+NumberOfPages= 8BD
+Type= 1
+
+
+PhysicalStart= 3F6B000
+NumberOfPages= 95
+Type= 7
+
+
+PhysicalStart= 4000000
+NumberOfPages= 1800
+Type= 1
+
+
+PhysicalStart= 5800000
+NumberOfPages= A800
+Type= 7
+
+
+PhysicalStart= 10000000
+NumberOfPages= 17B
+Type= 1
+
+
+PhysicalStart= 1017B000
+NumberOfPages= FE85
+Type= 7
+
+
+PhysicalStart= 20000000
+NumberOfPages= 100
+Type= 0
+
+
+PhysicalStart= 20100000
+NumberOfPages= 4FF00
+Type= 7
+
+
+PhysicalStart= 70000000
+NumberOfPages= 20
+Type= 4
+
+
+PhysicalStart= 70020000
+NumberOfPages= 6DF5
+Type= 7
+
+
+PhysicalStart= 76E15000
+NumberOfPages= 25
+Type= 4
+
+
+PhysicalStart= 76E3A000
+NumberOfPages= 2
+Type= 7
+
+
+PhysicalStart= 76E3C000
+NumberOfPages= F82
+Type= 4
+
+
+PhysicalStart= 77DBE000
+NumberOfPages= 19D
+Type= 7
+
+
+PhysicalStart= 77F5B000
+NumberOfPages= 663
+Type= 3
+
+
+PhysicalStart= 785BE000
+NumberOfPages= 27D
+Type= 7
+
+
+PhysicalStart= 7883B000
+NumberOfPages= 83
+Type= 6
+
+
+PhysicalStart= 788BE000
+NumberOfPages= 200
+Type= 5
+
+
+PhysicalStart= 78ABE000
+NumberOfPages= 600
+Type= 0
+
+
+PhysicalStart= 790BE000
+NumberOfPages= 100
+Type= A
+
+
+PhysicalStart= 791BE000
+NumberOfPages= 40
+Type= 9
+
+
+PhysicalStart= 791FE000
+NumberOfPages= 202
+Type= 4
+
+
+PhysicalStart= 79400000
+NumberOfPages= 121
+Type= 7
+
+
+PhysicalStart= 79521000
+NumberOfPages= 20
+Type= 4
+
+
+PhysicalStart= 79541000
+NumberOfPages= 25
+Type= 3
+
+
+PhysicalStart= 79566000
+NumberOfPages= 7EC
+Type= 4
+
+
+PhysicalStart= 79D52000
+NumberOfPages= 25
+Type= 3
+
+
+PhysicalStart= 79D77000
+NumberOfPages= 280
+Type= 4
+
+
+PhysicalStart= 79FF7000
+NumberOfPages= 9
+Type= 3
+
+
+PhysicalStart= 7A000000
+NumberOfPages= 800
+Type= 0
+
+
+PhysicalStart= 7AE00000
+NumberOfPages= 5200
+Type= 0
+
+
+PhysicalStart= E00F8000
+NumberOfPages= 1
+Type= B
+
+
+PhysicalStart= FED01000
+NumberOfPages= 1
+Type= B
+
+EFI Memory Map End.
+ConfigSccBootableDevicesAtExitBootService() Start
+Update Device 0 12 0
+Devices  8A 2B 0 0 0 20 90731000 FFF 0 1000
+Devices  8A 2B 0 0 0 20 90730000 FFF 0 1000
+Update Device 0 17 0
+Devices  8A 2B 0 0 0 20 9072E000 FFF 0 1000
+Devices  8A 2B 0 0 0 20 9072D000 FFF 0 1000
+ConfigSccBootableDevicesAtExitBootService() End
+SmmInstallProtocolInterface: 296EB418-C4C8-4E05-AB59-39E8AF56F00A 0
+SmmLockBoxSmmLib RestoreLockBox - Enter
+SmmLockBoxSmmLib RestoreLockBox - Exit (Success)
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - B5AF1D7A-B8CF-4EB3-8925-A820E16B687D, SmramBuffer - 0x7A56A000, Length - 0x3045
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBoxSmmLib SaveLockBox - Enter
+LockBoxGuid - 627EE2DA-3BF9-439B-929F-2E0E6E9DBA62, SmramBuffer - 0x7A571000, Length - 0x18
+SmmLockBoxSmmLib SaveLockBox - Exit (Success)
+SmmLockBoxSmmLib SetLockBoxAttributes - Enter
+SmmLockBoxSmmLib SetLockBoxAttributes - Exit (Success)
+SetUefiImageMemoryAttributes - 0x0000000078AB4000 - 0x000000000000A000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078AAC000 - 0x0000000000008000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078AA4000 - 0x0000000000008000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A9B000 - 0x0000000000009000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A8F000 - 0x000000000000C000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A82000 - 0x000000000000D000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A71000 - 0x0000000000011000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A66000 - 0x000000000000B000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A5A000 - 0x000000000000C000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A4F000 - 0x000000000000B000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A44000 - 0x000000000000B000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A37000 - 0x000000000000D000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A2F000 - 0x0000000000008000 (0x0000000000000008)
+SetUefiImageMemoryAttributes - 0x0000000078A24000 - 0x000000000000B000 (0x0000000000000008)
+
+>>>>SecStartup
+
+Mono Status Code PEIM Loaded
+Install PPI: 1F4C6F90-B06B-48D8-A201-BAE5F1CD7D56
+Install PPI: AB294A92-EAF5-4CF3-AB2B-2D4BED4DB63D
+Register PPI Notify: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+GGC: 0x00000210 GMSsize:0x00000002
+CheckCfioPnpSettings: CFIO Pnp Settings Disabled
+Register PPI Notify: 3ACF33EE-D892-40F4-A2FC-3854D2E1323D
+Setting BootMode to BOOT_ON_S3_RESUME
+Setup MMIO size ... 
+
+Install PPI: E767BF7F-4DB6-5B34-1011-4FBE4CA7AFD2
+PROGRESS CODE: V3020003 I0
+Loading PEIM E4CEDF93-672A-4782-A7FD-5FC6D239377D
+Loading PEIM at 0x000FFF9F620 EntryPoint=0x000FFF9F93D SeCUma.efi
+PROGRESS CODE: V3020002 I0
+Install PPI: CBD86677-362F-4C04-9459-A741326E05CF
+Info: SeC PPI load sucessfully
+PROGRESS CODE: V3020003 I0
+Loading PEIM C779F6D8-7113-4AA1-9648-EB1633C7D53B
+Loading PEIM at 0x000FFFA14A0 EntryPoint=0x000FFFA1805 CapsulePei.efi
+PROGRESS CODE: V3020002 I0
+Install PPI: 3ACF33EE-D892-40F4-A2FC-3854D2E1323D
+Notify: PPI Guid: 3ACF33EE-D892-40F4-A2FC-3854D2E1323D, Peim notify entry point: FFF9CDEA
+Capsule -- capsule variable not set
+PROGRESS CODE: V3020003 I0
+Loading PEIM D9F5B28C-9FF1-47D6-B503-3DC23BD345FF
+Loading PEIM at 0x000FFFA7BA0 EntryPoint=0x000FFFA7DE0 PchEarlyInitPeim.efi
+PROGRESS CODE: V3020002 I0
+PROGRESS CODE: V3020003 I0
+Loading PEIM D4EE25EA-0B48-43AE-A016-4D6E8B6C43B3
+Loading PEIM at 0x000FFFAB720 EntryPoint=0x000FFFABA40 MemoryInit.efi
+PROGRESS CODE: V3020002 I0
+Reg_EFF_DualCH_EN = 0x100301C0.
+Buffer size brefore add 165B, after adjust 1668.
+Set MRC paramaters for MinnowBoard Max. 
+MmioConf0[0xFED0E220], MmioPadval[0xFED0E228]
+Gpio_S5_5 value is 0x3
+Determine the memory size is [2GB]
+DRAM_Speed is 1066MHz!
+DRAM_Speed is type 1, EccEnabled = 0
+tCL = 7
+tRP_tRCD = 7
+tWR = 8
+tWTR = 5
+tRRD = 6
+tRTP = 4
+tFAW = 28
+MRC getting memory size from SeC ...
+SeC Device ID: F18
+SeC UMA Size Requested: 16384 KB
+MRC SeCUmaSize memory size from SeC ... 10 
+MRC getting fTPM memory size from SeC ...
+MRC SeCfTPMUmaSize memory size from SeC ... 0 
+PROGRESS CODE: V51002 I0
+POSTCODE=<0025>
+PROGRESS CODE: V51003 I0
+POSTCODE=<0027>
+Configuring Memory...
+CheckMicrocodeRevision  = 00000909, CpuId = 00030679
+####: ConfigureMemory() Entry
+Current function  is MMRC_Init
+ Current function  is McEnableHPET
+ Current function  is ClearSelfRefresh
+ Current function  is OemTrackInitComplete
+ Current function  is ProgSFRVolSel
+ Current function  is ProgDdrTimingControl
+ Current function  is ProgBunit
+ Current function  is ProgMpllSetup
+ Current function  is ProgStaticDdrSetup
+ Current function  is ProgStaticInitPerf
+ Current function  is ProgStaticPwrClkGating
+ Current function  is DUnitBlMode
+ Current function  is EnableVreg
+ Current function  is ProgHmc
+ Current function  is ProgReadWriteFifoPtr
+ Current function  is ProgComp
+ Current function  is SetIOBUFACT
+ Current function  is PreJedecInit
+ Current function  is DisableRank2RankSwitching
+ Current function  is MMRC_RcvnRestore
+ Current function  is MMRC_WrLvlRestore
+ Current function  is MMRC_RdTrainRestore
+ Current function  is MMRC_PerformanceSetting
+ Current function  is MMRC_PowerGatingSetting
+ Current function  is ProgDraDrb
+ Current function  is ProgMemoryMappingRegisters
+ Current function  is ProgDdrControl
+ Current function  is SetScrambler
+ Current function  is SetDDRInitializationComplete
+ Current function  is PerformWake
+ Current function  is ChangeSelfRefreshSetting
+ Current function  is SetInitDone
+ Current function  is McDisableHPET
+ Current function  is FillOutputStructure
+ MRC INIT DONE
+PlatformInfo MemData content.
+MemConfigSize = 0x0000165B
+DdrFreq = 0x00000001
+DdrType = 0x00000001
+EccSupport = 0x00000000
+MemSize = 0x00000800
+MRC allocating memory for SeC ...
+SeC Device ID: F18
+Entered SeC DRAM Init Done procedure.
+  SeCUmaBase read: 7F0, SeCUmaBaseExt: 0 and SeCUmaSize: 16 MB
+ UmaBase 7F000000, UmaBaseExt 0 
+  HFS read before DID ACK: 1000195
+  SEC R_DID_MSG written: 10000000
+SEC DRAM Init Done ACK received.
+BiosAction = 7
+SEC FW DID Ack requested to continue to POST.
+Install EFI Memory.
+Following BOOT_ON_S3_RESUME boot path.
+InstallS3Memory()
+PeiInstallPeiMemory MemoryBegin 0x7908B000, MemoryLength 0x10000
+Fail to Get MemoryOverwriteRequestControl Variable
+SmramHobDescriptorBlock->Descriptor[1].PhysicalStart = 7A001000
+SmramHobDescriptorBlock->Descriptor[1].CpuStart = 7A001000
+PROGRESS CODE: V30F100B I0
+MemoryInit Installed.
+>>>>MemoryInit Done
+PROGRESS CODE: V3020003 I0
+Temp Stack : BaseAddress=0xFEF8C400 Length=0x3C00
+Temp Heap  : BaseAddress=0xFEF80000 Length=0xC400
+Total temporary memory:    65536 bytes.
+  temporary memory stack ever used:       15360 bytes.
+  temporary memory heap used for HobList: 2832 bytes.
+  temporary memory heap occupied by memory pages: 0 bytes.
+Old Stack size 15360, New stack size 32768
+Stack Hob: BaseAddress=0x7908B000 Length=0x8000
+Heap Offset = 0x85EED000 Stack Offset = 0x85EFD000
+Reinstall PPI: 8C8CE578-8A3D-4F1C-9935-896185C32DD3
+Reinstall PPI: 5473C07A-3DCB-4DCA-BD6F-1E9689E7349A
+Reinstall PPI: B9E0ABFE-5979-4914-977F-6DEE78C278A6
+Install PPI: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+Notify: PPI Guid: F894643D-C449-42D1-8EA8-85BDD8C65BDE, Peim notify entry point: FFF9CD77
+Install PPI: 49EDB1C1-BF21-4761-BB12-EB0031AABB39
+Notify: PPI Guid: 49EDB1C1-BF21-4761-BB12-EB0031AABB39, Peim notify entry point: FFF90D89
+The 1th FV start address is 0x000FFF20000, size is 0x00070000, handle is 0xFFF20000
+Loading PEIM 9B3ADA4F-AE56-4C24-8DEA-F03B7558AE50
+Loading PEIM at 0x000FFFC3960 EntryPoint=0x000FFFC3C75 PcdPeim.efi
+PROGRESS CODE: V3020002 I0
+Install PPI: 06E81C58-4AD7-44BC-8390-F10265F72480
+Install PPI: 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+Install PPI: 4D8B155B-C059-4C8F-8926-06FD4331DB8A
+Install PPI: A60C6B59-E459-425D-9C69-0BCC9CB27D81
+Register PPI Notify: 605EA650-C65C-42E1-BA80-91A52AB618C6
+PROGRESS CODE: V3020003 I0
+DiscoverPeimsAndOrderWithApriori(): Found 0xB PEI FFS files in the 1th FV
+Loading PEIM 0A5EA2E1-BE0B-44A0-A775-F429C9A018A0
+Loading PEIM at 0x000FFF20140 EntryPoint=0x000FFF20455 PlatformEarlyInit.efi
+PROGRESS CODE: V3020002 I0
+SMM PEI SMRAM Memory Reserved HOB
+  SMRAM Descriptor[00]: Start=000000007A000000  Size=0000000000001000  State=10
+  SMRAM Descriptor[01]: Start=000000007A001000  Size=00000000007FF000  State=02
+Install PPI: 63B6E435-32BC-49C6-81BD-B7A1A0FE1A6C
+Install PPI: 1F4C6F90-B06B-48D8-A201-BAE5F1CD7D56
+Install PPI: 30AC275E-BB30-4B84-A1CD-0AF1322C89C0
+PlatformFlavor is 1 (3=tablet,1=mobile,2=desktop)
+MultiPlatformGpioTableInit()...
+MultiPlatformGpioProgram()...
+Start to config Minnow2 GPIO pins
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C550, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C590, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C5D0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 2, MMIO Base = 0xFED0C600, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CA81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 2, MMIO Base = 0xFED0C630, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CA81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 2, MMIO Base = 0xFED0C660, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CA81
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C620, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 2, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C650, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC02
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C220, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C250, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C240, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C260, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C270, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C230, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C280, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C540, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C3E0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C3D0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C400, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C3B0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C360, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C380, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C3C0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C370, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C3F0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C390, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C330, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C320, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C350, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C2F0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C340, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C310, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C300, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003EC00
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C2B0, Set PAD_VAL = 0x00000002, Set CONF0 = 0x20038C01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C2E0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x20038C01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C290, Set PAD_VAL = 0x00000003, Set CONF0 = 0x20038C01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C2D0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x20038C01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C2A0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x20038C01
+Usage = 255, Func# = 1, IntType = 6, Pull Up/Down = 6, MMIO Base = 0xFED0C3A0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2603CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C2C0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x20038C01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C5F0, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C690, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC01
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C460, Set PAD_VAL = 0x00000000, Set CONF0 = 0x20038C00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C440, Set PAD_VAL = 0x00000000, Set CONF0 = 0x20038C00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C430, Set PAD_VAL = 0x00000000, Set CONF0 = 0x20038C00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C420, Set PAD_VAL = 0x00000000, Set CONF0 = 0x20038C00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C450, Set PAD_VAL = 0x00000001, Set CONF0 = 0x20038C00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C470, Set PAD_VAL = 0x00000000, Set CONF0 = 0x20038C00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C410, Set PAD_VAL = 0x00000000, Set CONF0 = 0x20038C00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C480, Set PAD_VAL = 0x00000001, Set CONF0 = 0x20038C00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C560, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C5A0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C580, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 2, MMIO Base = 0xFED0C5C0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CA81
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C670, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C4D0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C4F0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2083CC80
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C4E0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C510, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 4, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C500, Set PAD_VAL = 0x00000005, Set CONF0 = 0x2003CC00
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C0D0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C0C0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2083CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C0F0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C0E0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2083CC80
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C110, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C120, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C130, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C100, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C020, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C010, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C000, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C040, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C060, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C070, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C090, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C080, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C210, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C200, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C1F0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C1E0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC01
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C1D0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C1B0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C190, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C1C0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C1A0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C170, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C150, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C140, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C180, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0C160, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC81
+Usage = 0, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C050, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC01
+Usage = 4, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C030, Set PAD_VAL = 0x00000004, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 1, MMIO Base = 0xFED0C0A0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CD01
+Usage = 255, Func# = 1, IntType = 0, Pull Up/Down = 1, MMIO Base = 0xFED0C0B0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CD01
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C6A0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C570, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C5B0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C680, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C610, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0C640, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 2, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D130, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC02
+Usage = 255, Func# = 2, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D120, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2083CC02
+Usage = 255, Func# = 2, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D110, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC02
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D140, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D150, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D160, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 2, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D180, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC02
+Usage = 255, Func# = 2, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D190, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC02
+Usage = 255, Func# = 2, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D170, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC02
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D100, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D0E0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D0F0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 4, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D0C0, Set PAD_VAL = 0x00000004, Set CONF0 = 0x2003CC00
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 3, MMIO Base = 0xFED0D1A0, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CB00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D1B0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D010, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D040, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D080, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D0B0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D000, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D030, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D060, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D0A0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D0D0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D020, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D050, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0D090, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E1D0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E210, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E1E0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 255, Func# = 6, IntType = 5, Pull Up/Down = 4, MMIO Base = 0xFED0E1F0, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2503C886
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E200, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E220, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC00
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E240, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC00
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E230, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CC00
+Usage = 4, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E260, Set PAD_VAL = 0x00000005, Set CONF0 = 0x2003CC00
+Usage = 4, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E250, Set PAD_VAL = 0x00000005, Set CONF0 = 0x2003CC00
+Usage = 4, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E120, Set PAD_VAL = 0x00000005, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 0, IntType = 0, Pull Up/Down = 2, MMIO Base = 0xFED0E070, Set PAD_VAL = 0x00000002, Set CONF0 = 0x2003CA80
+Usage = 255, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E0B0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC00
+Usage = 255, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E140, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC00
+Usage = 4, Func# = 1, IntType = 0, Pull Up/Down = 2, MMIO Base = 0xFED0E110, Set PAD_VAL = 0x00000004, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E010, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 255, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E080, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 0, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E0A0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC01
+Usage = 4, Func# = 1, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E130, Set PAD_VAL = 0x00000004, Set CONF0 = 0x2003CC01
+Usage = 255, Func# = 0, IntType = 0, Pull Up/Down = 2, MMIO Base = 0xFED0E0C0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CA80
+Usage = 255, Func# = 0, IntType = 0, Pull Up/Down = 2, MMIO Base = 0xFED0E000, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CA80
+Usage = 255, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E020, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003EC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E170, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E270, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E1C0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E1B0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E160, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E150, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E180, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E190, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 2, Func# = 0, IntType = 0, Pull Up/Down = 0, MMIO Base = 0xFED0E1A0, Set PAD_VAL = 0x00000003, Set CONF0 = 0x2003CC80
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E330, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E380, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E360, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E310, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E370, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E300, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E390, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E320, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E3A0, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E340, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E350, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E3B0, Set PAD_VAL = 0x00000001, Set CONF0 = 0x2003CC00
+Usage = 0, Func# = 0, IntType = 0, Pull Up/Down = 6, MMIO Base = 0xFED0E280, Set PAD_VAL = 0x00000000, Set CONF0 = 0x2003CC00
+ACPI Wake Status Register: A001
+ACPI Wake Event Data: 07
+Capsule -- capsule variable not set
+Setting BootMode to BOOT_ON_S3_RESUME
+Setup Option ISPEn: 0x1
+Setup Option ISPDevSel: 0x1
+Install PPI: 7D84B2C2-22A1-4372-B12C-EBB232D3A6A3
+ConfigureSoCGpio------------start
+Auto detection mode------------start
+SOC B0 and later: eMMC 4.5 GPIO Configuration
+ConfigureSoCGpio------------end
+ConfigureLpssAndSccGpio------------start
+LpssHsuart0FlowControlEnabled[0]
+LpssHsuart1FlowControlEnabled[0]
+ConfigureLpssAndSccGpio------------end
+ConfigureLpeGpio------------start
+ConfigureLpeGpio------------end
+PlatformSsaInit() - Start
+PlatformSsaInit() - SystemConfiguration->ISPDevSel 0x1
+PlatformSsaInit() - Device 2 Interrupt Route Done
+PchPolicySetupInit() - Start
+Install PPI: 15344673-D365-4BE2-8513-1497CC07611D
+PchPolicySetupInit() - End
+Install PPI: 7408D748-FC8C-4EE6-9288-C4BEC092A410
+Install PPI: EF398D58-9DFD-4103-BF94-78C6F4FE712F
+Install PPI: 36164812-A023-44E5-BD85-05BF3C7700AA
+Notify: PPI Guid: 7408D748-FC8C-4EE6-9288-C4BEC092A410, Peim notify entry point: FFF985CD
+InstallPlatformClocksNotify()...
+Register PPI Notify: ABD42895-78CF-4872-8444-1B5C180BFBDA
+InstallPlatformSysCtrlGPIONotify()...
+Register PPI Notify: ABD42895-78CF-4872-8444-1B5C180BFBDA
+Register PPI Notify: 605EA650-C65C-42E1-BA80-91A52AB618C6
+Register PPI Notify: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+Notify: PPI Guid: F894643D-C449-42D1-8EA8-85BDD8C65BDE, Peim notify entry point: FFF2326D
+Reset cache attribute and disable CAR. 
+Base=FFC00005, Mask=FFFC00800
+Base=6, Mask=FC0000800
+Base=40000006, Mask=FE0000800
+Base=60000006, Mask=FF0000800
+Base=70000006, Mask=FF8000800
+Base=78000006, Mask=FFC000800
+Base=7B000000, Mask=FFF000800
+Base=7AE00000, Mask=FFFE00800
+MTRR Settings:
+=============
+MTRR Default Type: 0000000000000C00
+Fixed MTRR[00]   : 0606060606060606
+Fixed MTRR[01]   : 0606060606060606
+Fixed MTRR[02]   : 0505050505050505
+Fixed MTRR[03]   : 0505050505050505
+Fixed MTRR[04]   : 0505050505050505
+Fixed MTRR[05]   : 0505050505050505
+Fixed MTRR[06]   : 0505050505050505
+Fixed MTRR[07]   : 0505050505050505
+Fixed MTRR[08]   : 0505050505050505
+Fixed MTRR[09]   : 0505050505050505
+Fixed MTRR[10]   : 0505050505050505
+Variable MTRR[00]: Base=00000000FFC00005 Mask=0000000FFFC00800
+Variable MTRR[01]: Base=0000000000000006 Mask=0000000FC0000800
+Variable MTRR[02]: Base=0000000040000006 Mask=0000000FE0000800
+Variable MTRR[03]: Base=0000000060000006 Mask=0000000FF0000800
+Variable MTRR[04]: Base=0000000070000006 Mask=0000000FF8000800
+Variable MTRR[05]: Base=0000000078000006 Mask=0000000FFC000800
+Variable MTRR[06]: Base=000000007B000000 Mask=0000000FFF000800
+Variable MTRR[07]: Base=000000007AE00000 Mask=0000000FFFE00800
+
+Memory Ranges:
+====================================
+WB:0000000000000000-000000000009FFFF
+WP:00000000000A0000-00000000000FFFFF
+WB:0000000000100000-000000007ADFFFFF
+UC:000000007AE00000-00000000FFBFFFFF
+WP:00000000FFC00000-00000000FFFFFFFF
+UC:0000000100000000-0000000FFFFFFFFF
+Build Hob from variable 
+PROGRESS CODE: V3020003 I0
+Loading PEIM D82D57AC-99F9-4C7A-B591-BBCF8A0E7FBE
+Loading PEIM at 0x000FFF29140 EntryPoint=0x000FFF29455 PchSmbusArpDisabled.efi
+PROGRESS CODE: V3020002 I0
+InitializePchSmbusPeim() Start
+Install PPI: ABD42895-78CF-4872-8444-1B5C180BFBDA
+Notify: PPI Guid: ABD42895-78CF-4872-8444-1B5C180BFBDA, Peim notify entry point: FFF2434A
+PlatformInfo protocol is working in ConfigurePlatformClocks()...1
+PEI SmbusExecute() Start, SmbusDeviceAddress=D2, Command=87, Operation=4
+PEI SmbusExecute() End
+Clock Generator CK505 Not Present, vendor ID on board is 0
+Notify: PPI Guid: ABD42895-78CF-4872-8444-1B5C180BFBDA, Peim notify entry point: FFF248D3
+ConfigurePlatformSysCtrlGpio()...
+Platform Flavor | Board ID = 0x1 | 0xB0
+Register PPI Notify: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+Notify: PPI Guid: F894643D-C449-42D1-8EA8-85BDD8C65BDE, Peim notify entry point: FFF29691
+InitializePchSmbusPeim() End
+PROGRESS CODE: V3020003 I0
+Loading PEIM FD236AE7-0791-48C4-B29E-29BDEEE1A838
+Loading PEIM at 0x000FFF2D520 EntryPoint=0x000FFF2D835 PchInitPeim.efi
+PROGRESS CODE: V3020002 I0
+InstallPchInitPpi()-Start
+PmcBase needs to be programmed and enabled before here.
+Register PPI Notify: 15344673-D365-4BE2-8513-1497CC07611D
+Register PPI Notify: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+Notify: PPI Guid: 15344673-D365-4BE2-8513-1497CC07611D, Peim notify entry point: FFF2EC0D
+PchInitialize() - Start
+PchInitInterrupt () - Start
+PchInitInterrupt () - End
+PchMiscInit() - Start
+PchMiscInit() - End
+PchIoApicInit() - Start
+PchIoApicInit() - End
+PchPeimEhciPllCfg() SystemConfiguration->EhciPllCfgEnable = 0x1 
+PchPeimEhciPllCfg() R_IOSF_SPXB_CH1CTRL = 0x1 
+PchPeimEhciPllCfg() R_IOSF_SPXB_PORTCTL0 = 0x1 
+PchPeimEhciPllCfg() R_IOSF_SPXB_PORTCTL1 = 0x2 
+PchPeimEhciPllCfg() R_IOSF_SPXB_PORTCTL2 = 0x0 
+PchPeimEhciPllCfg() R_IOSF_SPXB_PMCTL = 0x9E 
+PchUsbInit() - Start
+PchUsbInit() - End
+Install PPI: ACB93B08-5CDC-4A8F-93D4-06E342DF182E
+PchInitialize() - End
+Notify: PPI Guid: F894643D-C449-42D1-8EA8-85BDD8C65BDE, Peim notify entry point: FFF2E459
+PchSataInit() - Start
+PchSataInit() - End
+InstallPchInitPpi() - End
+PROGRESS CODE: V3020003 I0
+Loading PEIM AA652CB9-2D52-4624-9FAE-D4E58B67CA46
+Loading PEIM at 0x000FFF33020 EntryPoint=0x000FFF33335 PchSpiPeim.efi
+PROGRESS CODE: V3020002 I0
+InstallPchSpi() Start
+Install PPI: A38C6898-2B5C-4FF6-9326-2E63212E56C2
+SPI PPI Installed
+InstallPchSpi() End
+PROGRESS CODE: V3020003 I0
+Loading PEIM B4E0CDFC-30CD-4B29-A445-B0AA95A532E4
+Loading PEIM at 0x000FFF359A0 EntryPoint=0x000FFF35CB5 PeiSmmAccess.efi
+PROGRESS CODE: V3020002 I0
+Install PPI: 268F33A9-CCCD-48BE-8817-86053AC32ED6
+PROGRESS CODE: V3020003 I0
+Loading PEIM FF456B9C-0DC7-4682-9E92-0DE84B6E4067
+Loading PEIM at 0x000FFF37320 EntryPoint=0x000FFF37635 PeiSmmControl.efi
+PROGRESS CODE: V3020002 I0
+Install PPI: 61C68702-4D7E-4F43-8DEF-A74305CE74C5
+PROGRESS CODE: V3020003 I0
+Loading PEIM 89E549B0-7CFE-449D-9BA3-10D8B2312D71
+Loading PEIM at 0x000FFF388A0 EntryPoint=0x000FFF38C25 S3Resume2Pei.efi
+PROGRESS CODE: V3020002 I0
+Install PPI: 6D582DBC-DB85-4514-8FCC-5ADF6227B147
+PROGRESS CODE: V3020003 I0
+Loading PEIM C866BD71-7C79-4BF1-A93B-066B830D8F9A
+Loading PEIM at 0x000FFF3AEC0 EntryPoint=0x000FFF3B1E0 MpS3.efi
+PROGRESS CODE: V3020002 I0
+Cpu S3 dispatch
+SMRAM region out of range
+SMRAM Map Buffer too small
+TsegBase - 7A001000
+TsegTop - 7A800000
+
+PEI_ASSERT!: [MpS3] c:\minnowboardmaxecpfree\Vlv2DeviceRefCodePkg\ValleyView2Soc\CPU\CpuS3\MpS3.c (444): ((BOOLEAN)(0==1))

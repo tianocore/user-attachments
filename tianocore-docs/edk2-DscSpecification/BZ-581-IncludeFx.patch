@@ -1,0 +1,19 @@
+diff --git a/2_dsc_overview/22_build_description_file_format.md b/2_dsc_overview/22_build_description_file_format.md
+index 10dc428..9844326 100644
+--- a/2_dsc_overview/22_build_description_file_format.md
++++ b/2_dsc_overview/22_build_description_file_format.md
+@@ -234,10 +234,10 @@ to find the file relative to the paths listed in the system environment
+ variable `$(WORKSPACE)`. If the file is still not found, the parsing tools 
+ must terminate with an error.
+ 
+-Macros, defined in this file, are permitted in the path or file name of the
+-!include statement, as these files are included prior to processing the file
+-for macros. The system environment variable `$(WORKSPACE)`, may also be used; 
+-only these system environment variables are permitted to start the path of the 
++Macros are permitted in the path or file name of the !include statement.
++Refer to section 2.2.6 for details regarding scopes of the macros.
++The system environment variable `$(WORKSPACE)` may also be used;
++only this system environment variable is permitted to start the path of the
+ included file.
+ 
+ Statements in `!include` files must not break the integrity of the DSC file,

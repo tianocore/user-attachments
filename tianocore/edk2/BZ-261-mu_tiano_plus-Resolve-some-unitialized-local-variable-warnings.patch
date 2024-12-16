@@ -1,0 +1,48 @@
+From a6c8c42194621daf86a5ea32dae2a7f1e8cf813c Mon Sep 17 00:00:00 2001
+From: Bret Barkelew <brbarkel@microsoft.com>
+Date: Sat, 23 Feb 2019 11:54:11 -0800
+Subject: [PATCH] Resolve some "unitialized local variable" warnings.
+
+---
+ FatPkg/EnhancedFatDxe/Info.c | 2 +-
+ FatPkg/FatPei/FatLiteApi.c   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/FatPkg/EnhancedFatDxe/Info.c b/FatPkg/EnhancedFatDxe/Info.c
+index 50b840b961..31a44bf847 100644
+--- a/FatPkg/EnhancedFatDxe/Info.c
++++ b/FatPkg/EnhancedFatDxe/Info.c
+@@ -305,7 +305,7 @@ FatSetFileInfo (
+   CHAR16        NewFileName[EFI_PATH_STRING_LENGTH];
+   EFI_TIME      ZeroTime;
+   FAT_DIRENT    *DirEnt;
+-  FAT_DIRENT    *TempDirEnt;
++  FAT_DIRENT    *TempDirEnt = NULL;     // MU_CHANGE - TCBZ1559
+   UINT8         NewAttribute;
+   BOOLEAN       ReadOnly;
+ 
+diff --git a/FatPkg/FatPei/FatLiteApi.c b/FatPkg/FatPei/FatLiteApi.c
+index b71eaaab2a..268ed6a356 100644
+--- a/FatPkg/FatPei/FatLiteApi.c
++++ b/FatPkg/FatPei/FatLiteApi.c
+@@ -428,7 +428,7 @@ GetRecoveryCapsuleInfo (
+   UINTN                 Index;
+   UINTN                 BlockDeviceNo;
+   UINTN                 RecoveryCapsuleCount;
+-  PEI_FILE_HANDLE       Handle;
++  PEI_FILE_HANDLE       Handle = NULL;          // MU_CHANGE - TCBZ1559
+   UINTN                 NumberRecoveryCapsules;
+ 
+   Status = GetNumberRecoveryCapsules (PeiServices, This, &NumberRecoveryCapsules);
+@@ -556,7 +556,7 @@ LoadRecoveryCapsule (
+   PEI_FAT_PRIVATE_DATA  *PrivateData;
+   UINTN                 Index;
+   UINTN                 RecoveryCapsuleCount;
+-  PEI_FILE_HANDLE       Handle;
++  PEI_FILE_HANDLE       Handle = NULL;              // MU_CHANGE - TCBZ1559
+   UINTN                 NumberRecoveryCapsules;
+ 
+   Status = GetNumberRecoveryCapsules (PeiServices, This, &NumberRecoveryCapsules);
+-- 
+2.20.1.windows.1
+

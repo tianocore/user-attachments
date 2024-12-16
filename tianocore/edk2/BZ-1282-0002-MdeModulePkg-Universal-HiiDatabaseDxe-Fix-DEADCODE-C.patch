@@ -1,0 +1,59 @@
+From f71e60bafda4bcd78279584553b8a7a00a604d2a Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:30:21 +0530
+Subject: [PATCH 2/3] MdeModulePkg/Universal/HiiDatabaseDxe: Fix DEADCODE
+ Coverity issues
+
+The value of ConfigElement in function HiiBlockToConfig in the file
+MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c is NULL at all
+paths leading to label Exit:
+
+The value of GlobalFont in function InsertFontPackage in the file
+MdeModulePkg/Universal/HiiDatabaseDxe/Database.c is NULL at all paths
+leading to label Error:
+
+Hence, the not NULL check can never PASS leading to the related code
+statements being a DEADCODE and so they can be removed.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4288
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c | 4 ----
+ MdeModulePkg/Universal/HiiDatabaseDxe/Database.c      | 4 ----
+ 2 files changed, 8 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c b/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
+index 5ae6189a2843..429e4624d5d3 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
+@@ -5927,10 +5927,6 @@ Exit:
+     FreePool (Value);
+   }
+ 
+-  if (ConfigElement != NULL) {
+-    FreePool (ConfigElement);
+-  }
+-
+   return Status;
+ }
+ 
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c b/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
+index 0b09c24d52a4..d149973cf92c 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
+@@ -1851,10 +1851,6 @@ Error:
+     FreePool (FontPackage);
+   }
+ 
+-  if (GlobalFont != NULL) {
+-    FreePool (GlobalFont);
+-  }
+-
+   return Status;
+ }
+ 
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,234 @@
+From 4e1431d81b06b1c0a11d24de31d0b95ac68aecf2 Mon Sep 17 00:00:00 2001
+From: Vineel Kovvuri <vineelko@microsoft.com>
+Date: Thu, 24 Feb 2022 21:30:12 -0800
+Subject: [PATCH 1/6] CryptoPkg: Reconfigure OpensslLib to add elliptic curve
+ cipher algorithms
+
+Reconfigure OpensslLib to add elliptic curve cipher algorithms.
+The only file manually changed is process_files.pl.
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3679
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Yi Li <Yi1.li@intel.com>
+Signed-off-by: Vineel Kovvuri <vineelko@microsoft.com>
+---
+ .../Library/Include/openssl/opensslconf.h     | 15 ------
+ CryptoPkg/Library/OpensslLib/OpensslLib.inf   | 50 +++++++++++++++++++
+ .../Library/OpensslLib/OpensslLibCrypto.inf   | 50 +++++++++++++++++++
+ CryptoPkg/Library/OpensslLib/process_files.pl |  1 -
+ 4 files changed, 100 insertions(+), 16 deletions(-)
+
+diff --git a/CryptoPkg/Library/Include/openssl/opensslconf.h b/CryptoPkg/Library/Include/openssl/opensslconf.h
+index b119212ed8..232de009ea 100644
+--- a/CryptoPkg/Library/Include/openssl/opensslconf.h
++++ b/CryptoPkg/Library/Include/openssl/opensslconf.h
+@@ -55,9 +55,6 @@ extern "C" {
+ #ifndef OPENSSL_NO_DSA
+ #define OPENSSL_NO_DSA
+ #endif
+-#ifndef OPENSSL_NO_EC
+-#define OPENSSL_NO_EC
+-#endif
+ #ifndef OPENSSL_NO_IDEA
+ #define OPENSSL_NO_IDEA
+ #endif
+@@ -88,9 +85,6 @@ extern "C" {
+ #ifndef OPENSSL_NO_SEED
+ #define OPENSSL_NO_SEED
+ #endif
+-#ifndef OPENSSL_NO_SM2
+-#define OPENSSL_NO_SM2
+-#endif
+ #ifndef OPENSSL_NO_SRP
+ #define OPENSSL_NO_SRP
+ #endif
+@@ -154,12 +148,6 @@ extern "C" {
+ #ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
+ #define OPENSSL_NO_EC_NISTP_64_GCC_128
+ #endif
+-#ifndef OPENSSL_NO_ECDH
+-#define OPENSSL_NO_ECDH
+-#endif
+-#ifndef OPENSSL_NO_ECDSA
+-#define OPENSSL_NO_ECDSA
+-#endif
+ #ifndef OPENSSL_NO_EGD
+ #define OPENSSL_NO_EGD
+ #endif
+@@ -226,9 +214,6 @@ extern "C" {
+ #ifndef OPENSSL_NO_TESTS
+ #define OPENSSL_NO_TESTS
+ #endif
+-#ifndef OPENSSL_NO_TLS1_3
+-#define OPENSSL_NO_TLS1_3
+-#endif
+ #ifndef OPENSSL_NO_UBSAN
+ #define OPENSSL_NO_UBSAN
+ #endif
+diff --git a/CryptoPkg/Library/OpensslLib/OpensslLib.inf b/CryptoPkg/Library/OpensslLib/OpensslLib.inf
+index d84bde056a..bd3d9cc90f 100644
+--- a/CryptoPkg/Library/OpensslLib/OpensslLib.inf
++++ b/CryptoPkg/Library/OpensslLib/OpensslLib.inf
+@@ -199,6 +199,43 @@
+   $(OPENSSL_PATH)/crypto/dso/dso_vms.c
+   $(OPENSSL_PATH)/crypto/dso/dso_win32.c
+   $(OPENSSL_PATH)/crypto/ebcdic.c
++  $(OPENSSL_PATH)/crypto/ec/curve25519.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/arch_32/f_impl.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/curve448.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/curve448_tables.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/eddsa.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/f_generic.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/scalar.c
++  $(OPENSSL_PATH)/crypto/ec/ec2_oct.c
++  $(OPENSSL_PATH)/crypto/ec/ec2_smpl.c
++  $(OPENSSL_PATH)/crypto/ec/ec_ameth.c
++  $(OPENSSL_PATH)/crypto/ec/ec_asn1.c
++  $(OPENSSL_PATH)/crypto/ec/ec_check.c
++  $(OPENSSL_PATH)/crypto/ec/ec_curve.c
++  $(OPENSSL_PATH)/crypto/ec/ec_cvt.c
++  $(OPENSSL_PATH)/crypto/ec/ec_err.c
++  $(OPENSSL_PATH)/crypto/ec/ec_key.c
++  $(OPENSSL_PATH)/crypto/ec/ec_kmeth.c
++  $(OPENSSL_PATH)/crypto/ec/ec_lib.c
++  $(OPENSSL_PATH)/crypto/ec/ec_mult.c
++  $(OPENSSL_PATH)/crypto/ec/ec_oct.c
++  $(OPENSSL_PATH)/crypto/ec/ec_pmeth.c
++  $(OPENSSL_PATH)/crypto/ec/ec_print.c
++  $(OPENSSL_PATH)/crypto/ec/ecdh_kdf.c
++  $(OPENSSL_PATH)/crypto/ec/ecdh_ossl.c
++  $(OPENSSL_PATH)/crypto/ec/ecdsa_ossl.c
++  $(OPENSSL_PATH)/crypto/ec/ecdsa_sign.c
++  $(OPENSSL_PATH)/crypto/ec/ecdsa_vrf.c
++  $(OPENSSL_PATH)/crypto/ec/eck_prn.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_mont.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nist.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nistp224.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nistp256.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nistp521.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nistputil.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_oct.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_smpl.c
++  $(OPENSSL_PATH)/crypto/ec/ecx_meth.c
+   $(OPENSSL_PATH)/crypto/err/err.c
+   $(OPENSSL_PATH)/crypto/err/err_prn.c
+   $(OPENSSL_PATH)/crypto/evp/bio_b64.c
+@@ -384,6 +421,10 @@
+   $(OPENSSL_PATH)/crypto/siphash/siphash.c
+   $(OPENSSL_PATH)/crypto/siphash/siphash_ameth.c
+   $(OPENSSL_PATH)/crypto/siphash/siphash_pmeth.c
++  $(OPENSSL_PATH)/crypto/sm2/sm2_crypt.c
++  $(OPENSSL_PATH)/crypto/sm2/sm2_err.c
++  $(OPENSSL_PATH)/crypto/sm2/sm2_pmeth.c
++  $(OPENSSL_PATH)/crypto/sm2/sm2_sign.c
+   $(OPENSSL_PATH)/crypto/sm3/m_sm3.c
+   $(OPENSSL_PATH)/crypto/sm3/sm3.c
+   $(OPENSSL_PATH)/crypto/sm4/sm4.c
+@@ -496,6 +537,15 @@
+   $(OPENSSL_PATH)/crypto/conf/conf_local.h
+   $(OPENSSL_PATH)/crypto/dh/dh_local.h
+   $(OPENSSL_PATH)/crypto/dso/dso_local.h
++  $(OPENSSL_PATH)/crypto/ec/ec_local.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/curve448_local.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/curve448utils.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/ed448.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/field.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/point_448.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/word.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/arch_32/arch_intrinsics.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/arch_32/f_impl.h
+   $(OPENSSL_PATH)/crypto/evp/evp_local.h
+   $(OPENSSL_PATH)/crypto/hmac/hmac_local.h
+   $(OPENSSL_PATH)/crypto/lhash/lhash_local.h
+diff --git a/CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf b/CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
+index cdeed0d073..38ccf1a5b6 100644
+--- a/CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
++++ b/CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
+@@ -199,6 +199,43 @@
+   $(OPENSSL_PATH)/crypto/dso/dso_vms.c
+   $(OPENSSL_PATH)/crypto/dso/dso_win32.c
+   $(OPENSSL_PATH)/crypto/ebcdic.c
++  $(OPENSSL_PATH)/crypto/ec/curve25519.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/arch_32/f_impl.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/curve448.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/curve448_tables.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/eddsa.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/f_generic.c
++  $(OPENSSL_PATH)/crypto/ec/curve448/scalar.c
++  $(OPENSSL_PATH)/crypto/ec/ec2_oct.c
++  $(OPENSSL_PATH)/crypto/ec/ec2_smpl.c
++  $(OPENSSL_PATH)/crypto/ec/ec_ameth.c
++  $(OPENSSL_PATH)/crypto/ec/ec_asn1.c
++  $(OPENSSL_PATH)/crypto/ec/ec_check.c
++  $(OPENSSL_PATH)/crypto/ec/ec_curve.c
++  $(OPENSSL_PATH)/crypto/ec/ec_cvt.c
++  $(OPENSSL_PATH)/crypto/ec/ec_err.c
++  $(OPENSSL_PATH)/crypto/ec/ec_key.c
++  $(OPENSSL_PATH)/crypto/ec/ec_kmeth.c
++  $(OPENSSL_PATH)/crypto/ec/ec_lib.c
++  $(OPENSSL_PATH)/crypto/ec/ec_mult.c
++  $(OPENSSL_PATH)/crypto/ec/ec_oct.c
++  $(OPENSSL_PATH)/crypto/ec/ec_pmeth.c
++  $(OPENSSL_PATH)/crypto/ec/ec_print.c
++  $(OPENSSL_PATH)/crypto/ec/ecdh_kdf.c
++  $(OPENSSL_PATH)/crypto/ec/ecdh_ossl.c
++  $(OPENSSL_PATH)/crypto/ec/ecdsa_ossl.c
++  $(OPENSSL_PATH)/crypto/ec/ecdsa_sign.c
++  $(OPENSSL_PATH)/crypto/ec/ecdsa_vrf.c
++  $(OPENSSL_PATH)/crypto/ec/eck_prn.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_mont.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nist.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nistp224.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nistp256.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nistp521.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_nistputil.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_oct.c
++  $(OPENSSL_PATH)/crypto/ec/ecp_smpl.c
++  $(OPENSSL_PATH)/crypto/ec/ecx_meth.c
+   $(OPENSSL_PATH)/crypto/err/err.c
+   $(OPENSSL_PATH)/crypto/err/err_prn.c
+   $(OPENSSL_PATH)/crypto/evp/bio_b64.c
+@@ -384,6 +421,10 @@
+   $(OPENSSL_PATH)/crypto/siphash/siphash.c
+   $(OPENSSL_PATH)/crypto/siphash/siphash_ameth.c
+   $(OPENSSL_PATH)/crypto/siphash/siphash_pmeth.c
++  $(OPENSSL_PATH)/crypto/sm2/sm2_crypt.c
++  $(OPENSSL_PATH)/crypto/sm2/sm2_err.c
++  $(OPENSSL_PATH)/crypto/sm2/sm2_pmeth.c
++  $(OPENSSL_PATH)/crypto/sm2/sm2_sign.c
+   $(OPENSSL_PATH)/crypto/sm3/m_sm3.c
+   $(OPENSSL_PATH)/crypto/sm3/sm3.c
+   $(OPENSSL_PATH)/crypto/sm4/sm4.c
+@@ -496,6 +537,15 @@
+   $(OPENSSL_PATH)/crypto/conf/conf_local.h
+   $(OPENSSL_PATH)/crypto/dh/dh_local.h
+   $(OPENSSL_PATH)/crypto/dso/dso_local.h
++  $(OPENSSL_PATH)/crypto/ec/ec_local.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/curve448_local.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/curve448utils.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/ed448.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/field.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/point_448.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/word.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/arch_32/arch_intrinsics.h
++  $(OPENSSL_PATH)/crypto/ec/curve448/arch_32/f_impl.h
+   $(OPENSSL_PATH)/crypto/evp/evp_local.h
+   $(OPENSSL_PATH)/crypto/hmac/hmac_local.h
+   $(OPENSSL_PATH)/crypto/lhash/lhash_local.h
+diff --git a/CryptoPkg/Library/OpensslLib/process_files.pl b/CryptoPkg/Library/OpensslLib/process_files.pl
+index 42bff05fa6..2ebfbbbca0 100755
+--- a/CryptoPkg/Library/OpensslLib/process_files.pl
++++ b/CryptoPkg/Library/OpensslLib/process_files.pl
+@@ -169,7 +169,6 @@ BEGIN {
+                 "no-dgram",
+                 "no-dsa",
+                 "no-dynamic-engine",
+-                "no-ec",
+                 "no-ec2m",
+                 "no-engine",
+                 "no-err",
+-- 
+2.33.0.vfs.0.0
+

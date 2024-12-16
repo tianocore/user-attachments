@@ -1,0 +1,31 @@
+diff --git a/Platform/Intel/MinPlatformPkg/Bds/Library/DxePlatformBootManagerLib/BdsPlatform.c b/Platform/Intel/MinPlatformPkg/Bds/Library/DxePlatformBootManagerLib/BdsPlatform.c
+index 41fe3f2cca..faa70a2232 100644
+--- a/Platform/Intel/MinPlatformPkg/Bds/Library/DxePlatformBootManagerLib/BdsPlatform.c
++++ b/Platform/Intel/MinPlatformPkg/Bds/Library/DxePlatformBootManagerLib/BdsPlatform.c
+@@ -372,7 +372,7 @@ EnumUsbKeyboard (
+ {
+   DEBUG ((DEBUG_INFO, "[EnumUsbKeyboard]\n"));
+   EfiBootManagerUpdateConsoleVariable (ConIn, (EFI_DEVICE_PATH_PROTOCOL *) &gUsbClassKeyboardDevicePath, NULL);
+-  
++
+   //
+   // Append Usb Keyboard short form DevicePath into "ConInDev"
+   //
+@@ -619,7 +619,7 @@ AddConsoleVariable (
+     if (Instance == NULL) {
+       break;
+     }
+-    
++
+     switch (ConsoleType) {
+     case ConIn:
+       if (IsUsbShortForm (Instance)) {
+@@ -1183,7 +1183,7 @@ PlatformBootManagerBeforeConsole (
+   // We should make all UEFI memory and GCD information populated before ExitPmAuth.
+   // SMM may consume these information.
+   //
+-  MemoryTest((EXTENDMEM_COVERAGE_LEVEL) PcdGet32 (PcdPlatformMemoryCheckLevel));
++  //MemoryTest((EXTENDMEM_COVERAGE_LEVEL) PcdGet32 (PcdPlatformMemoryCheckLevel));
+ 
+   PERF_START_EX(NULL,"EventRec", NULL, AsmReadTsc(), 0x7020);
+   ExitPmAuth ();

@@ -1,0 +1,49 @@
+From c246828ee025b6ec23555b67149666f6556368c3 Mon Sep 17 00:00:00 2001
+From: Guo Mang <mang.guo@intel.com>
+Date: Mon, 5 Mar 2018 15:46:32 +0800
+Subject: [Patch][edk2-platforms/devel-MinnowBoardMax-UDK2017] SetupRecovery
+ variable
+
+This patch prevent SetupRecovery variable from being deleted properly after reboot.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+
+Signed-off-by: Guo Mang <mang.guo@intel.com>
+---
+ Vlv2TbltDevicePkg/PlatformDxe/Platform.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/Vlv2TbltDevicePkg/PlatformDxe/Platform.c b/Vlv2TbltDevicePkg/PlatformDxe/Platform.c
+index ad18da5..365150b 100644
+--- a/Vlv2TbltDevicePkg/PlatformDxe/Platform.c
++++ b/Vlv2TbltDevicePkg/PlatformDxe/Platform.c
+@@ -1,6 +1,6 @@
+ /** @file
+ 
+-  Copyright (c) 2004  - 2017, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2004  - 2018, Intel Corporation. All rights reserved.<BR>
+                                                                                    
+ 
+   This program and the accompanying materials are licensed and made available under
+@@ -263,13 +263,12 @@ SaveSetupRecoveryVar(
+                     SetupData
+                     );
+     ASSERT_EFI_ERROR (Status);
++  }
+ 
+-    Status = gBS->LocateProtocol (&gEdkiiVariableLockProtocolGuid, NULL, (VOID **) &VariableLock);
+-      if (!EFI_ERROR (Status)) {
+-        Status = VariableLock->RequestToLock (VariableLock, L"SetupRecovery", &gEfiNormalSetupGuid);
+-        ASSERT_EFI_ERROR (Status);
+-    }
+-    
++  Status = gBS->LocateProtocol (&gEdkiiVariableLockProtocolGuid, NULL, (VOID **) &VariableLock);
++  if (!EFI_ERROR (Status)) {
++    Status = VariableLock->RequestToLock (VariableLock, L"SetupRecovery", &gEfiNormalSetupGuid);
++    ASSERT_EFI_ERROR (Status);
+   }
+ 
+ Exit:
+-- 
+2.10.1.windows.1
+

@@ -1,0 +1,61 @@
+================================================================================
+1.1  fwts uefirtmisc: INFO UEFI miscellaneous runtime service interface tests.
+1.1  fwts -------------------------------------------------------------------------------- INFO --------------------------------------------------------------------------------
+1.1  fwts Test INFO 1 of 4: Test for UEFI miscellaneous runtime service interfaces.
+1.1  fwts Testing INFO UEFI runtime service GetNextHighMonotonicCount interface.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeGetNextHighMonotonicCount: Test 1, Failed to get high
+1.1  fwts monotonic INFO count with UEFI runtime service.
+1.1  fwts Return INFO status: EFI_BAD_BUFFER_SIZE. The buffer was not the proper size for the
+1.1  fwts request. INFO request.
+1.1  fwts Test INFO 2 of 4: Stress test for UEFI miscellaneous runtime service interfaces.
+1.1  fwts Stress INFO testing for UEFI runtime service GetNextHighMonotonicCount interface.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeGetNextHighMonotonicCount: Test 2, Failed to get high
+1.1  fwts monotonic INFO count with UEFI runtime service.
+1.1  fwts Return INFO status: EFI_BAD_BUFFER_SIZE. The buffer was not the proper size for the
+1.1  fwts request. INFO request.
+
+================================================================================
+1.1  fwts uefirtvariable: INFO UEFI Runtime service variable interface tests.
+1.1  fwts -------------------------------------------------------------------------------- INFO --------------------------------------------------------------------------------
+1.1  fwts Test INFO 1 of 9: Test UEFI RT service get variable interface.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeSetVariable: Test 1, Failed to set variable with UEFI
+1.1  fwts runtime INFO service.
+1.1  fwts Return INFO status: EFI_BAD_BUFFER_SIZE. The buffer was not the proper size for the
+1.1  fwts request. INFO request.
+1.1  fwts Test INFO 2 of 9: Test UEFI RT service get next variable name interface.
+1.1  fwts The INFO runtime service GetNextVariableName interface function test.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeSetVariable: Test 2, Failed to set variable with UEFI
+1.1  fwts runtime INFO service.
+1.1  fwts Return INFO status: EFI_BAD_BUFFER_SIZE. The buffer was not the proper size for the
+1.1  fwts request. INFO request.
+1.1  fwts Test INFO 3 of 9: Test UEFI RT service set variable interface.
+1.1  fwts Testing INFO SetVariable on two different GUIDs and the same variable name.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeSetVariable: Test 3, Failed to set variable with UEFI
+1.1  fwts runtime INFO service.
+1.1  fwts Return INFO status: EFI_BAD_BUFFER_SIZE. The buffer was not the proper size for the
+1.1  fwts request. INFO request.
+1.1  fwts Test INFO 5 of 9: Test UEFI RT service variable interface stress test.
+1.1  fwts Testing INFO GetVariable on getting the variable 1024 times.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeSetVariable: Test 5, Failed to set variable with UEFI
+1.1  fwts runtime INFO service.
+1.1  fwts Return INFO status: EFI_BAD_BUFFER_SIZE. The buffer was not the proper size for the
+1.1  fwts request. INFO request.
+1.1  fwts Test INFO 6 of 9: Test UEFI RT service set variable interface stress test.
+1.1  fwts Testing INFO SetVariable on setting the variable with the same data 40 times.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeSetVariable: Test 6, Failed to set variable with UEFI
+1.1  fwts runtime INFO service.
+1.1  fwts Return INFO status: EFI_BAD_BUFFER_SIZE. The buffer was not the proper size for the
+1.1  fwts request. INFO request.
+1.1  fwts Test INFO 8 of 9: Test UEFI RT service get variable interface, invalid parameters.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeSetVariable: Test 8, Failed to set variable with UEFI
+1.1  fwts runtime INFO service.
+
+================================================================================
+1.1  fwts uefirttime: INFO UEFI Runtime service time interface tests.
+1.1  fwts -------------------------------------------------------------------------------- INFO --------------------------------------------------------------------------------
+
+1.1  fwts Test INFO 4 of 36: Test UEFI RT service set time interface.
+1.1  fwts FAILED INFO [HIGH] UEFIRuntimeSetTime: Test 4, Failed to set time with UEFI runtime
+1.1  fwts service. INFO service.
+
+

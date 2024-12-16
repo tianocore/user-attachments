@@ -1,0 +1,111 @@
+diff --git a/NetworkPkg/Dhcp6Dxe/Dhcp6Io.c b/NetworkPkg/Dhcp6Dxe/Dhcp6Io.c
+index c20876d5a5..ef72731482 100644
+--- a/NetworkPkg/Dhcp6Dxe/Dhcp6Io.c
++++ b/NetworkPkg/Dhcp6Dxe/Dhcp6Io.c
+@@ -2951,11 +2951,12 @@ Dhcp6LinkMovDetect (
+   //
+   // Invoke Snp->GetStatus() to refresh MediaPresent field in SNP mode data
+   //
+-  Status = Snp->GetStatus (Snp, &InterruptStatus, NULL);
+-  if (EFI_ERROR (Status)) {
+-    return FALSE;
++  if(Snp->Mode->State == EfiSimpleNetworkStarted){
++	  Status = Snp->GetStatus (Snp, &InterruptStatus, NULL);
++	  if (EFI_ERROR (Status)) {
++	    return FALSE;
++	  }
+   }
+-
+   Instance->MediaPresent = Snp->Mode->MediaPresent;
+   //
+   // Media transimit Unpresent to Present means new link movement is detected.
+diff --git a/NetworkPkg/Ip6Dxe/Ip6Driver.c b/NetworkPkg/Ip6Dxe/Ip6Driver.c
+index 7c13d6a3d4..cc0028c126 100644
+--- a/NetworkPkg/Ip6Dxe/Ip6Driver.c
++++ b/NetworkPkg/Ip6Dxe/Ip6Driver.c
+@@ -114,10 +114,11 @@ Ip6DriverBindingSupported (
+   IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath OPTIONAL
+   )
+ {
++  EFI_STATUS      Status;
+   //
+   // Test for the MNP service binding Protocol
+   //
+-  return gBS->OpenProtocol (
++  Status =  gBS->OpenProtocol (
+                 ControllerHandle,
+                 &gEfiManagedNetworkServiceBindingProtocolGuid,
+                 NULL,
+@@ -125,6 +126,23 @@ Ip6DriverBindingSupported (
+                 ControllerHandle,
+                 EFI_OPEN_PROTOCOL_TEST_PROTOCOL
+                 );
++
++  if (EFI_ERROR (Status)) {
++      DEBUG((DEBUG_ERROR,"OpenProtocol gEfiManagedNetworkServiceBindingProtocolGuid %r\n ",Status));
++    return Status;
++  }
++    // Test for the Arp service binding Protocol
++  //
++  Status = gBS->OpenProtocol (
++                  ControllerHandle,
++                  &gEfiArpServiceBindingProtocolGuid,
++                  NULL,
++                  This->DriverBindingHandle,
++                  ControllerHandle,
++                  EFI_OPEN_PROTOCOL_TEST_PROTOCOL
++                  );
++
++    return Status;
+ }
+ 
+ /**
+diff --git a/NetworkPkg/Library/DxeNetLib/DxeNetLib.c b/NetworkPkg/Library/DxeNetLib/DxeNetLib.c
+index 2a555a7b90..f884dc4c9e 100644
+--- a/NetworkPkg/Library/DxeNetLib/DxeNetLib.c
++++ b/NetworkPkg/Library/DxeNetLib/DxeNetLib.c
+@@ -2426,9 +2426,11 @@ NetLibDetectMedia (
+   //
+   // Invoke Snp->GetStatus() to refresh MediaPresent field in SNP mode data
+   //
+-  Status = Snp->GetStatus (Snp, &InterruptStatus, NULL);
+-  if (EFI_ERROR (Status)) {
+-    return Status;
++  if (Snp->Mode->State == EfiSimpleNetworkStarted ) {
++        Status = Snp->GetStatus (Snp, &InterruptStatus, NULL);
++        if (EFI_ERROR (Status)) {
++            return Status;
++        }
+   }
+ 
+   if (Snp->Mode->MediaPresent) {
+diff --git a/NetworkPkg/MnpDxe/MnpConfig.c b/NetworkPkg/MnpDxe/MnpConfig.c
+index 3a51210060..3d0257c55e 100644
+--- a/NetworkPkg/MnpDxe/MnpConfig.c
++++ b/NetworkPkg/MnpDxe/MnpConfig.c
+@@ -1355,7 +1355,9 @@ MnpStop (
+   //
+   // Stop the simple network.
+   //
+-  Status = MnpStopSnp (MnpDeviceData);
++  if(Snp->Mode->State == EfiSimpleNetworkStarted){
++      Status = MnpStopSnp (MnpDeviceData);
++  }
+   return Status;
+ }
+ 
+diff --git a/NetworkPkg/MnpDxe/MnpMain.c b/NetworkPkg/MnpDxe/MnpMain.c
+index ff7e89de10..0860ed22ad 100644
+--- a/NetworkPkg/MnpDxe/MnpMain.c
++++ b/NetworkPkg/MnpDxe/MnpMain.c
+@@ -72,7 +72,9 @@ MnpGetModeData (
+     // Upon successful return of GetStatus(), the Snp->Mode->MediaPresent
+     // will be updated to reflect any change of media status
+     //
+-    Snp->GetStatus (Snp, &InterruptStatus, NULL);
++   if(Snp->Mode->State == EfiSimpleNetworkStarted){
++       Snp->GetStatus (Snp, &InterruptStatus, NULL);
++  }
+     CopyMem (SnpModeData, Snp->Mode, sizeof (*SnpModeData));
+   }
+ 

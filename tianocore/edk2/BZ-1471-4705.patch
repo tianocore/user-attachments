@@ -1,0 +1,43 @@
+From af59a34c3dd363c16907bf4e7b1682ddd5ed602c Mon Sep 17 00:00:00 2001
+From: yeggor <vasilenko.yegor@gmail.com>
+Date: Tue, 1 Aug 2023 18:55:29 +0400
+Subject: [PATCH] MdeModulePkg: Fix potential UINT32 overflow
+
+An attacker with the ability to modify physical memory
+can control the value of AcpiS3ResumeRecord->ResumeCount.
+
+If the attacker sets the value of ResumeCount to MAX_UINT32,
+and ResumeCount is subsequently incremented,
+its new value will be 0 (due to UINT32 overflow).
+
+Since there is no check for overflow,
+when ResumeCount is 0 and passed as the second argument to DivU64x32(),
+it will trigger a division by 0, and cause a system crash,
+leading to a DoS.
+
+Cc: Alex Matrosov <alex@binarly.io>
+Cc: Alex Ermolov <alex.ermolov@binarly.io>
+Cc: Sam L. Thomas <sam@binarly.io>
+
+Signed-off-by: Yegor Vasilenko <yegor@binarly.io>
+---
+ .../FirmwarePerformancePei.c                                | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTablePei/FirmwarePerformancePei.c b/MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTablePei/FirmwarePerformancePei.c
+index 2f2b2a80b25b..ed5dfca2426f 100644
+--- a/MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTablePei/FirmwarePerformancePei.c
++++ b/MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTablePei/FirmwarePerformancePei.c
+@@ -111,6 +111,12 @@ FpdtStatusCodeListenerPei (
+   // Calculate average S3 resume time.
+   //
+   S3ResumeTotal = MultU64x32 (AcpiS3ResumeRecord->AverageResume, AcpiS3ResumeRecord->ResumeCount);
++
++  if (AcpiS3ResumeRecord->ResumeCount == MAX_UINT32) {
++    DEBUG ((DEBUG_ERROR, "ResumeCount cannot be equal to MAX_UINT32 because of subsequent incrementing\n"));
++    return EFI_ABORTED;
++  }
++
+   AcpiS3ResumeRecord->ResumeCount++;
+   AcpiS3ResumeRecord->AverageResume = DivU64x32 (S3ResumeTotal + AcpiS3ResumeRecord->FullResume, AcpiS3ResumeRecord->ResumeCount);
+ 

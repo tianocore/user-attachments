@@ -1,0 +1,41 @@
+From 4260e9c0fa0ae18231186839958c4b851de7426c Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 10:50:38 +0530
+Subject: [PATCH 1/2] MdeModulePkg/Bus/Pci/UhciDxe: Fix BAD_SHIFT Coverity
+ issue
+
+The function UhciConvertPollRate has a check
+
+    ASSERT (Interval != 0);
+
+but this comes into play only in DEBUG mode. In Release mode, there is
+no handling if the Interval parameter value is ZERO. To avoid shifting
+by a negative amount later in the code flow in this undesirable case,
+it is better to handle it as well by simply returning ZERO.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4211
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/UhciDxe/UhciSched.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/MdeModulePkg/Bus/Pci/UhciDxe/UhciSched.c b/MdeModulePkg/Bus/Pci/UhciDxe/UhciSched.c
+index c08f9496969b..8ddef4b68ccf 100644
+--- a/MdeModulePkg/Bus/Pci/UhciDxe/UhciSched.c
++++ b/MdeModulePkg/Bus/Pci/UhciDxe/UhciSched.c
+@@ -214,6 +214,10 @@ UhciConvertPollRate (
+ 
+   ASSERT (Interval != 0);
+ 
++  if (Interval == 0) {
++    return 0;
++  }
++
+   //
+   // Find the index (1 based) of the highest non-zero bit
+   //
+-- 
+2.36.1.windows.1
+

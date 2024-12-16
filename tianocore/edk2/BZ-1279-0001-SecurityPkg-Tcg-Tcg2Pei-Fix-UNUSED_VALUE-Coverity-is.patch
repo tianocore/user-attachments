@@ -1,0 +1,35 @@
+From 9e277e930c1dbd9328f615c27114a45c11c7b3ab Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:28:20 +0530
+Subject: [PATCH 1/1] SecurityPkg/Tcg/Tcg2Pei: Fix UNUSED_VALUE Coverity issue
+
+The return value stored in "Status" after call to MeasureCRTMVersion
+is not made of any use thereafter, it remains as UNUSED and later it
+gets overriden.
+
+Seemingly, the storage in "Status" can be removed.
+
+Cc: Qi Zhang <qi1.zhang@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4283
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ SecurityPkg/Tcg/Tcg2Pei/Tcg2Pei.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SecurityPkg/Tcg/Tcg2Pei/Tcg2Pei.c b/SecurityPkg/Tcg/Tcg2Pei/Tcg2Pei.c
+index 26bb5282a58b..f9bea9db0775 100644
+--- a/SecurityPkg/Tcg/Tcg2Pei/Tcg2Pei.c
++++ b/SecurityPkg/Tcg/Tcg2Pei/Tcg2Pei.c
+@@ -967,7 +967,7 @@ PeimEntryMP (
+   ASSERT_EFI_ERROR (Status);
+ 
+   if (PcdGet8 (PcdTpm2ScrtmPolicy) == 1) {
+-    Status = MeasureCRTMVersion ();
++    MeasureCRTMVersion ();
+   }
+ 
+   Status = MeasureMainBios ();
+-- 
+2.36.1.windows.1
+

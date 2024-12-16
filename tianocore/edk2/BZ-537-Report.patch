@@ -1,0 +1,77 @@
+*** E:\Work\NWStack\EDK2Tickets\IPConfigFix\Mod\Ip4Config2Impl.c	2020-08-04 18:38:06.000000000 +05-30
+--- E:\Work\NWStack\EDK2Tickets\IPConfigFix\Org\Ip4Config2Impl.c	2020-05-07 22:54:46.000000000 +05-30
+***************
+*** 1965,1978 ****
+    IP4_CONFIG2_INSTANCE  *TmpInstance;
+    LIST_ENTRY            *Entry;
+    EFI_STATUS            Status;
+    UINTN                 Index;
+    UINT16                IfIndex;
+    IP4_CONFIG2_DATA_ITEM *DataItem;
+!   BOOLEAN 				IPConfigEnabled = FALSE;
+!   IP4_CONFIG2_IFR_NVDATA  *IfrFromNvData = NULL;
+  
+    IpSb = IP4_SERVICE_FROM_IP4_CONFIG2_INSTANCE (Instance);
+  
+    Instance->Signature = IP4_CONFIG2_INSTANCE_SIGNATURE;
+  
+  
+--- 1965,1977 ----
+    IP4_CONFIG2_INSTANCE  *TmpInstance;
+    LIST_ENTRY            *Entry;
+    EFI_STATUS            Status;
+    UINTN                 Index;
+    UINT16                IfIndex;
+    IP4_CONFIG2_DATA_ITEM *DataItem;
+! 
+  
+    IpSb = IP4_SERVICE_FROM_IP4_CONFIG2_INSTANCE (Instance);
+  
+    Instance->Signature = IP4_CONFIG2_INSTANCE_SIGNATURE;
+  
+  
+***************
+*** 2038,2063 ****
+  
+    //
+    // Try to read the config data from NV variable.
+    // If not found, write initialized config data into NV variable
+    // as a default config data.
+    //
+!     Status = GetVariable2(IpSb->MacString, &gIp4Config2NvDataGuid, (VOID**)&IfrFromNvData, NULL);
+!     if(!EFI_ERROR(Status)){
+!         if (IfrFromNvData->Configure == TRUE) {
+!             Status = Ip4Config2ReadConfigData (IpSb->MacString, Instance);
+!             if (Status == EFI_NOT_FOUND) {
+!                 Status = Ip4Config2WriteConfigData (IpSb->MacString, Instance);
+!             }
+!             IPConfigEnabled = TRUE;
+!         }
+!         FreePool(IfrFromNvData);
+!     }
+!     if(!IPConfigEnabled){
+!         Status = Ip4Config2WriteConfigData (IpSb->MacString, Instance);
+!     }
+  
+    if (EFI_ERROR (Status)) {
+      return Status;
+    }
+  
+    Instance->Ip4Config2.SetData              = EfiIp4Config2SetData;
+--- 2037,2052 ----
+  
+    //
+    // Try to read the config data from NV variable.
+    // If not found, write initialized config data into NV variable
+    // as a default config data.
+    //
+!   Status = Ip4Config2ReadConfigData (IpSb->MacString, Instance);
+!   if (Status == EFI_NOT_FOUND) {
+!     Status = Ip4Config2WriteConfigData (IpSb->MacString, Instance);
+!   }
+  
+    if (EFI_ERROR (Status)) {
+      return Status;
+    }
+  
+    Instance->Ip4Config2.SetData              = EfiIp4Config2SetData;

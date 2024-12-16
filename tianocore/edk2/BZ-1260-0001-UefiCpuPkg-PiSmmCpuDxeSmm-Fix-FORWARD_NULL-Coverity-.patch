@@ -1,0 +1,119 @@
+From c446ff838e1ab994d5681f3b4a367a7cab8e99ed Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:07:55 +0530
+Subject: [PATCH 1/3] UefiCpuPkg/PiSmmCpuDxeSmm: Fix FORWARD_NULL Coverity
+ issues
+
+In file UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c, the function SetRegister
+contains
+
+  ASSERT (RegisterTable != NULL);
+
+but this comes into play only in DEBUG mode. In Release mode, the
+code continues further through both if/else path to call
+ProgramProcessorRegister function in which the parameter RegisterTable
+passed is dereferenced unconditionally which will lead to CRASH if
+RegisterTable is NULL.
+
+Hence, for safety add RegisterTable NULL pointer check.
+
+In file UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.c, the function
+FindSmramInfo contains
+
+  ASSERT (CurrentSmramRange != NULL);
+
+but this comes into play only in DEBUG mode. In Release mode, the
+code continues further immediately to dereference it which will
+lead to crash if CurrentSmramRange is NULL.
+
+Hence, for safety add CurrentSmramRange NULL pointer check.
+
+In file UefiCpuPkg/PiSmmCpuDxeSmm/X64/PageTbl.c, the function
+SetStaticPageTable has a for loop in which PageMapLevel5Entry is
+incremented unconditionally and does not consider whether or not
+m5LevelPagingNeeded is TRUE which will lead to crash if
+PageMapLevel5Entry is NULL.
+
+Hence, for safety add PageMapLevel5Entry NULL pointer check.
+
+In file UefiCpuPkg/PiSmmCpuDxeSmm/X64/PageTbl.c, the function
+ReclaimPages has the following unconditional code statements
+
+  InsertTailList (&mPagePool, (LIST_ENTRY *)(UINTN)(*ReleasePageAddress & ~mAddressEncMask & gPhyMask));
+  *ReleasePageAddress = 0;
+
+and does not consider whether ReleasePageAddress is not non-zero /
+not NULL which will lead to crash if ReleasePageAddress is ZERO.
+
+Hence, for safety add ReleasePageAddress non-zero / NULL check.
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4267
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c          | 4 ++++
+ UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.c | 4 ++++
+ UefiCpuPkg/PiSmmCpuDxeSmm/X64/PageTbl.c    | 8 +++++---
+ 3 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c b/UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c
+index fb4a44eab69b..90c5df8a372c 100644
+--- a/UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c
++++ b/UefiCpuPkg/PiSmmCpuDxeSmm/CpuS3.c
+@@ -521,6 +521,10 @@ SetRegister (
+ 
+   ASSERT (RegisterTable != NULL);
+ 
++  if (RegisterTable == NULL) {
++    return;
++  }
++
+   if (FeatureInitData->ApLocation != 0) {
+     ProgramProcessorRegister (
+       RegisterTable,
+diff --git a/UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.c b/UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.c
+index 655175a2c6db..2e94c6b736fb 100644
+--- a/UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.c
++++ b/UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.c
+@@ -1165,6 +1165,10 @@ FindSmramInfo (
+ 
+   ASSERT (CurrentSmramRange != NULL);
+ 
++  if (CurrentSmramRange == NULL) {
++    return;
++  }
++
+   *SmrrBase = (UINT32)CurrentSmramRange->CpuStart;
+   *SmrrSize = (UINT32)CurrentSmramRange->PhysicalSize;
+ 
+diff --git a/UefiCpuPkg/PiSmmCpuDxeSmm/X64/PageTbl.c b/UefiCpuPkg/PiSmmCpuDxeSmm/X64/PageTbl.c
+index 3deb1ffd6755..c5b29234b354 100644
+--- a/UefiCpuPkg/PiSmmCpuDxeSmm/X64/PageTbl.c
++++ b/UefiCpuPkg/PiSmmCpuDxeSmm/X64/PageTbl.c
+@@ -239,7 +239,7 @@ SetStaticPageTable (
+ 
+   for ( IndexOfPml5Entries = 0
+         ; IndexOfPml5Entries < NumberOfPml5EntriesNeeded
+-        ; IndexOfPml5Entries++, PageMapLevel5Entry++)
++        ; IndexOfPml5Entries++, (PageMapLevel5Entry != NULL) ? PageMapLevel5Entry++ : NULL)
+   {
+     //
+     // Each PML5 entry points to a page of PML4 entires.
+@@ -754,8 +754,10 @@ ReclaimPages (
+   //
+   // Secondly, insert the page pointed by this entry into page pool and clear this entry
+   //
+-  InsertTailList (&mPagePool, (LIST_ENTRY *)(UINTN)(*ReleasePageAddress & ~mAddressEncMask & gPhyMask));
+-  *ReleasePageAddress = 0;
++  if (ReleasePageAddress != 0) {
++    InsertTailList (&mPagePool, (LIST_ENTRY *)(UINTN)(*ReleasePageAddress & ~mAddressEncMask & gPhyMask));
++    *ReleasePageAddress = 0;
++  }
+ 
+   //
+   // Lastly, check this entry's upper entries if need to be inserted into page pool
+-- 
+2.36.1.windows.1
+

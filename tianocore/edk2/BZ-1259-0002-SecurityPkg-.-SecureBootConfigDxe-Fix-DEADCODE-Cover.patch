@@ -1,0 +1,52 @@
+From 084aa3fb59253621d4c7461573aedef3cdebe37e Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:05:21 +0530
+Subject: [PATCH 2/2] SecurityPkg/.../SecureBootConfigDxe: Fix DEADCODE
+ Coverity issue
+
+Full pathname - SecurityPkg/VariableAuthenticated/SecureBootConfigDxe
+
+The function EnrollAuthentication2Descriptor declares a VOID pointer
+variable Data which is set to NULL at the beginning of the function
+and remains set to NULL throughout. Hence the later check of Data not
+being NULL after label ON_EXIT is never going to succeed. Hence it is
+a DEADCODE and the related code can be safely removed.
+
+Cc: Min Xu <min.m.xu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4266
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../SecureBootConfigDxe/SecureBootConfigImpl.c             | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigImpl.c b/SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigImpl.c
+index 86447998d735..2c9563ec9104 100644
+--- a/SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigImpl.c
++++ b/SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigImpl.c
+@@ -2143,12 +2143,9 @@ EnrollAuthentication2Descriptor (
+   )
+ {
+   EFI_STATUS  Status;
+-  VOID        *Data;
+   UINTN       DataSize;
+   UINT32      Attr;
+ 
+-  Data = NULL;
+-
+   //
+   // DBT only support DER-X509 Cert Enrollment
+   //
+@@ -2210,10 +2207,6 @@ ON_EXIT:
+ 
+   CloseEnrolledFile (Private->FileContext);
+ 
+-  if (Data != NULL) {
+-    FreePool (Data);
+-  }
+-
+   if (mImageBase != NULL) {
+     FreePool (mImageBase);
+     mImageBase = NULL;
+-- 
+2.36.1.windows.1
+

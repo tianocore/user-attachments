@@ -1,0 +1,37 @@
+From 75f117e889ee0a8801365d12686c464504b19cbe Mon Sep 17 00:00:00 2001
+From: Wenyi Xie <xiewenyi2@huawei.com>
+Date: Tue, 13 Apr 2021 19:59:46 +0800
+Subject: [PATCH EDK2 v1 1/1] SecurityPkg/FvReportPei: remove redundant sizeof
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3333
+
+In function InstallPreHashFvPpi, when calculatuing the size
+of struct HASH_INFO，sizeof is used twice.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Laszlo Ersek <lersek@redhat.com>
+Signed-off-by: Wenyi Xie <xiewenyi2@huawei.com>
+---
+ SecurityPkg/FvReportPei/FvReportPei.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SecurityPkg/FvReportPei/FvReportPei.c b/SecurityPkg/FvReportPei/FvReportPei.c
+index d709760ea3ce..e82413e090c0 100644
+--- a/SecurityPkg/FvReportPei/FvReportPei.c
++++ b/SecurityPkg/FvReportPei/FvReportPei.c
+@@ -67,7 +67,7 @@ InstallPreHashFvPpi (
+   HASH_INFO                                         *HashInfo;
+ 
+   PpiSize = sizeof (EDKII_PEI_FIRMWARE_VOLUME_INFO_PREHASHED_FV_PPI)
+-            + sizeof (sizeof (HASH_INFO))
++            + sizeof (HASH_INFO)
+             + HashSize;
+ 
+   PreHashedFvPpi = AllocatePool (PpiSize);
+-- 
+2.20.1.windows.1
+

@@ -1,0 +1,60 @@
+From 79a44b499028c4d4e550f24119fee28efad09686 Mon Sep 17 00:00:00 2001
+From: Joseph Hemann <Joseph.hemann@arm.com>
+Date: Tue, 12 Oct 2021 17:05:36 -0500
+Subject: [PATCH 0/6] Implementation of TCG2 Protocol test
+
+This patch series implements a set of SCT tests,
+for the TCG2 UEFI protocol as defined in the TCG
+EFI Protocol Specification. The series implements
+the code for the test, and the infrastructure
+needed to run the test from the SCT UI.
+
+Patch 1 adds header file with TCG2 protocol definitions.
+
+Patch 2 implements initial infrastructure for the
+TCG2 protocol test including updates to .dsc file,
+inf file, GUID source files, update to Category.ini.
+It also adds initial TCG2 protocol test for GetCapability().
+
+Patch 3 implements TCG2 protocol test for GetActivePcrBanks().
+
+Patch 4 implements a test for HashLogExtendEvent() by hashing,
+and extending data in a test buffer to PCR[16].
+
+Patch 5 implements a test for GetEventLog(), by checking for
+the event extended in the test in Patch 4.
+
+Patch 6 tests SubmitCommand(), by submitting a simple command
+(GetRandom) to the TPM.
+
+Joseph Hemann (6):
+  uefi-sct/SctPkg: TCG2 Protocol: add header with TCG2 protocol
+    definitions
+  uefi-sct/SctPkg: TCG2 Protocol: add GetCapability Test
+  uefi-sct/SctPkg: TCG2 Protocol: add GetActivePcrBanks  test
+  uefi-sct/SctPkg: TCG2 Protocol: add HashLogExtendEvent test
+  uefi-sct/SctPkg: TCG2 Protocol: add GetEventLog test
+  uefi-sct/SctPkg: TCG2 Protocol: add SubmitCommand test
+
+ uefi-sct/SctPkg/CommonGenFramework.sh         |    1 +
+ uefi-sct/SctPkg/Config/Data/Category.ini      |    7 +
+ .../EFI/Protocol/TCG2/BlackBoxTest/Guid.c     |   59 +
+ .../EFI/Protocol/TCG2/BlackBoxTest/Guid.h     |  102 ++
+ .../TCG2/BlackBoxTest/TCG2ProtocolBBTest.h    |  180 +++
+ .../TCG2/BlackBoxTest/TCG2ProtocolBBTest.inf  |   51 +
+ .../TCG2ProtocolBBTestConformance.c           | 1017 +++++++++++++++++
+ .../BlackBoxTest/TCG2ProtocolBBTestMain.c     |  130 +++
+ uefi-sct/SctPkg/UEFI/Protocol/TCG2.h          |  219 ++++
+ uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc             |    1 +
+ 10 files changed, 1767 insertions(+)
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/TCG2/BlackBoxTest/Guid.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/TCG2/BlackBoxTest/Guid.h
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/TCG2/BlackBoxTest/TCG2ProtocolBBTest.h
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/TCG2/BlackBoxTest/TCG2ProtocolBBTest.inf
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/TCG2/BlackBoxTest/TCG2ProtocolBBTestConformance.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/TCG2/BlackBoxTest/TCG2ProtocolBBTestMain.c
+ create mode 100644 uefi-sct/SctPkg/UEFI/Protocol/TCG2.h
+
+-- 
+2.17.1
+

@@ -1,0 +1,79 @@
+From 5a1f081c90d77d8eb16af1afd7afbc0b6a76396d Mon Sep 17 00:00:00 2001
+From: Ashraf Ali S <ashraf.ali.s@intel.com>
+Date: Fri, 23 Jul 2021 13:55:30 +0530
+Subject: [PATCH v2 1/2] UefiCpuPkg: ResetVector Tool Support for Python 3
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3506
+
+Build Scrips for Reset Vector currently based on Python 2
+which is already EOL, needs to modify the build script based on
+Python 3
+
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Harry Han <harry.han@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+Cc: Sangeetha V <sangeetha.v@intel.com>
+
+Signed-off-by: Ashraf Ali S <ashraf.ali.s@intel.com>
+---
+ UefiCpuPkg/ResetVector/Vtf0/Build.py                    | 6 +++---
+ UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Build.py b/UefiCpuPkg/ResetVector/Vtf0/Build.py
+index 343c53b5ff..55f4edd87b 100644
+--- a/UefiCpuPkg/ResetVector/Vtf0/Build.py
++++ b/UefiCpuPkg/ResetVector/Vtf0/Build.py
+@@ -1,7 +1,7 @@
+ ## @file
+ #  Automate the process of building the various reset vector types
+ #
+-#  Copyright (c) 2009, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2009 - 2021, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -33,7 +33,7 @@ for arch in ('ia32', 'x64'):
+             'Vtf0.nasmb',
+             )
+         ret = RunCommand(commandLine)
+-        print '\tASM\t' + output
++        print('\tASM\t' + output)
+         if ret != 0: sys.exit(ret)
+ 
+         commandLine = (
+@@ -41,7 +41,7 @@ for arch in ('ia32', 'x64'):
+             'Tools/FixupForRawSection.py',
+             output,
+             )
+-        print '\tFIXUP\t' + output
++        print('\tFIXUP\t' + output)
+         ret = RunCommand(commandLine)
+         if ret != 0: sys.exit(ret)
+ 
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py b/UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py
+index c77438a0ce..de771eba22 100644
+--- a/UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py
++++ b/UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py
+@@ -1,7 +1,7 @@
+ ## @file
+ #  Apply fixup to VTF binary image for FFS Raw section
+ #
+-#  Copyright (c) 2008, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2008 - 2021, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -15,6 +15,6 @@ c = ((len(d) + 4 + 7) & ~7) - 4
+ if c > len(d):
+     c -= len(d)
+     f = open(sys.argv[1], 'wb')
+-    f.write('\x90' * c)
++    f.write(b'\x90' * c)
+     f.write(d)
+     f.close()
+-- 
+2.30.2.windows.1
+

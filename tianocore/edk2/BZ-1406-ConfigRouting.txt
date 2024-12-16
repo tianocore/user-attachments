@@ -1,0 +1,82 @@
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c b/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
+index 5ae6189a28..0b39f156f3 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
+@@ -420,14 +420,19 @@ AppendToMultiString (
+   }
+ 
+   AppendStringSize = StrSize (AppendString);
++  if (AppendStringSize <= sizeof(*AppendString))    // If the string is empty, there is no need to proceed further.
++    return EFI_SUCCESS;
++
+   MultiStringSize  = StrSize (*MultiString);
+   MaxLen           = MAX_STRING_LENGTH / sizeof (CHAR16);
+ 
+   //
+   // Enlarge the buffer each time when length exceeds MAX_STRING_LENGTH.
+   //
+-  if ((MultiStringSize + AppendStringSize > MAX_STRING_LENGTH) ||
+-      (MultiStringSize > MAX_STRING_LENGTH))
++  if ((MultiStringSize + AppendStringSize > MAX_STRING_LENGTH) /*||
++      (MultiStringSize > MAX_STRING_LENGTH)*/)  // There is no need to check the second part.
++                                                // If the first part is false, the second part will always be false.
++                                                // If the second part is true, the first part must also be true.
+   {
+     *MultiString = (EFI_STRING)ReallocatePool (
+                                  MultiStringSize,
+@@ -1800,8 +1805,14 @@ GetElementsFromRequest (
+ {
+   EFI_STRING  TmpRequest;
+ 
++  ASSERT (ConfigRequest != NULL);
++  if (ConfigRequest == NULL)
++    return FALSE;
++
+   TmpRequest = StrStr (ConfigRequest, L"PATH=");
+   ASSERT (TmpRequest != NULL);
++  if (TmpRequest == NULL)
++    return FALSE;
+ 
+   if ((StrStr (TmpRequest, L"&OFFSET=") != NULL) || (StrStr (TmpRequest, L"&") != NULL)) {
+     return TRUE;
+@@ -5292,6 +5303,7 @@ HiiConfigRoutingExportConfig (
+     //
+     IfrDataParsedFlag = FALSE;
+     Progress          = NULL;
++    AccessResults     = NULL;
+     HiiHandle         = NULL;
+     DefaultResults    = NULL;
+     Database          = NULL;
+@@ -5326,6 +5338,14 @@ HiiConfigRoutingExportConfig (
+                              &AccessResults
+                              );
+     if (EFI_ERROR (Status)) {
++
++      // If an error was returned, then do not believe any results in these two pointers.
++      Progress = NULL;
++      if (AccessResults) {
++        FreePool (AccessResults);
++        AccessResults = NULL;
++      }
++
+       //
+       // Update AccessResults by getting default setting from IFR when HiiPackage is registered to HiiHandle
+       //
+@@ -5350,6 +5370,17 @@ HiiConfigRoutingExportConfig (
+     }
+ 
+     if (!EFI_ERROR (Status)) {
++
++      // If AccessResults == NULL, there is nothing to be done.
++      if (AccessResults == NULL) {
++        Progress = NULL;
++
++        if (ConfigRequest != NULL)
++          FreePool (ConfigRequest);
++
++        continue;
++      }
++
+       //
+       // Update AccessResults by getting default setting from IFR when HiiPackage is registered to HiiHandle
+       //

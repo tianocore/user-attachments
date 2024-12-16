@@ -1,0 +1,31 @@
+From 9ddd49eeb166a464fc77a548e1a7bf437db77c51 Mon Sep 17 00:00:00 2001
+From: Enze Zhu <zhuenze@byosoft.com.cn>
+Date: Fri, 23 Oct 2020 14:34:58 +0800
+Subject: [PATCH] ShellPkg:Fix bug in FileBuffer.c
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2998
+
+In the function FileBufferCutLine(),set the CutLine pointer to NULL,
+The function header specifies that the pointer is valid on a successful or failed return code.
+
+Signed-off-by: Enze Zhu <zhuenze@byosoft.com.cn>
+---
+ ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c
+index 5659ec9810..2723462126 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c
+@@ -2767,6 +2767,8 @@ FileBufferCutLine (
+   UINTN           Row;
+   UINTN           Col;
+ 
++  CutLine       = NULL;
++
+   if (FileBuffer.ReadOnly) {
+     StatusBarSetStatusString (L"Read Only File Can Not Be Modified");
+     return EFI_SUCCESS;
+-- 
+2.27.0.windows.1
+

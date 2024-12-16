@@ -1,0 +1,46 @@
+.text:0000000000010749                 mov     r9d, [rsp+2D8h+mcpuInfo.Location.Thread]     ; mcpuInfo.Location.Thread
+.text:0000000000010751                 mov     r8d, [rsp+2D8h+mcpuInfo.Location.Core]       ; mcpuInfo.Location.Core
+.text:0000000000010759                 lea     rcx, aLocationPkgUCo                         ; "  Location   : Pkg %u Core %u Thread %u"...
+.text:0000000000010760                 mov     edx, [rsp+2D8h+mcpuInfo.Location.Package]    ; mcpuInfo.Location.Package
+.text:0000000000010767                 call    Print
+.text:000000000001076C                 test    byte ptr [rsp+2D8h+StatusFlag], 2
+.text:0000000000010774                 jz      loc_1083B
+.text:000000000001077A                 test    rbx, rbx                                     ; if ( threadNumber )
+.text:000000000001077D                 mov     qword ptr [rsp+2D8h+apCpuIdValues.index], 1  ; index = 1, subIndex = 0
+.text:0000000000010789                 mov     qword ptr [rsp+2D8h+apCpuIdValues._eax], 0   ; _eax = 0, _ebx = 0
+.text:0000000000010795                 mov     qword ptr [rsp+2D8h+apCpuIdValues._ecx], 0   ; _ecx = 0, _edx = 0
+.text:00000000000107A1                 lea     rdi, [rsp+2D8h+apCpuIdValues.index]          ; &apCpuIdValue
+.text:00000000000107A9                 jz      short loc_107F4
+.text:00000000000107AB                 mov     rax, [rsp+2D8h+MpProto]
+.text:00000000000107B3                 xor     r9d, r9d                                     ; WaitEvent
+.text:00000000000107B6                 mov     r8, rbx                                      ; threadNumber
+.text:00000000000107B9                 lea     rdx, Get_AP_Cpuid                            ; Procedure, &Get_AP_Cpuid()
+.text:00000000000107C0                 mov     qword ptr [rsp+30h], 0                       ; Finished
+.text:00000000000107C9                 mov     [rsp+28h], rdi                               ; ProcedureArgument, &apCpuIdValues
+.text:00000000000107CE                 mov     qword ptr [rsp+20h], 0                       ; TimeoutInMicroseconds
+.text:00000000000107D7                 mov     rcx, rax                                     ; MpProto (this)
+.text:00000000000107DA                 call    qword ptr [rax+18h]                          ; MpProto->StartupThisAP()
+.text:00000000000107DD                 lea     rcx, aMpprotoStartup                         ; "  MpProto->StartupThisAP() returned Sta"...
+.text:00000000000107E4                 mov     rsi, rax
+.text:00000000000107E7                 mov     rdx, rax
+.text:00000000000107EA                 call    Print
+.text:00000000000107EF                 test    rsi, rsi
+.text:00000000000107F2                 jmp     short loc_1080B
+.text:00000000000107F4 ; ---------------------------------------------------------------------------
+.text:00000000000107F4
+.text:00000000000107F4 loc_107F4:
+.text:00000000000107F4                 call    Get_AP_Cpuid
+.text:00000000000107F9                 lea     rcx, aGet_ap_cpuidRe                         ; "  Get_AP_Cpuid() returned Status = %X\n"
+.text:0000000000010800                 mov     rdx, rbp
+.text:0000000000010803                 call    Print
+.text:0000000000010808                 test    rbp, rbp
+.text:000000000001080B
+.text:000000000001080B loc_1080B:
+.text:000000000001080B                 jnz     short loc_1083B
+.text:000000000001080D                 mov     eax, [rsp+2D8h+apCpuIdValues._edx]
+.text:0000000000010814                 mov     r9d, [rsp+2D8h+apCpuIdValues._ecx]
+.text:000000000001081C                 lea     rcx, aGet_ap_cpuid10                         ; "  Get_AP_Cpuid( 1, 0, ...) returned %08"...
+.text:0000000000010823                 mov     r8d, [rsp+2D8h+apCpuIdValues._ebx]
+.text:000000000001082B                 mov     edx, [rsp+2D8h+apCpuIdValues._eax]
+.text:0000000000010832                 mov     [rsp+20h], eax
+.text:0000000000010836                 call    Print

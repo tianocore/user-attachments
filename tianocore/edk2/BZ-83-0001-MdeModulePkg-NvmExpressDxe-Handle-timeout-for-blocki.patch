@@ -1,0 +1,187 @@
+From 99632a79be36dc70fc86d56e89e5859669790f8a Mon Sep 17 00:00:00 2001
+From: Hao Wu <hao.a.wu@intel.com>
+Date: Tue, 6 Jun 2017 16:44:40 +0800
+Subject: [PATCH] MdeModulePkg/NvmExpressDxe: Handle timeout for blocking
+ PassThru req
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=433
+
+When a blocking NVMe PassThru request experiences timeout, the current
+codes in function NvmExpressPassThru() do not abort the timeout request
+while advancing synchronous Submission Queue tail. Therefore, it is
+possible to submit a new blocking PassThru request when the synchronous
+Submission Queue is full.
+
+The commit adds logic to abort the timeout request by resetting the NVMe
+controller when a timeout occurs for a blocking PassThru request.
+
+Cc: Star Zeng <star.zeng@intel.com>
+Cc: Michael Turner <michael.turner@microsoft.com>
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Hao Wu <hao.a.wu@intel.com>
+---
+ .../Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c     | 134 ++++++++++++++++++++-
+ 1 file changed, 133 insertions(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c
+index fb80f39ce8..c33038f0e9 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressPassthru.c
+@@ -3,7 +3,7 @@
+   NVM Express specification.
+ 
+   (C) Copyright 2014 Hewlett-Packard Development Company, L.P.<BR>
+-  Copyright (c) 2013 - 2016, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2013 - 2017, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -317,6 +317,100 @@ EXIT:
+ 
+ 
+ /**
++  Aborts the asynchronous PassThru requests.
++
++  @param[in] Private        The pointer to the NVME_CONTROLLER_PRIVATE_DATA
++                            data structure.
++
++  @retval EFI_SUCCESS       The asynchronous PassThru requests have been aborted.
++  @return EFI_DEVICE_ERROR  Fail to abort all the asynchronous PassThru requests.
++
++**/
++EFI_STATUS
++AbortAsyncPassThruTasks (
++  IN NVME_CONTROLLER_PRIVATE_DATA    *Private
++  )
++{
++  EFI_PCI_IO_PROTOCOL                *PciIo;
++  LIST_ENTRY                         *Link;
++  LIST_ENTRY                         *NextLink;
++  NVME_BLKIO2_SUBTASK                *Subtask;
++  NVME_BLKIO2_REQUEST                *BlkIo2Request;
++  NVME_PASS_THRU_ASYNC_REQ           *AsyncRequest;
++  EFI_BLOCK_IO2_TOKEN                *Token;
++  EFI_TPL                            OldTpl;
++  EFI_STATUS                         Status;
++
++  PciIo  = Private->PciIo;
++  OldTpl = gBS->RaiseTPL (TPL_NOTIFY);
++
++  //
++  // Cancel the unsubmitted subtasks.
++  //
++  for (Link = GetFirstNode (&Private->UnsubmittedSubtasks);
++       !IsNull (&Private->UnsubmittedSubtasks, Link);
++       Link = NextLink) {
++    NextLink      = GetNextNode (&Private->UnsubmittedSubtasks, Link);
++    Subtask       = NVME_BLKIO2_SUBTASK_FROM_LINK (Link);
++    BlkIo2Request = Subtask->BlockIo2Request;
++    Token         = BlkIo2Request->Token;
++
++    BlkIo2Request->UnsubmittedSubtaskNum--;
++    if (Subtask->IsLast) {
++      BlkIo2Request->LastSubtaskSubmitted = TRUE;
++    }
++    Token->TransactionStatus = EFI_ABORTED;
++
++    RemoveEntryList (Link);
++    InsertTailList (&BlkIo2Request->SubtasksQueue, Link);
++    gBS->SignalEvent (Subtask->Event);
++  }
++
++  //
++  // Cleanup the resources for the asynchronous PassThru requests.
++  //
++  for (Link = GetFirstNode (&Private->AsyncPassThruQueue);
++       !IsNull (&Private->AsyncPassThruQueue, Link);
++       Link = NextLink) {
++    NextLink = GetNextNode (&Private->AsyncPassThruQueue, Link);
++    AsyncRequest = NVME_PASS_THRU_ASYNC_REQ_FROM_THIS (Link);
++
++    if (AsyncRequest->MapData != NULL) {
++      PciIo->Unmap (PciIo, AsyncRequest->MapData);
++    }
++    if (AsyncRequest->MapMeta != NULL) {
++      PciIo->Unmap (PciIo, AsyncRequest->MapMeta);
++    }
++    if (AsyncRequest->MapPrpList != NULL) {
++      PciIo->Unmap (PciIo, AsyncRequest->MapPrpList);
++    }
++    if (AsyncRequest->PrpListHost != NULL) {
++      PciIo->FreeBuffer (
++               PciIo,
++               AsyncRequest->PrpListNo,
++               AsyncRequest->PrpListHost
++               );
++    }
++
++    RemoveEntryList (Link);
++    gBS->SignalEvent (AsyncRequest->CallerEvent);
++    FreePool (AsyncRequest);
++  }
++
++  if (IsListEmpty (&Private->AsyncPassThruQueue) &&
++      IsListEmpty (&Private->UnsubmittedSubtasks)) {
++    Status = EFI_SUCCESS;
++  } else {
++    Status = EFI_DEVICE_ERROR;
++  }
++
++  gBS->RestoreTPL (OldTpl);
++
++  return Status;
++}
++
++
++/**
+   Sends an NVM Express Command Packet to an NVM Express controller or namespace. This function supports
+   both blocking I/O and non-blocking I/O. The blocking I/O functionality is required, and the non-blocking
+   I/O functionality is optional.
+@@ -692,6 +786,44 @@ NvmExpressPassThru (
+         NvmeDumpStatus(Cq);
+       DEBUG_CODE_END();
+     }
++  } else {
++    //
++    // Timeout occurs for an NVMe command. Reset the controller to abort the
++    // outstanding commands.
++    //
++    DEBUG ((DEBUG_ERROR, "NvmExpressPassThru: Timeout occurs for an NVMe command.\n"));
++
++    //
++    // Disable the timer to trigger the process of async transfers temporarily.
++    //
++    Status = gBS->SetTimer (Private->TimerEvent, TimerCancel, 0);
++    if (EFI_ERROR (Status)) {
++      goto EXIT;
++    }
++
++    //
++    // Reset the NVMe controller.
++    //
++    Status = NvmeControllerInit (Private);
++    if (!EFI_ERROR (Status)) {
++      Status = AbortAsyncPassThruTasks (Private);
++      if (!EFI_ERROR (Status)) {
++        //
++        // Re-enable the timer to trigger the process of async transfers.
++        //
++        Status = gBS->SetTimer (Private->TimerEvent, TimerPeriodic, NVME_HC_ASYNC_TIMER);
++        if (!EFI_ERROR (Status)) {
++          //
++          // Return EFI_TIMEOUT to indicate a timeout occurs for NVMe PassThru command.
++          //
++          Status = EFI_TIMEOUT;
++        }
++      }
++    } else {
++      Status = EFI_DEVICE_ERROR;
++    }
++
++    goto EXIT;
+   }
+ 
+   if ((Private->CqHdbl[QueueId].Cqh ^= 1) == 0) {
+-- 
+2.12.0.windows.1
+

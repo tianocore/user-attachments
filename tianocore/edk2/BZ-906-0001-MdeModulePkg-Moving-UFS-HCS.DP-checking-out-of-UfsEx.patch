@@ -1,0 +1,103 @@
+From f75dde3e94387019e0b64c9a1a1fbebaaefd6e62 Mon Sep 17 00:00:00 2001
+From: VincentX Ke <vincentx.ke@intel.com>
+Date: Wed, 15 Dec 2021 15:42:52 +0800
+Subject: [PATCH] MdeModulePkg: Moving UFS HCS.DP checking out of
+ UfsExecUicCommands() to fix timing problem
+
+BZ: https://bugzilla.tianocore.org/show_bug.cgi?id=3776
+
+Moving UFS HCS.DP (Device Attached) checking under UfsDeviceDetection() to fix timing problem.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Ian Chiu <Ian.chiu@intel.com>
+Cc: Maggie Chu <maggie.chu@intel.com>
+Signed-off-by: VincentX Ke <vincentx.ke@intel.com>
+---
+ MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c | 51 +++++++++------------
+ 1 file changed, 21 insertions(+), 30 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c b/MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c
+index 9fa5fcf46f..447d6cab7f 100644
+--- a/MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c
++++ b/MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c
+@@ -1353,23 +1353,6 @@ UfsExecUicCommands (
+     }
+   }
+ 
+-  //
+-  // Check value of HCS.DP and make sure that there is a device attached to the Link.
+-  //
+-  Address = UfsHcBase + UFS_HC_STATUS_OFFSET;
+-  Data    = MmioRead32 (Address);
+-  if ((Data & UFS_HC_HCS_DP) == 0) {
+-    Address = UfsHcBase + UFS_HC_IS_OFFSET;
+-    Status  = UfsWaitMemSet (Address, UFS_HC_IS_ULSS, UFS_HC_IS_ULSS, UFS_TIMEOUT);
+-    if (EFI_ERROR (Status)) {
+-      return EFI_DEVICE_ERROR;
+-    }
+-
+-    return EFI_NOT_FOUND;
+-  }
+-
+-  DEBUG ((DEBUG_INFO, "UfsblockioPei: found a attached UFS device\n"));
+-
+   return EFI_SUCCESS;
+ }
+ 
+@@ -1442,8 +1425,10 @@ UfsDeviceDetection (
+   IN  UFS_PEIM_HC_PRIVATE_DATA  *Private
+   )
+ {
+-  UINTN       Retry;
+-  EFI_STATUS  Status;
++  UINTN                         Retry;
++  UINTN                         Address;
++  UINT32                        Data;
++  EFI_STATUS                    Status;
+ 
+   //
+   // Start UFS device detection.
+@@ -1451,22 +1436,28 @@ UfsDeviceDetection (
+   //
+   for (Retry = 0; Retry < 3; Retry++) {
+     Status = UfsExecUicCommands (Private, UfsUicDmeLinkStartup, 0, 0, 0);
+-    if (!EFI_ERROR (Status)) {
+-      break;
++    if (EFI_ERROR (Status)) {
++      return EFI_DEVICE_ERROR;
+     }
+ 
+-    if (Status == EFI_NOT_FOUND) {
+-      continue;
++    //
++    // Check value of HCS.DP and make sure that there is a device attached to the Link.
++    //
++    Address = Private->UfsHcBase + UFS_HC_STATUS_OFFSET;
++    Data    = MmioRead32 (Address);
++    if ((Data & UFS_HC_HCS_DP) == 0) {
++      Address = Private->UfsHcBase + UFS_HC_IS_OFFSET;
++      Status  = UfsWaitMemSet (Address, UFS_HC_IS_ULSS, UFS_HC_IS_ULSS, UFS_TIMEOUT);
++      if (EFI_ERROR (Status)) {
++        return EFI_DEVICE_ERROR;
++      }
++    } else {
++      DEBUG ((DEBUG_INFO, "UfsblockioPei: found a attached UFS device\n"));
++      return EFI_SUCCESS;
+     }
+-
+-    return EFI_DEVICE_ERROR;
+   }
+ 
+-  if (Retry == 3) {
+-    return EFI_NOT_FOUND;
+-  }
+-
+-  return EFI_SUCCESS;
++  return EFI_NOT_FOUND;
+ }
+ 
+ /**
+-- 
+2.18.0.windows.1
+

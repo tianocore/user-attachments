@@ -1,0 +1,27 @@
+From 3e1bdfcf42fbb5d2ef2aa4c9f9d6061fd3e91ac9 Mon Sep 17 00:00:00 2001
+From: kuqin <kuqin@microsoft.com>
+Date: Thu, 19 Mar 2020 02:13:45 -0700
+Subject: [PATCH] Fix a page fault in unit test framework initialization.
+
+---
+ .../UnitTestPersistenceLibSimpleFileSystem.c                  | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/UnitTestFrameworkPkg/Library/UnitTestPersistenceLibSimpleFileSystem/UnitTestPersistenceLibSimpleFileSystem.c b/UnitTestFrameworkPkg/Library/UnitTestPersistenceLibSimpleFileSystem/UnitTestPersistenceLibSimpleFileSystem.c
+index ccca9bfacb..20a912ce81 100644
+--- a/UnitTestFrameworkPkg/Library/UnitTestPersistenceLibSimpleFileSystem/UnitTestPersistenceLibSimpleFileSystem.c
++++ b/UnitTestFrameworkPkg/Library/UnitTestPersistenceLibSimpleFileSystem/UnitTestPersistenceLibSimpleFileSystem.c
+@@ -67,7 +67,9 @@ GetCacheFileDevicePath (
+   // Before we can start, change test name from ASCII to Unicode.
+   //
+   CacheFilePathLength = AsciiStrLen (Framework->ShortTitle) + 1;
+-  TestName = AllocatePool (CacheFilePathLength);
++  // MU_CHANGE: Allocate pool for CacheFilePathLeng count of CHAR16
++  // TestName = AllocatePool (CacheFilePathLength
++  TestName = AllocatePool (CacheFilePathLength * sizeof(CHAR16));
+   if (!TestName) {
+     goto Exit;
+   }
+-- 
+2.24.1.windows.2
+

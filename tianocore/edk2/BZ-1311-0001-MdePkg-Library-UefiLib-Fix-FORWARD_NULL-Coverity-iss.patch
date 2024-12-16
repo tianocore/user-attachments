@@ -1,0 +1,47 @@
+From 277fc231d43d46580aa0116fcd02448602d90573 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 18:58:32 +0530
+Subject: [PATCH] MdePkg/Library/UefiLib: Fix FORWARD_NULL Coverity issues
+
+The function ScanTableInSDT at its beginning does a NULL check on
+PreviousTableLocated value and has ASSERT (PreviousTable != NULL);
+in the if path and ASSERT (PreviousTable == NULL); in the else path.
+
+Both these ASSERT are applicable only in the DEBUG mode and the code
+still proceeds further after the if-else blocks and may lead to CRASH.
+
+Hence, for safety add due blocking checks in if as well as else path.
+
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4320
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdePkg/Library/UefiLib/Acpi.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/MdePkg/Library/UefiLib/Acpi.c b/MdePkg/Library/UefiLib/Acpi.c
+index 397fde24ed..60545524c0 100644
+--- a/MdePkg/Library/UefiLib/Acpi.c
++++ b/MdePkg/Library/UefiLib/Acpi.c
+@@ -45,9 +45,16 @@ ScanTableInSDT (
+ 
+   if (PreviousTableLocated != NULL) {
+     ASSERT (PreviousTable != NULL);
++    if (PreviousTable == NULL) {
++      return NULL;
++    }
++
+     *PreviousTableLocated = FALSE;
+   } else {
+     ASSERT (PreviousTable == NULL);
++    if (PreviousTable != NULL) {
++      return NULL;
++    }
+   }
+ 
+   if (Sdt == NULL) {
+-- 
+2.36.1.windows.1
+

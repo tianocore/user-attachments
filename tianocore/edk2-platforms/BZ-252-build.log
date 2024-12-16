@@ -1,0 +1,676 @@
+/LH /D
+Release
+make: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools"
+make -C Source/C
+make[1]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C"
+Attempting to detect HOST_ARCH from 'uname -m': x86_64
+Detected HOST_ARCH of X64 using uname.
+mkdir -p .
+make -C Common
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/Common"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/Common"
+make -C BrotliCompress
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/BrotliCompress"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/BrotliCompress"
+make -C VfrCompile
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/VfrCompile"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/VfrCompile"
+make -C GnuGenBootSector
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GnuGenBootSector"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GnuGenBootSector"
+make -C BootSectImage
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/BootSectImage"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/BootSectImage"
+make -C EfiLdrImage
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/EfiLdrImage"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/EfiLdrImage"
+make -C EfiRom
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/EfiRom"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/EfiRom"
+make -C GenFfs
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenFfs"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenFfs"
+make -C GenFv
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenFv"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenFv"
+make -C GenFw
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenFw"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenFw"
+make -C GenPage
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenPage"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenPage"
+make -C GenSec
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenSec"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenSec"
+make -C GenCrc32
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenCrc32"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenCrc32"
+make -C GenVtf
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenVtf"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/GenVtf"
+make -C LzmaCompress
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/LzmaCompress"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/LzmaCompress"
+make -C Split
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/Split"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/Split"
+make -C TianoCompress
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/TianoCompress"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/TianoCompress"
+make -C VolInfo
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/VolInfo"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/VolInfo"
+make -C DevicePath
+make[2]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/DevicePath"
+make[2]: Nessuna operazione da eseguire per "all".
+make[2]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C/DevicePath"
+Finished building BaseTools C Tools with HOST_ARCH=X64
+make[1]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/C"
+make -C Source/Python
+make[1]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Source/Python"
+make[1]: Nessuna operazione da eseguire per "all".
+make[1]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Source/Python"
+make -C Tests
+make[1]: ingresso nella directory "/home/custom/BiosAPL/edk2/BaseTools/Tests"
+make[1]: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools/Tests"
+make: uscita dalla directory "/home/custom/BiosAPL/edk2/BaseTools"
+Loading previous configuration from /home/custom/BiosAPL/Conf/BuildEnv.sh
+WORKSPACE: /home/custom/BiosAPL
+EDK_TOOLS_PATH: /home/custom/BiosAPL/edk2/BaseTools
+CONF_PATH: /home/custom/BiosAPL/Conf
+======================================================================
+Build_IFWI:  Calling BIOS build Script...
+mar 5 feb 2019, 06.30.01, PST
+Creating Conf folder and build config files...
+Ensuring correct build directory is present for GenBiosId...
+Creating BiosId...
+
+GenBiosId utility, version: v2.0b 11/18/2016   
+Copyright (c) 2005 - 2016, Intel Corporation. All rights reserved.   
+
+BIOS ID created: LEAFHILD.X64.0071.R01.1902051430
+BIOS ID binary file created: Build/BroxtonPlatformPkg/RELEASE_GCC5/X64/BiosId.bin
+
+**** Copy ResetVector to original folder ****
+**** Due to nasm can't execute in Ubuntu ****
+Invoking EDK2 build...
+
+
+Architecture(s)  = IA32 X64
+Build target     = RELEASE
+Toolchain        = GCC5
+
+Active Platform          = /home/custom/BiosAPL/edk2-platforms/Platform/BroxtonPlatformPkg/PlatformPkgX64Gcc.dsc
+Flash Image Definition   = /home/custom/BiosAPL/edk2-platforms/Platform/BroxtonPlatformPkg/PlatformPkg.fdf
+
+Processing meta-data ........................ done!
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+make: Nessuna operazione da eseguire per "tbuild".
+
+Fd File Name:SOC (/home/custom/BiosAPL/Build/BroxtonPlatformPkg/RELEASE_GCC5/FV/SOC.fd)
+
+Generate Region at Offset 0x0
+   Region Size = 0x50000
+   Region Name = FV
+
+Generating FVIBBR FV
+
+Generate Region at Offset 0x50000
+   Region Size = 0x76000
+   Region Name = FV
+
+Generating FVOBB FV
+
+Generating FVMAIN FV
+#########
+Generate Region at Offset 0xC6000
+   Region Size = 0x17A000
+   Region Name = FV
+
+Generating FVOBBX FV
+
+Generating FVMAIN2 FV
+Padding region starting from offset 0x240000, with size 0x18000
+
+Generate Region at Offset 0x240000
+   Region Size = 0x18000
+   Region Name = None
+
+Generate Region at Offset 0x258000
+   Region Size = 0x3E000
+   Region File Name = /home/custom/BiosAPL/edk2-platforms/Platform/BroxtonPlatformPkg/Common/Binaries/Prebuild/X64/VpdBlockSecBoot.bin
+
+Generate Region at Offset 0x296000
+   Region Size = 0x2000
+   Region Name = DATA
+
+Generate Region at Offset 0x298000
+   Region Size = 0x40000
+   Region Name = None
+
+Generate Region at Offset 0x2D8000
+   Region Size = 0x35000
+   Region Name = FV
+
+Generating FVIBBM FV
+###Padding region starting from offset 0x30D000, with size 0x9000
+
+Generate Region at Offset 0x30D000
+   Region Size = 0x9000
+   Region Name = None
+
+Generate Region at Offset 0x316000
+   Region Size = 0x1000
+   Region Name = FV
+
+Generating FVIBBL FV
+###
+Generating UPDATE_DATA FV
+##
+Generating BIOSUPDATE FV
+
+Generating BIOSUPDATECARGO FV
+
+Generating SETUP_DATA FV
+
+Generate CAPSULE_RESET Capsule
+
+Generate CAPSULE_BOOT Capsule
+
+GUID cross reference file can be found at /home/custom/BiosAPL/Build/BroxtonPlatformPkg/RELEASE_GCC5/FV/Guid.xref
+
+FV Space Information
+UPDATE_DATA [99%Full] 3244032 total, 3240032 used, 4000 free
+FVIBBM [82%Full] 217088 total, 178096 used, 38992 free
+FVIBBL [41%Full] 4096 total, 1704 used, 2392 free
+FVOBB [73%Full] 483328 total, 356104 used, 127224 free
+FVOBBX [85%Full] 1548288 total, 1316328 used, 231960 free
+FVIBBR [94%Full] 327680 total, 308496 used, 19184 free
+FVMAIN2 [99%Full] 4714496 total, 4712728 used, 1768 free
+FVMAIN [99%Full] 962560 total, 958744 used, 3816 free
+check if Build was successful
+~/BiosAPL/edk2-platforms/Silicon/BroxtonSoC/BroxtonFspPkg/ApolloLakeFspBinPkg/FspBin ~/BiosAPL
+Rebase FSP-M from 0xFEF71000 to 0xFEF7A000:
+  Patched 2579 entries in 6 TE/PE32 images.
+  Patched 1 entries using FSP patch table.
+Ceate FSP component file './FSP_S.Fv'
+Ceate FSP component file './FSP_M.Fv'
+Ceate FSP component file './FSP_T.Fv'
+~/BiosAPL
+Running fce...
+Split...
+Build/BroxtonPlatformPkg/RELEASE_GCC5/FV/BxtX64.fd: ERROR 0001: File open failure
+Get NvStorage Base and Size...
+- NvStorageBase = 0xfff41000
+- BaseAddress = 0xffce9000
+- NvStorageSize = 0x80000
+- VpdOffset = 2457600
+- VpdSize= 524288
+Create NvStorage.fv...
+~/BiosAPL/edk2-platforms/Platform/BroxtonPlatformPkg/Common/Tools/Stitch ~/BiosAPL
+~/BiosAPL
+~/BiosAPL/edk2-platforms/Platform/BroxtonPlatformPkg/Common/Tools/Stitch ~/BiosAPL
+~/BiosAPL
+
+Check if SPI IFWI image is generated at below location:
+/home/custom/BiosAPL/edk2-platforms/Platform/BroxtonPlatformPkg/Common/Tools/Stitch/LEAFD_X64_R_0071_01_GCC.bin
+
+
+
+Finished Building Process.
+

@@ -1,0 +1,36 @@
+From 95c48454d6d14cb7537dec98d58f7dc01efa644e Mon Sep 17 00:00:00 2001
+Message-Id: <95c48454d6d14cb7537dec98d58f7dc01efa644e.1567095734.git.Jayanth_Raghuram@Dell.com>
+From: Jayanth Raghuram <Jayanth_Raghuram@Dell.com>
+Date: Thu, 29 Aug 2019 11:17:09 -0500
+Subject: [PATCH v2] MdePkg/DxeHstiLib: Added checks to improve error handling.
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2138
+
+Added checks for return parameters of GetSupportedTypes
+function calls in InternalHstiFindAip to improve error handling.
+An issue was observed on Dell Poweredge R740, where the Dell
+PERC H740P controller UEFI driver returned InfoTypesBuffer = NULL,
+InfoTypesBufferCount = 0 and caused an FreePool assert.
+
+Signed-off-by: Jayanth Raghuram <Jayanth.Raghuram@Dell.com>
+Cc: Wei G Liu <Wei_G_Liu@Dell.com>
+---
+ MdePkg/Library/DxeHstiLib/HstiDxe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdePkg/Library/DxeHstiLib/HstiDxe.c b/MdePkg/Library/DxeHstiLib/HstiDxe.c
+index 9466e3dcb3..4e1c67616b 100644
+--- a/MdePkg/Library/DxeHstiLib/HstiDxe.c
++++ b/MdePkg/Library/DxeHstiLib/HstiDxe.c
+@@ -77,7 +77,7 @@ InternalHstiFindAip (
+                     &InfoTypesBuffer,
+                     &InfoTypesBufferCount
+                     );
+-    if (EFI_ERROR (Status)) {
++    if (EFI_ERROR (Status) || (InfoTypesBuffer == NULL) || (InfoTypesBufferCount == 0)) {
+       continue;
+     }
+ 
+-- 
+2.19.1.windows.1
+

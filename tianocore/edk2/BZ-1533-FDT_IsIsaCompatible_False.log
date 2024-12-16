@@ -1,0 +1,971 @@
+/dts-v1/;
+// magic:		0xd00dfeed
+// totalsize:		0x8000 (32768)
+// off_dt_struct:	0x40
+// off_dt_strings:	0x4748
+// off_mem_rsvmap:	0x30
+// version:		17
+// last_comp_version:	16
+// boot_cpuid_phys:	0x0
+// size_dt_strings:	0xd8
+// size_dt_struct:	0x4708
+
+/ {
+    #size-cells = <0x00000002>;
+    #address-cells = <0x00000002>;
+    options {
+        upl-custom {
+            hoblistptr = <0x00000000 0x71cef0c0>;
+        };
+        upl-images@747C5010 {
+            addr = <0x00000000 0x747c5010>;
+        };
+        upl-params {
+            compatible = "upl";
+            boot-mode = "default";
+            addr-width = <0x0000002a>;
+            pci-enum-done = [00 00];
+        };
+    };
+    framebuffer@B0000000 {
+        compatible = "simple-framebuffer";
+        reg = <0x00000000 0xb0000000 0x00000000 0x00500000>;
+        width = <0x00000500>;
+        height = <0x00000400>;
+        format = "a8r8g8b8";
+        display = "&gma";
+    };
+    pci-rb1@E8000000 {
+        compatible = "pci-rb";
+        bus-range = <0x008000df>;
+        #address-cells = <0x00000003>;
+        #size-cells = <0x00000002>;
+        dma-ranges = <0xc1000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000001 0x00000000>;
+        ranges = <0xc1000000 0x00000000 0xd0000000 0x00000000 0xd0000000 0x00000000 0x0e000000 0xc1800000 0x00000100 0x00000000 0x00000100 0x00000000 0x0000001f 0xe0000000 0x80800000 0x00000000 0x00002000 0x00000000 0x00002000 0x00000000 0x00006c00>;
+    };
+    pci-rb0@E0000000 {
+        compatible = "pci-rb";
+        bus-range = <0x0000007f>;
+        #address-cells = <0x00000003>;
+        #size-cells = <0x00000002>;
+        dma-ranges = <0xc1000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000001 0x00000000>;
+        ranges = <0xc1000000 0x00000000 0x80000000 0x00000000 0x80000000 0x00000000 0x50000000 0xc1800000 0x00000120 0x00000000 0x00000120 0x00000000 0x000002e0 0x00000000 0x80800000 0x00000000 0x00009000 0x00000000 0x00009000 0x00000000 0x00007000>;
+        gma@E0010000 {
+            vendor-id = [80 86];
+            device-id = [6e 23];
+            revision-id = [00 00];
+            subsystem-vendor-id = [80 86];
+            subsystem-id = [72 70];
+        };
+    };
+    reserved-memory {
+        #size-cells = <0x00000002>;
+        #address-cells = <0x00000002>;
+        memory@742CC000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x742cc000 0x00000000 0x00008000>;
+        };
+        acpi@742D4000 {
+            compatible = "acpi";
+            reg = <0x00000000 0x742d4000 0x00000000 0x742d4000>;
+        };
+        memory@742D5000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x742d5000 0x00000000 0x004f0000>;
+        };
+        memory@747C5000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x747c5000 0x00000000 0x004f1000>;
+        };
+        memory@74CB6000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74cb6000 0x00000000 0x00010000>;
+        };
+        memory@74CC6000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74cc6000 0x00000000 0x00004000>;
+        };
+        memory@74CCA000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74cca000 0x00000000 0x00001000>;
+        };
+        memory@74CCB000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ccb000 0x00000000 0x00001000>;
+        };
+        memory@74CCC000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ccc000 0x00000000 0x00004000>;
+        };
+        memory@74CD0000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74cd0000 0x00000000 0x00001000>;
+        };
+        memory@74CD1000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74cd1000 0x00000000 0x00046000>;
+        };
+        memory@74D17000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74d17000 0x00000000 0x00004000>;
+        };
+        memory@74D1B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d1b000 0x00000000 0x00004000>;
+        };
+        memory@74D1F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d1f000 0x00000000 0x00004000>;
+        };
+        memory@74D23000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74d23000 0x00000000 0x00004000>;
+        };
+        memory@74D27000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d27000 0x00000000 0x00004000>;
+        };
+        memory@74D2B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d2b000 0x00000000 0x00004000>;
+        };
+        memory@74D2F000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74d2f000 0x00000000 0x00005000>;
+        };
+        memory@74D34000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d34000 0x00000000 0x00005000>;
+        };
+        memory@74D39000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d39000 0x00000000 0x00004000>;
+        };
+        memory@74D3D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d3d000 0x00000000 0x00001000>;
+        };
+        memory@74D3E000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d3e000 0x00000000 0x00001000>;
+        };
+        memory@74D3F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d3f000 0x00000000 0x00001000>;
+        };
+        memory@74D40000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d40000 0x00000000 0x00001000>;
+        };
+        memory@74D41000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d41000 0x00000000 0x00001000>;
+        };
+        memory@74D42000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d42000 0x00000000 0x00001000>;
+        };
+        memory@74D43000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d43000 0x00000000 0x00001000>;
+        };
+        memory@74D44000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d44000 0x00000000 0x00001000>;
+        };
+        memory@74D45000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74d45000 0x00000000 0x0000c000>;
+        };
+        memory@74D51000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d51000 0x00000000 0x0000c000>;
+        };
+        memory@74D5D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d5d000 0x00000000 0x00004000>;
+        };
+        memory@74D61000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d61000 0x00000000 0x00001000>;
+        };
+        memory@74D62000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d62000 0x00000000 0x00001000>;
+        };
+        memory@74D63000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d63000 0x00000000 0x00001000>;
+        };
+        memory@74D64000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d64000 0x00000000 0x00001000>;
+        };
+        memory@74D65000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d65000 0x00000000 0x00001000>;
+        };
+        memory@74D66000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d66000 0x00000000 0x00001000>;
+        };
+        memory@74D67000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d67000 0x00000000 0x00001000>;
+        };
+        memory@74D68000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d68000 0x00000000 0x00001000>;
+        };
+        memory@74D69000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d69000 0x00000000 0x00001000>;
+        };
+        memory@74D6A000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d6a000 0x00000000 0x00001000>;
+        };
+        memory@74D6B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d6b000 0x00000000 0x00001000>;
+        };
+        memory@74D6C000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d6c000 0x00000000 0x00001000>;
+        };
+        memory@74D6D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d6d000 0x00000000 0x00001000>;
+        };
+        memory@74D6E000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d6e000 0x00000000 0x00001000>;
+        };
+        memory@74D6F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d6f000 0x00000000 0x00001000>;
+        };
+        memory@74D70000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d70000 0x00000000 0x00001000>;
+        };
+        memory@74D71000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d71000 0x00000000 0x00001000>;
+        };
+        memory@74D72000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d72000 0x00000000 0x00001000>;
+        };
+        memory@74D73000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74d73000 0x00000000 0x00101000>;
+        };
+        memory@74E74000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e74000 0x00000000 0x00001000>;
+        };
+        memory@74E75000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e75000 0x00000000 0x00001000>;
+        };
+        memory@74E76000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e76000 0x00000000 0x00001000>;
+        };
+        memory@74E77000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e77000 0x00000000 0x00001000>;
+        };
+        memory@74E78000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e78000 0x00000000 0x00001000>;
+        };
+        memory@74E79000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e79000 0x00000000 0x00001000>;
+        };
+        memory@74E7A000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e7a000 0x00000000 0x00001000>;
+        };
+        mmio@FEC00000 {
+            reg = <0x00000000 0xfec00000 0x00000000 0x00001000>;
+        };
+        memory@74E7B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e7b000 0x00000000 0x00001000>;
+        };
+        memory@74E7C000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e7c000 0x00000000 0x00001000>;
+        };
+        memory@74E7D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e7d000 0x00000000 0x00001000>;
+        };
+        memory@74E7E000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e7e000 0x00000000 0x00001000>;
+        };
+        memory@74E7F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e7f000 0x00000000 0x00001000>;
+        };
+        memory@74E80000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e80000 0x00000000 0x00001000>;
+        };
+        memory@74E81000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e81000 0x00000000 0x00001000>;
+        };
+        memory@74E82000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e82000 0x00000000 0x00001000>;
+        };
+        memory@74E83000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e83000 0x00000000 0x00001000>;
+        };
+        memory@74E84000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e84000 0x00000000 0x00001000>;
+        };
+        memory@74E85000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e85000 0x00000000 0x00001000>;
+        };
+        memory@74E86000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e86000 0x00000000 0x00001000>;
+        };
+        memory@74E87000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e87000 0x00000000 0x00001000>;
+        };
+        memory@74E88000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e88000 0x00000000 0x00001000>;
+        };
+        memory@74E89000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e89000 0x00000000 0x00001000>;
+        };
+        memory@74E8A000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e8a000 0x00000000 0x00001000>;
+        };
+        memory@74E8B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e8b000 0x00000000 0x00001000>;
+        };
+        memory@74E8C000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e8c000 0x00000000 0x00001000>;
+        };
+        memory@74E8D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e8d000 0x00000000 0x00001000>;
+        };
+        memory@74E8E000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e8e000 0x00000000 0x00001000>;
+        };
+        memory@74E8F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e8f000 0x00000000 0x00001000>;
+        };
+        memory@74E90000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e90000 0x00000000 0x00001000>;
+        };
+        memory@74E91000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e91000 0x00000000 0x00001000>;
+        };
+        memory@74E92000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e92000 0x00000000 0x00001000>;
+        };
+        memory@74E93000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e93000 0x00000000 0x00001000>;
+        };
+        memory@74E94000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e94000 0x00000000 0x00001000>;
+        };
+        memory@74E95000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e95000 0x00000000 0x00001000>;
+        };
+        memory@74E96000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e96000 0x00000000 0x00001000>;
+        };
+        memory@74E97000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e97000 0x00000000 0x00001000>;
+        };
+        memory@74E98000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e98000 0x00000000 0x00001000>;
+        };
+        memory@74E99000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e99000 0x00000000 0x00001000>;
+        };
+        memory@74E9A000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e9a000 0x00000000 0x00001000>;
+        };
+        memory@74E9B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e9b000 0x00000000 0x00001000>;
+        };
+        memory@74E9C000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e9c000 0x00000000 0x00001000>;
+        };
+        memory@74E9D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e9d000 0x00000000 0x00001000>;
+        };
+        memory@74E9E000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e9e000 0x00000000 0x00001000>;
+        };
+        memory@74E9F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74e9f000 0x00000000 0x00001000>;
+        };
+        memory@74EA0000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea0000 0x00000000 0x00001000>;
+        };
+        memory@74EA1000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea1000 0x00000000 0x00001000>;
+        };
+        memory@74EA2000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea2000 0x00000000 0x00001000>;
+        };
+        memory@74EA3000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea3000 0x00000000 0x00001000>;
+        };
+        memory@74EA4000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea4000 0x00000000 0x00001000>;
+        };
+        memory@74EA5000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea5000 0x00000000 0x00001000>;
+        };
+        memory@74EA6000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea6000 0x00000000 0x00001000>;
+        };
+        memory@74EA7000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea7000 0x00000000 0x00001000>;
+        };
+        memory@74EA8000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea8000 0x00000000 0x00001000>;
+        };
+        memory@74EA9000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ea9000 0x00000000 0x00001000>;
+        };
+        memory@74EAA000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74eaa000 0x00000000 0x00001000>;
+        };
+        memory@74EAB000 {
+            compatible = "Reserved";
+            reg = <0x00000000 0x74eab000 0x00000000 0x00001000>;
+        };
+        memory@74EAC000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74eac000 0x00000000 0x00001000>;
+        };
+        memory@74EAD000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ead000 0x00000000 0x00001000>;
+        };
+        memory@74EAE000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74eae000 0x00000000 0x00001000>;
+        };
+        memory@74EAF000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74eaf000 0x00000000 0x00001000>;
+        };
+        memory@74EB0000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74eb0000 0x00000000 0x0002a000>;
+        };
+        memory@74EDA000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74eda000 0x00000000 0x00001000>;
+        };
+        memory@74EDE000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74ede000 0x00000000 0x00003000>;
+        };
+        memory@74EE1000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74ee1000 0x00000000 0x00043000>;
+        };
+        memory@74F24000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74f24000 0x00000000 0x00004000>;
+        };
+        memory@74F28000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x74f28000 0x00000000 0x0008e000>;
+        };
+        memory@74FB6000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x74fb6000 0x00000000 0x0008e000>;
+        };
+        memory@75044000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75044000 0x00000000 0x00004000>;
+        };
+        memory@75048000 {
+            compatible = "Reserved";
+            reg = <0x00000000 0x75048000 0x00000000 0x00004000>;
+        };
+        memory@7504C000 {
+            compatible = "acpi-nvs";
+            reg = <0x00000000 0x7504c000 0x00000000 0x00002000>;
+        };
+        memory@7504E000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7504e000 0x00000000 0x00002000>;
+        };
+        memory@75051000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x75051000 0x00000000 0x00001000>;
+        };
+        memory@75052000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75052000 0x00000000 0x000eb000>;
+        };
+        memory@7513D000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x7513d000 0x00000000 0x00010000>;
+        };
+        memory@7514D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7514d000 0x00000000 0x00010000>;
+        };
+        memory@7515D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7515d000 0x00000000 0x00004000>;
+        };
+        memory@75161000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x75161000 0x00000000 0x00005000>;
+        };
+        memory@75166000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x75166000 0x00000000 0x00002000>;
+        };
+        memory@75168000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x75168000 0x00000000 0x00004000>;
+        };
+        memory@7516C000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x7516c000 0x00000000 0x00002000>;
+        };
+        memory@7516E000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x7516e000 0x00000000 0x00007000>;
+        };
+        memory@75175000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x75175000 0x00000000 0x00007000>;
+        };
+        memory@7517C000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x7517c000 0x00000000 0x00011000>;
+        };
+        memory@7518D000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x7518d000 0x00000000 0x00005000>;
+        };
+        memory@75192000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x75192000 0x00000000 0x00003000>;
+        };
+        memory@75195000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x75195000 0x00000000 0x00007000>;
+        };
+        memory@7519C000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x7519c000 0x00000000 0x00005000>;
+        };
+        memory@751A1000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x751a1000 0x00000000 0x00005000>;
+        };
+        memory@751A6000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x751a6000 0x00000000 0x00004000>;
+        };
+        memory@751AA000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x751aa000 0x00000000 0x00003000>;
+        };
+        memory@751AD000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x751ad000 0x00000000 0x00009000>;
+        };
+        memory@751B6000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x751b6000 0x00000000 0x00005000>;
+        };
+        memory@751BB000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x751bb000 0x00000000 0x00007000>;
+        };
+        memory@751C2000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x751c2000 0x00000000 0x00004000>;
+        };
+        memory@751C6000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x751c6000 0x00000000 0x00004000>;
+        };
+        memory@751CA000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x751ca000 0x00000000 0x0000b000>;
+        };
+        memory@751D5000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x751d5000 0x00000000 0x0000b000>;
+        };
+        memory@751E0000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x751e0000 0x00000000 0x00010000>;
+        };
+        memory@751F0000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x751f0000 0x00000000 0x000a0000>;
+        };
+        memory@75290000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75290000 0x00000000 0x00010000>;
+        };
+        memory@752A0000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x752a0000 0x00000000 0x00005000>;
+        };
+        memory@752A5000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x752a5000 0x00000000 0x00007000>;
+        };
+        memory@752AC000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x752ac000 0x00000000 0x00004000>;
+        };
+        memory@752B0000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x752b0000 0x00000000 0x00001000>;
+        };
+        memory@752B1000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x752b1000 0x00000000 0x00181000>;
+        };
+        memory@75432000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75432000 0x00000000 0x00010000>;
+        };
+        memory@75442000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75442000 0x00000000 0x00001000>;
+        };
+        memory@75443000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75443000 0x00000000 0x00001000>;
+        };
+        memory@75444000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75444000 0x00000000 0x002d1000>;
+        };
+        memory@75715000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75715000 0x00000000 0x00010000>;
+        };
+        memory@75725000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75725000 0x00000000 0x00701000>;
+        };
+        memory@75E26000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75e26000 0x00000000 0x00010000>;
+        };
+        memory@75E36000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75e36000 0x00000000 0x00001000>;
+        };
+        memory@75E37000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75e37000 0x00000000 0x00091000>;
+        };
+        memory@75EC8000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75ec8000 0x00000000 0x00010000>;
+        };
+        memory@75ED8000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75ed8000 0x00000000 0x000b1000>;
+        };
+        memory@75F89000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75f89000 0x00000000 0x00010000>;
+        };
+        memory@75F99000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x75f99000 0x00000000 0x00151000>;
+        };
+        memory@760EA000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x760ea000 0x00000000 0x00010000>;
+        };
+        memory@760FA000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x760fa000 0x00000000 0x00091000>;
+        };
+        memory@7618B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7618b000 0x00000000 0x00010000>;
+        };
+        memory@7619B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7619b000 0x00000000 0x00351000>;
+        };
+        memory@764EC000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x764ec000 0x00000000 0x00010000>;
+        };
+        memory@764FC000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x764fc000 0x00000000 0x00001000>;
+        };
+        memory@764FD000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x764fd000 0x00000000 0x000c1000>;
+        };
+        memory@765BE000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x765be000 0x00000000 0x00010000>;
+        };
+        memory@765CE000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x765ce000 0x00000000 0x00003000>;
+        };
+        memory@765D1000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x765d1000 0x00000000 0x00001000>;
+        };
+        memory@765D2000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x765d2000 0x00000000 0x00011000>;
+        };
+        memory@765E3000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x765e3000 0x00000000 0x00010000>;
+        };
+        memory@765F3000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x765f3000 0x00000000 0x00002000>;
+        };
+        memory@765F5000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x765f5000 0x00000000 0x00028000>;
+        };
+        memory@7661D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7661d000 0x00000000 0x00001000>;
+        };
+        memory@7661E000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7661e000 0x00000000 0x00001000>;
+        };
+        memory@7661F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7661f000 0x00000000 0x00001000>;
+        };
+        memory@76620000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x76620000 0x00000000 0x00009000>;
+        };
+        memory@76629000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x76629000 0x00000000 0x00007000>;
+        };
+        memory@76630000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x76630000 0x00000000 0x00002000>;
+        };
+        memory@76632000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x76632000 0x00000000 0x00005000>;
+        };
+        memory@76637000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76637000 0x00000000 0x00001000>;
+        };
+        memory@76638000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76638000 0x00000000 0x00101000>;
+        };
+        memory@76739000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76739000 0x00000000 0x00001000>;
+        };
+        memory@7673A000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7673a000 0x00000000 0x00001000>;
+        };
+        memory@7673B000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7673b000 0x00000000 0x00001000>;
+        };
+        memory@7673C000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7673c000 0x00000000 0x00001000>;
+        };
+        memory@7673D000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7673d000 0x00000000 0x00001000>;
+        };
+        memory@7673E000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7673e000 0x00000000 0x00001000>;
+        };
+        memory@7673F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x7673f000 0x00000000 0x00002000>;
+        };
+        memory@76741000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76741000 0x00000000 0x00002000>;
+        };
+        memory@76743000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76743000 0x00000000 0x00400000>;
+        };
+        memory@76B43000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76b43000 0x00000000 0x00002000>;
+        };
+        memory@76B45000 {
+            compatible = "runtime-data";
+            reg = <0x00000000 0x76b45000 0x00000000 0x0002f000>;
+        };
+        mmio@FEDA1000 {
+            reg = <0x00000000 0xfeda1000 0x00000000 0x00001000>;
+        };
+        mmio@FED90000 {
+            reg = <0x00000000 0xfed90000 0x00000000 0x00001000>;
+        };
+        mmio@FEE00000 {
+            reg = <0x00000000 0xfee00000 0x00000000 0x00001000>;
+        };
+        mmio@E0000000 {
+            reg = <0x00000000 0xe0000000 0x00000000 0x10000000>;
+        };
+        mmio@FF200000 {
+            reg = <0x00000000 0xff200000 0x00000000 0x00e00000>;
+        };
+        memory@76B74000 {
+            compatible = "runtime-data";
+            reg = <0x00000000 0x76b74000 0x00000000 0x00004000>;
+        };
+        memory@76B78000 {
+            compatible = "runtime-data";
+            reg = <0x00000000 0x76b78000 0x00000000 0x0002e000>;
+        };
+        memory@76BA6000 {
+            compatible = "runtime-data";
+            reg = <0x00000000 0x76ba6000 0x00000000 0x00010000>;
+        };
+        memory@76BB6000 {
+            compatible = "runtime-data";
+            reg = <0x00000000 0x76bb6000 0x00000000 0x00001000>;
+        };
+        memory@76BB7000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76bb7000 0x00000000 0x00081000>;
+        };
+        memory@76C38000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x76c38000 0x00000000 0x00010000>;
+        };
+        memory@71C6F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x71c6f000 0x00000000 0x00080000>;
+        };
+        memory@76C48000 {
+            compatible = "boot-code";
+            reg = <0x00000000 0x76c48000 0x00000000 0x00001000>;
+        };
+        memory@76C4F000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76c4f000 0x00000000 0x00010000>;
+        };
+        mmio@FC800000 {
+            reg = <0x00000000 0xfc800000 0x00000000 0x00080000>;
+        };
+        mmio@4150000000 {
+            reg = <0x00000041 0x50000000 0x00000000 0x02000000>;
+        };
+        mmio@4152000000 {
+            reg = <0x00000041 0x52000000 0x00000000 0x00040000>;
+        };
+        mmio@4148000000 {
+            reg = <0x00000041 0x48000000 0x00000000 0x08000000>;
+        };
+        mmio@FED00000 {
+            reg = <0x00000000 0xfed00000 0x00000000 0x00001000>;
+        };
+        memory@76C49000 {
+            compatible = "boot-data";
+            reg = <0x00000000 0x76c49000 0x00000000 0x00005000>;
+        };
+        mmio@4110000000 {
+            reg = <0x00000041 0x10000000 0x00000000 0x10000000>;
+        };
+        mmio@4100000000 {
+            reg = <0x00000041 0x00000000 0x00000000 0x10000000>;
+        };
+        mmio@FD800000 {
+            reg = <0x00000000 0xfd800000 0x00000000 0x01000000>;
+        };
+    };
+    memory@100000 {
+        device_type = "memory";
+        reg = <0x00000000 0x00100000 0x00000000 0x71b6f000>;
+    };
+    memory@0 {
+        device_type = "memory";
+        reg = <0x00000000 0x00000000 0x00000000 0x000a0000>;
+    };
+    memory@71C6F000 {
+        device_type = "memory";
+        reg = <0x00000000 0x71c6f000 0x00000000 0x08391000>;
+    };
+    memory@100000000 {
+        device_type = "memory";
+        reg = <0x00000001 0x00000000 0x00000003 0x80000000>;
+    };
+};

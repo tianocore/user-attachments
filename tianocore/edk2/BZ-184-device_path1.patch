@@ -1,0 +1,51 @@
+diff --git a/SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigFileExplorer.c b/SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigFileExplorer.c
+index 1b6f88804275..d5338406957c 100644
+--- a/SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigFileExplorer.c
++++ b/SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigFileExplorer.c
+@@ -123,6 +123,8 @@ OpenFileByDevicePath(
+   EFI_FILE_PROTOCOL               *Handle1;
+   EFI_FILE_PROTOCOL               *Handle2;
+   EFI_HANDLE                      DeviceHandle;
++  CHAR16                          *PathName;
++  UINT16                          PathLength;
+ 
+   if ((FilePath == NULL || FileHandle == NULL)) {
+     return EFI_INVALID_PARAMETER;
+@@ -173,6 +175,10 @@ OpenFileByDevicePath(
+     //
+     Handle2  = Handle1;
+     Handle1 = NULL;
++    PathLength = ((FILEPATH_DEVICE_PATH*)*FilePath)->Header.Length[0] |
++                 ((FILEPATH_DEVICE_PATH*)*FilePath)->Header.Length[1] << 8;
++    PathName = AllocateZeroPool (PathLength);
++    CopyMem (PathName, ((FILEPATH_DEVICE_PATH*)*FilePath)->PathName, PathLength);
+ 
+     //
+     // Try to test opening an existing file
+@@ -180,7 +186,7 @@ OpenFileByDevicePath(
+     Status = Handle2->Open (
+                           Handle2,
+                           &Handle1,
+-                          ((FILEPATH_DEVICE_PATH*)*FilePath)->PathName,
++                          PathName,
+                           OpenMode &~EFI_FILE_MODE_CREATE,
+                           0
+                          );
+@@ -192,7 +198,7 @@ OpenFileByDevicePath(
+       Status = Handle2->Open (
+                             Handle2,
+                             &Handle1,
+-                            ((FILEPATH_DEVICE_PATH*)*FilePath)->PathName,
++                            PathName,
+                             OpenMode,
+                             Attributes
+                            );
+@@ -202,6 +208,8 @@ OpenFileByDevicePath(
+     //
+     Handle2->Close (Handle2);
+ 
++    FreePool (PathName);
++
+     if (EFI_ERROR(Status)) {
+       return (Status);
+     }

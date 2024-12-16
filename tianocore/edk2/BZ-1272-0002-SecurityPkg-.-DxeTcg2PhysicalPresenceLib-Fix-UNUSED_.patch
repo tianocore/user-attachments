@@ -1,0 +1,60 @@
+From 2e01e86ad4dac220e61f3c3af21f53860755cb1e Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:22:46 +0530
+Subject: [PATCH 2/2] SecurityPkg/.../DxeTcg2PhysicalPresenceLib: Fix
+ UNUSED_VALUE Coverity issue
+
+Full pathname - SecurityPkg/Library/DxeTcg2PhysicalPresenceLib
+
+The return value stored in "Status" after call to
+gST->ConIn->ReadKeyStroke in Tcg2ReadUserKey and after call to
+gRT->SetVariable in Tcg2ExecutePendingTpmRequest is not made of any
+use thereafter, it remains as UNUSED and later it gets overriden.
+
+Seemingly, the storage in "Status" can be removed.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4276
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../DxeTcg2PhysicalPresenceLib.c                 | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
+index 8293c08e5833..580295dc23f5 100644
+--- a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
++++ b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
+@@ -273,7 +273,7 @@ Tcg2ReadUserKey (
+   do {
+     Status = gBS->CheckEvent (gST->ConIn->WaitForKey);
+     if (!EFI_ERROR (Status)) {
+-      Status = gST->ConIn->ReadKeyStroke (gST->ConIn, &Key);
++      gST->ConIn->ReadKeyStroke (gST->ConIn, &Key);
+       if (Key.ScanCode == SCAN_ESC) {
+         InputKey = Key.ScanCode;
+       }
+@@ -807,13 +807,13 @@ Tcg2ExecutePendingTpmRequest (
+   //
+   if (CompareMem (Flags, &NewFlags, sizeof (EFI_TCG2_PHYSICAL_PRESENCE_FLAGS)) != 0) {
+     *Flags = NewFlags;
+-    Status = gRT->SetVariable (
+-                    TCG2_PHYSICAL_PRESENCE_FLAGS_VARIABLE,
+-                    &gEfiTcg2PhysicalPresenceGuid,
+-                    EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_RUNTIME_ACCESS,
+-                    sizeof (EFI_TCG2_PHYSICAL_PRESENCE_FLAGS),
+-                    &NewFlags
+-                    );
++    gRT->SetVariable (
++           TCG2_PHYSICAL_PRESENCE_FLAGS_VARIABLE,
++           &gEfiTcg2PhysicalPresenceGuid,
++           EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_RUNTIME_ACCESS,
++           sizeof (EFI_TCG2_PHYSICAL_PRESENCE_FLAGS),
++           &NewFlags
++           );
+   }
+ 
+   //
+-- 
+2.36.1.windows.1
+

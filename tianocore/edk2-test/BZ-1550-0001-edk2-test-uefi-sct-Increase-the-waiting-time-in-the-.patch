@@ -1,0 +1,41 @@
+From 80938ffdd518e45d165acacc4c930880b3ab4ba4 Mon Sep 17 00:00:00 2001
+From: G Edhaya Chandran <edhaya.chandran@arm.com>
+Date: Wed, 23 Oct 2024 01:42:01 +0530
+Subject: [PATCH v2 1/1] edk2-test: uefi-sct Increase the waiting time in the
+ SCT GetStatus_Func test
+
+The current time delay in the SCT GetStatus_Func test is 5 milliseconds, which caused false positives with some platforms
+This time delay is increased to 500 miliseconds with reference to
+similar values in https://github.com/tianocore/edk2/blob/master/NetworkPkg/Include/Library/NetLib.h#L265
+
+Signed-off-by: G Edhaya Chandran <edhaya.chandran@arm.com>
+Co-authored-by: Sunny Wang <sunny.wang@arm.com>
+---
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestFunction.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestFunction.c
+index 31c3590cd620..c077bfb29e52 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestFunction.c
+@@ -1870,7 +1870,7 @@ BBTestGetStatusFunctionTest (
+     StatCode = gtBS->SetTimer (
+                        TimeoutEvent,
+                        TimerRelative,
+-                       50000);  /* 5 milliseconds */
++                       5000000);  /* 500 milliseconds. This value is increased from old value 5 milliseconds to due false positives on some platforms */
+     if (EFI_ERROR(StatCode)) {
+       StandardLib->RecordAssertion (
+                      StandardLib,
+@@ -2196,7 +2196,7 @@ BBTestTransmitFunctionTest (
+     StatCode = gtBS->SetTimer (
+         TimeoutEvent,
+         TimerRelative,
+-        50000);  /* 5 milliseconds */
++        5000000);  /* 500 milliseconds. This value is increased from old value 5 milliseconds to due false positives on some platforms */
+     if (EFI_ERROR(StatCode)) {
+       StandardLib->RecordAssertion (
+                      StandardLib,
+-- 
+2.25.1
+

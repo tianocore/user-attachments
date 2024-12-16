@@ -1,0 +1,96 @@
+commit f29c794521bf7ddafc62b1a7ee232307247af7ce
+Author: Christian Ehrhardt <ehrhardt@genua.de>
+Date:   Wed Sep 23 13:44:42 2020 +0200
+
+    Fix QemuVideoBochs for MMIO variant of BOCHS
+    
+    The BarIndex parameter to the EFI PCI protocol is a logical
+    region number and it is zero based. I.e. a value of zero
+    ist the first BAR region (usually at offset 0x10 in PCI config space).
+    
+    A value of 1 is the second BAR region. It's config space offset
+    depends on the BAR registers used.
+    
+    This is a serious programmer's trap and the authors of
+    QemuVideoDxe did not realize that there is a difference between
+    BarIndex and BAR register number in PCI config space.
+
+diff --git a/CryptoPkg/Library/OpensslLib/openssl b/CryptoPkg/Library/OpensslLib/openssl
+index e2e09d9fba..b2758a2292 160000
+--- a/CryptoPkg/Library/OpensslLib/openssl
++++ b/CryptoPkg/Library/OpensslLib/openssl
+@@ -1 +1 @@
+-Subproject commit e2e09d9fba1187f8d6aafaa34d4172f56f1ffb72
++Subproject commit b2758a2292aceda93e9f44c219b94fe21bb9a650
+diff --git a/OvmfPkg/QemuVideoDxe/Driver.c b/OvmfPkg/QemuVideoDxe/Driver.c
+index 85edfcb1d6..a5540c1d3e 100644
+--- a/OvmfPkg/QemuVideoDxe/Driver.c
++++ b/OvmfPkg/QemuVideoDxe/Driver.c
+@@ -318,7 +318,7 @@ QemuVideoControllerDriverStart (
+ 
+     Status = Private->PciIo->GetBarAttributes (
+                         Private->PciIo,
+-                        PCI_BAR_IDX2,
++                        1,
+                         NULL,
+                         (VOID**) &MmioDesc
+                         );
+@@ -341,7 +341,7 @@ QemuVideoControllerDriverStart (
+   //
+   if (Private->Variant == QEMU_VIDEO_VMWARE_SVGA) {
+     Private->Variant = QEMU_VIDEO_BOCHS;
+-    Private->FrameBufferVramBarIndex = PCI_BAR_IDX1;
++    Private->FrameBufferVramBarIndex = 1;
+   }
+ 
+   //
+@@ -891,7 +891,7 @@ BochsWrite (
+     Status = Private->PciIo->Mem.Write (
+         Private->PciIo,
+         EfiPciIoWidthUint16,
+-        PCI_BAR_IDX2,
++        1,
+         0x500 + (Reg << 1),
+         1,
+         &Data
+@@ -916,7 +916,7 @@ BochsRead (
+     Status = Private->PciIo->Mem.Read (
+         Private->PciIo,
+         EfiPciIoWidthUint16,
+-        PCI_BAR_IDX2,
++        1,
+         0x500 + (Reg << 1),
+         1,
+         &Data
+@@ -942,7 +942,7 @@ VgaOutb (
+     Status = Private->PciIo->Mem.Write (
+         Private->PciIo,
+         EfiPciIoWidthUint8,
+-        PCI_BAR_IDX2,
++        1,
+         0x400 - 0x3c0 + Reg,
+         1,
+         &Data
+diff --git a/OvmfPkg/QemuVideoDxe/Initialize.c b/OvmfPkg/QemuVideoDxe/Initialize.c
+index b5a5660ed2..40a2279218 100644
+--- a/OvmfPkg/QemuVideoDxe/Initialize.c
++++ b/OvmfPkg/QemuVideoDxe/Initialize.c
+@@ -280,15 +280,15 @@ QemuVideoBochsModeSetup (
+     AvailableFbSize = 0;
+     if (EFI_ERROR (
+           Private->PciIo->Mem.Read (Private->PciIo, EfiPciIoWidthUint32,
+-                                PCI_BAR_IDX2, 0, 1, &Signature)) ||
++                                1, 0, 1, &Signature)) ||
+         Signature != SIGNATURE_32 ('Q', 'X', 'R', 'O') ||
+         EFI_ERROR (
+           Private->PciIo->Mem.Read (Private->PciIo, EfiPciIoWidthUint32,
+-                                PCI_BAR_IDX2, 36, 1, &DrawStart)) ||
++                                1, 36, 1, &DrawStart)) ||
+         DrawStart != 0 ||
+         EFI_ERROR (
+           Private->PciIo->Mem.Read (Private->PciIo, EfiPciIoWidthUint32,
+-                                PCI_BAR_IDX2, 40, 1, &AvailableFbSize))) {
++                                1, 40, 1, &AvailableFbSize))) {
+       DEBUG ((DEBUG_ERROR, "%a: can't read size of drawable buffer from QXL "
+         "ROM\n", __FUNCTION__));
+       return EFI_NOT_FOUND;

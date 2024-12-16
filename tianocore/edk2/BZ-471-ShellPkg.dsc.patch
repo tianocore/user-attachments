@@ -1,0 +1,18 @@
+commit 1b145693e2ed49cd6ffb861dda4c8e1c6875d522
+Author: Max Knutsen <maknutse@microsoft.com>
+Date:   Tue Aug 27 17:57:01 2019 +0000
+
+    Merged PR 1415: CI build fix - added MemoryTypeInformationChangeLib
+
+diff --git a/ShellPkg/ShellPkg.dsc b/ShellPkg/ShellPkg.dsc
+index 25a2e33515..cfe52819d5 100644
+--- a/ShellPkg/ShellPkg.dsc
++++ b/ShellPkg/ShellPkg.dsc
+@@ -52,6 +52,7 @@
+   IoLib|MdePkg/Library/BaseIoLibIntrinsic/BaseIoLibIntrinsic.inf
+ 
+   UefiBootManagerLib|MdeModulePkg/Library/UefiBootManagerLib/UefiBootManagerLib.inf
++  MemoryTypeInformationChangeLib|MdeModulePkg/Library/MemoryTypeInformationChangeLibNull/MemoryTypeInformationChangeLibNull.inf # MU_CHANGE
+   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
+   PerformanceLib|MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf
+   DxeServicesTableLib|MdePkg/Library/DxeServicesTableLib/DxeServicesTableLib.inf

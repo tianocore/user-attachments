@@ -1,0 +1,52 @@
+From 59478092f040bb78406759def704a6844194b45a Mon Sep 17 00:00:00 2001
+From: Michael Kubacki <michael.kubacki@microsoft.com>
+Date: Mon, 9 Mar 2020 00:56:57 -0700
+Subject: [PATCH v1 1/1] ArmPlatformPkg/ArmPlatformPkg.dsc: Add missing components
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2575
+
+The following components are currently missing from the [Components]
+section of ArmPlatformPkg.dsc:
+  * ArmPlatformPkg/Library/HdLcd/HdLcd.inf
+  * ArmPlatformPkg/Library/PL111Lcd/PL111Lcd.inf
+
+This commit includes the components in the package DSC build.
+
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: Leif Lindholm <leif@nuviainc.com>
+Signed-off-by: Michael Kubacki <michael.kubacki@microsoft.com>
+---
+ ArmPlatformPkg/ArmPlatformPkg.dsc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/ArmPlatformPkg/ArmPlatformPkg.dsc b/ArmPlatformPkg/ArmPlatformPkg.dsc
+index 11b1672501ce..b19fa98be0ba 100644
+--- a/ArmPlatformPkg/ArmPlatformPkg.dsc
++++ b/ArmPlatformPkg/ArmPlatformPkg.dsc
+@@ -4,6 +4,7 @@
+ # Copyright (c) 2009 - 2010, Apple Inc. All rights reserved.<BR>
+ # Copyright (c) 2011 - 2018, ARM Ltd. All rights reserved.<BR>
+ # Copyright (c) 2016 - 2017, Linaro Ltd. All rights reserved.<BR>
++# Copyright (c) Microsoft Corporation.<BR>
+ #
+ #    SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -95,6 +96,7 @@
+ 
+   ArmPlatformPkg/Library/ArmPlatformLibNull/ArmPlatformLibNull.inf
+   ArmPlatformPkg/Library/ArmPlatformStackLib/ArmPlatformStackLib.inf
++  ArmPlatformPkg/Library/HdLcd/HdLcd.inf
+   ArmPlatformPkg/Library/LcdHwNullLib/LcdHwNullLib.inf
+   ArmPlatformPkg/Library/LcdPlatformNullLib/LcdPlatformNullLib.inf
+   ArmPlatformPkg/Library/NorFlashPlatformNullLib/NorFlashPlatformNullLib.inf
+@@ -102,6 +104,7 @@
+   ArmPlatformPkg/Library/PL011UartClockLib/PL011UartClockLib.inf
+   ArmPlatformPkg/Library/PL011UartLib/PL011UartLib.inf
+   ArmPlatformPkg/Library/PL031RealTimeClockLib/PL031RealTimeClockLib.inf
++  ArmPlatformPkg/Library/PL111Lcd/PL111Lcd.inf
+   ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobListPointerLib.inf
+ 
+   ArmPlatformPkg/MemoryInitPei/MemoryInitPeiLib.inf
+-- 
+2.16.3.windows.1
+

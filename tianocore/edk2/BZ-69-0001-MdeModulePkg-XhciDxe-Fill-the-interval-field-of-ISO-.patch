@@ -1,0 +1,59 @@
+From 8864e93d6b37ba1eac3663d30f12ae307aa74bc4 Mon Sep 17 00:00:00 2001
+From: Hao Wu <hao.a.wu@intel.com>
+Date: Fri, 26 May 2017 09:39:14 +0800
+Subject: [PATCH] MdeModulePkg/XhciDxe: Fill the interval field of ISO EP
+ context
+
+---
+ MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c b/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
+index 4bec76a85f..ce2bc42b37 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
+@@ -2661,6 +2661,20 @@ XhcInitializeEndpointContext (
+           InputContext->EP[Dci-1].EPType = ED_ISOCH_OUT;
+         }
+         //
++        // Get the bInterval from descriptor and init the the interval field of endpoint context.
++        // Refer to XHCI 1.1 spec section 6.2.3.6.
++        //
++        if (DeviceSpeed == EFI_USB_SPEED_FULL) {
++          Interval = EpDesc->Interval;
++          ASSERT (Interval >= 1 && Interval <= 16);
++          InputContext->EP[Dci-1].Interval = Interval + 2;
++        } else if ((DeviceSpeed == EFI_USB_SPEED_HIGH) || (DeviceSpeed == EFI_USB_SPEED_SUPER)) {
++          Interval = EpDesc->Interval;
++          ASSERT (Interval >= 1 && Interval <= 16);
++          InputContext->EP[Dci-1].Interval = Interval - 1;
++        }
++
++        //
+         // Do not support isochronous transfer now.
+         //
+         DEBUG ((EFI_D_INFO, "XhcInitializeEndpointContext: Unsupport ISO EP found, Transfer ring is not allocated.\n"));
+@@ -2829,6 +2843,20 @@ XhcInitializeEndpointContext64 (
+           InputContext->EP[Dci-1].EPType = ED_ISOCH_OUT;
+         }
+         //
++        // Get the bInterval from descriptor and init the the interval field of endpoint context.
++        // Refer to XHCI 1.1 spec section 6.2.3.6.
++        //
++        if (DeviceSpeed == EFI_USB_SPEED_FULL) {
++          Interval = EpDesc->Interval;
++          ASSERT (Interval >= 1 && Interval <= 16);
++          InputContext->EP[Dci-1].Interval = Interval + 2;
++        } else if ((DeviceSpeed == EFI_USB_SPEED_HIGH) || (DeviceSpeed == EFI_USB_SPEED_SUPER)) {
++          Interval = EpDesc->Interval;
++          ASSERT (Interval >= 1 && Interval <= 16);
++          InputContext->EP[Dci-1].Interval = Interval - 1;
++        }
++
++        //
+         // Do not support isochronous transfer now.
+         //
+         DEBUG ((EFI_D_INFO, "XhcInitializeEndpointContext64: Unsupport ISO EP found, Transfer ring is not allocated.\n"));
+-- 
+2.12.0.windows.1
+

@@ -1,0 +1,13 @@
+
+Dead code function in file: SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareCommonDxe.c
+IsSystemFmp, line 355
+
+Inf redundant definition in file: SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf
+DxeServicesLib, line 53
+PrintLib, line 55
+
+Dead code function in file: SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareCommonDxe.c
+IsSystemFmp, line 355
+
+Inf redundant definition in file: SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf
+DxeServicesLib, line 54

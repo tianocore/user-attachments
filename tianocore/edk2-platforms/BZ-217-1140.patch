@@ -1,0 +1,39 @@
+diff --git a/MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/EmmcDevice.c b/MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/EmmcDevice.c
+index c5fd214..3123a53 100755
+--- a/MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/EmmcDevice.c
++++ b/MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/EmmcDevice.c
+@@ -692,16 +692,25 @@ EmmcSwitchClockFreq (
+ 
+   Status = EmmcSendStatus (PassThru, Slot, Rca, &DevStatus);
+   if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "EmmcSwitchClockFreq: Send status fails with %r\n", Status));
+-    return Status;
+-  }
+-  //
+-  // Check the switch operation is really successful or not.
+-  //
+-  if ((DevStatus & BIT7) != 0) {
+-    DEBUG ((DEBUG_ERROR, "EmmcSwitchClockFreq: The switch operation fails as DevStatus is 0x%08x\n", DevStatus));
+-    return EFI_DEVICE_ERROR;
++    if (Status == EFI_DEVICE_ERROR && ClockFreq == 200)
++    {
++      // As per Linux, ignore CRC errors on a switch to HS200. If there is an issue,
++      // then tuning will fail later.
++      DEBUG ((DEBUG_ERROR, "EmmcSwitchClockFreq: Send status fails with %r, ignoring\n", Status));
++    } else {
++      DEBUG ((DEBUG_ERROR, "EmmcSwitchClockFreq: Send status fails with %r, error\n", Status));
++      return Status;
++    }
++  } else {
++    //
++    // Check the switch operation is really successful or not.
++    //
++    if ((DevStatus & BIT7) != 0) {
++      DEBUG ((DEBUG_ERROR, "EmmcSwitchClockFreq: The switch operation fails as DevStatus is 0x%08x\n", DevStatus));
++      return EFI_DEVICE_ERROR;
++    }
+   }
++
+   //
+   // Convert the clock freq unit from MHz to KHz.
+   //

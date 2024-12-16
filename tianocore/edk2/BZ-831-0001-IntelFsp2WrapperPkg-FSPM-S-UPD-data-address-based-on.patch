@@ -1,0 +1,320 @@
+From 997eabd98a3318d5e4fbc9c4e4ba689eb9dc6140 Mon Sep 17 00:00:00 2001
+Message-Id: <997eabd98a3318d5e4fbc9c4e4ba689eb9dc6140.1632205562.git.ashraf.ali.s@intel.com>
+From: Ashraf Ali S <ashraf.ali.s@intel.com>
+Date: Sun, 19 Sep 2021 23:10:18 +0530
+Subject: [PATCH] IntelFsp2WrapperPkg : FSPM/S UPD data address based on Build
+ Type
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3642
+when the module is not building in IA32 mode which will lead to
+building error. when a module built-in X64 function pointer will be the
+size of 64bit width which cannot be fit in 32bit address which will lead
+to error. to overcome this issue introducing the 2 new PCD's
+for the 64bit modules can consume it.
+Creating the API's to support different architecture
+
+Cc: Chasel Chiu <chasel.chiu@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+Cc: Kuo Ted <ted.kuo@intel.com>
+Cc: Duggapu Chinni B <chinni.b.duggapu@intel.com>
+Cc: Rangasai V Chaganty <rangasai.v.chaganty@intel.com>
+Cc: Digant H Solanki <digant.h.solanki@intel.com>
+Cc: Sangeetha V <sangeetha.v@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Signed-off-by: Ashraf Ali S <ashraf.ali.s@intel.com>
+---
+ .../FspmWrapperPeim/FspmWrapperPeim.c         |  6 +--
+ .../FspmWrapperPeim/FspmWrapperPeim.inf       |  3 +-
+ .../FspsWrapperPeim/FspsWrapperPeim.c         |  6 +--
+ .../FspsWrapperPeim/FspsWrapperPeim.inf       |  1 -
+ .../Include/Library/FspWrapperPlatformLib.h   | 24 ++++++++++-
+ IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec   |  2 +
+ .../BaseFspWrapperPlatformLibSample.inf       | 17 +++++++-
+ .../IA32/FspHelper.c                          | 40 +++++++++++++++++++
+ .../X64/FspHelper.c                           | 40 +++++++++++++++++++
+ 9 files changed, 128 insertions(+), 11 deletions(-)
+ create mode 100644 IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/IA32/FspHelper.c
+ create mode 100644 IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/X64/FspHelper.c
+
+diff --git a/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c b/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c
+index 24ab534620..77e172e459 100644
+--- a/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c
++++ b/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c
+@@ -3,7 +3,7 @@
+   register TemporaryRamDonePpi to call TempRamExit API, and register MemoryDiscoveredPpi
+   notify to call FspSiliconInit API.
+ 
+-  Copyright (c) 2014 - 2020, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -68,7 +68,7 @@ PeiFspMemoryInit (
+     return EFI_DEVICE_ERROR;
+   }
+ 
+-  if (PcdGet32 (PcdFspmUpdDataAddress) == 0 && (FspmHeaderPtr->CfgRegionSize != 0) && (FspmHeaderPtr->CfgRegionOffset != 0)) {
++  if (GetFspmUpdDataAddress () == 0 && (FspmHeaderPtr->CfgRegionSize != 0) && (FspmHeaderPtr->CfgRegionOffset != 0)) {
+     //
+     // Copy default FSP-M UPD data from Flash
+     //
+@@ -80,7 +80,7 @@ PeiFspMemoryInit (
+     //
+     // External UPD is ready, get the buffer from PCD pointer.
+     //
+-    FspmUpdDataPtr = (FSPM_UPD_COMMON *)PcdGet32 (PcdFspmUpdDataAddress);
++    FspmUpdDataPtr = (FSPM_UPD_COMMON *) GetFspmUpdDataAddress ();
+     ASSERT (FspmUpdDataPtr != NULL);
+   }
+ 
+diff --git a/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.inf b/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.inf
+index 00166e56a0..95317fb70d 100644
+--- a/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.inf
++++ b/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.inf
+@@ -6,7 +6,7 @@
+ # register TemporaryRamDonePpi to call TempRamExit API, and register MemoryDiscoveredPpi
+ # notify to call FspSiliconInit API.
+ #
+-#  Copyright (c) 2014 - 2020, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -56,7 +56,6 @@
+ 
+ [Pcd]
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspmBaseAddress       ## CONSUMES
+-  gIntelFsp2WrapperTokenSpaceGuid.PcdFspmUpdDataAddress    ## CONSUMES
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspModeSelection      ## CONSUMES
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFsptBaseAddress       ## CONSUMES
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspMeasurementConfig  ## CONSUMES
+diff --git a/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c b/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c
+index 9d4f279e81..5875cc0fdc 100644
+--- a/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c
++++ b/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c
+@@ -3,7 +3,7 @@
+   register TemporaryRamDonePpi to call TempRamExit API, and register MemoryDiscoveredPpi
+   notify to call FspSiliconInit API.
+ 
+-  Copyright (c) 2014 - 2020, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -283,7 +283,7 @@ PeiMemoryDiscoveredNotify (
+     return EFI_DEVICE_ERROR;
+   }
+ 
+-  if (PcdGet32 (PcdFspsUpdDataAddress) == 0 && (FspsHeaderPtr->CfgRegionSize != 0) && (FspsHeaderPtr->CfgRegionOffset != 0)) {
++  if (GetFspsUpdDataAddress () == 0 && (FspsHeaderPtr->CfgRegionSize != 0) && (FspsHeaderPtr->CfgRegionOffset != 0)) {
+     //
+     // Copy default FSP-S UPD data from Flash
+     //
+@@ -292,7 +292,7 @@ PeiMemoryDiscoveredNotify (
+     SourceData = (UINTN *)((UINTN)FspsHeaderPtr->ImageBase + (UINTN)FspsHeaderPtr->CfgRegionOffset);
+     CopyMem (FspsUpdDataPtr, SourceData, (UINTN)FspsHeaderPtr->CfgRegionSize);
+   } else {
+-    FspsUpdDataPtr = (FSPS_UPD_COMMON *)PcdGet32 (PcdFspsUpdDataAddress);
++    FspsUpdDataPtr = (FSPS_UPD_COMMON *) GetFspsUpdDataAddress ();
+     ASSERT (FspsUpdDataPtr != NULL);
+   }
+ 
+diff --git a/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.inf b/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.inf
+index aeeca58d6d..32e58845bf 100644
+--- a/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.inf
++++ b/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.inf
+@@ -65,7 +65,6 @@
+ 
+ [Pcd]
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspsBaseAddress       ## CONSUMES
+-  gIntelFsp2WrapperTokenSpaceGuid.PcdFspsUpdDataAddress    ## CONSUMES
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspModeSelection      ## CONSUMES
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspMeasurementConfig  ## CONSUMES
+ 
+diff --git a/IntelFsp2WrapperPkg/Include/Library/FspWrapperPlatformLib.h b/IntelFsp2WrapperPkg/Include/Library/FspWrapperPlatformLib.h
+index 2aa14c92fd..4a06505531 100644
+--- a/IntelFsp2WrapperPkg/Include/Library/FspWrapperPlatformLib.h
++++ b/IntelFsp2WrapperPkg/Include/Library/FspWrapperPlatformLib.h
+@@ -1,7 +1,7 @@
+ /** @file
+   Provide FSP wrapper platform related function.
+ 
+-  Copyright (c) 2014 - 2016, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -77,4 +77,26 @@ CallFspWrapperResetSystem (
+   IN UINT32    FspStatusResetType
+   );
+ 
++/**
++  Get the Fspm Upd Data Address from the PCD
++
++  @return FSPM UPD Data Address
++**/
++UINTN
++EFIAPI
++GetFspmUpdDataAddress (
++  VOID
++  );
++
++/**
++  Get the Fsps Upd Data Address from the PCD
++
++  @return FSPS UPD Data Address
++**/
++UINTN
++EFIAPI
++GetFspsUpdDataAddress (
++  VOID
++  );
++
+ #endif
+diff --git a/IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec b/IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec
+index a3b9363779..8c98dbd55d 100644
+--- a/IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec
++++ b/IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec
+@@ -121,3 +121,5 @@
+   #
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspmUpdDataAddress|0x00000000|UINT32|0x50000000
+   gIntelFsp2WrapperTokenSpaceGuid.PcdFspsUpdDataAddress|0x00000000|UINT32|0x50000001
++  gIntelFsp2WrapperTokenSpaceGuid.PcdFspmUpdDataAddress64|0x00000000|UINT64|0x50000002
++  gIntelFsp2WrapperTokenSpaceGuid.PcdFspsUpdDataAddress64|0x00000000|UINT64|0x50000003
+diff --git a/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/BaseFspWrapperPlatformLibSample.inf b/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/BaseFspWrapperPlatformLibSample.inf
+index a3d23f6d55..54f7c10cc4 100644
+--- a/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/BaseFspWrapperPlatformLibSample.inf
++++ b/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/BaseFspWrapperPlatformLibSample.inf
+@@ -1,7 +1,7 @@
+ ## @file
+ #  Sample to provide FSP wrapper platform related function.
+ #
+-#  Copyright (c) 2014 - 2016, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -35,6 +35,12 @@
+ [Sources]
+   FspWrapperPlatformLibSample.c
+ 
++[Sources.IA32]
++  IA32/FspHelper.c
++
++[Sources.X64]
++  IA32/FspHelper.c
++
+ 
+ ################################################################################
+ #
+@@ -48,5 +54,14 @@
+   IntelFsp2Pkg/IntelFsp2Pkg.dec
+   IntelFsp2WrapperPkg/IntelFsp2WrapperPkg.dec
+ 
++[Pcd.IA32]
++  gIntelFsp2WrapperTokenSpaceGuid.PcdFspmUpdDataAddress    ## CONSUMES
++  gIntelFsp2WrapperTokenSpaceGuid.PcdFspsUpdDataAddress    ## CONSUMES
++
++[Pcd.X64]
++  gIntelFsp2WrapperTokenSpaceGuid.PcdFspmUpdDataAddress64  ## CONSUMES
++  gIntelFsp2WrapperTokenSpaceGuid.PcdFspsUpdDataAddress64  ## CONSUMES
++
+ [LibraryClasses]
++  PcdLib
+ 
+diff --git a/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/IA32/FspHelper.c b/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/IA32/FspHelper.c
+new file mode 100644
+index 0000000000..8eccd7777d
+--- /dev/null
++++ b/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/IA32/FspHelper.c
+@@ -0,0 +1,40 @@
++/** @file
++  Sample to provide FSP wrapper related function.
++
++  Copyright (c) 2021, Intel Corporation. All rights reserved.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++
++**/
++
++
++#include <Library/PcdLib.h>
++#include <Library/FspWrapperPlatformLib.h>
++#include <Uefi/UefiBaseType.h>
++
++/**
++  Get the Fspm Upd Data Address from the PCD
++
++  @return FSPM UPD Data Address
++**/
++UINTN
++EFIAPI
++GetFspmUpdDataAddress (
++  VOID
++  )
++{
++  return PcdGet32 (PcdFspmUpdDataAddress);
++}
++
++/**
++  Get the Fsps Upd Data Address from the PCD
++
++  @return FSPS UPD Data Address
++**/
++UINTN
++EFIAPI
++GetFspsUpdDataAddress (
++  VOID
++  )
++{
++  return PcdGet32 (PcdFspsUpdDataAddress);
++}
+diff --git a/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/X64/FspHelper.c b/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/X64/FspHelper.c
+new file mode 100644
+index 0000000000..17b795aa4f
+--- /dev/null
++++ b/IntelFsp2WrapperPkg/Library/BaseFspWrapperPlatformLibSample/X64/FspHelper.c
+@@ -0,0 +1,40 @@
++/** @file
++  Sample to provide FSP wrapper related function.
++
++  Copyright (c) 2021, Intel Corporation. All rights reserved.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++
++**/
++
++
++#include <Library/PcdLib.h>
++#include <Library/FspWrapperPlatformLib.h>
++#include <Uefi/UefiBaseType.h>
++
++/**
++  Get the Fspm Upd Data Address from the PCD
++
++  @return FSPM UPD Data Address
++**/
++UINTN
++EFIAPI
++GetFspmUpdDataAddress (
++  VOID
++  )
++{
++  return PcdGet64 (PcdFspmUpdDataAddress64);
++}
++
++/**
++  Get the Fsps Upd Data Address from the PCD
++
++  @return FSPS UPD Data Address
++**/
++UINTN
++EFIAPI
++GetFspsUpdDataAddress (
++  VOID
++  )
++{
++  return PcdGet64 (PcdFspsUpdDataAddress64);
++}
+-- 
+2.30.2.windows.1
+

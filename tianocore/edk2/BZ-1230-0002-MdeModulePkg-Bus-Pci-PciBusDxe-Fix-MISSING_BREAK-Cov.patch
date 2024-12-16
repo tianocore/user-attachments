@@ -1,0 +1,49 @@
+From 29bc4d863a10cfca0021849ad77390ea63330694 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:04:41 +0530
+Subject: [PATCH 2/5] MdeModulePkg/Bus/Pci/PciBusDxe: Fix MISSING_BREAK
+ Coverity issues
+
+The function UpdatePciInfo has switch-case code in which there are fall
+through from case 32: to case 64:. While this is seeemingly intentional,
+it is not evident to any static analyzer tool. Just adding
+
+    // No break; here as this is an intentional fallthrough.
+
+as explicit comment in between makes a reader as well as Coverity happy.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4239
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
+index 8eca85969580..e01ef4d4d9d0 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
+@@ -1425,6 +1425,9 @@ UpdatePciInfo (
+               switch (Ptr->AddrSpaceGranularity) {
+                 case 32:
+                   PciIoDevice->PciBar[BarIndex].BarType = PciBarTypeMem32;
++                  //
++                  // No break; here as this is an intentional fall through.
++                  //
+                 case 64:
+                   PciIoDevice->PciBar[BarIndex].BarTypeFixed = TRUE;
+                   break;
+@@ -1437,6 +1440,9 @@ UpdatePciInfo (
+               switch (Ptr->AddrSpaceGranularity) {
+                 case 32:
+                   PciIoDevice->PciBar[BarIndex].BarType = PciBarTypePMem32;
++                  //
++                  // No break; here as this is an intentional fall through.
++                  //
+                 case 64:
+                   PciIoDevice->PciBar[BarIndex].BarTypeFixed = TRUE;
+                   break;
+-- 
+2.36.1.windows.1
+

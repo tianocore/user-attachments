@@ -1,0 +1,50 @@
+From aac70d64c03c571875ac23038675957b3a170efa Mon Sep 17 00:00:00 2001
+From: Wenyi Xie <xiewenyi2@huawei.com>
+Date: Fri, 14 Jan 2022 11:46:52 +0800
+Subject: [PATCH EDK2 v1 1/1] MdeModulePkg/PciBucDxe:Fix issue when initial
+ SR-IVO
+
+Reference:https://bugzilla.tianocore.org/show_bug.cgi?id=3804
+
+When calculating SR-IOV reserve bus in function CreatePciIoDevice(),
+there are two points may have problem.
+LastVF = PFRid + FirstVFOffset + (PciIoDevice->InitialVFs - 1) * VFStride;
+PciIoDevice->ReservedBusNum =
+(UINT16)(EFI_PCI_BUS_OF_RID (LastVF) - Bus + 1);
+
+The first is that if the value of PciIoDevice->InitialVFs is 0, it will
+cause overflow, it's better to check InitialVFs before used.
+The second is that if number of bus is not enough for all PF and still
+allocate bus for VF, it will lead to PCI enumerating failure.
+
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Signed-off-by: Wenyi Xie <xiewenyi2@huawei.com>
+---
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
+index 9251388bc268..a4d1db534276 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
+@@ -2402,12 +2402,12 @@ CreatePciIoDevice (
+       // Calculate LastVF
+       //
+       PFRid  = EFI_PCI_RID (Bus, Device, Func);
+-      LastVF = PFRid + FirstVFOffset + (PciIoDevice->InitialVFs - 1) * VFStride;
++      LastVF = PFRid + FirstVFOffset + (PciIoDevice->InitialVFs == 0 ? 0 : PciIoDevice->InitialVFs - 1) * VFStride;
+ 
+       //
+       // Calculate ReservedBusNum for this PF
+       //
+-      PciIoDevice->ReservedBusNum = (UINT16)(EFI_PCI_BUS_OF_RID (LastVF) - Bus + 1);
++      PciIoDevice->ReservedBusNum = (UINT16)(EFI_PCI_BUS_OF_RID (LastVF) - Bus);
+ 
+       DEBUG ((
+         DEBUG_INFO,
+-- 
+2.20.1.windows.1
+

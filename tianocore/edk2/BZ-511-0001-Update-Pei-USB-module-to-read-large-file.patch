@@ -1,0 +1,66 @@
+From d371142bb5c644178943d042f6663d6cdb0e6db7 Mon Sep 17 00:00:00 2001
+From: Baraneedharan Anbazhagan <anbazhgan@hp.com>
+Date: Sun, 17 May 2020 00:15:50 -0500
+Subject: [PATCH] Update Pei USB module to read large file
+
+Convert local variables in PeiUsbRead10 from UINT16 to UINT32
+to handle file size greater than 32M
+---
+ MdeModulePkg/Bus/Usb/UsbBotPei/PeiAtapi.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Usb/UsbBotPei/PeiAtapi.c b/MdeModulePkg/Bus/Usb/UsbBotPei/PeiAtapi.c
+index 41f782a78b..8c650a5078 100644
+--- a/MdeModulePkg/Bus/Usb/UsbBotPei/PeiAtapi.c
++++ b/MdeModulePkg/Bus/Usb/UsbBotPei/PeiAtapi.c
+@@ -383,9 +383,9 @@ PeiUsbRead10 (
+ {
+   ATAPI_PACKET_COMMAND  Packet;
+   ATAPI_READ10_CMD      *Read10Packet;
+-  UINT16                MaxBlock;
+-  UINT16                BlocksRemaining;
+-  UINT16                SectorCount;
++  UINT32                MaxBlock;
++  UINT32                BlocksRemaining;
++  UINT32                SectorCount;
+   UINT32                Lba32;
+   UINT32                BlockSize;
+   UINT32                ByteCount;
+@@ -403,8 +403,8 @@ PeiUsbRead10 (
+ 
+   BlockSize       = (UINT32) PeiBotDevice->Media.BlockSize;
+ 
+-  MaxBlock        = (UINT16) (65535 / BlockSize);
+-  BlocksRemaining = (UINT16) NumberOfBlocks;
++  MaxBlock        = (UINT32) (65535 / BlockSize);
++  BlocksRemaining = (UINT32) NumberOfBlocks;
+ 
+   Status          = EFI_SUCCESS;
+   while (BlocksRemaining > 0) {
+@@ -435,8 +435,8 @@ PeiUsbRead10 (
+     // TranLen0 ~ TranLen1 specify the transfer length in block unit.
+     // TranLen0 is MSB, TranLen is LSB
+     //
+-    Read10Packet->TranLen1  = (UINT8) (SectorCount & 0xff);
+-    Read10Packet->TranLen0  = (UINT8) (SectorCount >> 8);
++    Read10Packet->TranLen1  = (UINT8) (((UINT16)SectorCount) & 0xff);
++    Read10Packet->TranLen0  = (UINT8) (((UINT16)SectorCount) >> 8);
+ 
+     ByteCount               = SectorCount * BlockSize;
+ 
+@@ -460,9 +460,9 @@ PeiUsbRead10 (
+       return Status;
+     }
+ 
+-    Lba32 += SectorCount;
+-    PtrBuffer       = (UINT8 *) PtrBuffer + SectorCount * BlockSize;
+-    BlocksRemaining = (UINT16) (BlocksRemaining - SectorCount);
++    Lba32           += SectorCount;
++    PtrBuffer        = (UINT8 *) PtrBuffer + (SectorCount * BlockSize);
++    BlocksRemaining -= SectorCount;
+   }
+ 
+   return Status;
+-- 
+2.19.0.windows.1
+

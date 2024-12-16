@@ -1,0 +1,1803 @@
+2022-06-23T04:41:33.3861026Z ##[debug]Evaluating condition for step: 'Run to shell'
+2022-06-23T04:41:33.3863203Z ##[debug]Evaluating: and(and(gt(variables['pkg_count'], 0), succeeded()), eq(variables['Run'], True))
+2022-06-23T04:41:33.3863678Z ##[debug]Evaluating and:
+2022-06-23T04:41:33.3863963Z ##[debug]..Evaluating and:
+2022-06-23T04:41:33.3864239Z ##[debug]....Evaluating gt:
+2022-06-23T04:41:33.3864578Z ##[debug]......Evaluating indexer:
+2022-06-23T04:41:33.3864922Z ##[debug]........Evaluating variables:
+2022-06-23T04:41:33.3865595Z ##[debug]........=> Object
+2022-06-23T04:41:33.3866003Z ##[debug]........Evaluating String:
+2022-06-23T04:41:33.3866350Z ##[debug]........=> 'pkg_count'
+2022-06-23T04:41:33.3866816Z ##[debug]......=> '1'
+2022-06-23T04:41:33.3867168Z ##[debug]......Evaluating Number:
+2022-06-23T04:41:33.3867507Z ##[debug]......=> 0
+2022-06-23T04:41:33.3867815Z ##[debug]......=> '0'
+2022-06-23T04:41:33.3868049Z ##[debug]....=> True
+2022-06-23T04:41:33.3868363Z ##[debug]....Evaluating succeeded:
+2022-06-23T04:41:33.3868920Z ##[debug]....=> True
+2022-06-23T04:41:33.3869202Z ##[debug]..=> True
+2022-06-23T04:41:33.3869469Z ##[debug]..Evaluating eq:
+2022-06-23T04:41:33.3869769Z ##[debug]....Evaluating indexer:
+2022-06-23T04:41:33.3870112Z ##[debug]......Evaluating variables:
+2022-06-23T04:41:33.3870409Z ##[debug]......=> Object
+2022-06-23T04:41:33.3870750Z ##[debug]......Evaluating String:
+2022-06-23T04:41:33.3871048Z ##[debug]......=> 'Run'
+2022-06-23T04:41:33.3871477Z ##[debug]....=> 'true'
+2022-06-23T04:41:33.3871811Z ##[debug]....Evaluating Boolean:
+2022-06-23T04:41:33.3872066Z ##[debug]....=> True
+2022-06-23T04:41:33.3872353Z ##[debug]....=> 'True'
+2022-06-23T04:41:33.3872559Z ##[debug]..=> True
+2022-06-23T04:41:33.3872771Z ##[debug]=> True
+2022-06-23T04:41:33.3873631Z ##[debug]Expanded: and(and(gt('1', 0), True), eq('true', True))
+2022-06-23T04:41:33.3874012Z ##[debug]Result: True
+2022-06-23T04:41:33.3874443Z ##[section]Starting: Run to shell
+2022-06-23T04:41:33.3880356Z ==============================================================================
+2022-06-23T04:41:33.3880643Z Task         : Command Line
+2022-06-23T04:41:33.3880870Z Description  : Run a command line with arguments
+2022-06-23T04:41:33.3881073Z Version      : 1.1.3
+2022-06-23T04:41:33.3881253Z Author       : Microsoft Corporation
+2022-06-23T04:41:33.3881557Z Help         : [More Information](https://go.microsoft.com/fwlink/?LinkID=613735)
+2022-06-23T04:41:33.3882040Z ==============================================================================
+2022-06-23T04:41:33.3995515Z ##[debug]Using node path: /home/vsts/agents/2.204.0/externals/node/bin/node
+2022-06-23T04:41:33.4979532Z ##[debug]agent.workFolder=/home/vsts/work
+2022-06-23T04:41:33.4997228Z ##[debug]loading inputs and endpoints
+2022-06-23T04:41:33.4999877Z ##[debug]loading INPUT_FILENAME
+2022-06-23T04:41:33.5007774Z ##[debug]loading INPUT_ARGUMENTS
+2022-06-23T04:41:33.5009653Z ##[debug]loading INPUT_WORKINGFOLDER
+2022-06-23T04:41:33.5010595Z ##[debug]loading INPUT_FAILONSTANDARDERROR
+2022-06-23T04:41:33.5011581Z ##[debug]loading ENDPOINT_AUTH_SYSTEMVSSCONNECTION
+2022-06-23T04:41:33.5012578Z ##[debug]loading ENDPOINT_AUTH_SCHEME_SYSTEMVSSCONNECTION
+2022-06-23T04:41:33.5013593Z ##[debug]loading ENDPOINT_AUTH_PARAMETER_SYSTEMVSSCONNECTION_ACCESSTOKEN
+2022-06-23T04:41:33.5014530Z ##[debug]loaded 7
+2022-06-23T04:41:33.5024424Z ##[debug]check path : /home/vsts/work/_tasks/CmdLine_d9bafed4-0b18-4f58-968d-86655b4d2ce9/1.1.3/task.json
+2022-06-23T04:41:33.5025854Z ##[debug]set resource file to: /home/vsts/work/_tasks/CmdLine_d9bafed4-0b18-4f58-968d-86655b4d2ce9/1.1.3/task.json
+2022-06-23T04:41:33.5027023Z ##[debug]system.culture=en-US
+2022-06-23T04:41:33.5036998Z ##[debug]filename=stuart_build
+2022-06-23T04:41:33.5043994Z ##[debug]check path : /opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build
+2022-06-23T04:41:33.5045696Z ##[debug]stuart_build=/opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build
+2022-06-23T04:41:33.5051237Z ##[debug]workingFolder=/home/vsts/work/1/s
+2022-06-23T04:41:33.5053333Z ##[debug]testing directory '/home/vsts/work/1/s'
+2022-06-23T04:41:33.5058080Z ##[debug]arguments=-c ArmVirtPkg/PlatformCI/PlatformBuild.py TOOL_CHAIN_TAG=GCC5 TARGET=DEBUG -a AARCH64  MAKE_STARTUP_NSH=TRUE QEMU_HEADLESS=TRUE --FlashOnly
+2022-06-23T04:41:33.5060456Z ##[debug]/opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build arg: -c ArmVirtPkg/PlatformCI/PlatformBuild.py TOOL_CHAIN_TAG=GCC5 TARGET=DEBUG -a AARCH64  MAKE_STARTUP_NSH=TRUE QEMU_HEADLESS=TRUE --FlashOnly
+2022-06-23T04:41:33.5062415Z ##[debug]failOnStandardError=false
+2022-06-23T04:41:33.5069646Z ##[debug]exec tool: /opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build
+2022-06-23T04:41:33.5070257Z ##[debug]Arguments:
+2022-06-23T04:41:33.5070897Z ##[debug]   -c
+2022-06-23T04:41:33.5071446Z ##[debug]   ArmVirtPkg/PlatformCI/PlatformBuild.py
+2022-06-23T04:41:33.5072020Z ##[debug]   TOOL_CHAIN_TAG=GCC5
+2022-06-23T04:41:33.5072548Z ##[debug]   TARGET=DEBUG
+2022-06-23T04:41:33.5073122Z ##[debug]   -a
+2022-06-23T04:41:33.5073609Z ##[debug]   AARCH64
+2022-06-23T04:41:33.5074144Z ##[debug]   MAKE_STARTUP_NSH=TRUE
+2022-06-23T04:41:33.5074685Z ##[debug]   QEMU_HEADLESS=TRUE
+2022-06-23T04:41:33.5075287Z ##[debug]   --FlashOnly
+2022-06-23T04:41:33.5076255Z [command]/opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build -c ArmVirtPkg/PlatformCI/PlatformBuild.py TOOL_CHAIN_TAG=GCC5 TARGET=DEBUG -a AARCH64 MAKE_STARTUP_NSH=TRUE QEMU_HEADLESS=TRUE --FlashOnly
+2022-06-23T04:41:33.5138621Z (node:16469) Warning: Use Cipheriv for counter mode of aes-256-ctr
+2022-06-23T04:41:33.5139847Z (node:16469) Warning: Use Cipheriv for counter mode of aes-256-ctr
+2022-06-23T04:41:33.5140676Z (node:16469) Warning: Use Cipheriv for counter mode of aes-256-ctr
+2022-06-23T04:41:33.5141488Z (node:16469) Warning: Use Cipheriv for counter mode of aes-256-ctr
+2022-06-23T04:41:33.5142272Z (node:16469) Warning: Use Cipheriv for counter mode of aes-256-ctr
+2022-06-23T04:41:33.5143076Z (node:16469) Warning: Use Cipheriv for counter mode of aes-256-ctr
+2022-06-23T04:41:33.5143865Z (node:16469) Warning: Use Cipheriv for counter mode of aes-256-ctr
+2022-06-23T04:41:33.6609498Z INFO - Log Started: Thursday, June 23, 2022 04:41AM
+2022-06-23T04:41:33.6610464Z SECTION - Init SDE
+2022-06-23T04:41:33.6611177Z DEBUG - --- self_describing_environment.__init__()
+2022-06-23T04:41:33.6611881Z DEBUG - Skipped directories specified = ()
+2022-06-23T04:41:33.6612921Z DEBUG - --- self_describing_environment.load_workspace()
+2022-06-23T04:41:33.6613641Z DEBUG - Loading workspace: /home/vsts/work/1/s
+2022-06-23T04:41:33.6614450Z DEBUG -   Including scopes: armvirt, edk2-build, gcc_aarch64_linux, global-nix, global
+2022-06-23T04:41:33.6615248Z DEBUG - --- self_describing_environment._gather_env_files()
+2022-06-23T04:41:33.6617314Z DEBUG - Skipping: /home/vsts/work/1/s/.git
+2022-06-23T04:41:33.9010299Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/basetools_calling_path_env.yaml to the environment with scope global
+2022-06-23T04:41:33.9011290Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/basetools_path_env.yaml to the environment with scope global
+2022-06-23T04:41:33.9012321Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/BinWrappers/PosixLike/posix_path_env.yaml to the environment with scope global-nix
+2022-06-23T04:41:33.9013341Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/Source/Python/basetool_tiano_python_path_env.yaml to the environment with scope global
+2022-06-23T04:41:33.9014338Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/Source/C/bin/basetoolsbin_path_env.yaml to the environment with scope edk2-build
+2022-06-23T04:41:33.9015338Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/Bin/gcc_aarch64_linux_ext_dep.yaml to the environment with scope gcc_aarch64_linux
+2022-06-23T04:41:33.9016267Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/Bin/nasm_ext_dep.yaml to the environment with scope edk2-build
+2022-06-23T04:41:33.9017181Z DEBUG - Adding descriptor /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_ext_dep.yaml to the environment with scope armvirt
+2022-06-23T04:41:33.9018466Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/Plugin/BuildToolsReport/BuildToolsReportGenerator_plug_in.yaml to the environment with scope global
+2022-06-23T04:41:33.9019553Z DEBUG - Adding descriptor /home/vsts/work/1/s/BaseTools/Plugin/LinuxGcc5ToolChain/LinuxGcc5ToolChain_plug_in.yaml to the environment with scope global-nix
+2022-06-23T04:41:33.9020364Z DEBUG - --- self_describing_environment.update_simple_paths()
+2022-06-23T04:41:33.9021009Z DEBUG - --- self_describing_environment.update_extdep_paths()
+2022-06-23T04:41:33.9178752Z DEBUG - Verify 'iasl' returning 'True'.
+2022-06-23T04:41:33.9179690Z INFO - Computing path for iasl located at /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep on Host(os='Linux', arch='x86', bit='64')
+2022-06-23T04:41:33.9180545Z DEBUG - /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep/Linux-x86-64 does not exist
+2022-06-23T04:41:33.9181296Z INFO - /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep/Linux-x86 was found!
+2022-06-23T04:41:33.9187931Z DEBUG - Verify 'mu_nasm' returning 'True'.
+2022-06-23T04:41:33.9189077Z INFO - Computing path for mu_nasm located at /home/vsts/work/1/s/BaseTools/Bin/mu_nasm_extdep on Host(os='Linux', arch='x86', bit='64')
+2022-06-23T04:41:33.9191879Z INFO - /home/vsts/work/1/s/BaseTools/Bin/mu_nasm_extdep/Linux-x86-64 was found!
+2022-06-23T04:41:33.9192826Z DEBUG - --- self_describing_environment.report_extdep_version()
+2022-06-23T04:41:33.9194264Z DEBUG - Verify 'iasl' returning 'True'.
+2022-06-23T04:41:33.9195895Z INFO - Computing path for iasl located at /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep on Host(os='Linux', arch='x86', bit='64')
+2022-06-23T04:41:33.9197819Z DEBUG - /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep/Linux-x86-64 does not exist
+2022-06-23T04:41:33.9199256Z INFO - /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep/Linux-x86 was found!
+2022-06-23T04:41:33.9200073Z DEBUG - Setting up version aggregator
+2022-06-23T04:41:33.9203959Z DEBUG - Verify 'mu_nasm' returning 'True'.
+2022-06-23T04:41:33.9206329Z INFO - Computing path for mu_nasm located at /home/vsts/work/1/s/BaseTools/Bin/mu_nasm_extdep on Host(os='Linux', arch='x86', bit='64')
+2022-06-23T04:41:33.9208178Z INFO - /home/vsts/work/1/s/BaseTools/Bin/mu_nasm_extdep/Linux-x86-64 was found!
+2022-06-23T04:41:33.9218340Z DEBUG - Verify 'iasl' returning 'True'.
+2022-06-23T04:41:33.9225540Z INFO - Computing path for iasl located at /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep on Host(os='Linux', arch='x86', bit='64')
+2022-06-23T04:41:33.9228131Z DEBUG - /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep/Linux-x86-64 does not exist
+2022-06-23T04:41:33.9229108Z INFO - /home/vsts/work/1/s/ArmVirtPkg/PlatformCI/iasl_extdep/Linux-x86 was found!
+2022-06-23T04:41:33.9239532Z DEBUG - Verify 'iasl' returning 'True'.
+2022-06-23T04:41:33.9254367Z DEBUG - Verify 'mu_nasm' returning 'True'.
+2022-06-23T04:41:33.9255464Z INFO - Computing path for mu_nasm located at /home/vsts/work/1/s/BaseTools/Bin/mu_nasm_extdep on Host(os='Linux', arch='x86', bit='64')
+2022-06-23T04:41:33.9256548Z INFO - /home/vsts/work/1/s/BaseTools/Bin/mu_nasm_extdep/Linux-x86-64 was found!
+2022-06-23T04:41:33.9259046Z DEBUG - Verify 'mu_nasm' returning 'True'.
+2022-06-23T04:41:33.9259636Z DEBUG - Verify 'gcc_aarch64_linux' returning 'True'.
+2022-06-23T04:41:33.9260160Z SECTION - Loading Plugins
+2022-06-23T04:41:33.9260874Z DEBUG - Loading Plugin from /home/vsts/work/1/s/BaseTools/Plugin/BuildToolsReport/BuildToolsReportGenerator.py
+2022-06-23T04:41:33.9261735Z DEBUG - Loading Plugin from /home/vsts/work/1/s/BaseTools/Plugin/LinuxGcc5ToolChain/LinuxGcc5ToolChain.py
+2022-06-23T04:41:33.9262346Z SECTION - Start Invocable Tool
+2022-06-23T04:41:33.9263063Z INFO - Running Python version: sys.version_info(major=3, minor=8, micro=12, releaselevel='final', serial=0)
+2022-06-23T04:41:33.9263696Z INFO - setuptools version: 56.0.0
+2022-06-23T04:41:33.9264173Z INFO - PyYAML version: 6.0
+2022-06-23T04:41:33.9266869Z INFO - pip version: 22.1.2
+2022-06-23T04:41:33.9267361Z INFO - pefile version: 2022.5.30
+2022-06-23T04:41:33.9268069Z INFO - future version: 0.18.2
+2022-06-23T04:41:33.9268578Z INFO - edk2-pytool-library version: 0.11.2
+2022-06-23T04:41:33.9269139Z INFO - edk2-pytool-extensions version: 0.16.0
+2022-06-23T04:41:33.9269661Z INFO - edk2-basetools version: 0.1.17
+2022-06-23T04:41:33.9270216Z INFO - antlr4-python3-runtime version: 4.7.1
+2022-06-23T04:41:33.9272168Z SECTION - Loading Plugins
+2022-06-23T04:41:33.9274203Z DEBUG - Loading Plugin from /home/vsts/work/1/s/BaseTools/Plugin/BuildToolsReport/BuildToolsReportGenerator.py
+2022-06-23T04:41:33.9278244Z DEBUG - Loading Plugin from /home/vsts/work/1/s/BaseTools/Plugin/LinuxGcc5ToolChain/LinuxGcc5ToolChain.py
+2022-06-23T04:41:33.9281593Z SECTION - Kicking off build
+2022-06-23T04:41:33.9289796Z PROGRESS - Start time: 2022-06-23 04:41:33.928044
+2022-06-23T04:41:33.9290371Z DEBUG - Logging all Registered Helper Functions:
+2022-06-23T04:41:33.9290830Z DEBUG - Finished logging 0 functions
+2022-06-23T04:41:33.9291281Z PROGRESS - Setting up the Environment
+2022-06-23T04:41:33.9291730Z DEBUG - PlatformBuilder SetPlatformEnv
+2022-06-23T04:41:33.9292302Z DEBUG - Can't set value [FALSE] as it isn't overrideable. Previous comment From CmdLine
+2022-06-23T04:41:33.9294538Z DEBUG - Can't set value [FALSE] as it isn't overrideable. Previous comment From CmdLine
+2022-06-23T04:41:33.9295066Z DEBUG - Conf version: 0.0
+2022-06-23T04:41:33.9296592Z DEBUG - Template Version: 0.0
+2022-06-23T04:41:33.9306949Z DEBUG - Conf version: 2.0
+2022-06-23T04:41:33.9315467Z DEBUG - Template Version: 2.0
+2022-06-23T04:41:33.9331952Z DEBUG - Conf version: 0.0
+2022-06-23T04:41:33.9332395Z DEBUG - Template Version: 0.0
+2022-06-23T04:41:33.9334084Z DEBUG - Parse Target.txt file
+2022-06-23T04:41:33.9338192Z DEBUG - Can't set value [EmulatorPkg/EmulatorPkg.dsc] as it isn't overrideable. Previous comment From CmdLine
+2022-06-23T04:41:33.9338892Z DEBUG - Can't set value [DEBUG] as it isn't overrideable. Previous comment From CmdLine
+2022-06-23T04:41:33.9340989Z DEBUG - Can't set value [IA32] as it isn't overrideable. Previous comment From CmdLine
+2022-06-23T04:41:33.9341658Z DEBUG - Can't set value [VS2015x86] as it isn't overrideable. Previous comment From CmdLine
+2022-06-23T04:41:33.9343319Z DEBUG - Parse tools_def.txt file
+2022-06-23T04:41:33.9624038Z DEBUG - Parse Active Platform DSC file: /home/vsts/work/1/s/ArmVirtPkg/ArmVirtQemu.dsc
+2022-06-23T04:41:33.9624984Z DEBUG - Getting all build keys for build type DEBUG
+2022-06-23T04:41:33.9960748Z DEBUG - Parse Active Flash Definition (FDF) file
+2022-06-23T04:41:33.9961320Z DEBUG - Getting all build keys for build type DEBUG
+2022-06-23T04:41:34.0015770Z PROGRESS - Skipping Pre Build
+2022-06-23T04:41:34.0016296Z PROGRESS - Skipping Build
+2022-06-23T04:41:34.0016702Z PROGRESS - Skipping Post Build
+2022-06-23T04:41:34.0017475Z PROGRESS - Flashing Image
+2022-06-23T04:41:34.0693425Z INFO - Cmd to run is: qemu-system-aarch64 -M virt -cpu cortex-a57 -pflash /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/FV/QEMU_EFI.fd -m 1024 -net none -serial stdio -drive file=fat:rw:/home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/VirtualDrive,format=raw,media=disk -display none
+2022-06-23T04:41:34.0694746Z INFO - ------------------------------------------------
+2022-06-23T04:41:34.0695346Z INFO - --------------Cmd Output Starting---------------
+2022-06-23T04:41:34.0695971Z INFO - ------------------------------------------------
+2022-06-23T04:41:34.2049389Z INFO - WARNING: Image format was not specified for '/home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/FV/QEMU_EFI.fd' and probing guessed raw.
+2022-06-23T04:41:34.2050730Z INFO -          Automatically detecting the format is dangerous for raw images, write operations on block 0 will be restricted.
+2022-06-23T04:41:34.2056922Z INFO -          Specify the 'raw' format explicitly to remove the restrictions.
+2022-06-23T04:41:34.2573020Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore/DEBUG/ArmPlatformPrePeiCore.dll 0x1800
+2022-06-23T04:41:34.2581759Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Core/Pei/PeiMain/DEBUG/PeiCore.dll 0x7240
+2022-06-23T04:41:34.2630497Z INFO - Register PPI Notify: DCD0BE23-9586-40F4-B643-06522CED4EDE
+2022-06-23T04:41:34.2644107Z INFO - Install PPI: 8C8CE578-8A3D-4F1C-9935-896185C32DD3
+2022-06-23T04:41:34.2655010Z INFO - Install PPI: 5473C07A-3DCB-4DCA-BD6F-1E9689E7349A
+2022-06-23T04:41:34.2678962Z INFO - The 0th FV start address is 0x00000001000, size is 0x001FF000, handle is 0x1000
+2022-06-23T04:41:34.2691738Z INFO - Register PPI Notify: 49EDB1C1-BF21-4761-BB12-EB0031AABB39
+2022-06-23T04:41:34.2701231Z INFO - Register PPI Notify: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38
+2022-06-23T04:41:34.2712162Z INFO - Install PPI: B9E0ABFE-5979-4914-977F-6DEE78C278A6
+2022-06-23T04:41:34.2722556Z INFO - Install PPI: DBE23AA9-A345-4B97-85B6-B226F1617389
+2022-06-23T04:41:34.2733390Z INFO - Install PPI: 6847CC74-E9EC-4F8F-A29D-AB44E754A8FC
+2022-06-23T04:41:34.2750558Z INFO - DiscoverPeimsAndOrderWithApriori(): Found 0x7 PEI FFS files in the 0th FV
+2022-06-23T04:41:34.2772794Z INFO - Loading PEIM 9B3ADA4F-AE56-4C24-8DEA-F03B7558AE50
+2022-06-23T04:41:34.2794499Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/PCD/Pei/Pcd/DEBUG/PcdPeim.dll 0x1E240
+2022-06-23T04:41:34.2827308Z INFO - Loading PEIM at 0x0000001E160 EntryPoint=0x00000021E5C PcdPeim.efi
+2022-06-23T04:41:34.2843620Z INFO - Install PPI: 06E81C58-4AD7-44BC-8390-F10265F72480
+2022-06-23T04:41:34.2853869Z INFO - Install PPI: 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+2022-06-23T04:41:34.2864683Z INFO - Install PPI: 4D8B155B-C059-4C8F-8926-06FD4331DB8A
+2022-06-23T04:41:34.2874963Z INFO - Install PPI: A60C6B59-E459-425D-9C69-0BCC9CB27D81
+2022-06-23T04:41:34.2885369Z INFO - Register PPI Notify: 605EA650-C65C-42E1-BA80-91A52AB618C6
+2022-06-23T04:41:34.2904823Z INFO - Loading PEIM C61EF796-B50D-4F98-9F78-4F6F79D800D5
+2022-06-23T04:41:34.2917061Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPlatformPkg/MemoryInitPei/MemoryInitPeim/DEBUG/MemoryInit.dll 0x17240
+2022-06-23T04:41:34.2946272Z INFO - Loading PEIM at 0x00000017160 EntryPoint=0x000000190F4 MemoryInit.efi
+2022-06-23T04:41:34.2970012Z INFO - QemuVirtMemInfoPeiLibConstructor: System RAM @ 0x40000000 - 0x7FFFFFFF
+2022-06-23T04:41:34.2993373Z INFO - Memory Init PEIM Loaded
+2022-06-23T04:41:34.3009486Z INFO - PeiInstallPeiMemory MemoryBegin 0x7C000000, MemoryLength 0x4000000
+2022-06-23T04:41:34.3017371Z INFO - ArmVirtGetMemoryMap: Dumping System DRAM Memory Map:
+2022-06-23T04:41:34.3019885Z INFO - 	PhysicalBase: 0x40000000
+2022-06-23T04:41:34.3022346Z INFO - 	VirtualBase: 0x40000000
+2022-06-23T04:41:34.3024742Z INFO - 	Length: 0x40000000
+2022-06-23T04:41:34.3056652Z INFO - Temp Stack : BaseAddress=0x4007E020 Length=0x1FE0
+2022-06-23T04:41:34.3068975Z INFO - Temp Heap  : BaseAddress=0x4007C030 Length=0x1FF0
+2022-06-23T04:41:34.3081016Z INFO - Total temporary memory:    16336 bytes.
+2022-06-23T04:41:34.3093382Z INFO -   temporary memory stack ever used:       3968 bytes.
+2022-06-23T04:41:34.3105646Z INFO -   temporary memory heap used for HobList: 3320 bytes.
+2022-06-23T04:41:34.3118046Z INFO -   temporary memory heap occupied by memory pages: 0 bytes.
+2022-06-23T04:41:34.3130993Z INFO - Memory Allocation 0x00000004 0x7FFFF000 - 0x7FFFFFFF
+2022-06-23T04:41:34.3143206Z INFO - Memory Allocation 0x00000004 0x7FFFE000 - 0x7FFFEFFF
+2022-06-23T04:41:34.3155255Z INFO - Memory Allocation 0x00000004 0x7FFFD000 - 0x7FFFDFFF
+2022-06-23T04:41:34.3167357Z INFO - Memory Allocation 0x00000004 0x7FFFC000 - 0x7FFFCFFF
+2022-06-23T04:41:34.3180014Z INFO - Old Stack size 8160, New stack size 131072
+2022-06-23T04:41:34.3192552Z INFO - Stack Hob: BaseAddress=0x7C000000 Length=0x20000
+2022-06-23T04:41:34.3207336Z INFO - Heap Offset = 0x3BFA3FD0 Stack Offset = 0x3BFA0000
+2022-06-23T04:41:34.3228049Z INFO - Loading PEIM 52C05B14-0B98-496C-BC3B-04B50211D680
+2022-06-23T04:41:34.3242899Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Core/Pei/PeiMain/DEBUG/PeiCore.dll 0x7FFEF240
+2022-06-23T04:41:34.3273750Z INFO - Loading PEIM at 0x0007FFEF160 EntryPoint=0x0007FFF598C PeiCore.efi
+2022-06-23T04:41:34.3305341Z INFO - Reinstall PPI: 8C8CE578-8A3D-4F1C-9935-896185C32DD3
+2022-06-23T04:41:34.3317534Z INFO - Reinstall PPI: 5473C07A-3DCB-4DCA-BD6F-1E9689E7349A
+2022-06-23T04:41:34.3328306Z INFO - Reinstall PPI: B9E0ABFE-5979-4914-977F-6DEE78C278A6
+2022-06-23T04:41:34.3339653Z INFO - Install PPI: F894643D-C449-42D1-8EA8-85BDD8C65BDE
+2022-06-23T04:41:34.3356242Z INFO - Loading PEIM 9B3ADA4F-AE56-4C24-8DEA-F03B7558AE50
+2022-06-23T04:41:34.3388401Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/PCD/Pei/Pcd/DEBUG/PcdPeim.dll 0x7FFE9240
+2022-06-23T04:41:34.3421862Z INFO - Loading PEIM at 0x0007FFE9160 EntryPoint=0x0007FFECE5C PcdPeim.efi
+2022-06-23T04:41:34.3434787Z INFO - Reinstall PPI: 06E81C58-4AD7-44BC-8390-F10265F72480
+2022-06-23T04:41:34.3445350Z INFO - Reinstall PPI: 4D8B155B-C059-4C8F-8926-06FD4331DB8A
+2022-06-23T04:41:34.3456448Z INFO - Reinstall PPI: 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+2022-06-23T04:41:34.3466350Z INFO - Reinstall PPI: A60C6B59-E459-425D-9C69-0BCC9CB27D81
+2022-06-23T04:41:34.3481004Z INFO - Loading PEIM 2FD8B7AD-F8FA-4021-9FC0-0AA572147CDC
+2022-06-23T04:41:34.3493217Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPkg/Drivers/CpuPei/CpuPei/DEBUG/CpuPei.dll 0x7FFE6240
+2022-06-23T04:41:34.3522834Z INFO - Loading PEIM at 0x0007FFE6160 EntryPoint=0x0007FFE7918 CpuPei.efi
+2022-06-23T04:41:34.3541775Z INFO - Loading PEIM 2AD0FC59-2314-4BF3-8633-13FA22A624A0
+2022-06-23T04:41:34.3554187Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPlatformPkg/PlatformPei/PlatformPeim/DEBUG/PlatformPei.dll 0x7FFE2240
+2022-06-23T04:41:34.3583661Z INFO - Loading PEIM at 0x0007FFE2160 EntryPoint=0x0007FFE3D74 PlatformPei.efi
+2022-06-23T04:41:34.3603276Z INFO - Platform PEIM Loaded
+2022-06-23T04:41:34.3632631Z INFO - PlatformPeim: PL011 UART @ 0x9000000
+2022-06-23T04:41:34.3644342Z INFO - Install PPI: 7408D748-FC8C-4EE6-9288-C4BEC092A410
+2022-06-23T04:41:34.3655394Z INFO - Loading PEIM 86D70125-BAA3-4296-A62F-602BEBBB9081
+2022-06-23T04:41:34.3667857Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Core/DxeIplPeim/DxeIpl/DEBUG/DxeIpl.dll 0x7FED9240
+2022-06-23T04:41:34.3697207Z INFO - Loading PEIM at 0x0007FED9160 EntryPoint=0x0007FEDE6D4 DxeIpl.efi
+2022-06-23T04:41:34.3718060Z INFO - Install PPI: EE4E5898-3914-4259-9D6E-DC7BD79403CF
+2022-06-23T04:41:34.3727837Z INFO - Install PPI: 1A36E4E7-FAB6-476A-8E75-695A0576FDD7
+2022-06-23T04:41:34.3738208Z INFO - Install PPI: 0AE8CE5D-E448-4437-A8D7-EBF5F194F731
+2022-06-23T04:41:34.3761998Z INFO - Customized Guided section Memory Size required is 0x66D5D0 and address is 0x7F85B000
+2022-06-23T04:41:34.6266168Z INFO - ProcessFvFile() FV at 0x7F85B010, FvAlignment required is 0x10
+2022-06-23T04:41:34.6275424Z INFO - Install PPI: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38
+2022-06-23T04:41:34.6286138Z INFO - Notify: PPI Guid: EA7CA24B-DED5-4DAD-A389-BF827E8F9B38, Peim notify entry point: AA24
+2022-06-23T04:41:34.6299017Z INFO - The 1th FV start address is 0x0007F85B010, size is 0x0066D5C0, handle is 0x7F85B010
+2022-06-23T04:41:34.6313170Z INFO - Install PPI: 49EDB1C1-BF21-4761-BB12-EB0031AABB39
+2022-06-23T04:41:34.6324072Z INFO - Notify: PPI Guid: 49EDB1C1-BF21-4761-BB12-EB0031AABB39, Peim notify entry point: AA24
+2022-06-23T04:41:34.6335549Z INFO - The FV 7F85B010 has already been processed!
+2022-06-23T04:41:34.6349417Z INFO - DiscoverPeimsAndOrderWithApriori(): Found 0x0 PEI FFS files in the 1th FV
+2022-06-23T04:41:34.6359681Z INFO - DXE IPL Entry
+2022-06-23T04:41:34.6373813Z INFO - Loading PEIM D6A2CB7F-6A18-4E2F-B43B-9920A733700A
+2022-06-23T04:41:34.6396498Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll 0x7F815000
+2022-06-23T04:41:34.6428756Z INFO - Loading PEIM at 0x0007F814000 EntryPoint=0x0007F81D864 DxeCore.efi
+2022-06-23T04:41:34.6437465Z INFO - Loading DXE CORE at 0x0007F814000 EntryPoint=0x0007F81D864
+2022-06-23T04:41:34.6483698Z INFO - Install PPI: 605EA650-C65C-42E1-BA80-91A52AB618C6
+2022-06-23T04:41:34.6494019Z INFO - Notify: PPI Guid: 605EA650-C65C-42E1-BA80-91A52AB618C6, Peim notify entry point: 21CC4
+2022-06-23T04:41:34.6902015Z INFO - DxeMain: MemoryBaseAddress=0x7C022000 MemoryLength=0x37CF000
+2022-06-23T04:41:34.6909089Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Core/Dxe/DxeMain/DEBUG/DxeCore.dll 0x7F815000
+2022-06-23T04:41:34.6921424Z INFO - HOBLIST address in DXE = 0x7F235018
+2022-06-23T04:41:34.6926804Z INFO - Memory Allocation 0x00000004 0x7FFFF000 - 0x7FFFFFFF
+2022-06-23T04:41:34.6932301Z INFO - Memory Allocation 0x00000004 0x7FFFE000 - 0x7FFFEFFF
+2022-06-23T04:41:34.6937551Z INFO - Memory Allocation 0x00000004 0x7FFFD000 - 0x7FFFDFFF
+2022-06-23T04:41:34.6942698Z INFO - Memory Allocation 0x00000004 0x7FFFC000 - 0x7FFFCFFF
+2022-06-23T04:41:34.6947825Z INFO - Memory Allocation 0x00000004 0x7F7F4000 - 0x7F813FFF
+2022-06-23T04:41:34.6952951Z INFO - Memory Allocation 0x00000003 0x7FFEF000 - 0x7FFFBFFF
+2022-06-23T04:41:34.6958147Z INFO - Memory Allocation 0x00000003 0x7FFE9000 - 0x7FFEEFFF
+2022-06-23T04:41:34.6970577Z INFO - Memory Allocation 0x00000003 0x7FFE6000 - 0x7FFE8FFF
+2022-06-23T04:41:34.6979097Z INFO - Memory Allocation 0x00000003 0x7FFE2000 - 0x7FFE5FFF
+2022-06-23T04:41:34.6984550Z INFO - Memory Allocation 0x00000004 0x7FEE1000 - 0x7FFE1FFF
+2022-06-23T04:41:34.6989797Z INFO - Memory Allocation 0x00000003 0x7FED9000 - 0x7FEE0FFF
+2022-06-23T04:41:34.6994953Z INFO - Memory Allocation 0x00000004 0x7FEC9000 - 0x7FED8FFF
+2022-06-23T04:41:34.7000085Z INFO - Memory Allocation 0x00000004 0x7F85B000 - 0x7FEC8FFF
+2022-06-23T04:41:34.7005190Z INFO - Memory Allocation 0x00000003 0x7F814000 - 0x7F85AFFF
+2022-06-23T04:41:34.7010432Z INFO - Memory Allocation 0x00000003 0x7F814000 - 0x7F85AFFF
+2022-06-23T04:41:34.7015549Z INFO - Memory Allocation 0x00000004 0x7F7F4000 - 0x7F813FFF
+2022-06-23T04:41:34.7020630Z INFO - Memory Allocation 0x00000004 0x7F7F3000 - 0x7F7F3FFF
+2022-06-23T04:41:34.7030283Z INFO - Memory Allocation 0x00000004 0x7F7F2000 - 0x7F7F2FFF
+2022-06-23T04:41:34.7036733Z INFO - Memory Allocation 0x00000004 0x7F7F1000 - 0x7F7F1FFF
+2022-06-23T04:41:34.7053808Z INFO - Memory Allocation 0x00000004 0x7C000000 - 0x7C01FFFF
+2022-06-23T04:41:34.7080954Z INFO - FV Hob            0x1000 - 0x1FFFFF
+2022-06-23T04:41:34.7086342Z INFO - FV Hob            0x7F85B010 - 0x7FEC85CF
+2022-06-23T04:41:34.7091505Z INFO - FV2 Hob           0x7F85B010 - 0x7FEC85CF
+2022-06-23T04:41:34.7096599Z INFO -                   00000000-0000-0000-0000-000000000000 - 9E21FD93-9C72-4C15-8C4B-E77F1DB2D792
+2022-06-23T04:41:34.7101655Z INFO - FV3 Hob           0x7F85B010 - 0x7FEC85CF - 0x0 - 0x1
+2022-06-23T04:41:34.7106750Z INFO -                   00000000-0000-0000-0000-000000000000 - 9E21FD93-9C72-4C15-8C4B-E77F1DB2D792
+2022-06-23T04:41:34.7111847Z INFO - InstallProtocolInterface: D8117CFE-94A6-11D4-9A3A-0090273FC14D 7F83D090
+2022-06-23T04:41:34.7116990Z INFO - InstallProtocolInterface: 8F644FA9-E850-4DB1-9CE2-0B44698E8DA4 7F2314B0
+2022-06-23T04:41:34.7122345Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7F22D018
+2022-06-23T04:41:34.7127463Z INFO - InstallProtocolInterface: 8F644FA9-E850-4DB1-9CE2-0B44698E8DA4 7F22DBB0
+2022-06-23T04:41:34.7132879Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7F22DC98
+2022-06-23T04:41:34.7138007Z INFO - InstallProtocolInterface: 220E73B6-6BDB-4413-8405-B974B108619A 7F22D130
+2022-06-23T04:41:34.7143098Z INFO - InstallProtocolInterface: 220E73B6-6BDB-4413-8405-B974B108619A 7F090BB0
+2022-06-23T04:41:34.7148220Z INFO - InstallProtocolInterface: FC1BCDB0-7D31-49AA-936A-A4600D9DD083 7F83D900
+2022-06-23T04:41:34.7168055Z INFO - Loading driver 9B680FCE-AD6B-4F3A-B60B-F59899003443
+2022-06-23T04:41:34.7176444Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EB177C0
+2022-06-23T04:41:34.7192971Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe/DEBUG/DevicePathDxe.dll 0x7F612000
+2022-06-23T04:41:34.7198435Z INFO - Loading driver at 0x0007F611000 EntryPoint=0x0007F619FC0 DevicePathDxe.efi
+2022-06-23T04:41:34.7203656Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EB17618
+2022-06-23T04:41:34.7209046Z INFO - ProtectUefiImageCommon - 0x7EB177C0
+2022-06-23T04:41:34.7214180Z INFO -   - 0x000000007F611000 - 0x000000000000F000
+2022-06-23T04:41:34.7219288Z INFO - InstallProtocolInterface: 0379BE4E-D706-437D-B037-EDB82FB772A4 7F61C9D0
+2022-06-23T04:41:34.7224412Z INFO - InstallProtocolInterface: 8B843E20-8132-4852-90CC-551A4E4A7F1C 7F61C9C0
+2022-06-23T04:41:34.7229512Z INFO - InstallProtocolInterface: 05C99A21-C70F-4AD2-8A5F-35DF3343F51E 7F61C9B0
+2022-06-23T04:41:34.7234649Z INFO - Loading driver 80CF7257-87AB-47F9-A3FE-D50B76D89541
+2022-06-23T04:41:34.7239677Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EB05B40
+2022-06-23T04:41:34.7245012Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/PCD/Dxe/Pcd/DEBUG/PcdDxe.dll 0x7F608000
+2022-06-23T04:41:34.7250386Z INFO - Loading driver at 0x0007F607000 EntryPoint=0x0007F60BDE8 PcdDxe.efi
+2022-06-23T04:41:34.7255615Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EB05098
+2022-06-23T04:41:34.7260629Z INFO - ProtectUefiImageCommon - 0x7EB05B40
+2022-06-23T04:41:34.7265576Z INFO -   - 0x000000007F607000 - 0x000000000000A000
+2022-06-23T04:41:34.7270575Z INFO - InstallProtocolInterface: 11B34006-D85B-4D0A-A290-D5A571310EF7 7F60F1B0
+2022-06-23T04:41:34.7275596Z INFO - InstallProtocolInterface: 13A3F0F6-264A-3EF0-F2E0-DEC512342F34 7F60F0F0
+2022-06-23T04:41:34.7280642Z INFO - InstallProtocolInterface: 5BE40F57-FA68-4610-BBBF-E9C5FCDAD365 7F60F180
+2022-06-23T04:41:34.7286591Z INFO - InstallProtocolInterface: FD0F4478-0EFD-461D-BA2D-E58C45FD5F5E 7F60F0E0
+2022-06-23T04:41:34.7291843Z INFO - Loading driver 9A871B00-1C16-4F61-8D2C-93B6654B5AD6
+2022-06-23T04:41:34.7296852Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EB040C0
+2022-06-23T04:41:34.7302439Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/EmbeddedPkg/Drivers/FdtClientDxe/FdtClientDxe/DEBUG/FdtClientDxe.dll 0x7F600000
+2022-06-23T04:41:34.7307694Z INFO - Loading driver at 0x0007F5FF000 EntryPoint=0x0007F60282C FdtClientDxe.efi
+2022-06-23T04:41:34.7312859Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EB04318
+2022-06-23T04:41:34.7317793Z INFO - ProtectUefiImageCommon - 0x7EB040C0
+2022-06-23T04:41:34.7322727Z INFO -   - 0x000000007F5FF000 - 0x0000000000008000
+2022-06-23T04:41:34.7327754Z INFO - InitializeFdtClientDxe: DTB @ 0x7FEE1000
+2022-06-23T04:41:34.7332834Z INFO - InstallProtocolInterface: E11FACA0-4710-4C8E-A7A2-01BAA2591B4C 7F605060
+2022-06-23T04:41:34.7337886Z INFO - Loading driver B601F8C4-43B7-4784-95B1-F4226CB40CEE
+2022-06-23T04:41:34.7342930Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAC2040
+2022-06-23T04:41:34.7348246Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Core/RuntimeDxe/RuntimeDxe/DEBUG/RuntimeDxe.dll 0x7F670000
+2022-06-23T04:41:34.7353468Z INFO - Loading driver at 0x0007F660000 EntryPoint=0x0007F6718A8 RuntimeDxe.efi
+2022-06-23T04:41:34.7358624Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAC2D98
+2022-06-23T04:41:34.7363589Z INFO - ProtectUefiImageCommon - 0x7EAC2040
+2022-06-23T04:41:34.7368669Z INFO -   - 0x000000007F660000 - 0x0000000000040000
+2022-06-23T04:41:34.7373777Z INFO - InstallProtocolInterface: B7DFB4E1-052F-449F-87BE-9818FC91B733 7F680050
+2022-06-23T04:41:34.7378821Z INFO - Loading driver F80697E9-7FD6-4665-8646-88E33EF71DFC
+2022-06-23T04:41:34.7384441Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAC23C0
+2022-06-23T04:41:34.7390880Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe/DEBUG/SecurityStubDxe.dll 0x7F5F9000
+2022-06-23T04:41:34.7396201Z INFO - Loading driver at 0x0007F5F8000 EntryPoint=0x0007F5FA970 SecurityStubDxe.efi
+2022-06-23T04:41:34.7401288Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAC2918
+2022-06-23T04:41:34.7406289Z INFO - ProtectUefiImageCommon - 0x7EAC23C0
+2022-06-23T04:41:34.7411424Z INFO -   - 0x000000007F5F8000 - 0x0000000000007000
+2022-06-23T04:41:34.7416459Z INFO - InstallProtocolInterface: 94AB2F58-1438-4EF1-9152-18941A3A0E68 7F5FD0C8
+2022-06-23T04:41:34.7428241Z INFO - InstallProtocolInterface: A46423E3-4617-49F1-B9FF-D1BFA9115839 7F5FD0D0
+2022-06-23T04:41:34.7433531Z INFO - InstallProtocolInterface: 15853D7C-3DDF-43E0-A1CB-EBF85B8F872C 7F5FD0C0
+2022-06-23T04:41:34.7438655Z INFO - Loading driver 4C6E0267-C77D-410D-8100-1495911A989D
+2022-06-23T04:41:34.7443803Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EB030C0
+2022-06-23T04:41:34.7449283Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/EmbeddedPkg/MetronomeDxe/MetronomeDxe/DEBUG/MetronomeDxe.dll 0x7F5F3000
+2022-06-23T04:41:34.7454608Z INFO - Loading driver at 0x0007F5F2000 EntryPoint=0x0007F5F4230 MetronomeDxe.efi
+2022-06-23T04:41:34.7459814Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EB03A98
+2022-06-23T04:41:34.7464873Z INFO - ProtectUefiImageCommon - 0x7EB030C0
+2022-06-23T04:41:34.7469826Z INFO -   - 0x000000007F5F2000 - 0x0000000000006000
+2022-06-23T04:41:34.7474836Z INFO - InstallProtocolInterface: 26BACCB2-6F42-11D4-BCE7-0080C73C8881 7F5F6040
+2022-06-23T04:41:34.7479867Z INFO - Loading driver 348C4D62-BFBD-4882-9ECE-C80BB1C4783B
+2022-06-23T04:41:34.7484873Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EB03440
+2022-06-23T04:41:34.7490519Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe/DEBUG/HiiDatabase.dll 0x7F5D4000
+2022-06-23T04:41:34.7495786Z INFO - Loading driver at 0x0007F5D3000 EntryPoint=0x0007F5D7718 HiiDatabase.efi
+2022-06-23T04:41:34.7501139Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAE2F18
+2022-06-23T04:41:34.7506038Z INFO - ProtectUefiImageCommon - 0x7EB03440
+2022-06-23T04:41:34.7510966Z INFO -   - 0x000000007F5D3000 - 0x000000000001F000
+2022-06-23T04:41:34.7515957Z INFO - InstallProtocolInterface: E9CA4775-8657-47FC-97E7-7ED65A084324 7F5F0170
+2022-06-23T04:41:34.7521079Z INFO - InstallProtocolInterface: 0FD96974-23AA-4CDC-B9CB-98D17750322A 7F5F01E8
+2022-06-23T04:41:34.7526104Z INFO - InstallProtocolInterface: EF9FC172-A1B2-4693-B327-6D32FC416042 7F5F0210
+2022-06-23T04:41:34.7531386Z INFO - InstallProtocolInterface: 587E72D7-CC50-4F79-8209-CA291FC1A10F 7F5F0268
+2022-06-23T04:41:34.7536516Z INFO - InstallProtocolInterface: 0A8BADD5-03B8-4D19-B128-7B8F0EDAA596 7F5F0298
+2022-06-23T04:41:34.7541623Z INFO - InstallProtocolInterface: 31A6406A-6BDF-4E46-B2A2-EBAA89C40920 7F5F0190
+2022-06-23T04:41:34.7546661Z INFO - InstallProtocolInterface: 1A1241E6-8F19-41A9-BC0E-E8EF39E06546 7F5F01B8
+2022-06-23T04:41:34.7551977Z INFO - Loading driver 9A5163E7-5C29-453F-825C-837A46A81E15
+2022-06-23T04:41:34.7557188Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAE21C0
+2022-06-23T04:41:34.7562488Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/SerialDxe/SerialDxe/DEBUG/SerialDxe.dll 0x7F5CE000
+2022-06-23T04:41:34.7567856Z INFO - Loading driver at 0x0007F5CD000 EntryPoint=0x0007F5CF870 SerialDxe.efi
+2022-06-23T04:41:34.7572979Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAE2518
+2022-06-23T04:41:34.7577935Z INFO - ProtectUefiImageCommon - 0x7EAE21C0
+2022-06-23T04:41:34.7583053Z INFO -   - 0x000000007F5CD000 - 0x0000000000006000
+2022-06-23T04:41:34.7588042Z INFO - InstallProtocolInterface: BB25CF6F-F1D4-11D2-9A0C-0090273FC1FD 7F5D1090
+2022-06-23T04:41:34.7593073Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7F5D1040
+2022-06-23T04:41:34.7598105Z INFO - Loading driver D93CE3D8-A7EB-4730-8C8E-CC466A9ECC3C
+2022-06-23T04:41:34.7603116Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAFB0C0
+2022-06-23T04:41:34.7609010Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe/DEBUG/ReportStatusCodeRouterRuntimeDxe.dll 0x7C300000
+2022-06-23T04:41:34.7614743Z INFO - Loading driver at 0x0007C2F0000 EntryPoint=0x0007C301D84 ReportStatusCodeRouterRuntimeDxe.efi
+2022-06-23T04:41:34.7619803Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAFB318
+2022-06-23T04:41:34.7624747Z INFO - ProtectUefiImageCommon - 0x7EAFB0C0
+2022-06-23T04:41:34.7629554Z INFO -   - 0x000000007C2F0000 - 0x0000000000040000
+2022-06-23T04:41:34.7634468Z INFO - InstallProtocolInterface: 86212936-0E76-41C8-A03A-2AF2FC1C39E2 7C310070
+2022-06-23T04:41:34.7639388Z INFO - InstallProtocolInterface: D2B2B828-0826-48A7-B3DF-983C006024F0 7C310080
+2022-06-23T04:41:34.7644327Z INFO - Loading driver A210F973-229D-4F4D-AA37-9895E6C9EABA
+2022-06-23T04:41:34.7649424Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EB02B40
+2022-06-23T04:41:34.7654608Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/DpcDxe/DpcDxe/DEBUG/DpcDxe.dll 0x7F5C8000
+2022-06-23T04:41:34.7659763Z INFO - Loading driver at 0x0007F5C7000 EntryPoint=0x0007F5C9594 DpcDxe.efi
+2022-06-23T04:41:34.7664709Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EB02E18
+2022-06-23T04:41:34.7669549Z INFO - ProtectUefiImageCommon - 0x7EB02B40
+2022-06-23T04:41:34.7674365Z INFO -   - 0x000000007F5C7000 - 0x0000000000006000
+2022-06-23T04:41:34.7679274Z INFO - InstallProtocolInterface: 480F8AE9-0C46-4AA9-BC89-DB9FBA619806 7F5CB030
+2022-06-23T04:41:34.7684140Z INFO - Loading driver 13AC6DD0-73D0-11D4-B06B-00AA00BD6DE7
+2022-06-23T04:41:34.7689239Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EB02140
+2022-06-23T04:41:34.7694580Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/EbcDxe/EbcDxe/DEBUG/EbcDxe.dll 0x7F5BE000
+2022-06-23T04:41:34.7699700Z INFO - Loading driver at 0x0007F5BD000 EntryPoint=0x0007F5C2858 EbcDxe.efi
+2022-06-23T04:41:34.7704623Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EB02698
+2022-06-23T04:41:34.7709513Z INFO - ProtectUefiImageCommon - 0x7EB02140
+2022-06-23T04:41:34.7714380Z INFO -   - 0x000000007F5BD000 - 0x000000000000A000
+2022-06-23T04:41:34.7719329Z INFO - InstallProtocolInterface: 13AC6DD1-73D0-11D4-B06B-00AA00BD6DE7 7EB02598
+2022-06-23T04:41:34.7724273Z INFO - InstallProtocolInterface: 96F46153-97A7-4793-ACC1-FA19BF78EA97 7F5C5070
+2022-06-23T04:41:34.7729411Z INFO - InstallProtocolInterface: 2755590C-6F3C-42FA-9EA4-A3BA543CDA25 7EB01E18
+2022-06-23T04:41:34.7734401Z INFO - InstallProtocolInterface: AAEACCFD-F27B-4C17-B610-75CA1F2DFB52 7EB01D18
+2022-06-23T04:41:34.7739315Z INFO - Loading driver 0049858F-8CA7-4CCD-918B-D952CBF32975
+2022-06-23T04:41:34.7744220Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EB017C0
+2022-06-23T04:41:34.7749533Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/Fdt/VirtioFdtDxe/VirtioFdtDxe/DEBUG/VirtioFdtDxe.dll 0x7F5B7000
+2022-06-23T04:41:34.7754653Z INFO - Loading driver at 0x0007F5B6000 EntryPoint=0x0007F5B8E18 VirtioFdtDxe.efi
+2022-06-23T04:41:34.7759680Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EB01598
+2022-06-23T04:41:34.7764522Z INFO - ProtectUefiImageCommon - 0x7EB017C0
+2022-06-23T04:41:34.7769469Z INFO -   - 0x000000007F5B6000 - 0x0000000000007000
+2022-06-23T04:41:34.7774663Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EB01518
+2022-06-23T04:41:34.7779525Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7784393Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EB01328
+2022-06-23T04:41:34.7789331Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EB00F18
+2022-06-23T04:41:34.7794180Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7799019Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EB00E28
+2022-06-23T04:41:34.7803947Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EB00D98
+2022-06-23T04:41:34.7809004Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7813970Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EB000A8
+2022-06-23T04:41:34.7818881Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EB00D18
+2022-06-23T04:41:34.7824510Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7829445Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EB008A8
+2022-06-23T04:41:34.7834440Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EB00198
+2022-06-23T04:41:34.7839255Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7844138Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EB006A8
+2022-06-23T04:41:34.7849220Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EB00518
+2022-06-23T04:41:34.7854093Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7859015Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EB00328
+2022-06-23T04:41:34.7864002Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EB00498
+2022-06-23T04:41:34.7868808Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7873761Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFFB28
+2022-06-23T04:41:34.7878707Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFFF98
+2022-06-23T04:41:34.7883473Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7888461Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFFCA8
+2022-06-23T04:41:34.7893447Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFF098
+2022-06-23T04:41:34.7898473Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7903390Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFF7A8
+2022-06-23T04:41:34.7908392Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFF918
+2022-06-23T04:41:34.7913203Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7918132Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFF5A8
+2022-06-23T04:41:34.7923081Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFF718
+2022-06-23T04:41:34.7928058Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7933002Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFF228
+2022-06-23T04:41:34.7937952Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFF318
+2022-06-23T04:41:34.7942770Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7947640Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFE028
+2022-06-23T04:41:34.7952566Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFEB98
+2022-06-23T04:41:34.7957462Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7962346Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFEC28
+2022-06-23T04:41:34.7967286Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFED98
+2022-06-23T04:41:34.7972392Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7977302Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFEAA8
+2022-06-23T04:41:34.7982253Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFEA18
+2022-06-23T04:41:34.7987336Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.7992234Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFE1A8
+2022-06-23T04:41:34.7997174Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFE698
+2022-06-23T04:41:34.8002057Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8006928Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFE2A8
+2022-06-23T04:41:34.8012063Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFE398
+2022-06-23T04:41:34.8016932Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8021785Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFE4A8
+2022-06-23T04:41:34.8026757Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFDF18
+2022-06-23T04:41:34.8031621Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8036501Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFDE28
+2022-06-23T04:41:34.8041527Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFDD98
+2022-06-23T04:41:34.8046450Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8051714Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFD0A8
+2022-06-23T04:41:34.8056700Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFDD18
+2022-06-23T04:41:34.8061593Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8066526Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFD8A8
+2022-06-23T04:41:34.8071513Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFD198
+2022-06-23T04:41:34.8076353Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8081242Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFD6A8
+2022-06-23T04:41:34.8086178Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFD518
+2022-06-23T04:41:34.8091251Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8096152Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFD328
+2022-06-23T04:41:34.8101128Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFD498
+2022-06-23T04:41:34.8105986Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8111175Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFCB28
+2022-06-23T04:41:34.8116132Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFCF98
+2022-06-23T04:41:34.8121003Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8125871Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFCCA8
+2022-06-23T04:41:34.8131182Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFC098
+2022-06-23T04:41:34.8136027Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8140920Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFC7A8
+2022-06-23T04:41:34.8146176Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFC918
+2022-06-23T04:41:34.8151054Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8156042Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFC5A8
+2022-06-23T04:41:34.8161165Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFC718
+2022-06-23T04:41:34.8165989Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8171019Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFC228
+2022-06-23T04:41:34.8175971Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFC318
+2022-06-23T04:41:34.8180813Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8185673Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFA028
+2022-06-23T04:41:34.8190603Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFAB98
+2022-06-23T04:41:34.8211325Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8217337Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFAC28
+2022-06-23T04:41:34.8222441Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFAD98
+2022-06-23T04:41:34.8227339Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8232279Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFAAA8
+2022-06-23T04:41:34.8237227Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFAA18
+2022-06-23T04:41:34.8242057Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8246908Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFA1A8
+2022-06-23T04:41:34.8252123Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAFA698
+2022-06-23T04:41:34.8257022Z INFO - VirtioMmioInit virtio 0.9.5, id 0
+2022-06-23T04:41:34.8261947Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7EAFA2A8
+2022-06-23T04:41:34.8266823Z INFO - Loading driver FE5CEA76-4F72-49E8-986F-2CD899DFFE5D
+2022-06-23T04:41:34.8271732Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAEF040
+2022-06-23T04:41:34.8276997Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe/DEBUG/FaultTolerantWriteDxe.dll 0x7F5AF000
+2022-06-23T04:41:34.8282204Z INFO - Loading driver at 0x0007F5AE000 EntryPoint=0x0007F5B2F8C FaultTolerantWriteDxe.efi
+2022-06-23T04:41:34.8287172Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAF9298
+2022-06-23T04:41:34.8292191Z INFO - ProtectUefiImageCommon - 0x7EAEF040
+2022-06-23T04:41:34.8297008Z INFO -   - 0x000000007F5AE000 - 0x0000000000008000
+2022-06-23T04:41:34.8301831Z INFO - Loading driver 4B28E4C7-FF36-4E10-93CF-A82159E777C5
+2022-06-23T04:41:34.8306728Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAEF9C0
+2022-06-23T04:41:34.8311951Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe/DEBUG/ResetSystemRuntimeDxe.dll 0x7C2B0000
+2022-06-23T04:41:34.8317162Z INFO - Loading driver at 0x0007C2A0000 EntryPoint=0x0007C2B1E54 ResetSystemRuntimeDxe.efi
+2022-06-23T04:41:34.8322112Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAEF798
+2022-06-23T04:41:34.8327211Z INFO - ProtectUefiImageCommon - 0x7EAEF9C0
+2022-06-23T04:41:34.8332175Z INFO -   - 0x000000007C2A0000 - 0x0000000000040000
+2022-06-23T04:41:34.8337091Z INFO - InstallProtocolInterface: 27CFAC88-46CC-11D4-9A38-0090273FC14D 0
+2022-06-23T04:41:34.8342033Z INFO - InstallProtocolInterface: 9DA34AE0-EAF9-4BBF-8EC3-FD60226C44BE 7C2C00D8
+2022-06-23T04:41:34.8346966Z INFO - InstallProtocolInterface: 695D7835-8D47-4C11-AB22-FA8ACCE7AE7A 7C2C0088
+2022-06-23T04:41:34.8351988Z INFO - InstallProtocolInterface: 2DF6BA0B-7092-440D-BD04-FB091EC3F3C1 7C2C00B0
+2022-06-23T04:41:34.8356910Z INFO - Loading driver DE371F7C-DEC4-4D21-ADF1-593ABCC15882
+2022-06-23T04:41:34.8375959Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAF8BC0
+2022-06-23T04:41:34.8382978Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPkg/Drivers/ArmGic/ArmGicDxe/DEBUG/ArmGicDxe.dll 0x7F5A8000
+2022-06-23T04:41:34.8445405Z INFO - Loading driver at 0x0007F5A7000 EntryPoint=0x0007F5AA7E4 ArmGicDxe.efi
+2022-06-23T04:41:34.8450790Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAF8798
+2022-06-23T04:41:34.8464166Z INFO - ProtectUefiImageCommon - 0x7EAF8BC0
+2022-06-23T04:41:34.8469274Z INFO -   - 0x000000007F5A7000 - 0x0000000000007000
+2022-06-23T04:41:34.8474248Z INFO - Found GIC @ 0x8000000/0x8010000
+2022-06-23T04:41:34.8479190Z INFO - InstallProtocolInterface: 2890B3EA-053D-1643-AD0C-D64808DA3FF1 7F5AC0E0
+2022-06-23T04:41:34.8485558Z INFO - InstallProtocolInterface: 32898322-2DA1-474A-BAAA-F3F7CF569470 7F5AC060
+2022-06-23T04:41:34.8490878Z INFO - Loading driver A487A478-51EF-48AA-8794-7BEE2A0562F1
+2022-06-23T04:41:34.8496316Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAF8140
+2022-06-23T04:41:34.8501663Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand/DEBUG/tftpDynamicCommand.dll 0x7F59A000
+2022-06-23T04:41:34.8507026Z INFO - Loading driver at 0x0007F599000 EntryPoint=0x0007F5A0608 tftpDynamicCommand.efi
+2022-06-23T04:41:34.8512094Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAF8718
+2022-06-23T04:41:34.8517075Z INFO - InstallProtocolInterface: 6A1EE763-D47A-43B4-AABE-EF1DE2AB56FC 7F5A4070
+2022-06-23T04:41:34.8521952Z INFO - ProtectUefiImageCommon - 0x7EAF8140
+2022-06-23T04:41:34.8526749Z INFO -   - 0x000000007F599000 - 0x000000000000E000
+2022-06-23T04:41:34.8531910Z INFO - InstallProtocolInterface: 3C7200E9-005F-4EA4-87DE-A3DFAC8A27C3 7F5A31A0
+2022-06-23T04:41:34.8536860Z INFO - Loading driver 19618BCE-55AE-09C6-37E9-4CE04084C7A1
+2022-06-23T04:41:34.8542321Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAF6140
+2022-06-23T04:41:34.8548115Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand/DEBUG/httpDynamicCommand.dll 0x7F589000
+2022-06-23T04:41:34.8553351Z INFO - Loading driver at 0x0007F588000 EntryPoint=0x0007F590ACC httpDynamicCommand.efi
+2022-06-23T04:41:34.8558428Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAF6B18
+2022-06-23T04:41:34.8563444Z INFO - InstallProtocolInterface: 6A1EE763-D47A-43B4-AABE-EF1DE2AB56FC 7F595070
+2022-06-23T04:41:34.8568501Z INFO - ProtectUefiImageCommon - 0x7EAF6140
+2022-06-23T04:41:34.8573381Z INFO -   - 0x000000007F588000 - 0x0000000000011000
+2022-06-23T04:41:34.8578257Z INFO - InstallProtocolInterface: 3C7200E9-005F-4EA4-87DE-A3DFAC8A27C3 7F594180
+2022-06-23T04:41:34.8583159Z INFO - Loading driver 2F30DA26-F51B-4B6F-85C4-31873C281BCA
+2022-06-23T04:41:34.8588079Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAF0040
+2022-06-23T04:41:34.8593412Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/LinuxInitrdDynamicShellCommand/LinuxInitrdDynamicShellCommand/DEBUG/LinuxInitrdDynamicShellCommand.dll 0x7F57D000
+2022-06-23T04:41:34.8598909Z INFO - Loading driver at 0x0007F57C000 EntryPoint=0x0007F58237C LinuxInitrdDynamicShellCommand.efi
+2022-06-23T04:41:34.8603901Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAF0D98
+2022-06-23T04:41:34.8609046Z INFO - InstallProtocolInterface: 6A1EE763-D47A-43B4-AABE-EF1DE2AB56FC 7F586070
+2022-06-23T04:41:34.8613914Z INFO - ProtectUefiImageCommon - 0x7EAF0040
+2022-06-23T04:41:34.8618733Z INFO -   - 0x000000007F57C000 - 0x000000000000C000
+2022-06-23T04:41:34.8623623Z INFO - InstallProtocolInterface: 3C7200E9-005F-4EA4-87DE-A3DFAC8A27C3 7F585160
+2022-06-23T04:41:34.8628536Z INFO - Loading driver EBF342FE-B1D3-4EF8-957C-8048606FF671
+2022-06-23T04:41:34.8633425Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAEEAC0
+2022-06-23T04:41:34.8638667Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe/DEBUG/SetupBrowser.dll 0x7F562000
+2022-06-23T04:41:34.8643864Z INFO - Loading driver at 0x0007F561000 EntryPoint=0x0007F562DB0 SetupBrowser.efi
+2022-06-23T04:41:34.8649003Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAEED98
+2022-06-23T04:41:34.8653879Z INFO - ProtectUefiImageCommon - 0x7EAEEAC0
+2022-06-23T04:41:34.8658738Z INFO -   - 0x000000007F561000 - 0x000000000001B000
+2022-06-23T04:41:34.8663639Z INFO - InstallProtocolInterface: B9D4C360-BCFB-4F9B-9298-53C136982258 7F57A170
+2022-06-23T04:41:34.8668593Z INFO - InstallProtocolInterface: A770C357-B693-4E6D-A6CF-D21C728E550B 7F57A1A0
+2022-06-23T04:41:34.8673529Z INFO - InstallProtocolInterface: 1F73B18D-4630-43C1-A1DE-6F80855D7DA4 7F57A180
+2022-06-23T04:41:34.8678650Z INFO - Loading driver F9D88642-0737-49BC-81B5-6889CD57D9EA
+2022-06-23T04:41:34.8683559Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAEDCC0
+2022-06-23T04:41:34.8688874Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe/DEBUG/SmbiosDxe.dll 0x7F559000
+2022-06-23T04:41:34.8694170Z INFO - Loading driver at 0x0007F558000 EntryPoint=0x0007F55CB80 SmbiosDxe.efi
+2022-06-23T04:41:34.8699234Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAED818
+2022-06-23T04:41:34.8704135Z INFO - ProtectUefiImageCommon - 0x7EAEDCC0
+2022-06-23T04:41:34.8708906Z INFO -   - 0x000000007F558000 - 0x0000000000009000
+2022-06-23T04:41:34.8713674Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:34.8718382Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:34.8723133Z INFO - DetectSmbiosVersion: SMBIOS 3.x DocRev from QEMU: 0x00
+2022-06-23T04:41:34.8728066Z INFO - DetectSmbiosVersion: SMBIOS version from QEMU: 0x0300
+2022-06-23T04:41:34.8733029Z INFO - InstallProtocolInterface: 03583FF6-CB36-4940-947E-B9B39F4AFAF7 7F55F160
+2022-06-23T04:41:34.8737926Z INFO - Loading driver 168D1A6E-F4A5-448A-9E95-795661BB3067
+2022-06-23T04:41:34.8742822Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAED240
+2022-06-23T04:41:34.8752604Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPkg/Drivers/ArmPciCpuIo2Dxe/ArmPciCpuIo2Dxe/DEBUG/ArmPciCpuIo2Dxe.dll 0x7F553000
+2022-06-23T04:41:34.8758233Z INFO - Loading driver at 0x0007F552000 EntryPoint=0x0007F554AE4 ArmPciCpuIo2Dxe.efi
+2022-06-23T04:41:34.8765952Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAED518
+2022-06-23T04:41:34.8771128Z INFO - ProtectUefiImageCommon - 0x7EAED240
+2022-06-23T04:41:34.8775997Z INFO -   - 0x000000007F552000 - 0x0000000000006000
+2022-06-23T04:41:34.8780917Z INFO - InstallProtocolInterface: AD61F191-AE5F-4C0E-B9FA-E869D288C64F 7F556050
+2022-06-23T04:41:34.8785783Z INFO - Loading driver 11A6EDF6-A9BE-426D-A6CC-B22FE51D9224
+2022-06-23T04:41:34.8790643Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAECBC0
+2022-06-23T04:41:34.8795814Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/PciHotPlugInitDxe/PciHotPlugInit/DEBUG/PciHotPlugInitDxe.dll 0x7F54B000
+2022-06-23T04:41:34.8801432Z INFO - Loading driver at 0x0007F54A000 EntryPoint=0x0007F54E72C PciHotPlugInitDxe.efi
+2022-06-23T04:41:34.8806413Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAEC798
+2022-06-23T04:41:34.8811431Z INFO - ProtectUefiImageCommon - 0x7EAECBC0
+2022-06-23T04:41:34.8816192Z INFO -   - 0x000000007F54A000 - 0x0000000000008000
+2022-06-23T04:41:34.8821022Z INFO - InstallProtocolInterface: AA0E8BC1-DABC-46B0-A844-37B8169B2BEA 7F5510B8
+2022-06-23T04:41:34.8825859Z INFO - Loading driver DCE1B094-7DC6-45D0-9FDD-D7FC3CC3E4EF
+2022-06-23T04:41:34.8830723Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAEC1C0
+2022-06-23T04:41:34.8835858Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/QemuRamfbDxe/QemuRamfbDxe/DEBUG/QemuRamfbDxe.dll 0x7F543000
+2022-06-23T04:41:34.8840881Z INFO - Loading driver at 0x0007F542000 EntryPoint=0x0007F5459C0 QemuRamfbDxe.efi
+2022-06-23T04:41:34.8845832Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAEC598
+2022-06-23T04:41:34.8850859Z INFO - ProtectUefiImageCommon - 0x7EAEC1C0
+2022-06-23T04:41:34.8855641Z INFO -   - 0x000000007F542000 - 0x0000000000008000
+2022-06-23T04:41:34.8860444Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:34.8865139Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:34.8869832Z INFO - Error: Image at 0007F542000 start failed: Not Found
+2022-06-23T04:41:34.8874942Z INFO - remove-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/QemuRamfbDxe/QemuRamfbDxe/DEBUG/QemuRamfbDxe.dll 0x7F543000
+2022-06-23T04:41:34.8880103Z INFO - Loading driver F74D20EE-37E7-48FC-97F7-9B1047749C69
+2022-06-23T04:41:34.8885012Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAEC1C0
+2022-06-23T04:41:34.8890266Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Logo/LogoDxe/DEBUG/LogoDxe.dll 0x7F543000
+2022-06-23T04:41:34.8895344Z INFO - Loading driver at 0x0007F542000 EntryPoint=0x0007F5441C4 LogoDxe.efi
+2022-06-23T04:41:34.8900243Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAEC618
+2022-06-23T04:41:34.8905136Z INFO - InstallProtocolInterface: 6A1EE763-D47A-43B4-AABE-EF1DE2AB56FC 7F546070
+2022-06-23T04:41:34.8909910Z INFO - ProtectUefiImageCommon - 0x7EAEC1C0
+2022-06-23T04:41:34.8914958Z INFO -   - 0x000000007F542000 - 0x0000000000008000
+2022-06-23T04:41:34.8919825Z INFO - InstallProtocolInterface: 53CD299F-2BC1-40C0-8C07-23F64FDB30E0 7F545060
+2022-06-23T04:41:34.8924888Z INFO - Loading driver B8D9777E-D72A-451F-9BDB-BAFB52A68415
+2022-06-23T04:41:34.8929991Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAE1540
+2022-06-23T04:41:34.8935573Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPkg/Drivers/CpuDxe/CpuDxe/DEBUG/ArmCpuDxe.dll 0x7F537000
+2022-06-23T04:41:34.8940764Z INFO - Loading driver at 0x0007F536000 EntryPoint=0x0007F539934 ArmCpuDxe.efi
+2022-06-23T04:41:34.8945722Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAE1918
+2022-06-23T04:41:34.8950541Z INFO - ProtectUefiImageCommon - 0x7EAE1540
+2022-06-23T04:41:34.8955303Z INFO -   - 0x000000007F536000 - 0x000000000000C000
+2022-06-23T04:41:34.8960210Z INFO - InstallProtocolInterface: 26BACCB1-6F42-11D4-BCE7-0080C73C8881 7F53E0F0
+2022-06-23T04:41:34.8965060Z INFO - MemoryProtectionCpuArchProtocolNotify:
+2022-06-23T04:41:34.8970117Z INFO - InitializeDxeNxMemoryProtectionPolicy: applying strict permissions to active memory regions
+2022-06-23T04:41:34.8975092Z INFO - SetUefiImageMemoryAttributes - 0x0000000040000000 - 0x000000003C2A0000 (0x0000000000004000)
+2022-06-23T04:41:34.8980065Z INFO - SetUefiImageMemoryAttributes - 0x000000007C340000 - 0x00000000031F6000 (0x0000000000004000)
+2022-06-23T04:41:34.8985051Z INFO - SetUefiImageMemoryAttributes - 0x000000007F6B0000 - 0x0000000000164000 (0x0000000000004000)
+2022-06-23T04:41:34.8990238Z INFO - SetUefiImageMemoryAttributes - 0x000000007F85B000 - 0x000000000067E000 (0x0000000000004000)
+2022-06-23T04:41:34.8995233Z INFO - SetUefiImageMemoryAttributes - 0x000000007FEE1000 - 0x0000000000101000 (0x0000000000004000)
+2022-06-23T04:41:34.9000206Z INFO - SetUefiImageMemoryAttributes - 0x000000007FFFC000 - 0x0000000000004000 (0x0000000000004000)
+2022-06-23T04:41:34.9005158Z INFO - InitializeDxeNxMemoryProtectionPolicy: applying strict permissions to inactive memory regions
+2022-06-23T04:41:34.9010142Z INFO - ProtectUefiImageCommon - 0x7F83D7A0
+2022-06-23T04:41:34.9014958Z INFO -   - 0x000000007F814000 - 0x0000000000047000
+2022-06-23T04:41:34.9019869Z INFO - SetUefiImageMemoryAttributes - 0x000000007F814000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9024865Z INFO - SetUefiImageMemoryAttributes - 0x000000007F815000 - 0x0000000000028000 (0x0000000000020000)
+2022-06-23T04:41:34.9029849Z INFO - SetUefiImageMemoryAttributes - 0x000000007F83D000 - 0x000000000001E000 (0x0000000000004000)
+2022-06-23T04:41:34.9034675Z INFO - ProtectUefiImageCommon - 0x7EB177C0
+2022-06-23T04:41:34.9039401Z INFO -   - 0x000000007F611000 - 0x000000000000F000
+2022-06-23T04:41:34.9044294Z INFO - SetUefiImageMemoryAttributes - 0x000000007F611000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9049473Z INFO - SetUefiImageMemoryAttributes - 0x000000007F612000 - 0x000000000000C000 (0x0000000000020000)
+2022-06-23T04:41:34.9054497Z INFO - SetUefiImageMemoryAttributes - 0x000000007F61E000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9059379Z INFO - ProtectUefiImageCommon - 0x7EB05B40
+2022-06-23T04:41:34.9064099Z INFO -   - 0x000000007F607000 - 0x000000000000A000
+2022-06-23T04:41:34.9069181Z INFO - SetUefiImageMemoryAttributes - 0x000000007F607000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9074298Z INFO - SetUefiImageMemoryAttributes - 0x000000007F608000 - 0x0000000000007000 (0x0000000000020000)
+2022-06-23T04:41:34.9079284Z INFO - SetUefiImageMemoryAttributes - 0x000000007F60F000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9084110Z INFO - ProtectUefiImageCommon - 0x7EB040C0
+2022-06-23T04:41:34.9089023Z INFO -   - 0x000000007F5FF000 - 0x0000000000008000
+2022-06-23T04:41:34.9093952Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5FF000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9098957Z INFO - SetUefiImageMemoryAttributes - 0x000000007F600000 - 0x0000000000005000 (0x0000000000020000)
+2022-06-23T04:41:34.9103916Z INFO - SetUefiImageMemoryAttributes - 0x000000007F605000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9108710Z INFO - ProtectUefiImageCommon - 0x7EAC2040
+2022-06-23T04:41:34.9113464Z INFO -   - 0x000000007F660000 - 0x0000000000040000
+2022-06-23T04:41:34.9118348Z INFO - SetUefiImageMemoryAttributes - 0x000000007F660000 - 0x0000000000010000 (0x0000000000004000)
+2022-06-23T04:41:34.9123307Z INFO - SetUefiImageMemoryAttributes - 0x000000007F670000 - 0x0000000000010000 (0x0000000000020000)
+2022-06-23T04:41:34.9128438Z INFO - SetUefiImageMemoryAttributes - 0x000000007F680000 - 0x0000000000020000 (0x0000000000004000)
+2022-06-23T04:41:34.9133296Z INFO - ProtectUefiImageCommon - 0x7EAC23C0
+2022-06-23T04:41:34.9138108Z INFO -   - 0x000000007F5F8000 - 0x0000000000007000
+2022-06-23T04:41:34.9143093Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5F8000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9148120Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5F9000 - 0x0000000000004000 (0x0000000000020000)
+2022-06-23T04:41:34.9153092Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5FD000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9158032Z INFO - ProtectUefiImageCommon - 0x7EB030C0
+2022-06-23T04:41:34.9162768Z INFO -   - 0x000000007F5F2000 - 0x0000000000006000
+2022-06-23T04:41:34.9167833Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5F2000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9172897Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5F3000 - 0x0000000000003000 (0x0000000000020000)
+2022-06-23T04:41:34.9178080Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5F6000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9182911Z INFO - ProtectUefiImageCommon - 0x7EB03440
+2022-06-23T04:41:34.9187642Z INFO -   - 0x000000007F5D3000 - 0x000000000001F000
+2022-06-23T04:41:34.9192526Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5D3000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9197455Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5D4000 - 0x000000000001C000 (0x0000000000020000)
+2022-06-23T04:41:34.9202464Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5F0000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9207277Z INFO - ProtectUefiImageCommon - 0x7EAE21C0
+2022-06-23T04:41:34.9212186Z INFO -   - 0x000000007F5CD000 - 0x0000000000006000
+2022-06-23T04:41:34.9217075Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5CD000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9222188Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5CE000 - 0x0000000000003000 (0x0000000000020000)
+2022-06-23T04:41:34.9227149Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5D1000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9231962Z INFO - ProtectUefiImageCommon - 0x7EAFB0C0
+2022-06-23T04:41:34.9236669Z INFO -   - 0x000000007C2F0000 - 0x0000000000040000
+2022-06-23T04:41:34.9241561Z INFO - SetUefiImageMemoryAttributes - 0x000000007C2F0000 - 0x0000000000010000 (0x0000000000004000)
+2022-06-23T04:41:34.9246507Z INFO - SetUefiImageMemoryAttributes - 0x000000007C300000 - 0x0000000000010000 (0x0000000000020000)
+2022-06-23T04:41:34.9251867Z INFO - SetUefiImageMemoryAttributes - 0x000000007C310000 - 0x0000000000020000 (0x0000000000004000)
+2022-06-23T04:41:34.9256968Z INFO - ProtectUefiImageCommon - 0x7EB02B40
+2022-06-23T04:41:34.9261744Z INFO -   - 0x000000007F5C7000 - 0x0000000000006000
+2022-06-23T04:41:34.9266657Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5C7000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9271684Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5C8000 - 0x0000000000003000 (0x0000000000020000)
+2022-06-23T04:41:34.9276657Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5CB000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9281425Z INFO - ProtectUefiImageCommon - 0x7EB02140
+2022-06-23T04:41:34.9286150Z INFO -   - 0x000000007F5BD000 - 0x000000000000A000
+2022-06-23T04:41:34.9291227Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5BD000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9296200Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5BE000 - 0x0000000000007000 (0x0000000000020000)
+2022-06-23T04:41:34.9301178Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5C5000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9305997Z INFO - ProtectUefiImageCommon - 0x7EB017C0
+2022-06-23T04:41:34.9310679Z INFO -   - 0x000000007F5B6000 - 0x0000000000007000
+2022-06-23T04:41:34.9315534Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5B6000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9320520Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5B7000 - 0x0000000000004000 (0x0000000000020000)
+2022-06-23T04:41:34.9325539Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5BB000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9330488Z INFO - ProtectUefiImageCommon - 0x7EAEF040
+2022-06-23T04:41:34.9335626Z INFO -   - 0x000000007F5AE000 - 0x0000000000008000
+2022-06-23T04:41:34.9340547Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5AE000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9345564Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5AF000 - 0x0000000000006000 (0x0000000000020000)
+2022-06-23T04:41:34.9350644Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5B5000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9355430Z INFO - ProtectUefiImageCommon - 0x7EAEF9C0
+2022-06-23T04:41:34.9360234Z INFO -   - 0x000000007C2A0000 - 0x0000000000040000
+2022-06-23T04:41:34.9365317Z INFO - SetUefiImageMemoryAttributes - 0x000000007C2A0000 - 0x0000000000010000 (0x0000000000004000)
+2022-06-23T04:41:34.9370523Z INFO - SetUefiImageMemoryAttributes - 0x000000007C2B0000 - 0x0000000000010000 (0x0000000000020000)
+2022-06-23T04:41:34.9376944Z INFO - SetUefiImageMemoryAttributes - 0x000000007C2C0000 - 0x0000000000020000 (0x0000000000004000)
+2022-06-23T04:41:34.9381856Z INFO - ProtectUefiImageCommon - 0x7EAF8BC0
+2022-06-23T04:41:34.9386687Z INFO -   - 0x000000007F5A7000 - 0x0000000000007000
+2022-06-23T04:41:34.9391706Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5A7000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9396758Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5A8000 - 0x0000000000004000 (0x0000000000020000)
+2022-06-23T04:41:34.9401838Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5AC000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9406732Z INFO - ProtectUefiImageCommon - 0x7EAF8140
+2022-06-23T04:41:34.9411805Z INFO -   - 0x000000007F599000 - 0x000000000000E000
+2022-06-23T04:41:34.9416818Z INFO - SetUefiImageMemoryAttributes - 0x000000007F599000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9422528Z INFO - SetUefiImageMemoryAttributes - 0x000000007F59A000 - 0x0000000000009000 (0x0000000000020000)
+2022-06-23T04:41:34.9428677Z INFO - SetUefiImageMemoryAttributes - 0x000000007F5A3000 - 0x0000000000004000 (0x0000000000004000)
+2022-06-23T04:41:34.9435082Z INFO - ProtectUefiImageCommon - 0x7EAF6140
+2022-06-23T04:41:34.9440968Z INFO -   - 0x000000007F588000 - 0x0000000000011000
+2022-06-23T04:41:34.9447128Z INFO - SetUefiImageMemoryAttributes - 0x000000007F588000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9454007Z INFO - SetUefiImageMemoryAttributes - 0x000000007F589000 - 0x000000000000B000 (0x0000000000020000)
+2022-06-23T04:41:34.9460275Z INFO - SetUefiImageMemoryAttributes - 0x000000007F594000 - 0x0000000000005000 (0x0000000000004000)
+2022-06-23T04:41:34.9466360Z INFO - ProtectUefiImageCommon - 0x7EAF0040
+2022-06-23T04:41:34.9472323Z INFO -   - 0x000000007F57C000 - 0x000000000000C000
+2022-06-23T04:41:34.9478436Z INFO - SetUefiImageMemoryAttributes - 0x000000007F57C000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9484599Z INFO - SetUefiImageMemoryAttributes - 0x000000007F57D000 - 0x0000000000008000 (0x0000000000020000)
+2022-06-23T04:41:34.9490975Z INFO - SetUefiImageMemoryAttributes - 0x000000007F585000 - 0x0000000000003000 (0x0000000000004000)
+2022-06-23T04:41:34.9497086Z INFO - ProtectUefiImageCommon - 0x7EAEEAC0
+2022-06-23T04:41:34.9503030Z INFO -   - 0x000000007F561000 - 0x000000000001B000
+2022-06-23T04:41:34.9509079Z INFO - SetUefiImageMemoryAttributes - 0x000000007F561000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9515304Z INFO - SetUefiImageMemoryAttributes - 0x000000007F562000 - 0x0000000000018000 (0x0000000000020000)
+2022-06-23T04:41:34.9521437Z INFO - SetUefiImageMemoryAttributes - 0x000000007F57A000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9527440Z INFO - ProtectUefiImageCommon - 0x7EAEDCC0
+2022-06-23T04:41:34.9533520Z INFO -   - 0x000000007F558000 - 0x0000000000009000
+2022-06-23T04:41:34.9539632Z INFO - SetUefiImageMemoryAttributes - 0x000000007F558000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9545785Z INFO - SetUefiImageMemoryAttributes - 0x000000007F559000 - 0x0000000000006000 (0x0000000000020000)
+2022-06-23T04:41:34.9551976Z INFO - SetUefiImageMemoryAttributes - 0x000000007F55F000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9558035Z INFO - ProtectUefiImageCommon - 0x7EAED240
+2022-06-23T04:41:34.9563952Z INFO -   - 0x000000007F552000 - 0x0000000000006000
+2022-06-23T04:41:34.9570205Z INFO - SetUefiImageMemoryAttributes - 0x000000007F552000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9576387Z INFO - SetUefiImageMemoryAttributes - 0x000000007F553000 - 0x0000000000003000 (0x0000000000020000)
+2022-06-23T04:41:34.9582566Z INFO - SetUefiImageMemoryAttributes - 0x000000007F556000 - 0x0000000000002000 (0x0000000000004000)
+2022-06-23T04:41:34.9588783Z INFO - ProtectUefiImageCommon - 0x7EAECBC0
+2022-06-23T04:41:34.9594750Z INFO -   - 0x000000007F54A000 - 0x0000000000008000
+2022-06-23T04:41:34.9600789Z INFO - SetUefiImageMemoryAttributes - 0x000000007F54A000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9606957Z INFO - SetUefiImageMemoryAttributes - 0x000000007F54B000 - 0x0000000000006000 (0x0000000000020000)
+2022-06-23T04:41:34.9613310Z INFO - SetUefiImageMemoryAttributes - 0x000000007F551000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9619340Z INFO - ProtectUefiImageCommon - 0x7EAEC1C0
+2022-06-23T04:41:34.9625258Z INFO -   - 0x000000007F542000 - 0x0000000000008000
+2022-06-23T04:41:34.9631380Z INFO - SetUefiImageMemoryAttributes - 0x000000007F542000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9637539Z INFO - SetUefiImageMemoryAttributes - 0x000000007F543000 - 0x0000000000002000 (0x0000000000020000)
+2022-06-23T04:41:34.9643730Z INFO - SetUefiImageMemoryAttributes - 0x000000007F545000 - 0x0000000000005000 (0x0000000000004000)
+2022-06-23T04:41:34.9650084Z INFO - ProtectUefiImageCommon - 0x7EAE1540
+2022-06-23T04:41:34.9656156Z INFO -   - 0x000000007F536000 - 0x000000000000C000
+2022-06-23T04:41:34.9662309Z INFO - SetUefiImageMemoryAttributes - 0x000000007F536000 - 0x0000000000001000 (0x0000000000004000)
+2022-06-23T04:41:34.9668512Z INFO - SetUefiImageMemoryAttributes - 0x000000007F537000 - 0x0000000000007000 (0x0000000000020000)
+2022-06-23T04:41:34.9674683Z INFO - SetUefiImageMemoryAttributes - 0x000000007F53E000 - 0x0000000000004000 (0x0000000000004000)
+2022-06-23T04:41:34.9680747Z INFO - Loading driver 49EA041E-6752-42CA-B0B1-7344FE2546B7
+2022-06-23T04:41:34.9687055Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAE3240
+2022-06-23T04:41:34.9693568Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPkg/Drivers/TimerDxe/TimerDxe/DEBUG/ArmTimerDxe.dll 0x7F531000
+2022-06-23T04:41:34.9699859Z INFO - Loading driver at 0x0007F530000 EntryPoint=0x0007F532848 ArmTimerDxe.efi
+2022-06-23T04:41:34.9705974Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7F232C98
+2022-06-23T04:41:34.9711961Z INFO - ProtectUefiImageCommon - 0x7EAE3240
+2022-06-23T04:41:34.9717847Z INFO -   - 0x000000007F530000 - 0x0000000000006000
+2022-06-23T04:41:34.9723928Z INFO - SetUefiImageMemoryAttributes - 0x000000007F530000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:34.9730252Z INFO - SetUefiImageMemoryAttributes - 0x000000007F531000 - 0x0000000000003000 (0x0000000000020008)
+2022-06-23T04:41:34.9736432Z INFO - SetUefiImageMemoryAttributes - 0x000000007F534000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:34.9742416Z INFO - Found Timer interrupts 29, 30, 27, 26
+2022-06-23T04:41:34.9748431Z INFO - InstallProtocolInterface: 26BACCB3-6F42-11D4-BCE7-0080C73C8881 7F534070
+2022-06-23T04:41:34.9754428Z INFO - Loading driver E660EA85-058E-4B55-A54B-F02F83A24707
+2022-06-23T04:41:34.9760568Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAC8040
+2022-06-23T04:41:34.9766904Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/DisplayEngineDxe/DisplayEngineDxe/DEBUG/DisplayEngine.dll 0x7F51A000
+2022-06-23T04:41:34.9773407Z INFO - Loading driver at 0x0007F519000 EntryPoint=0x0007F51AA44 DisplayEngine.efi
+2022-06-23T04:41:34.9779649Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAC8D18
+2022-06-23T04:41:34.9785600Z INFO - ProtectUefiImageCommon - 0x7EAC8040
+2022-06-23T04:41:34.9791509Z INFO -   - 0x000000007F519000 - 0x0000000000017000
+2022-06-23T04:41:34.9797579Z INFO - SetUefiImageMemoryAttributes - 0x000000007F519000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:34.9803811Z INFO - SetUefiImageMemoryAttributes - 0x000000007F51A000 - 0x0000000000012000 (0x0000000000020008)
+2022-06-23T04:41:34.9810180Z INFO - SetUefiImageMemoryAttributes - 0x000000007F52C000 - 0x0000000000004000 (0x0000000000004008)
+2022-06-23T04:41:34.9816474Z INFO - InstallProtocolInterface: 9BBE29E9-FDA1-41EC-AD52-452213742D2E 7F52DD98
+2022-06-23T04:41:34.9822526Z INFO - InstallProtocolInterface: 4311EDC0-6054-46D4-9E40-893EA952FCCC 7F52DDB0
+2022-06-23T04:41:34.9828558Z INFO - Loading driver EBF8ED7C-0DD1-4787-84F1-F48D537DCACF
+2022-06-23T04:41:34.9834571Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EADD140
+2022-06-23T04:41:34.9841031Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe/DEBUG/DriverHealthManagerDxe.dll 0x7F511000
+2022-06-23T04:41:34.9847333Z INFO - Loading driver at 0x0007F510000 EntryPoint=0x0007F514B94 DriverHealthManagerDxe.efi
+2022-06-23T04:41:34.9853590Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EADD898
+2022-06-23T04:41:34.9859638Z INFO - ProtectUefiImageCommon - 0x7EADD140
+2022-06-23T04:41:34.9865509Z INFO -   - 0x000000007F510000 - 0x0000000000009000
+2022-06-23T04:41:34.9871611Z INFO - SetUefiImageMemoryAttributes - 0x000000007F510000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:34.9877744Z INFO - SetUefiImageMemoryAttributes - 0x000000007F511000 - 0x0000000000006000 (0x0000000000020008)
+2022-06-23T04:41:34.9883916Z INFO - SetUefiImageMemoryAttributes - 0x000000007F517000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:34.9890223Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7F5175A0
+2022-06-23T04:41:34.9896296Z INFO - InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7F517578
+2022-06-23T04:41:34.9902286Z INFO - Loading driver 4110465D-5FF3-4F4B-B580-24ED0D06747A
+2022-06-23T04:41:34.9908542Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAD90C0
+2022-06-23T04:41:34.9914834Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/SmbiosPlatformDxe/SmbiosPlatformDxe/DEBUG/SmbiosPlatformDxe.dll 0x7F50B000
+2022-06-23T04:41:34.9921146Z INFO - Loading driver at 0x0007F50A000 EntryPoint=0x0007F50CB40 SmbiosPlatformDxe.efi
+2022-06-23T04:41:34.9927195Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAD9D98
+2022-06-23T04:41:34.9933348Z INFO - ProtectUefiImageCommon - 0x7EAD90C0
+2022-06-23T04:41:34.9939247Z INFO -   - 0x000000007F50A000 - 0x0000000000006000
+2022-06-23T04:41:34.9945320Z INFO - SetUefiImageMemoryAttributes - 0x000000007F50A000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:34.9951439Z INFO - SetUefiImageMemoryAttributes - 0x000000007F50B000 - 0x0000000000003000 (0x0000000000020008)
+2022-06-23T04:41:34.9957628Z INFO - SetUefiImageMemoryAttributes - 0x000000007F50E000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:34.9963871Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:34.9969873Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:34.9975859Z INFO - SmbiosAdd: Smbios type 1 with size 0x3F is added to 64-bit table
+2022-06-23T04:41:34.9981811Z INFO - SmbiosCreateTable: Initialize 64-bit entry point structure
+2022-06-23T04:41:34.9987808Z INFO - SmbiosCreate64BitTable() re-allocate SMBIOS 64-bit table
+2022-06-23T04:41:34.9993775Z INFO - SmbiosAdd: Smbios type 3 with size 0x25 is added to 64-bit table
+2022-06-23T04:41:35.0000975Z INFO - SmbiosAdd: Smbios type 4 with size 0x3F is added to 64-bit table
+2022-06-23T04:41:35.0006981Z INFO - SmbiosAdd: Smbios type 16 with size 0x19 is added to 64-bit table
+2022-06-23T04:41:35.0013195Z INFO - SmbiosAdd: Smbios type 17 with size 0x35 is added to 64-bit table
+2022-06-23T04:41:35.0019243Z INFO - SmbiosAdd: Smbios type 32 with size 0xD is added to 64-bit table
+2022-06-23T04:41:35.0025258Z INFO - SmbiosAdd: Smbios type 0 with size 0x4A is added to 64-bit table
+2022-06-23T04:41:35.0031208Z INFO - Loading driver 28A03FF4-12B3-4305-A417-BB1A4F94081E
+2022-06-23T04:41:35.0037229Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAD8BC0
+2022-06-23T04:41:35.0043483Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe/DEBUG/RamDiskDxe.dll 0x7F4FD000
+2022-06-23T04:41:35.0050125Z INFO - Loading driver at 0x0007F4FC000 EntryPoint=0x0007F5040EC RamDiskDxe.efi
+2022-06-23T04:41:35.0056263Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EADA118
+2022-06-23T04:41:35.0062307Z INFO - ProtectUefiImageCommon - 0x7EAD8BC0
+2022-06-23T04:41:35.0068205Z INFO -   - 0x000000007F4FC000 - 0x000000000000E000
+2022-06-23T04:41:35.0074282Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4FC000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0080409Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4FD000 - 0x000000000000A000 (0x0000000000020008)
+2022-06-23T04:41:35.0086533Z INFO - SetUefiImageMemoryAttributes - 0x000000007F507000 - 0x0000000000003000 (0x0000000000004008)
+2022-06-23T04:41:35.0092817Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAD8B18
+2022-06-23T04:41:35.0099173Z INFO - InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7F508188
+2022-06-23T04:41:35.0105280Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7F5082CE
+2022-06-23T04:41:35.0111365Z INFO - InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7EAD6F30
+2022-06-23T04:41:35.0117591Z INFO - InstallProtocolInterface: AB38A0DF-6873-44A9-87E6-D4EB56148449 7F5083C8
+2022-06-23T04:41:35.0123615Z INFO - InstallProtocolInterface: 28A03FF4-12B3-4305-A417-BB1A4F94081E 7EAD6F18
+2022-06-23T04:41:35.0130123Z INFO - Loading driver 63EA1463-FBFA-428A-B97F-E222755852D7
+2022-06-23T04:41:35.0137002Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAD7040
+2022-06-23T04:41:35.0143551Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/Fdt/HighMemDxe/HighMemDxe/DEBUG/HighMemDxe.dll 0x7F4F8000
+2022-06-23T04:41:35.0149778Z INFO - Loading driver at 0x0007F4F7000 EntryPoint=0x0007F4F9158 HighMemDxe.efi
+2022-06-23T04:41:35.0155839Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAD7A18
+2022-06-23T04:41:35.0161859Z INFO - ProtectUefiImageCommon - 0x7EAD7040
+2022-06-23T04:41:35.0168025Z INFO -   - 0x000000007F4F7000 - 0x0000000000005000
+2022-06-23T04:41:35.0173273Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4F7000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0178368Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4F8000 - 0x0000000000003000 (0x0000000000020008)
+2022-06-23T04:41:35.0183408Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4FB000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0188374Z INFO - Loading driver 93E34C7E-B50E-11DF-9223-2443DFD72085
+2022-06-23T04:41:35.0193282Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAD7440
+2022-06-23T04:41:35.0198477Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmPlatformPkg/Drivers/NorFlashDxe/NorFlashDxe/DEBUG/ArmVeNorFlashDxe.dll 0x7C260000
+2022-06-23T04:41:35.0203613Z INFO - Loading driver at 0x0007C250000 EntryPoint=0x0007C26329C ArmVeNorFlashDxe.efi
+2022-06-23T04:41:35.0208734Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAD5898
+2022-06-23T04:41:35.0213587Z INFO - ProtectUefiImageCommon - 0x7EAD7440
+2022-06-23T04:41:35.0218352Z INFO -   - 0x000000007C250000 - 0x0000000000040000
+2022-06-23T04:41:35.0223249Z INFO - SetUefiImageMemoryAttributes - 0x000000007C250000 - 0x0000000000010000 (0x0000000000004008)
+2022-06-23T04:41:35.0228258Z INFO - SetUefiImageMemoryAttributes - 0x000000007C260000 - 0x0000000000010000 (0x0000000000020008)
+2022-06-23T04:41:35.0233248Z INFO - SetUefiImageMemoryAttributes - 0x000000007C270000 - 0x0000000000020000 (0x0000000000004008)
+2022-06-23T04:41:35.0238393Z INFO - ValidateFvHeader: No Firmware Volume header present
+2022-06-23T04:41:35.0243187Z INFO - NorFlashFvbInitialize: The FVB Header is not valid.
+2022-06-23T04:41:35.0248125Z INFO - NorFlashFvbInitialize: Installing a correct one for this volume.
+2022-06-23T04:41:35.0253268Z INFO - InstallProtocolInterface: D1A86E3F-0707-4C35-83CD-DC2C29C891A3 0
+2022-06-23T04:41:35.0258313Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7F7DF388
+2022-06-23T04:41:35.0263245Z INFO - InstallProtocolInterface: 964E5B21-6459-11D2-8E39-00A0C969723B 7F7DF2C8
+2022-06-23T04:41:35.0268121Z INFO - InstallProtocolInterface: 8F644FA9-E850-4DB1-9CE2-0B44698E8DA4 7F7DF340
+2022-06-23T04:41:35.0273008Z INFO - Ftw: FtwWorkSpaceLba - 0x1, WorkBlockSize  - 0x40000, FtwWorkSpaceBase - 0x0
+2022-06-23T04:41:35.0277819Z INFO - Ftw: FtwSpareLba     - 0x2, SpareBlockSize - 0x40000
+2022-06-23T04:41:35.0282598Z INFO - Ftw: NumberOfWorkBlock - 0x1, FtwWorkBlockLba - 0x1
+2022-06-23T04:41:35.0287394Z INFO - Ftw: WorkSpaceLbaInSpare - 0x0, WorkSpaceBaseInSpare - 0x0
+2022-06-23T04:41:35.0292377Z INFO - Ftw: Remaining work space size - 3FFE0
+2022-06-23T04:41:35.0297045Z INFO - Ftw: Work block header check mismatch
+2022-06-23T04:41:35.0302187Z INFO - Ftw: Work block header check mismatch
+2022-06-23T04:41:35.0306977Z INFO - Ftw: Both working and spare blocks are invalid, init workspace
+2022-06-23T04:41:35.0311713Z INFO - Ftw: start to reclaim work space
+2022-06-23T04:41:35.0316361Z INFO - Ftw: reclaim work space successfully
+2022-06-23T04:41:35.0321184Z INFO - InstallProtocolInterface: 3EBD9E82-2C78-4DE6-9786-8D4BFCB7C881 7E681028
+2022-06-23T04:41:35.0325987Z INFO - Loading driver F099D67F-71AE-4C36-B2A3-DCEB0EB2B7D8
+2022-06-23T04:41:35.0331018Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAD4BC0
+2022-06-23T04:41:35.0336277Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer/DEBUG/WatchdogTimer.dll 0x7F4F2000
+2022-06-23T04:41:35.0341611Z INFO - Loading driver at 0x0007F4F1000 EntryPoint=0x0007F4F32C4 WatchdogTimer.efi
+2022-06-23T04:41:35.0346515Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAD4A18
+2022-06-23T04:41:35.0351714Z INFO - ProtectUefiImageCommon - 0x7EAD4BC0
+2022-06-23T04:41:35.0356491Z INFO -   - 0x000000007F4F1000 - 0x0000000000006000
+2022-06-23T04:41:35.0361466Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4F1000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0366458Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4F2000 - 0x0000000000003000 (0x0000000000020008)
+2022-06-23T04:41:35.0371640Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4F5000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.0376621Z INFO - InstallProtocolInterface: 665E3FF5-46CC-11D4-9A38-0090273FC14D 7F4F5060
+2022-06-23T04:41:35.0381453Z INFO - Loading driver 128FB770-5E79-4176-9E51-9BB268A17DD1
+2022-06-23T04:41:35.0386341Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAD4240
+2022-06-23T04:41:35.0391606Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridgeDxe/DEBUG/PciHostBridgeDxe.dll 0x7F4E3000
+2022-06-23T04:41:35.0396733Z INFO - Loading driver at 0x0007F4E2000 EntryPoint=0x0007F4EA344 PciHostBridgeDxe.efi
+2022-06-23T04:41:35.0401627Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAD4598
+2022-06-23T04:41:35.0406496Z INFO - ProtectUefiImageCommon - 0x7EAD4240
+2022-06-23T04:41:35.0411520Z INFO -   - 0x000000007F4E2000 - 0x000000000000F000
+2022-06-23T04:41:35.0416446Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4E2000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0421431Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4E3000 - 0x000000000000C000 (0x0000000000020008)
+2022-06-23T04:41:35.0426402Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4EF000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.0431251Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:35.0435929Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:35.0440976Z INFO - ProcessPciHost: Config[0x4010000000+0x10000000) Bus[0x0..0xFF] Io[0x0+0x10000)@0x3EFF0000 Mem32[0x10000000+0x2EFF0000)@0x0 Mem64[0x8000000000+0x8000000000)@0x0
+2022-06-23T04:41:35.0446272Z INFO - PciHostBridgeUtilityInitRootBridge: populated root bus 0, with room for 255 subordinate bus(es)
+2022-06-23T04:41:35.0451262Z INFO - RootBridge: PciRoot(0x0)
+2022-06-23T04:41:35.0455952Z INFO -   Support/Attr: 70001 / 70001
+2022-06-23T04:41:35.0460699Z INFO -     DmaAbove4G: Yes
+2022-06-23T04:41:35.0465324Z INFO - NoExtConfSpace: No
+2022-06-23T04:41:35.0470037Z INFO -      AllocAttr: 3 (CombineMemPMem Mem64Decode)
+2022-06-23T04:41:35.0474723Z INFO -            Bus: 0 - FF Translation=0
+2022-06-23T04:41:35.0479447Z INFO -             Io: 0 - FFFF Translation=0
+2022-06-23T04:41:35.0484149Z INFO -            Mem: 10000000 - 3EFEFFFF Translation=0
+2022-06-23T04:41:35.0489136Z INFO -     MemAbove4G: 8000000000 - FFFFFFFFFF Translation=0
+2022-06-23T04:41:35.0493906Z INFO -           PMem: FFFFFFFFFFFFFFFF - 0 Translation=0
+2022-06-23T04:41:35.0498645Z INFO -    PMemAbove4G: FFFFFFFFFFFFFFFF - 0 Translation=0
+2022-06-23T04:41:35.0503440Z INFO - InstallProtocolInterface: CF8034BE-6768-4D8B-B739-7CCE683A9FBE 7EAD30C0
+2022-06-23T04:41:35.0508326Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7EAD3A98
+2022-06-23T04:41:35.0516616Z INFO - InstallProtocolInterface: 2F707EBB-4A1A-11D4-9A38-0090273FC14D 7EAD34F0
+2022-06-23T04:41:35.0523685Z INFO - Loading driver CBD2E4D5-7068-4FF5-B462-9822B4AD8D60
+2022-06-23T04:41:35.0528846Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAD02C0
+2022-06-23T04:41:35.0534147Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe/DEBUG/VariableRuntimeDxe.dll 0x7C170000
+2022-06-23T04:41:35.0539420Z INFO - Loading driver at 0x0007C160000 EntryPoint=0x0007C1792D0 VariableRuntimeDxe.efi
+2022-06-23T04:41:35.0544322Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAD0E18
+2022-06-23T04:41:35.0549050Z INFO - ProtectUefiImageCommon - 0x7EAD02C0
+2022-06-23T04:41:35.0553733Z INFO -   - 0x000000007C160000 - 0x0000000000040000
+2022-06-23T04:41:35.0558683Z INFO - SetUefiImageMemoryAttributes - 0x000000007C160000 - 0x0000000000010000 (0x0000000000004008)
+2022-06-23T04:41:35.0563580Z INFO - SetUefiImageMemoryAttributes - 0x000000007C170000 - 0x0000000000010000 (0x0000000000020008)
+2022-06-23T04:41:35.0568959Z INFO - SetUefiImageMemoryAttributes - 0x000000007C180000 - 0x0000000000020000 (0x0000000000004008)
+2022-06-23T04:41:35.0573844Z INFO - VarCheckLibRegisterSetVariableCheckHandler - 0x7C175A24 Success
+2022-06-23T04:41:35.0578573Z INFO - Variable driver common space: 0x3FF9C 0x3FF9C 0x3FF9C
+2022-06-23T04:41:35.0583271Z INFO - Variable driver will work with auth variable format!
+2022-06-23T04:41:35.0588063Z INFO - InstallProtocolInterface: CD3D0A05-9E24-437C-A891-1EE053DB7638 7C180950
+2022-06-23T04:41:35.0592866Z INFO - InstallProtocolInterface: AF23B340-97B4-4685-8D4F-A3F28169B21D 7C180820
+2022-06-23T04:41:35.0597655Z INFO - InstallProtocolInterface: 1E5668E2-8481-11D4-BCF1-0080C73C8881 0
+2022-06-23T04:41:35.0602433Z INFO - NOTICE - AuthVariableLibInitialize() returns Unsupported!
+2022-06-23T04:41:35.0607145Z INFO - Variable driver will continue to work without auth variable support!
+2022-06-23T04:41:35.0612063Z INFO - RecordSecureBootPolicyVarData GetVariable SecureBoot Status E
+2022-06-23T04:41:35.0616829Z INFO - InstallProtocolInterface: 6441F818-6362-4E44-B570-7DBA31DD2453 0
+2022-06-23T04:41:35.0621581Z INFO - VarCheckLibRegisterSetVariableCheckHandler - 0x7C173CA0 Success
+2022-06-23T04:41:35.0626432Z INFO - InstallProtocolInterface: 81D1675C-86F6-48DF-BD95-9A6E4F0925C3 7C180958
+2022-06-23T04:41:35.0631175Z INFO - Loading driver 42857F0A-13F2-4B21-8A23-53D3F714B840
+2022-06-23T04:41:35.0635983Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EACD0C0
+2022-06-23T04:41:35.0641224Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe/DEBUG/CapsuleRuntimeDxe.dll 0x7F630000
+2022-06-23T04:41:35.0646455Z INFO - Loading driver at 0x0007F620000 EntryPoint=0x0007F6315C8 CapsuleRuntimeDxe.efi
+2022-06-23T04:41:35.0651559Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EACDD98
+2022-06-23T04:41:35.0656266Z INFO - ProtectUefiImageCommon - 0x7EACD0C0
+2022-06-23T04:41:35.0661151Z INFO -   - 0x000000007F620000 - 0x0000000000030000
+2022-06-23T04:41:35.0665923Z INFO - SetUefiImageMemoryAttributes - 0x000000007F620000 - 0x0000000000010000 (0x0000000000004008)
+2022-06-23T04:41:35.0670806Z INFO - SetUefiImageMemoryAttributes - 0x000000007F630000 - 0x0000000000010000 (0x0000000000020008)
+2022-06-23T04:41:35.0675706Z INFO - SetUefiImageMemoryAttributes - 0x000000007F640000 - 0x0000000000010000 (0x0000000000004008)
+2022-06-23T04:41:35.0680555Z INFO - InstallProtocolInterface: 5053697E-2CBC-4819-90D9-0580DEEE5754 0
+2022-06-23T04:41:35.0685286Z INFO - Loading driver AD608272-D07F-4964-801E-7BD3B7888652
+2022-06-23T04:41:35.0690529Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EACC040
+2022-06-23T04:41:35.0695782Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe/DEBUG/MonotonicCounterRuntimeDxe.dll 0x7C070000
+2022-06-23T04:41:35.0700896Z INFO - Loading driver at 0x0007C060000 EntryPoint=0x0007C0713A4 MonotonicCounterRuntimeDxe.efi
+2022-06-23T04:41:35.0705760Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EACCE18
+2022-06-23T04:41:35.0710438Z INFO - ProtectUefiImageCommon - 0x7EACC040
+2022-06-23T04:41:35.0715085Z INFO -   - 0x000000007C060000 - 0x0000000000030000
+2022-06-23T04:41:35.0719870Z INFO - SetUefiImageMemoryAttributes - 0x000000007C060000 - 0x0000000000010000 (0x0000000000004008)
+2022-06-23T04:41:35.0724934Z INFO - SetUefiImageMemoryAttributes - 0x000000007C070000 - 0x0000000000010000 (0x0000000000020008)
+2022-06-23T04:41:35.0729986Z INFO - SetUefiImageMemoryAttributes - 0x000000007C080000 - 0x0000000000010000 (0x0000000000004008)
+2022-06-23T04:41:35.0734851Z INFO - InstallProtocolInterface: 1DA97072-BDDC-4B30-99F1-72A0B56FFF2A 0
+2022-06-23T04:41:35.0739595Z INFO - Loading driver B336F62D-4135-4A55-AE4E-4971BBF0885D
+2022-06-23T04:41:35.0744374Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EACC440
+2022-06-23T04:41:35.0749475Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe/DEBUG/RealTimeClock.dll 0x7C030000
+2022-06-23T04:41:35.0754508Z INFO - Loading driver at 0x0007C020000 EntryPoint=0x0007C031E90 RealTimeClock.efi
+2022-06-23T04:41:35.0759379Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EACBF98
+2022-06-23T04:41:35.0764106Z INFO - ProtectUefiImageCommon - 0x7EACC440
+2022-06-23T04:41:35.0768924Z INFO -   - 0x000000007C020000 - 0x0000000000030000
+2022-06-23T04:41:35.0773782Z INFO - SetUefiImageMemoryAttributes - 0x000000007C020000 - 0x0000000000010000 (0x0000000000004008)
+2022-06-23T04:41:35.0778678Z INFO - SetUefiImageMemoryAttributes - 0x000000007C030000 - 0x0000000000010000 (0x0000000000020008)
+2022-06-23T04:41:35.0783572Z INFO - SetUefiImageMemoryAttributes - 0x000000007C040000 - 0x0000000000010000 (0x0000000000004008)
+2022-06-23T04:41:35.0788219Z INFO - Found PL031 RTC @ 0x9010000
+2022-06-23T04:41:35.0792912Z INFO - InstallProtocolInterface: 27CFAC87-46CC-11D4-9A38-0090273FC14D 0
+2022-06-23T04:41:35.0797655Z INFO - InitializeRealTimeClock: using default timezone/daylight settings
+2022-06-23T04:41:35.0802390Z INFO - InstallProtocolInterface: 27CFAC87-46CC-11D4-9A38-0090273FC14D 0
+2022-06-23T04:41:35.0807093Z INFO - Loading driver 6D33944A-EC75-4855-A54D-809C75241F6C
+2022-06-23T04:41:35.0812102Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EACB5C0
+2022-06-23T04:41:35.0817149Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/BdsDxe/BdsDxe/DEBUG/BdsDxe.dll 0x7F4C8000
+2022-06-23T04:41:35.0822295Z INFO - Loading driver at 0x0007F4C7000 EntryPoint=0x0007F4CC28C BdsDxe.efi
+2022-06-23T04:41:35.0827112Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EACB218
+2022-06-23T04:41:35.0831825Z INFO - ProtectUefiImageCommon - 0x7EACB5C0
+2022-06-23T04:41:35.0836444Z INFO -   - 0x000000007F4C7000 - 0x000000000001B000
+2022-06-23T04:41:35.0841175Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4C7000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0846075Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4C8000 - 0x0000000000018000 (0x0000000000020008)
+2022-06-23T04:41:35.0851141Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4E0000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.0855913Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:35.0860563Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:35.0865305Z INFO - InstallProtocolInterface: 665E3FF6-46CC-11D4-9A38-0090273FC14D 7F4E0030
+2022-06-23T04:41:35.0869975Z INFO - Loading driver 9D1DD27F-6D7F-427B-AEC4-B62F6279C2F1
+2022-06-23T04:41:35.0874729Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EACAC40
+2022-06-23T04:41:35.0879773Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ArmVirtPkg/PlatformHasAcpiDtDxe/PlatformHasAcpiDtDxe/DEBUG/PlatformHasAcpiDtDxe.dll 0x7F4C2000
+2022-06-23T04:41:35.0884870Z INFO - Loading driver at 0x0007F4C1000 EntryPoint=0x0007F4C38AC PlatformHasAcpiDtDxe.efi
+2022-06-23T04:41:35.0889915Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EACA818
+2022-06-23T04:41:35.0894742Z INFO - ProtectUefiImageCommon - 0x7EACAC40
+2022-06-23T04:41:35.0899448Z INFO -   - 0x000000007F4C1000 - 0x0000000000006000
+2022-06-23T04:41:35.0904528Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4C1000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0909448Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4C2000 - 0x0000000000003000 (0x0000000000020008)
+2022-06-23T04:41:35.0914349Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4C5000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.0919096Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:35.0923670Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:35.0928524Z INFO - InstallProtocolInterface: F0966B41-C23F-41B9-9604-0FF7E111965A 0
+2022-06-23T04:41:35.0933342Z INFO - Loading driver D9DCC5DF-4007-435E-9098-8970935504B2
+2022-06-23T04:41:35.0938168Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EACA2C0
+2022-06-23T04:41:35.0943179Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/PlatformDxe/Platform/DEBUG/PlatformDxe.dll 0x7F4BB000
+2022-06-23T04:41:35.0948161Z INFO - Loading driver at 0x0007F4BA000 EntryPoint=0x0007F4BDBA0 PlatformDxe.efi
+2022-06-23T04:41:35.0952966Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAC9018
+2022-06-23T04:41:35.0957722Z INFO - ProtectUefiImageCommon - 0x7EACA2C0
+2022-06-23T04:41:35.0962395Z INFO -   - 0x000000007F4BA000 - 0x0000000000007000
+2022-06-23T04:41:35.0968051Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4BA000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0973037Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4BB000 - 0x0000000000005000 (0x0000000000020008)
+2022-06-23T04:41:35.0977991Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4C0000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.0982855Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7F4C059C
+2022-06-23T04:41:35.0987658Z INFO - InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7F4C0620
+2022-06-23T04:41:35.0992494Z INFO - Loading driver 51CCF399-4FDF-4E55-A45B-E123F84D456A
+2022-06-23T04:41:35.0997296Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAC7B40
+2022-06-23T04:41:35.1002408Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe/DEBUG/ConPlatformDxe.dll 0x7F4B4000
+2022-06-23T04:41:35.1007701Z INFO - Loading driver at 0x0007F4B3000 EntryPoint=0x0007F4B6874 ConPlatformDxe.efi
+2022-06-23T04:41:35.1012607Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAC9698
+2022-06-23T04:41:35.1017277Z INFO - ProtectUefiImageCommon - 0x7EAC7B40
+2022-06-23T04:41:35.1021901Z INFO -   - 0x000000007F4B3000 - 0x0000000000007000
+2022-06-23T04:41:35.1026694Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4B3000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1031601Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4B4000 - 0x0000000000004000 (0x0000000000020008)
+2022-06-23T04:41:35.1036450Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4B8000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1041313Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4B8030
+2022-06-23T04:41:35.1046092Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4B8000
+2022-06-23T04:41:35.1051170Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4B8018
+2022-06-23T04:41:35.1062243Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4B8060
+2022-06-23T04:41:35.1067268Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4B8000
+2022-06-23T04:41:35.1072181Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4B8018
+2022-06-23T04:41:35.1076964Z INFO - Loading driver 408EDCEC-CF6D-477C-A5A8-B4844E3DE281
+2022-06-23T04:41:35.1082081Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAC7540
+2022-06-23T04:41:35.1087189Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe/DEBUG/ConSplitterDxe.dll 0x7F4A9000
+2022-06-23T04:41:35.1092584Z INFO - Loading driver at 0x0007F4A8000 EntryPoint=0x0007F4AE81C ConSplitterDxe.efi
+2022-06-23T04:41:35.1097388Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAC6F98
+2022-06-23T04:41:35.1102131Z INFO - ProtectUefiImageCommon - 0x7EAC7540
+2022-06-23T04:41:35.1106756Z INFO -   - 0x000000007F4A8000 - 0x000000000000B000
+2022-06-23T04:41:35.1111630Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4A8000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1116484Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4A9000 - 0x0000000000008000 (0x0000000000020008)
+2022-06-23T04:41:35.1121411Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4B1000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1126255Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4B1090
+2022-06-23T04:41:35.1131255Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4B1060
+2022-06-23T04:41:35.1136082Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4B1078
+2022-06-23T04:41:35.1140843Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4B1150
+2022-06-23T04:41:35.1145623Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4B1120
+2022-06-23T04:41:35.1150359Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4B1138
+2022-06-23T04:41:35.1155333Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4B1030
+2022-06-23T04:41:35.1160213Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4B1000
+2022-06-23T04:41:35.1165019Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4B1018
+2022-06-23T04:41:35.1169975Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4B10F0
+2022-06-23T04:41:35.1174769Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4B10C0
+2022-06-23T04:41:35.1179544Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4B10D8
+2022-06-23T04:41:35.1184463Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4B11B0
+2022-06-23T04:41:35.1189685Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4B1180
+2022-06-23T04:41:35.1195233Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4B1198
+2022-06-23T04:41:35.1200439Z INFO - InstallProtocolInterface: 387477C1-69C7-11D2-8E39-00A0C969723B 7F4B1310
+2022-06-23T04:41:35.1205631Z INFO - InstallProtocolInterface: DD9E7534-7762-4698-8C14-F58517A625AA 7F4B1340
+2022-06-23T04:41:35.1210968Z INFO - InstallProtocolInterface: 31878C87-0B75-11D5-9A4F-0090273FC14D 7F4B13B0
+2022-06-23T04:41:35.1216207Z INFO - InstallProtocolInterface: 8D59D32B-C655-4AE9-9B15-F25904992A43 7F4B1408
+2022-06-23T04:41:35.1221377Z INFO - InstallProtocolInterface: 387477C2-69C7-11D2-8E39-00A0C969723B 7F4B1498
+2022-06-23T04:41:35.1227053Z INFO - InstallProtocolInterface: 387477C2-69C7-11D2-8E39-00A0C969723B 7F4B1688
+2022-06-23T04:41:35.1232261Z INFO - Loading driver CCCB0C28-4B24-11D5-9A5A-0090273FC14D
+2022-06-23T04:41:35.1237393Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7EAC39C0
+2022-06-23T04:41:35.1242935Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe/DEBUG/GraphicsConsoleDxe.dll 0x7F4A0000
+2022-06-23T04:41:35.1248623Z INFO - Loading driver at 0x0007F49F000 EntryPoint=0x0007F4A35A0 GraphicsConsoleDxe.efi
+2022-06-23T04:41:35.1253967Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7EAC3798
+2022-06-23T04:41:35.1259158Z INFO - ProtectUefiImageCommon - 0x7EAC39C0
+2022-06-23T04:41:35.1264260Z INFO -   - 0x000000007F49F000 - 0x0000000000009000
+2022-06-23T04:41:35.1269461Z INFO - SetUefiImageMemoryAttributes - 0x000000007F49F000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1274965Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4A0000 - 0x0000000000005000 (0x0000000000020008)
+2022-06-23T04:41:35.1280208Z INFO - SetUefiImageMemoryAttributes - 0x000000007F4A5000 - 0x0000000000003000 (0x0000000000004008)
+2022-06-23T04:41:35.1285470Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4A5128
+2022-06-23T04:41:35.1290901Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4A50F8
+2022-06-23T04:41:35.1296165Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4A5110
+2022-06-23T04:41:35.1301325Z INFO - Loading driver 9E863906-A40F-4875-977F-5B93FF237FC6
+2022-06-23T04:41:35.1306591Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E67CC40
+2022-06-23T04:41:35.1312113Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe/DEBUG/TerminalDxe.dll 0x7F495000
+2022-06-23T04:41:35.1317500Z INFO - Loading driver at 0x0007F494000 EntryPoint=0x0007F49AC50 TerminalDxe.efi
+2022-06-23T04:41:35.1322758Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E67C818
+2022-06-23T04:41:35.1328001Z INFO - ProtectUefiImageCommon - 0x7E67CC40
+2022-06-23T04:41:35.1333120Z INFO -   - 0x000000007F494000 - 0x000000000000B000
+2022-06-23T04:41:35.1338345Z INFO - SetUefiImageMemoryAttributes - 0x000000007F494000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1343599Z INFO - SetUefiImageMemoryAttributes - 0x000000007F495000 - 0x0000000000008000 (0x0000000000020008)
+2022-06-23T04:41:35.1348857Z INFO - SetUefiImageMemoryAttributes - 0x000000007F49D000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1354106Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F49D250
+2022-06-23T04:41:35.1359414Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F49D220
+2022-06-23T04:41:35.1364677Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F49D238
+2022-06-23T04:41:35.1370031Z INFO - Loading driver 6B38F7B4-AD98-40E9-9093-ACA2B5A253C4
+2022-06-23T04:41:35.1375198Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E67C2C0
+2022-06-23T04:41:35.1380635Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe/DEBUG/DiskIoDxe.dll 0x7F48D000
+2022-06-23T04:41:35.1386244Z INFO - Loading driver at 0x0007F48C000 EntryPoint=0x0007F49045C DiskIoDxe.efi
+2022-06-23T04:41:35.1391469Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E680018
+2022-06-23T04:41:35.1396572Z INFO - ProtectUefiImageCommon - 0x7E67C2C0
+2022-06-23T04:41:35.1401644Z INFO -   - 0x000000007F48C000 - 0x0000000000008000
+2022-06-23T04:41:35.1406805Z INFO - SetUefiImageMemoryAttributes - 0x000000007F48C000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1412418Z INFO - SetUefiImageMemoryAttributes - 0x000000007F48D000 - 0x0000000000005000 (0x0000000000020008)
+2022-06-23T04:41:35.1417778Z INFO - SetUefiImageMemoryAttributes - 0x000000007F492000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1423058Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F492030
+2022-06-23T04:41:35.1428276Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F492000
+2022-06-23T04:41:35.1433628Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F492018
+2022-06-23T04:41:35.1438761Z INFO - Loading driver 1FA1F39E-FEFF-4AAE-BD7B-38A070A3B609
+2022-06-23T04:41:35.1443957Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E6800C0
+2022-06-23T04:41:35.1449644Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe/DEBUG/PartitionDxe.dll 0x7F483000
+2022-06-23T04:41:35.1455184Z INFO - Loading driver at 0x0007F482000 EntryPoint=0x0007F487BA0 PartitionDxe.efi
+2022-06-23T04:41:35.1460461Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E680A98
+2022-06-23T04:41:35.1465746Z INFO - ProtectUefiImageCommon - 0x7E6800C0
+2022-06-23T04:41:35.1470793Z INFO -   - 0x000000007F482000 - 0x000000000000A000
+2022-06-23T04:41:35.1476012Z INFO - SetUefiImageMemoryAttributes - 0x000000007F482000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1481353Z INFO - SetUefiImageMemoryAttributes - 0x000000007F483000 - 0x0000000000007000 (0x0000000000020008)
+2022-06-23T04:41:35.1486608Z INFO - SetUefiImageMemoryAttributes - 0x000000007F48A000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1492069Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F48A100
+2022-06-23T04:41:35.1497315Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F48A0D0
+2022-06-23T04:41:35.1502537Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F48A0E8
+2022-06-23T04:41:35.1507679Z INFO - Loading driver 961578FE-B6B7-44C3-AF35-6BC705CD2B1F
+2022-06-23T04:41:35.1512873Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E67F040
+2022-06-23T04:41:35.1518226Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/FatPkg/EnhancedFatDxe/Fat/DEBUG/Fat.dll 0x7F475000
+2022-06-23T04:41:35.1523513Z INFO - Loading driver at 0x0007F474000 EntryPoint=0x0007F47CF90 Fat.efi
+2022-06-23T04:41:35.1552934Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E680598
+2022-06-23T04:41:35.1558009Z INFO - ProtectUefiImageCommon - 0x7E67F040
+2022-06-23T04:41:35.1562552Z INFO -   - 0x000000007F474000 - 0x000000000000E000
+2022-06-23T04:41:35.1567149Z INFO - SetUefiImageMemoryAttributes - 0x000000007F474000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1572016Z INFO - SetUefiImageMemoryAttributes - 0x000000007F475000 - 0x000000000000B000 (0x0000000000020008)
+2022-06-23T04:41:35.1576666Z INFO - SetUefiImageMemoryAttributes - 0x000000007F480000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1581284Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4801E8
+2022-06-23T04:41:35.1585811Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F4801B8
+2022-06-23T04:41:35.1590370Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4801D0
+2022-06-23T04:41:35.1594929Z INFO - Loading driver CD3BAFB6-50FB-4FE8-8E4E-AB74D2C1A600
+2022-06-23T04:41:35.1599681Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E67F9C0
+2022-06-23T04:41:35.1604521Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe/DEBUG/EnglishDxe.dll 0x7F46F000
+2022-06-23T04:41:35.1609418Z INFO - Loading driver at 0x0007F46E000 EntryPoint=0x0007F470470 EnglishDxe.efi
+2022-06-23T04:41:35.1613963Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E67F898
+2022-06-23T04:41:35.1618400Z INFO - ProtectUefiImageCommon - 0x7E67F9C0
+2022-06-23T04:41:35.1623006Z INFO -   - 0x000000007F46E000 - 0x0000000000006000
+2022-06-23T04:41:35.1627500Z INFO - SetUefiImageMemoryAttributes - 0x000000007F46E000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1632086Z INFO - SetUefiImageMemoryAttributes - 0x000000007F46F000 - 0x0000000000003000 (0x0000000000020008)
+2022-06-23T04:41:35.1636629Z INFO - SetUefiImageMemoryAttributes - 0x000000007F472000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1641176Z INFO - InstallProtocolInterface: 1D85CD7F-F43D-11D2-9A0C-0090273FC14D 7F472038
+2022-06-23T04:41:35.1645642Z INFO - InstallProtocolInterface: A4C751FC-23AE-4C3E-92E9-4964CF63F349 7F472000
+2022-06-23T04:41:35.1650265Z INFO - Loading driver 905F13B0-8F91-4B0A-BD76-E1E78F9422E4
+2022-06-23T04:41:35.1654694Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E67EC40
+2022-06-23T04:41:35.1659535Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Disk/UdfDxe/UdfDxe/DEBUG/UdfDxe.dll 0x7F465000
+2022-06-23T04:41:35.1664317Z INFO - Loading driver at 0x0007F464000 EntryPoint=0x0007F469BA8 UdfDxe.efi
+2022-06-23T04:41:35.1668838Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E67EA98
+2022-06-23T04:41:35.1673301Z INFO - ProtectUefiImageCommon - 0x7E67EC40
+2022-06-23T04:41:35.1677614Z INFO -   - 0x000000007F464000 - 0x000000000000A000
+2022-06-23T04:41:35.1682129Z INFO - SetUefiImageMemoryAttributes - 0x000000007F464000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1686732Z INFO - SetUefiImageMemoryAttributes - 0x000000007F465000 - 0x0000000000007000 (0x0000000000020008)
+2022-06-23T04:41:35.1692456Z INFO - SetUefiImageMemoryAttributes - 0x000000007F46C000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1697410Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F46C110
+2022-06-23T04:41:35.1702446Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F46C0D0
+2022-06-23T04:41:35.1707429Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F46C0E8
+2022-06-23T04:41:35.1712370Z INFO - Loading driver 7BD9DDF7-8B83-488E-AEC9-24C78610289C
+2022-06-23T04:41:35.1717640Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E67E1C0
+2022-06-23T04:41:35.1722856Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/VirtioFsDxe/VirtioFsDxe/DEBUG/VirtioFsDxe.dll 0x7F459000
+2022-06-23T04:41:35.1734823Z INFO - Loading driver at 0x0007F458000 EntryPoint=0x0007F45FB84 VirtioFsDxe.efi
+2022-06-23T04:41:35.1740555Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E67E798
+2022-06-23T04:41:35.1745715Z INFO - ProtectUefiImageCommon - 0x7E67E1C0
+2022-06-23T04:41:35.1750885Z INFO -   - 0x000000007F458000 - 0x000000000000C000
+2022-06-23T04:41:35.1756167Z INFO - SetUefiImageMemoryAttributes - 0x000000007F458000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1761344Z INFO - SetUefiImageMemoryAttributes - 0x000000007F459000 - 0x000000000000A000 (0x0000000000020008)
+2022-06-23T04:41:35.1766366Z INFO - SetUefiImageMemoryAttributes - 0x000000007F463000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1771708Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F4630C0
+2022-06-23T04:41:35.1776778Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F4630A8
+2022-06-23T04:41:35.1781663Z INFO - Loading driver 11D92DFB-3CA9-4F93-BA2E-4780ED3E03B5
+2022-06-23T04:41:35.1786706Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E67DC40
+2022-06-23T04:41:35.1791854Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/VirtioBlkDxe/VirtioBlk/DEBUG/VirtioBlkDxe.dll 0x7F452000
+2022-06-23T04:41:35.1796650Z INFO - Loading driver at 0x0007F451000 EntryPoint=0x0007F454620 VirtioBlkDxe.efi
+2022-06-23T04:41:35.1801519Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E67D898
+2022-06-23T04:41:35.1806351Z INFO - ProtectUefiImageCommon - 0x7E67DC40
+2022-06-23T04:41:35.1811575Z INFO -   - 0x000000007F451000 - 0x0000000000007000
+2022-06-23T04:41:35.1816813Z INFO - SetUefiImageMemoryAttributes - 0x000000007F451000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1821788Z INFO - SetUefiImageMemoryAttributes - 0x000000007F452000 - 0x0000000000004000 (0x0000000000020008)
+2022-06-23T04:41:35.1826794Z INFO - SetUefiImageMemoryAttributes - 0x000000007F456000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1831718Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F456030
+2022-06-23T04:41:35.1836658Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F456000
+2022-06-23T04:41:35.1841543Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F456018
+2022-06-23T04:41:35.1851111Z INFO - Loading driver A92CDB4B-82F1-4E0B-A516-8A655D371524
+2022-06-23T04:41:35.1857595Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E67D2C0
+2022-06-23T04:41:35.1863170Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/VirtioNetDxe/VirtioNet/DEBUG/VirtioNetDxe.dll 0x7F449000
+2022-06-23T04:41:35.1868190Z INFO - Loading driver at 0x0007F448000 EntryPoint=0x0007F44D088 VirtioNetDxe.efi
+2022-06-23T04:41:35.1873243Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E67D618
+2022-06-23T04:41:35.1878136Z INFO - ProtectUefiImageCommon - 0x7E67D2C0
+2022-06-23T04:41:35.1883101Z INFO -   - 0x000000007F448000 - 0x0000000000009000
+2022-06-23T04:41:35.1888450Z INFO - SetUefiImageMemoryAttributes - 0x000000007F448000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1893385Z INFO - SetUefiImageMemoryAttributes - 0x000000007F449000 - 0x0000000000006000 (0x0000000000020008)
+2022-06-23T04:41:35.1898361Z INFO - SetUefiImageMemoryAttributes - 0x000000007F44F000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1903211Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F44F0C0
+2022-06-23T04:41:35.1908124Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F44F090
+2022-06-23T04:41:35.1913025Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F44F0A8
+2022-06-23T04:41:35.1917857Z INFO - Loading driver FAB5D4F4-83C0-4AAF-8480-442D11DF6CEA
+2022-06-23T04:41:35.1922780Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E66F140
+2022-06-23T04:41:35.1928068Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/VirtioScsiDxe/VirtioScsi/DEBUG/VirtioScsiDxe.dll 0x7F442000
+2022-06-23T04:41:35.1932970Z INFO - Loading driver at 0x0007F441000 EntryPoint=0x0007F444A28 VirtioScsiDxe.efi
+2022-06-23T04:41:35.1937894Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E66FB18
+2022-06-23T04:41:35.1942737Z INFO - ProtectUefiImageCommon - 0x7E66F140
+2022-06-23T04:41:35.1947631Z INFO -   - 0x000000007F441000 - 0x0000000000007000
+2022-06-23T04:41:35.1952728Z INFO - SetUefiImageMemoryAttributes - 0x000000007F441000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.1957678Z INFO - SetUefiImageMemoryAttributes - 0x000000007F442000 - 0x0000000000004000 (0x0000000000020008)
+2022-06-23T04:41:35.1962598Z INFO - SetUefiImageMemoryAttributes - 0x000000007F446000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.1967651Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F446030
+2022-06-23T04:41:35.1972488Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F446000
+2022-06-23T04:41:35.1977398Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F446018
+2022-06-23T04:41:35.1982247Z INFO - Loading driver 58E26F0D-CBAC-4BBA-B70F-18221415665A
+2022-06-23T04:41:35.1987209Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E66F540
+2022-06-23T04:41:35.1992536Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/VirtioRngDxe/VirtioRng/DEBUG/VirtioRngDxe.dll 0x7F43B000
+2022-06-23T04:41:35.1997316Z INFO - Loading driver at 0x0007F43A000 EntryPoint=0x0007F43D07C VirtioRngDxe.efi
+2022-06-23T04:41:35.2002297Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E671B18
+2022-06-23T04:41:35.2007118Z INFO - ProtectUefiImageCommon - 0x7E66F540
+2022-06-23T04:41:35.2012325Z INFO -   - 0x000000007F43A000 - 0x0000000000007000
+2022-06-23T04:41:35.2017511Z INFO - SetUefiImageMemoryAttributes - 0x000000007F43A000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2022410Z INFO - SetUefiImageMemoryAttributes - 0x000000007F43B000 - 0x0000000000004000 (0x0000000000020008)
+2022-06-23T04:41:35.2027352Z INFO - SetUefiImageMemoryAttributes - 0x000000007F43F000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2032159Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F43F030
+2022-06-23T04:41:35.2037067Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F43F000
+2022-06-23T04:41:35.2041923Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F43F018
+2022-06-23T04:41:35.2046751Z INFO - Loading driver 806040CA-DAD9-4978-A3B4-2D2AB0C8A48F
+2022-06-23T04:41:35.2052043Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E6717C0
+2022-06-23T04:41:35.2057421Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/QemuKernelLoaderFsDxe/QemuKernelLoaderFsDxe/DEBUG/QemuKernelLoaderFsDxe.dll 0x7F433000
+2022-06-23T04:41:35.2062139Z INFO - Loading driver at 0x0007F432000 EntryPoint=0x0007F435514 QemuKernelLoaderFsDxe.efi
+2022-06-23T04:41:35.2067025Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E671698
+2022-06-23T04:41:35.2071790Z INFO - ProtectUefiImageCommon - 0x7E6717C0
+2022-06-23T04:41:35.2076679Z INFO -   - 0x000000007F432000 - 0x0000000000008000
+2022-06-23T04:41:35.2081713Z INFO - SetUefiImageMemoryAttributes - 0x000000007F432000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2086615Z INFO - SetUefiImageMemoryAttributes - 0x000000007F433000 - 0x0000000000005000 (0x0000000000020008)
+2022-06-23T04:41:35.2091837Z INFO - SetUefiImageMemoryAttributes - 0x000000007F438000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2096590Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:35.2101571Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:35.2106459Z INFO - Error: Image at 0007F432000 start failed: Not Found
+2022-06-23T04:41:35.2111575Z INFO - SetUefiImageMemoryAttributes - 0x000000007F432000 - 0x0000000000008000 (0x0000000000000008)
+2022-06-23T04:41:35.2116716Z INFO - remove-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/QemuKernelLoaderFsDxe/QemuKernelLoaderFsDxe/DEBUG/QemuKernelLoaderFsDxe.dll 0x7F433000
+2022-06-23T04:41:35.2121373Z INFO - Loading driver E4F61863-FE2C-4B56-A8F4-08519BC439DF
+2022-06-23T04:41:35.2126311Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E6717C0
+2022-06-23T04:41:35.2131922Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/VlanConfigDxe/VlanConfigDxe/DEBUG/VlanConfigDxe.dll 0x7F431000
+2022-06-23T04:41:35.2137185Z INFO - Loading driver at 0x0007F430000 EntryPoint=0x0007F43557C VlanConfigDxe.efi
+2022-06-23T04:41:35.2142194Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E671498
+2022-06-23T04:41:35.2147008Z INFO - ProtectUefiImageCommon - 0x7E6717C0
+2022-06-23T04:41:35.2151908Z INFO -   - 0x000000007F430000 - 0x000000000000A000
+2022-06-23T04:41:35.2156918Z INFO - SetUefiImageMemoryAttributes - 0x000000007F430000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2161892Z INFO - SetUefiImageMemoryAttributes - 0x000000007F431000 - 0x0000000000007000 (0x0000000000020008)
+2022-06-23T04:41:35.2166818Z INFO - SetUefiImageMemoryAttributes - 0x000000007F438000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2172007Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F438678
+2022-06-23T04:41:35.2177122Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F438648
+2022-06-23T04:41:35.2182006Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F438660
+2022-06-23T04:41:35.2186820Z INFO - Loading driver 025BBFC7-E6A9-4B8B-82AD-6815A1AEAF4A
+2022-06-23T04:41:35.2191688Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E679040
+2022-06-23T04:41:35.2196774Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/MnpDxe/MnpDxe/DEBUG/MnpDxe.dll 0x7F422000
+2022-06-23T04:41:35.2201469Z INFO - Loading driver at 0x0007F421000 EntryPoint=0x0007F42A0EC MnpDxe.efi
+2022-06-23T04:41:35.2206398Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E679E18
+2022-06-23T04:41:35.2211762Z INFO - ProtectUefiImageCommon - 0x7E679040
+2022-06-23T04:41:35.2216703Z INFO -   - 0x000000007F421000 - 0x000000000000F000
+2022-06-23T04:41:35.2221723Z INFO - SetUefiImageMemoryAttributes - 0x000000007F421000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2226670Z INFO - SetUefiImageMemoryAttributes - 0x000000007F422000 - 0x000000000000C000 (0x0000000000020008)
+2022-06-23T04:41:35.2231550Z INFO - SetUefiImageMemoryAttributes - 0x000000007F42E000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2236409Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F42E100
+2022-06-23T04:41:35.2241275Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F42E0D0
+2022-06-23T04:41:35.2246162Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F42E0E8
+2022-06-23T04:41:35.2251271Z INFO - Loading driver 529D3F93-E8E9-4E73-B1E1-BDF6A9D50113
+2022-06-23T04:41:35.2256303Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E679340
+2022-06-23T04:41:35.2261813Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/ArpDxe/ArpDxe/DEBUG/ArpDxe.dll 0x7F418000
+2022-06-23T04:41:35.2266552Z INFO - Loading driver at 0x0007F417000 EntryPoint=0x0007F41C7C0 ArpDxe.efi
+2022-06-23T04:41:35.2271538Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E679698
+2022-06-23T04:41:35.2276355Z INFO - ProtectUefiImageCommon - 0x7E679340
+2022-06-23T04:41:35.2281293Z INFO -   - 0x000000007F417000 - 0x000000000000A000
+2022-06-23T04:41:35.2286325Z INFO - SetUefiImageMemoryAttributes - 0x000000007F417000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2291607Z INFO - SetUefiImageMemoryAttributes - 0x000000007F418000 - 0x0000000000007000 (0x0000000000020008)
+2022-06-23T04:41:35.2296514Z INFO - SetUefiImageMemoryAttributes - 0x000000007F41F000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2301380Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F41F030
+2022-06-23T04:41:35.2306241Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F41F000
+2022-06-23T04:41:35.2311115Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F41F018
+2022-06-23T04:41:35.2315947Z INFO - Loading driver 94734718-0BBC-47FB-96A5-EE7A5AE6A2AD
+2022-06-23T04:41:35.2320940Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E678B40
+2022-06-23T04:41:35.2326039Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/Dhcp4Dxe/Dhcp4Dxe/DEBUG/Dhcp4Dxe.dll 0x7F40B000
+2022-06-23T04:41:35.2331306Z INFO - Loading driver at 0x0007F40A000 EntryPoint=0x0007F412B80 Dhcp4Dxe.efi
+2022-06-23T04:41:35.2336239Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E678E98
+2022-06-23T04:41:35.2341041Z INFO - ProtectUefiImageCommon - 0x7E678B40
+2022-06-23T04:41:35.2345972Z INFO -   - 0x000000007F40A000 - 0x000000000000D000
+2022-06-23T04:41:35.2350974Z INFO - SetUefiImageMemoryAttributes - 0x000000007F40A000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2355884Z INFO - SetUefiImageMemoryAttributes - 0x000000007F40B000 - 0x000000000000A000 (0x0000000000020008)
+2022-06-23T04:41:35.2360869Z INFO - SetUefiImageMemoryAttributes - 0x000000007F415000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2365743Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F415BE8
+2022-06-23T04:41:35.2370800Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F415BB8
+2022-06-23T04:41:35.2375804Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F415BD0
+2022-06-23T04:41:35.2380635Z INFO - Loading driver 9FB1A1F3-3B71-4324-B39A-745CBB015FFF
+2022-06-23T04:41:35.2385643Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E678240
+2022-06-23T04:41:35.2390719Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/Ip4Dxe/Ip4Dxe/DEBUG/Ip4Dxe.dll 0x7F3F5000
+2022-06-23T04:41:35.2395483Z INFO - Loading driver at 0x0007F3F4000 EntryPoint=0x0007F3F75EC Ip4Dxe.efi
+2022-06-23T04:41:35.2400567Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E678718
+2022-06-23T04:41:35.2405344Z INFO - ProtectUefiImageCommon - 0x7E678240
+2022-06-23T04:41:35.2410459Z INFO -   - 0x000000007F3F4000 - 0x0000000000016000
+2022-06-23T04:41:35.2415571Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3F4000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2421202Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3F5000 - 0x0000000000013000 (0x0000000000020008)
+2022-06-23T04:41:35.2426169Z INFO - SetUefiImageMemoryAttributes - 0x000000007F408000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2431248Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F408798
+2022-06-23T04:41:35.2436123Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F408758
+2022-06-23T04:41:35.2441102Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F408770
+2022-06-23T04:41:35.2445938Z INFO - Loading driver 6D6963AB-906D-4A65-A7CA-BD40E5D6AF2B
+2022-06-23T04:41:35.2488666Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E676140
+2022-06-23T04:41:35.2489680Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/Udp4Dxe/Udp4Dxe/DEBUG/Udp4Dxe.dll 0x7F3E8000
+2022-06-23T04:41:35.2490569Z INFO - Loading driver at 0x0007F3E7000 EntryPoint=0x0007F3EEEC0 Udp4Dxe.efi
+2022-06-23T04:41:35.2491315Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E676B18
+2022-06-23T04:41:35.2491985Z INFO - ProtectUefiImageCommon - 0x7E676140
+2022-06-23T04:41:35.2492563Z INFO -   - 0x000000007F3E7000 - 0x000000000000D000
+2022-06-23T04:41:35.2493253Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3E7000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2494058Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3E8000 - 0x000000000000A000 (0x0000000000020008)
+2022-06-23T04:41:35.2494901Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3F2000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2495693Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3F2110
+2022-06-23T04:41:35.2496424Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3F20E0
+2022-06-23T04:41:35.2497157Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3F20F8
+2022-06-23T04:41:35.2497820Z INFO - Loading driver DC3641B8-2FA8-4ED3-BC1F-F9962A03454B
+2022-06-23T04:41:35.2498812Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E675040
+2022-06-23T04:41:35.2499732Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/Mtftp4Dxe/Mtftp4Dxe/DEBUG/Mtftp4Dxe.dll 0x7F3DB000
+2022-06-23T04:41:35.2500599Z INFO - Loading driver at 0x0007F3DA000 EntryPoint=0x0007F3E2240 Mtftp4Dxe.efi
+2022-06-23T04:41:35.2501341Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E675D18
+2022-06-23T04:41:35.2501992Z INFO - ProtectUefiImageCommon - 0x7E675040
+2022-06-23T04:41:35.2502585Z INFO -   - 0x000000007F3DA000 - 0x000000000000D000
+2022-06-23T04:41:35.2503322Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3DA000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2504130Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3DB000 - 0x000000000000A000 (0x0000000000020008)
+2022-06-23T04:41:35.2504947Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3E5000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2505734Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3E5110
+2022-06-23T04:41:35.2506475Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3E50E0
+2022-06-23T04:41:35.2507210Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3E50F8
+2022-06-23T04:41:35.2507876Z INFO - Loading driver 1A7E4468-2F55-4A56-903C-01265EB7622B
+2022-06-23T04:41:35.2508598Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E6753C0
+2022-06-23T04:41:35.2509493Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/TcpDxe/TcpDxe/DEBUG/TcpDxe.dll 0x7F3C5000
+2022-06-23T04:41:35.2518925Z INFO - Loading driver at 0x0007F3C4000 EntryPoint=0x0007F3C7138 TcpDxe.efi
+2022-06-23T04:41:35.2519719Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E675618
+2022-06-23T04:41:35.2520373Z INFO - ProtectUefiImageCommon - 0x7E6753C0
+2022-06-23T04:41:35.2520975Z INFO -   - 0x000000007F3C4000 - 0x0000000000016000
+2022-06-23T04:41:35.2521738Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3C4000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2524287Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3C5000 - 0x0000000000013000 (0x0000000000020008)
+2022-06-23T04:41:35.2536064Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3D8000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2536943Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3D8120
+2022-06-23T04:41:35.2537695Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3D8218
+2022-06-23T04:41:35.2538458Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3D8230
+2022-06-23T04:41:35.2539214Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3D81A0
+2022-06-23T04:41:35.2539975Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3D8218
+2022-06-23T04:41:35.2551569Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3D8230
+2022-06-23T04:41:35.2552352Z INFO - Loading driver B95E9FDA-26DE-48D2-8807-1F9107AC5E3A
+2022-06-23T04:41:35.2553052Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E6740C0
+2022-06-23T04:41:35.2553986Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/UefiPxeBcDxe/UefiPxeBcDxe/DEBUG/UefiPxeBcDxe.dll 0x7F3B1000
+2022-06-23T04:41:35.2554861Z INFO - Loading driver at 0x0007F3B0000 EntryPoint=0x0007F3B206C UefiPxeBcDxe.efi
+2022-06-23T04:41:35.2555615Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E674A98
+2022-06-23T04:41:35.2556232Z INFO - ProtectUefiImageCommon - 0x7E6740C0
+2022-06-23T04:41:35.2570561Z INFO -   - 0x000000007F3B0000 - 0x0000000000014000
+2022-06-23T04:41:35.2571393Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3B0000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2572260Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3B1000 - 0x0000000000011000 (0x0000000000020008)
+2022-06-23T04:41:35.2573319Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3C2000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.2573969Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:35.2574512Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:35.2575173Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3C2280
+2022-06-23T04:41:35.2575934Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3C2250
+2022-06-23T04:41:35.2576674Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3C2268
+2022-06-23T04:41:35.2579191Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3C22B0
+2022-06-23T04:41:35.2582428Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3C2250
+2022-06-23T04:41:35.2585117Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3C2268
+2022-06-23T04:41:35.2587696Z INFO - Loading driver 86CDDF93-4872-4597-8AF9-A35AE4D3725F
+2022-06-23T04:41:35.2590384Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E673CC0
+2022-06-23T04:41:35.2593209Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/NetworkPkg/IScsiDxe/IScsiDxe/DEBUG/IScsiDxe.dll 0x7F391000
+2022-06-23T04:41:35.2595650Z INFO - Loading driver at 0x0007F390000 EntryPoint=0x0007F392408 IScsiDxe.efi
+2022-06-23T04:41:35.2624535Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E673098
+2022-06-23T04:41:35.2625116Z INFO - ProtectUefiImageCommon - 0x7E673CC0
+2022-06-23T04:41:35.2625614Z INFO -   - 0x000000007F390000 - 0x0000000000020000
+2022-06-23T04:41:35.2626267Z INFO - SetUefiImageMemoryAttributes - 0x000000007F390000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.2627159Z INFO - SetUefiImageMemoryAttributes - 0x000000007F391000 - 0x000000000001C000 (0x0000000000020008)
+2022-06-23T04:41:35.2627894Z INFO - SetUefiImageMemoryAttributes - 0x000000007F3AD000 - 0x0000000000003000 (0x0000000000004008)
+2022-06-23T04:41:35.2628568Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3AEAD8
+2022-06-23T04:41:35.2629225Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3AEA48
+2022-06-23T04:41:35.2629859Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3AEA60
+2022-06-23T04:41:35.2630509Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3AEB08
+2022-06-23T04:41:35.2631144Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3AEA48
+2022-06-23T04:41:35.2631794Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3AEA60
+2022-06-23T04:41:35.2632425Z INFO - InstallProtocolInterface: 59324945-EC44-4C0D-B1CD-9DB139DF070C 7F3AEAC8
+2022-06-23T04:41:35.2633081Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7F3AEB78
+2022-06-23T04:41:35.2633710Z INFO - InstallProtocolInterface: 330D4706-F2A0-4E4F-A369-B66FA8D54385 7E673828
+2022-06-23T04:41:35.3907382Z INFO - InstallProtocolInterface: 7671D9D0-53DB-4173-AA69-2327F21F0BC7 7F3AEA38
+2022-06-23T04:41:35.3916219Z INFO - Loading driver 0167CCC4-D0F7-4F21-A3EF-9E64B7CDCE8B
+2022-06-23T04:41:35.3919912Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E6723C0
+2022-06-23T04:41:35.3926399Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe/DEBUG/ScsiBus.dll 0x7F389000
+2022-06-23T04:41:35.3927644Z INFO - Loading driver at 0x0007F388000 EntryPoint=0x0007F38BB6C ScsiBus.efi
+2022-06-23T04:41:35.3937242Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E672218
+2022-06-23T04:41:35.3938107Z INFO - ProtectUefiImageCommon - 0x7E6723C0
+2022-06-23T04:41:35.3939412Z INFO -   - 0x000000007F388000 - 0x0000000000008000
+2022-06-23T04:41:35.3940175Z INFO - SetUefiImageMemoryAttributes - 0x000000007F388000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.3940937Z INFO - SetUefiImageMemoryAttributes - 0x000000007F389000 - 0x0000000000005000 (0x0000000000020008)
+2022-06-23T04:41:35.3943807Z INFO - SetUefiImageMemoryAttributes - 0x000000007F38E000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.3953677Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F38E0B0
+2022-06-23T04:41:35.3954637Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F38E0E0
+2022-06-23T04:41:35.3955492Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F38E0F8
+2022-06-23T04:41:35.3959462Z INFO - Loading driver 0A66E322-3740-4CCE-AD62-BD172CECCA35
+2022-06-23T04:41:35.3963617Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E670C40
+2022-06-23T04:41:35.3968652Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe/DEBUG/ScsiDisk.dll 0x7F37C000
+2022-06-23T04:41:35.3973622Z INFO - Loading driver at 0x0007F37B000 EntryPoint=0x0007F383F5C ScsiDisk.efi
+2022-06-23T04:41:35.3978112Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E670B18
+2022-06-23T04:41:35.3982158Z INFO - ProtectUefiImageCommon - 0x7E670C40
+2022-06-23T04:41:35.3986107Z INFO -   - 0x000000007F37B000 - 0x000000000000D000
+2022-06-23T04:41:35.3990178Z INFO - SetUefiImageMemoryAttributes - 0x000000007F37B000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.3994853Z INFO - SetUefiImageMemoryAttributes - 0x000000007F37C000 - 0x000000000000A000 (0x0000000000020008)
+2022-06-23T04:41:35.3999502Z INFO - SetUefiImageMemoryAttributes - 0x000000007F386000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4004097Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F386160
+2022-06-23T04:41:35.4009050Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F386130
+2022-06-23T04:41:35.4013602Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F386148
+2022-06-23T04:41:35.4018093Z INFO - Loading driver 5BE3BDF4-53CF-46A3-A6A9-73C34A6E5EE3
+2022-06-23T04:41:35.4022556Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E670340
+2022-06-23T04:41:35.4027318Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe/DEBUG/NvmExpressDxe.dll 0x7F36F000
+2022-06-23T04:41:35.4032056Z INFO - Loading driver at 0x0007F36E000 EntryPoint=0x0007F3766C4 NvmExpressDxe.efi
+2022-06-23T04:41:35.4036687Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E66CF18
+2022-06-23T04:41:35.4041102Z INFO - ProtectUefiImageCommon - 0x7E670340
+2022-06-23T04:41:35.4046625Z INFO -   - 0x000000007F36E000 - 0x000000000000D000
+2022-06-23T04:41:35.4052086Z INFO - SetUefiImageMemoryAttributes - 0x000000007F36E000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4057031Z INFO - SetUefiImageMemoryAttributes - 0x000000007F36F000 - 0x000000000000A000 (0x0000000000020008)
+2022-06-23T04:41:35.4061944Z INFO - SetUefiImageMemoryAttributes - 0x000000007F379000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4066840Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F379170
+2022-06-23T04:41:35.4072195Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F379110
+2022-06-23T04:41:35.4077381Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F379128
+2022-06-23T04:41:35.4082353Z INFO - InstallProtocolInterface: 5C198761-16A8-4E69-972C-89D67954F81D 7F3791A0
+2022-06-23T04:41:35.4087192Z INFO - Loading driver 9622E42C-8E38-4A08-9E8F-54F784652F6B
+2022-06-23T04:41:35.4092466Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E66C1C0
+2022-06-23T04:41:35.4097622Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe/DEBUG/AcpiTableDxe.dll 0x7F364000
+2022-06-23T04:41:35.4102343Z INFO - Loading driver at 0x0007F363000 EntryPoint=0x0007F3685E8 AcpiTableDxe.efi
+2022-06-23T04:41:35.4107202Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E66C998
+2022-06-23T04:41:35.4111973Z INFO - ProtectUefiImageCommon - 0x7E66C1C0
+2022-06-23T04:41:35.4116878Z INFO -   - 0x000000007F363000 - 0x000000000000B000
+2022-06-23T04:41:35.4121952Z INFO - SetUefiImageMemoryAttributes - 0x000000007F363000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4126850Z INFO - SetUefiImageMemoryAttributes - 0x000000007F364000 - 0x0000000000007000 (0x0000000000020008)
+2022-06-23T04:41:35.4132117Z INFO - SetUefiImageMemoryAttributes - 0x000000007F36B000 - 0x0000000000003000 (0x0000000000004008)
+2022-06-23T04:41:35.4137161Z INFO - InstallProtocolInterface: FFE06BDD-6107-46A6-7BB2-5A9C7EC5275C 7E66C7A0
+2022-06-23T04:41:35.4142105Z INFO - InstallProtocolInterface: EB97088E-CFDF-49C6-BE4B-D906A5B20E86 7E66C7B0
+2022-06-23T04:41:35.4147204Z INFO - Loading driver B8E62775-BB0A-43F0-A843-5BE8B14F8CCD
+2022-06-23T04:41:35.4152188Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E66B0C0
+2022-06-23T04:41:35.4157590Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe/DEBUG/BootGraphicsResourceTableDxe.dll 0x7F35D000
+2022-06-23T04:41:35.4162400Z INFO - Loading driver at 0x0007F35C000 EntryPoint=0x0007F35EA58 BootGraphicsResourceTableDxe.efi
+2022-06-23T04:41:35.4167103Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E66C498
+2022-06-23T04:41:35.4172679Z INFO - ProtectUefiImageCommon - 0x7E66B0C0
+2022-06-23T04:41:35.4177709Z INFO -   - 0x000000007F35C000 - 0x0000000000007000
+2022-06-23T04:41:35.4182763Z INFO - SetUefiImageMemoryAttributes - 0x000000007F35C000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4187655Z INFO - SetUefiImageMemoryAttributes - 0x000000007F35D000 - 0x0000000000004000 (0x0000000000020008)
+2022-06-23T04:41:35.4192592Z INFO - SetUefiImageMemoryAttributes - 0x000000007F361000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4197504Z INFO - InstallProtocolInterface: CDEA2BD3-FC25-4C1C-B97C-B31186064990 7F3610B8
+2022-06-23T04:41:35.4203096Z INFO - InstallProtocolInterface: 4B5DC1DF-1EAA-48B2-A7E9-EAC489A00B5C 7F3610A8
+2022-06-23T04:41:35.4208052Z INFO - Loading driver 93B80004-9FB3-11D4-9A3A-0090273FC14D
+2022-06-23T04:41:35.4213169Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E66A040
+2022-06-23T04:41:35.4218272Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe/DEBUG/PciBusDxe.dll 0x7F34B000
+2022-06-23T04:41:35.4222955Z INFO - Loading driver at 0x0007F34A000 EntryPoint=0x0007F35301C PciBusDxe.efi
+2022-06-23T04:41:35.4227751Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E66BA98
+2022-06-23T04:41:35.4232447Z INFO - ProtectUefiImageCommon - 0x7E66A040
+2022-06-23T04:41:35.4237451Z INFO -   - 0x000000007F34A000 - 0x0000000000012000
+2022-06-23T04:41:35.4242427Z INFO - SetUefiImageMemoryAttributes - 0x000000007F34A000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4247440Z INFO - SetUefiImageMemoryAttributes - 0x000000007F34B000 - 0x000000000000F000 (0x0000000000020008)
+2022-06-23T04:41:35.4252561Z INFO - SetUefiImageMemoryAttributes - 0x000000007F35A000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4257371Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F35A1B0
+2022-06-23T04:41:35.4262239Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F35A180
+2022-06-23T04:41:35.4267101Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F35A198
+2022-06-23T04:41:35.4272694Z INFO - InstallProtocolInterface: 19CB87AB-2CB9-4665-8360-DDCF6054F79D 7F35A200
+2022-06-23T04:41:35.4277613Z INFO - Loading driver 83DD3B39-7CAF-4FAC-A542-E050B767E3A7
+2022-06-23T04:41:35.4282485Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E66A4C0
+2022-06-23T04:41:35.4287725Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/VirtioPciDeviceDxe/VirtioPciDeviceDxe/DEBUG/VirtioPciDeviceDxe.dll 0x7F344000
+2022-06-23T04:41:35.4293297Z INFO - Loading driver at 0x0007F343000 EntryPoint=0x0007F346184 VirtioPciDeviceDxe.efi
+2022-06-23T04:41:35.4298629Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E66AB98
+2022-06-23T04:41:35.4304040Z INFO - ProtectUefiImageCommon - 0x7E66A4C0
+2022-06-23T04:41:35.4309602Z INFO -   - 0x000000007F343000 - 0x0000000000007000
+2022-06-23T04:41:35.4315266Z INFO - SetUefiImageMemoryAttributes - 0x000000007F343000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4320801Z INFO - SetUefiImageMemoryAttributes - 0x000000007F344000 - 0x0000000000004000 (0x0000000000020008)
+2022-06-23T04:41:35.4326371Z INFO - SetUefiImageMemoryAttributes - 0x000000007F348000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4332177Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F348030
+2022-06-23T04:41:35.4337859Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F348000
+2022-06-23T04:41:35.4343447Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F348018
+2022-06-23T04:41:35.4349210Z INFO - Loading driver 0170F60C-1D40-4651-956D-F0BD9879D527
+2022-06-23T04:41:35.4354776Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E669040
+2022-06-23T04:41:35.4360537Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/Virtio10Dxe/Virtio10/DEBUG/Virtio10.dll 0x7F33B000
+2022-06-23T04:41:35.4365906Z INFO - Loading driver at 0x0007F33A000 EntryPoint=0x0007F33E814 Virtio10.efi
+2022-06-23T04:41:35.4372413Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E669E98
+2022-06-23T04:41:35.4399581Z INFO - ProtectUefiImageCommon - 0x7E669040
+2022-06-23T04:41:35.4405627Z INFO -   - 0x000000007F33A000 - 0x0000000000009000
+2022-06-23T04:41:35.4411802Z INFO - SetUefiImageMemoryAttributes - 0x000000007F33A000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4417804Z INFO - SetUefiImageMemoryAttributes - 0x000000007F33B000 - 0x0000000000006000 (0x0000000000020008)
+2022-06-23T04:41:35.4423428Z INFO - SetUefiImageMemoryAttributes - 0x000000007F341000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4428997Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3410B0
+2022-06-23T04:41:35.4434531Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F341080
+2022-06-23T04:41:35.4440244Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F341098
+2022-06-23T04:41:35.4445728Z INFO - Loading driver D6099B94-CD97-4CC5-8714-7F6312701A8A
+2022-06-23T04:41:35.4451651Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E669440
+2022-06-23T04:41:35.4457456Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/VirtioGpuDxe/VirtioGpu/DEBUG/VirtioGpuDxe.dll 0x7F331000
+2022-06-23T04:41:35.4462911Z INFO - Loading driver at 0x0007F330000 EntryPoint=0x0007F33536C VirtioGpuDxe.efi
+2022-06-23T04:41:35.4468479Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E669998
+2022-06-23T04:41:35.4474759Z INFO - ProtectUefiImageCommon - 0x7E669440
+2022-06-23T04:41:35.4480430Z INFO -   - 0x000000007F330000 - 0x000000000000A000
+2022-06-23T04:41:35.4486114Z INFO - SetUefiImageMemoryAttributes - 0x000000007F330000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4492023Z INFO - SetUefiImageMemoryAttributes - 0x000000007F331000 - 0x0000000000007000 (0x0000000000020008)
+2022-06-23T04:41:35.4497594Z INFO - SetUefiImageMemoryAttributes - 0x000000007F338000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4503293Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3380B0
+2022-06-23T04:41:35.4508818Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F336E98
+2022-06-23T04:41:35.4514317Z INFO - Loading driver 2FB92EFA-2EE0-4BAE-9EB6-7464125E1EF7
+2022-06-23T04:41:35.4519868Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E668B40
+2022-06-23T04:41:35.4525664Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Pci/UhciDxe/UhciDxe/DEBUG/UhciDxe.dll 0x7F326000
+2022-06-23T04:41:35.4531224Z INFO - Loading driver at 0x0007F325000 EntryPoint=0x0007F32B67C UhciDxe.efi
+2022-06-23T04:41:35.4536883Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E668A98
+2022-06-23T04:41:35.4542302Z INFO - ProtectUefiImageCommon - 0x7E668B40
+2022-06-23T04:41:35.4547852Z INFO -   - 0x000000007F325000 - 0x000000000000B000
+2022-06-23T04:41:35.4557803Z INFO - SetUefiImageMemoryAttributes - 0x000000007F325000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4563577Z INFO - SetUefiImageMemoryAttributes - 0x000000007F326000 - 0x0000000000008000 (0x0000000000020008)
+2022-06-23T04:41:35.4569331Z INFO - SetUefiImageMemoryAttributes - 0x000000007F32E000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4575708Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F32E0D0
+2022-06-23T04:41:35.4581471Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F32E0A0
+2022-06-23T04:41:35.4587074Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F32E0B8
+2022-06-23T04:41:35.4592609Z INFO - Loading driver BDFE430E-8F2A-4DB0-9991-6F856594777E
+2022-06-23T04:41:35.4598195Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E668240
+2022-06-23T04:41:35.4604000Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Pci/EhciDxe/EhciDxe/DEBUG/EhciDxe.dll 0x7F31A000
+2022-06-23T04:41:35.4609597Z INFO - Loading driver at 0x0007F319000 EntryPoint=0x0007F320950 EhciDxe.efi
+2022-06-23T04:41:35.4615215Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E668698
+2022-06-23T04:41:35.4620662Z INFO - ProtectUefiImageCommon - 0x7E668240
+2022-06-23T04:41:35.4626202Z INFO -   - 0x000000007F319000 - 0x000000000000C000
+2022-06-23T04:41:35.4631887Z INFO - SetUefiImageMemoryAttributes - 0x000000007F319000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4637487Z INFO - SetUefiImageMemoryAttributes - 0x000000007F31A000 - 0x0000000000009000 (0x0000000000020008)
+2022-06-23T04:41:35.4643042Z INFO - SetUefiImageMemoryAttributes - 0x000000007F323000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4648693Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3230D0
+2022-06-23T04:41:35.4669204Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3230A0
+2022-06-23T04:41:35.4676288Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3230B8
+2022-06-23T04:41:35.4682110Z INFO - Loading driver B7F50E91-A759-412C-ADE4-DCD03E7F7C28
+2022-06-23T04:41:35.4687988Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E667C40
+2022-06-23T04:41:35.4693817Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe/DEBUG/XhciDxe.dll 0x7F309000
+2022-06-23T04:41:35.4699208Z INFO - Loading driver at 0x0007F308000 EntryPoint=0x0007F3130C8 XhciDxe.efi
+2022-06-23T04:41:35.4704795Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E667798
+2022-06-23T04:41:35.4710198Z INFO - ProtectUefiImageCommon - 0x7E667C40
+2022-06-23T04:41:35.4715823Z INFO -   - 0x000000007F308000 - 0x0000000000011000
+2022-06-23T04:41:35.4721499Z INFO - SetUefiImageMemoryAttributes - 0x000000007F308000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4727069Z INFO - SetUefiImageMemoryAttributes - 0x000000007F309000 - 0x000000000000E000 (0x0000000000020008)
+2022-06-23T04:41:35.4732918Z INFO - SetUefiImageMemoryAttributes - 0x000000007F317000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4738469Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3170D0
+2022-06-23T04:41:35.4744017Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3170A0
+2022-06-23T04:41:35.4749590Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3170B8
+2022-06-23T04:41:35.4755045Z INFO - Loading driver 240612B7-A063-11D4-9A3A-0090273FC14D
+2022-06-23T04:41:35.4760583Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E667340
+2022-06-23T04:41:35.4766367Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe/DEBUG/UsbBusDxe.dll 0x7F2FC000
+2022-06-23T04:41:35.4787159Z INFO - Loading driver at 0x0007F2FB000 EntryPoint=0x0007F302D00 UsbBusDxe.efi
+2022-06-23T04:41:35.4793066Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E667698
+2022-06-23T04:41:35.4798618Z INFO - ProtectUefiImageCommon - 0x7E667340
+2022-06-23T04:41:35.4804339Z INFO -   - 0x000000007F2FB000 - 0x000000000000D000
+2022-06-23T04:41:35.4810113Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2FB000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4815702Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2FC000 - 0x000000000000A000 (0x0000000000020008)
+2022-06-23T04:41:35.4821387Z INFO - SetUefiImageMemoryAttributes - 0x000000007F306000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4827426Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F3060F0
+2022-06-23T04:41:35.4832970Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F3060C0
+2022-06-23T04:41:35.4838582Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F3060D8
+2022-06-23T04:41:35.4844012Z INFO - Loading driver 2D2E62CF-9ECF-43B7-8219-94E7FC713DFE
+2022-06-23T04:41:35.4849753Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E6660C0
+2022-06-23T04:41:35.4855592Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Usb/UsbKbDxe/UsbKbDxe/DEBUG/UsbKbDxe.dll 0x7F2F3000
+2022-06-23T04:41:35.4860990Z INFO - Loading driver at 0x0007F2F2000 EntryPoint=0x0007F2F73C8 UsbKbDxe.efi
+2022-06-23T04:41:35.4866512Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E666918
+2022-06-23T04:41:35.4871901Z INFO - ProtectUefiImageCommon - 0x7E6660C0
+2022-06-23T04:41:35.4877418Z INFO -   - 0x000000007F2F2000 - 0x0000000000009000
+2022-06-23T04:41:35.4883078Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2F2000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4899596Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2F3000 - 0x0000000000006000 (0x0000000000020008)
+2022-06-23T04:41:35.4905551Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2F9000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4911200Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F2F9130
+2022-06-23T04:41:35.4916819Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F2F9100
+2022-06-23T04:41:35.4922443Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F2F9118
+2022-06-23T04:41:35.4928070Z INFO - Loading driver 9FB4B4A7-42C0-4BCD-8540-9BCC6711F83E
+2022-06-23T04:41:35.4933666Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E666540
+2022-06-23T04:41:35.4939618Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe/DEBUG/UsbMassStorageDxe.dll 0x7F2E9000
+2022-06-23T04:41:35.4944980Z INFO - Loading driver at 0x0007F2E8000 EntryPoint=0x0007F2ED16C UsbMassStorageDxe.efi
+2022-06-23T04:41:35.4950464Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E656E18
+2022-06-23T04:41:35.4955858Z INFO - ProtectUefiImageCommon - 0x7E666540
+2022-06-23T04:41:35.4961394Z INFO -   - 0x000000007F2E8000 - 0x000000000000A000
+2022-06-23T04:41:35.4967068Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2E8000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.4972980Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2E9000 - 0x0000000000007000 (0x0000000000020008)
+2022-06-23T04:41:35.4978541Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2F0000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.4984072Z INFO - InstallProtocolInterface: 18A031AB-B443-4D1A-A5C0-0C09261E9F71 7F2F00A0
+2022-06-23T04:41:35.4989543Z INFO - InstallProtocolInterface: 107A772C-D5E1-11D4-9A46-0090273FC14D 7F2F0100
+2022-06-23T04:41:35.4995082Z INFO - InstallProtocolInterface: 6A7A5CFF-E8D9-4F70-BADA-75AB3025CE14 7F2F0118
+2022-06-23T04:41:35.5008733Z INFO - Loading driver 17985E6F-E778-4D94-AEFA-C5DD2B77E186
+2022-06-23T04:41:35.5084844Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7E6567C0
+2022-06-23T04:41:35.5085756Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/OvmfPkg/AcpiPlatformDxe/AcpiPlatformDxe/DEBUG/QemuFwCfgAcpiPlatform.dll 0x7F2DF000
+2022-06-23T04:41:35.5086606Z INFO - Loading driver at 0x0007F2DE000 EntryPoint=0x0007F2E304C QemuFwCfgAcpiPlatform.efi
+2022-06-23T04:41:35.5087264Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E656418
+2022-06-23T04:41:35.5087986Z INFO - ProtectUefiImageCommon - 0x7E6567C0
+2022-06-23T04:41:35.5088479Z INFO -   - 0x000000007F2DE000 - 0x000000000000A000
+2022-06-23T04:41:35.5089127Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2DE000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:35.5089845Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2DF000 - 0x0000000000007000 (0x0000000000020008)
+2022-06-23T04:41:35.5090575Z INFO - SetUefiImageMemoryAttributes - 0x000000007F2E6000 - 0x0000000000002000 (0x0000000000004008)
+2022-06-23T04:41:35.5091127Z INFO - Found FwCfg @ 0x9020008/0x9020000
+2022-06-23T04:41:35.5091729Z INFO - Found FwCfg DMA @ 0x9020010
+2022-06-23T04:41:35.5092348Z INFO - AcpiPlatformEntryPoint: waiting for root bridges to be connected, registered callback
+2022-06-23T04:41:35.5092831Z INFO - [Bds] Entry...
+2022-06-23T04:41:35.5093300Z INFO - [BdsDxe] Locate Variable Policy protocol - Success
+2022-06-23T04:41:35.5093926Z INFO - Variable Driver Auto Update Lang, Lang:eng, PlatformLang:en Status: Success
+2022-06-23T04:41:35.5121334Z INFO - [Variable]END_OF_DXE is signaled
+2022-06-23T04:41:35.5122111Z INFO - Initialize variable error flag (FF)
+2022-06-23T04:41:35.5224762Z INFO - PCI Bus First Scanning
+2022-06-23T04:41:35.5242116Z INFO - PciBus: Discovered PCI @ [00|00|00]
+2022-06-23T04:41:35.5258361Z INFO - 
+2022-06-23T04:41:35.5258884Z INFO - PciBus: Discovered PCI @ [00|01|00]
+2022-06-23T04:41:35.5304409Z INFO -    BAR[0]: Type =   Io32; Alignment = 0x7F;	Length = 0x80;	Offset = 0x10
+2022-06-23T04:41:35.5305063Z INFO -    BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+2022-06-23T04:41:35.5305722Z INFO -    BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+2022-06-23T04:41:35.5306149Z INFO - 
+2022-06-23T04:41:35.5306530Z INFO - PCI Bus Second Scanning
+2022-06-23T04:41:35.5306963Z INFO - PciBus: Discovered PCI @ [00|00|00]
+2022-06-23T04:41:35.5307338Z INFO - 
+2022-06-23T04:41:35.5307734Z INFO - PciBus: Discovered PCI @ [00|01|00]
+2022-06-23T04:41:35.5308268Z INFO -    BAR[0]: Type =   Io32; Alignment = 0x7F;	Length = 0x80;	Offset = 0x10
+2022-06-23T04:41:35.5308883Z INFO -    BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+2022-06-23T04:41:35.5309491Z INFO -    BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+2022-06-23T04:41:35.5309925Z INFO - 
+2022-06-23T04:41:35.5310315Z INFO - PciBus: Discovered PCI @ [00|00|00]
+2022-06-23T04:41:35.5310746Z INFO - 
+2022-06-23T04:41:35.5311134Z INFO - PciBus: Discovered PCI @ [00|01|00]
+2022-06-23T04:41:35.5327615Z INFO -    BAR[0]: Type =   Io32; Alignment = 0x7F;	Length = 0x80;	Offset = 0x10
+2022-06-23T04:41:35.5328285Z INFO -    BAR[1]: Type =  Mem32; Alignment = 0xFFF;	Length = 0x1000;	Offset = 0x14
+2022-06-23T04:41:35.5328930Z INFO -    BAR[4]: Type = PMem64; Alignment = 0x3FFF;	Length = 0x4000;	Offset = 0x20
+2022-06-23T04:41:35.5329356Z INFO - 
+2022-06-23T04:41:35.5329801Z INFO - PciHostBridge: SubmitResources for PciRoot(0x0)
+2022-06-23T04:41:35.5330465Z INFO -  I/O: Granularity/SpecificFlag = 0 / 01
+2022-06-23T04:41:35.5339604Z INFO -       Length/Alignment = 0x1000 / 0xFFF
+2022-06-23T04:41:35.5340106Z INFO -  Mem: Granularity/SpecificFlag = 32 / 00
+2022-06-23T04:41:35.5340600Z INFO -       Length/Alignment = 0x100000 / 0xFFFFF
+2022-06-23T04:41:35.5347342Z INFO -  Mem: Granularity/SpecificFlag = 64 / 00
+2022-06-23T04:41:35.5350612Z INFO -       Length/Alignment = 0x100000 / 0xFFFFF
+2022-06-23T04:41:35.5355621Z INFO - PciBus: HostBridge->SubmitResources() - Success
+2022-06-23T04:41:35.5360666Z INFO - PciHostBridge: NotifyPhase (AllocateResources)
+2022-06-23T04:41:35.5365626Z INFO -  RootBridge: PciRoot(0x0)
+2022-06-23T04:41:35.5371481Z INFO -   Mem64: Base/Length/Alignment = 8000000000/100000/FFFFF - Success
+2022-06-23T04:41:35.5376754Z INFO -   Mem: Base/Length/Alignment = 10000000/100000/FFFFF - Success
+2022-06-23T04:41:35.5382045Z INFO -   I/O: Base/Length/Alignment = 0/1000/FFF - Success
+2022-06-23T04:41:35.5387136Z INFO - PciBus: HostBridge->NotifyPhase(AllocateResources) - Success
+2022-06-23T04:41:35.5392159Z INFO - Process Option ROM: BAR Base/Length = 0/0
+2022-06-23T04:41:35.5397191Z INFO - PciBus: Resource Map for Root Bridge PciRoot(0x0)
+2022-06-23T04:41:35.5402265Z INFO - Type =   Io16; Base = 0x0;	Length = 0x1000;	Alignment = 0xFFF
+2022-06-23T04:41:35.5407389Z INFO -    Base = 0x0;	Length = 0x80;	Alignment = 0x7F;	Owner = PCI [00|01|00:10]
+2022-06-23T04:41:35.5412860Z INFO - Type =  Mem32; Base = 0x10000000;	Length = 0x100000;	Alignment = 0xFFFFF
+2022-06-23T04:41:35.5418070Z INFO -    Base = 0x10000000;	Length = 0x1000;	Alignment = 0xFFF;	Owner = PCI [00|01|00:14]
+2022-06-23T04:41:35.5423493Z INFO - Type =  Mem64; Base = 0x8000000000;	Length = 0x100000;	Alignment = 0xFFFFF
+2022-06-23T04:41:35.5428752Z INFO -    Base = 0x8000000000;	Length = 0x4000;	Alignment = 0x3FFF;	Owner = PCI [00|01|00:20]; Type = PMem64
+2022-06-23T04:41:35.5433771Z INFO - 
+2022-06-23T04:41:35.5438745Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7E661E18
+2022-06-23T04:41:35.5443901Z INFO - InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7E6552A8
+2022-06-23T04:41:35.5449142Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7E661E98
+2022-06-23T04:41:35.5454317Z INFO - InstallProtocolInterface: 4CF5B200-68B8-4CA5-9EEC-B23E3F50029A 7E6556A8
+2022-06-23T04:41:35.5459466Z INFO - InstallProtocolInterface: 30CFE3E7-3DE1-4586-BE20-DEABA1B3B793 0
+2022-06-23T04:41:35.5464624Z INFO - OnRootBridgesConnected: root bridges have been connected, installing ACPI tables
+2022-06-23T04:41:35.5474358Z INFO - InstallProtocolInterface: 928939B2-4235-462F-9580-F6A2B2C21A4F 7F2E60B0
+2022-06-23T04:41:35.6405176Z INFO - [Bds]RegisterKeyNotify: 000C/0000 80000000/00 Success
+2022-06-23T04:41:36.6230985Z INFO - [Bds]RegisterKeyNotify: 0017/0000 80000000/00 Success
+2022-06-23T04:41:36.6241261Z INFO - [Bds]RegisterKeyNotify: 0000/000D 80000000/00 Success
+2022-06-23T04:41:36.6242350Z INFO - Terminal - Mode 0, Column = 80, Row = 25
+2022-06-23T04:41:36.6243110Z INFO - Terminal - Mode 1, Column = 80, Row = 50
+2022-06-23T04:41:36.6243842Z INFO - Terminal - Mode 2, Column = 100, Row = 31
+2022-06-23T04:41:36.6245328Z INFO - [=3hInstallProtocolInterface: 387477C1-69C7-11D2-8E39-00A0C969723B 7E65F840
+2022-06-23T04:41:36.6246207Z INFO - InstallProtocolInterface: DD9E7534-7762-4698-8C14-F58517A625AA 7E65F928
+2022-06-23T04:41:36.6246952Z INFO - InstallProtocolInterface: 387477C2-69C7-11D2-8E39-00A0C969723B 7E65F858
+2022-06-23T04:41:36.6247896Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7E65F298
+2022-06-23T04:41:36.6248621Z INFO - InstallProtocolInterface: D3B36F2B-D551-11D4-9A46-0090273FC14D 0
+2022-06-23T04:41:36.6249352Z INFO - InstallProtocolInterface: D3B36F2C-D551-11D4-9A46-0090273FC14D 0
+2022-06-23T04:41:36.6250048Z INFO - InstallProtocolInterface: D3B36F2D-D551-11D4-9A46-0090273FC14D 0
+2022-06-23T04:41:36.6250698Z INFO - [=3hQemuLoadKernelImage: LoadImage(): Not Found
+2022-06-23T04:41:36.6251806Z INFO - InstallProtocolInterface: CE345171-BA0B-11D2-8E4F-00A0C969723B 7E62A320
+2022-06-23T04:41:36.6252381Z INFO -  BlockSize : 262144
+2022-06-23T04:41:36.6252815Z INFO -  LastBlock : FF
+2022-06-23T04:41:36.6253441Z INFO - InstallProtocolInterface: FA920010-6785-4941-B6EC-498C579F160A 7E62A9A0
+2022-06-23T04:41:36.6254107Z INFO - VirtioBlkInit: LbaSize=0x200[B] NumBlocks=0xFC000[Lba]
+2022-06-23T04:41:36.6254741Z INFO - VirtioBlkInit: FirstAligned=0x0[Lba] PhysBlkSize=0x1[Lba]
+2022-06-23T04:41:36.6255393Z INFO - VirtioBlkInit: OptimalTransferLengthGranularity=0x0[Lba]
+2022-06-23T04:41:36.6256089Z INFO - InstallProtocolInterface: 964E5B21-6459-11D2-8E39-00A0C969723B 7D629110
+2022-06-23T04:41:36.6256841Z INFO - InstallProtocolInterface: CE345171-BA0B-11D2-8E4F-00A0C969723B 7D629EA0
+2022-06-23T04:41:36.6257389Z INFO -  BlockSize : 512
+2022-06-23T04:41:36.6257839Z INFO -  LastBlock : FBFFF
+2022-06-23T04:41:36.6258452Z INFO - InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 7D629A18
+2022-06-23T04:41:36.6259197Z INFO - InstallProtocolInterface: 964E5B21-6459-11D2-8E39-00A0C969723B 7D6295B0
+2022-06-23T04:41:36.6259928Z INFO - InstallProtocolInterface: 8CF2F62C-BC9B-4821-808D-EC9EC421A1A0 7D629668
+2022-06-23T04:41:36.6260675Z INFO - InstallProtocolInterface: CE345171-BA0B-11D2-8E4F-00A0C969723B 7D61EE20
+2022-06-23T04:41:36.6261220Z INFO -  BlockSize : 512
+2022-06-23T04:41:36.6261665Z INFO -  LastBlock : FBFC0
+2022-06-23T04:41:36.6262281Z INFO - InstallProtocolInterface: 964E5B22-6459-11D2-8E39-00A0C969723B 7D615030
+2022-06-23T04:41:36.6262902Z INFO - Installed Fat filesystem on 7D629A98
+2022-06-23T04:41:36.6263372Z INFO -  BlockSize : 512
+2022-06-23T04:41:36.6263932Z INFO -  LastBlock : FBFFF
+2022-06-23T04:41:36.6264443Z INFO - [Bds]OsIndication: 0000000000000000
+2022-06-23T04:41:36.6265044Z INFO - [Bds]=============Begin Load Options Dumping ...=============
+2022-06-23T04:41:36.6265580Z INFO -   Driver Options:
+2022-06-23T04:41:36.6266017Z INFO -   SysPrep Options:
+2022-06-23T04:41:36.6266464Z INFO -   Boot Options:
+2022-06-23T04:41:36.6266929Z INFO -     Boot0000: UiApp 		 0x0109
+2022-06-23T04:41:36.6267457Z INFO -     Boot0001: UEFI Misc Device 		 0x0001
+2022-06-23T04:41:36.6267998Z INFO -     Boot0002: UEFI Misc Device 2 		 0x0001
+2022-06-23T04:41:36.6268540Z INFO -     Boot0003: EFI Internal Shell 		 0x0001
+2022-06-23T04:41:36.6269057Z INFO -   PlatformRecovery Options:
+2022-06-23T04:41:36.6269637Z INFO -     PlatformRecovery0000: Default PlatformRecovery 		 0x0001
+2022-06-23T04:41:36.6270448Z INFO - [Bds]=============End Load Options Dumping=============
+2022-06-23T04:41:36.6270995Z INFO - [Bds]BdsWait ...Zzzzzzzzzzzz...
+2022-06-23T04:41:36.6271497Z INFO - [Bds]BdsWait(3)..Zzzz...
+2022-06-23T04:41:36.9183107Z INFO - [Bds]BdsWait(2)..Zzzz...
+2022-06-23T04:41:37.9181199Z INFO - [Bds]BdsWait(1)..Zzzz...
+2022-06-23T04:41:38.9184668Z INFO - [Bds]Exit the waiting!
+2022-06-23T04:41:38.9204137Z INFO - [Bds]Stop Hotkey Service!
+2022-06-23T04:41:38.9213853Z INFO - [Bds]UnregisterKeyNotify: 000C/0000 Success
+2022-06-23T04:41:38.9214922Z INFO - [Bds]UnregisterKeyNotify: 0017/0000 Success
+2022-06-23T04:41:38.9215802Z INFO - [Bds]UnregisterKeyNotify: 0000/000D Success
+2022-06-23T04:41:38.9236021Z INFO - Memory  Previous  Current    Next
+2022-06-23T04:41:38.9236815Z INFO -  Type    Pages     Pages     Pages
+2022-06-23T04:41:38.9237491Z INFO - ======  ========  ========  ========
+2022-06-23T04:41:38.9238190Z INFO -   09    00000000  00000010  00000014
+2022-06-23T04:41:38.9238870Z INFO -   0A    00000000  00000020  00000028
+2022-06-23T04:41:38.9239638Z INFO -   00    00000000  00000000  00000000
+2022-06-23T04:41:38.9240314Z INFO -   06    0000012C  00000280  00000320
+2022-06-23T04:41:38.9241015Z INFO -   05    00000096  00000250  000002E4
+2022-06-23T04:41:38.9241686Z INFO -   03    000003E8  00000342  000003E8
+2022-06-23T04:41:38.9242373Z INFO -   04    00002EE0  00002185  00002EE0
+2022-06-23T04:41:38.9243041Z INFO -   01    00000014  00000000  00000014
+2022-06-23T04:41:38.9243723Z INFO -   02    00000000  00000000  00000000
+2022-06-23T04:41:38.9523465Z INFO - Memory Type Information settings change.
+2022-06-23T04:41:38.9525151Z INFO - [Bds]Booting UEFI Misc Device
+2022-06-23T04:41:38.9557072Z INFO -  BlockSize : 262144
+2022-06-23T04:41:38.9557830Z INFO -  LastBlock : FF
+2022-06-23T04:41:38.9596071Z INFO - [Bds] Expand VenHw(93E34C7E-B50E-11DF-9223-2443DFD72085,00) -> <null string>
+2022-06-23T04:41:38.9607120Z INFO - BdsDxe: failed to load Boot0001 "UEFI Misc Device" from VenHw(93E34C7E-B50E-11DF-9223-2443DFD72085,00): Not Found
+2022-06-23T04:41:38.9615676Z INFO - Memory  Previous  Current    Next
+2022-06-23T04:41:38.9619787Z INFO -  Type    Pages     Pages     Pages
+2022-06-23T04:41:38.9623789Z INFO - ======  ========  ========  ========
+2022-06-23T04:41:38.9627814Z INFO -   09    00000000  00000010  00000014
+2022-06-23T04:41:38.9632150Z INFO -   0A    00000000  00000020  00000028
+2022-06-23T04:41:38.9636831Z INFO -   00    00000000  00000000  00000000
+2022-06-23T04:41:38.9641359Z INFO -   06    0000012C  00000280  00000320
+2022-06-23T04:41:38.9651808Z INFO -   05    00000096  00000250  000002E4
+2022-06-23T04:41:38.9656728Z INFO -   03    000003E8  00000342  000003E8
+2022-06-23T04:41:38.9661433Z INFO -   04    00002EE0  000021C5  00002EE0
+2022-06-23T04:41:38.9666132Z INFO -   01    00000014  00000000  00000014
+2022-06-23T04:41:38.9670916Z INFO -   02    00000000  00000000  00000000
+2022-06-23T04:41:38.9676549Z INFO - Memory Type Information settings change.
+2022-06-23T04:41:38.9682803Z INFO - [Bds]Booting UEFI Misc Device 2
+2022-06-23T04:41:38.9694617Z INFO -  BlockSize : 512
+2022-06-23T04:41:38.9702832Z INFO -  LastBlock : FBFFF
+2022-06-23T04:41:38.9776780Z INFO -  BlockSize : 512
+2022-06-23T04:41:38.9783137Z INFO -  LastBlock : FBFFF
+2022-06-23T04:41:38.9832613Z INFO - [Bds] Expand PciRoot(0x0)/Pci(0x1,0x0) -> <null string>
+2022-06-23T04:41:38.9839284Z INFO - BdsDxe: failed to load Boot0002 "UEFI Misc Device 2" from PciRoot(0x0)/Pci(0x1,0x0): Not Found
+2022-06-23T04:41:38.9845210Z INFO - Memory  Previous  Current    Next
+2022-06-23T04:41:38.9851196Z INFO -  Type    Pages     Pages     Pages
+2022-06-23T04:41:38.9856918Z INFO - ======  ========  ========  ========
+2022-06-23T04:41:38.9862645Z INFO -   09    00000000  00000010  00000014
+2022-06-23T04:41:38.9868402Z INFO -   0A    00000000  00000020  00000028
+2022-06-23T04:41:38.9874280Z INFO -   00    00000000  00000000  00000000
+2022-06-23T04:41:38.9880515Z INFO -   06    0000012C  00000280  00000320
+2022-06-23T04:41:38.9886522Z INFO -   05    00000096  00000250  000002E4
+2022-06-23T04:41:38.9892540Z INFO -   03    000003E8  00000342  000003E8
+2022-06-23T04:41:38.9898247Z INFO -   04    00002EE0  000021C5  00002EE0
+2022-06-23T04:41:38.9903882Z INFO -   01    00000014  00000000  00000014
+2022-06-23T04:41:38.9909593Z INFO -   02    00000000  00000000  00000000
+2022-06-23T04:41:38.9915264Z INFO - Memory Type Information settings change.
+2022-06-23T04:41:38.9920928Z INFO - [Bds]Booting EFI Internal Shell
+2022-06-23T04:41:38.9927066Z INFO - [Bds] Expand Fv(64074AFE-340A-4BE6-94BA-91B5B4D0F71E)/FvFile(7C04A583-9E3E-4F1C-AD65-E05268D0B4D1) -> Fv(64074AFE-340A-4BE6-94BA-91B5B4D0F71E)/FvFile(7C04A583-9E3E-4F1C-AD65-E05268D0B4D1)
+2022-06-23T04:41:38.9933778Z INFO - BdsDxe: loading Boot0003 "EFI Internal Shell" from Fv(64074AFE-340A-4BE6-94BA-91B5B4D0F71E)/FvFile(7C04A583-9E3E-4F1C-AD65-E05268D0B4D1)
+2022-06-23T04:41:38.9939875Z INFO - InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 7D0B3440
+2022-06-23T04:41:38.9945988Z INFO - add-symbol-file /home/vsts/work/1/s/Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/AARCH64/ShellPkg/Application/Shell/Shell/DEBUG/Shell.dll 0x7BF15000
+2022-06-23T04:41:38.9951975Z INFO - Loading driver at 0x0007BF14000 EntryPoint=0x0007BF1C434 Shell.efi
+2022-06-23T04:41:38.9957852Z INFO - InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 7E657618
+2022-06-23T04:41:38.9963640Z INFO - ProtectUefiImageCommon - 0x7D0B3440
+2022-06-23T04:41:38.9969776Z INFO -   - 0x000000007BF14000 - 0x00000000000DC000
+2022-06-23T04:41:38.9976211Z INFO - SetUefiImageMemoryAttributes - 0x000000007BF14000 - 0x0000000000001000 (0x0000000000004008)
+2022-06-23T04:41:38.9982415Z INFO - SetUefiImageMemoryAttributes - 0x000000007BF15000 - 0x0000000000076000 (0x0000000000020008)
+2022-06-23T04:41:38.9988699Z INFO - SetUefiImageMemoryAttributes - 0x000000007BF8B000 - 0x0000000000065000 (0x0000000000004008)
+2022-06-23T04:41:38.9994935Z INFO - BdsDxe: starting Boot0003 "EFI Internal Shell" from Fv(64074AFE-340A-4BE6-94BA-91B5B4D0F71E)/FvFile(7C04A583-9E3E-4F1C-AD65-E05268D0B4D1)
+2022-06-23T04:41:39.0096226Z INFO - InstallProtocolInterface: 387477C2-69C7-11D2-8E39-00A0C969723B 7D0A5BA0
+2022-06-23T04:41:39.0102516Z INFO - InstallProtocolInterface: 752F3136-4E16-4FDC-A22A-E5F46812F4CA 7D0A8F98
+2022-06-23T04:41:39.0108581Z INFO - InstallProtocolInterface: 6302D008-7F9B-4F30-87AC-60C9FEF5DA4E 7BFDC410
+2022-06-23T04:41:39.0193787Z INFO - UEFI Interactive Shell v2.2
+2022-06-23T04:41:39.0200472Z INFO - EDK II
+2022-06-23T04:41:39.0207923Z INFO - UEFI v2.70 (EDK II, 0x00010000)
+2022-06-23T04:41:39.0245616Z INFO - Mapping table
+2022-06-23T04:41:39.0267754Z INFO -       FS0: Alias(s):HD0b:;BLK1:
+2022-06-23T04:41:39.0274677Z INFO -           PciRoot(0x0)/Pci(0x1,0x0)/HD(1,MBR,0xBE1AFDFA,0x3F,0xFBFC1)
+2022-06-23T04:41:39.0289864Z INFO -      BLK2: Alias(s):
+2022-06-23T04:41:39.0295708Z INFO -           VenHw(93E34C7E-B50E-11DF-9223-2443DFD72085,00)
+2022-06-23T04:41:39.0302842Z INFO -      BLK0: Alias(s):
+2022-06-23T04:41:39.0308568Z INFO -           PciRoot(0x0)/Pci(0x1,0x0)
+2022-06-23T04:41:44.0409753Z INFO - Press ESC in 5 seconds to skip startup.nsh or any other key to continue.Press ESC in 4 seconds to skip startup.nsh or any other key to continue.Press ESC in 3 seconds to skip startup.nsh or any other key to continue.Press ESC in 2 seconds to skip startup.nsh or any other key to continue.Press ESC in 1 seconds to skip startup.nsh or any other key to continue.
+2022-06-23T04:41:44.0465198Z INFO - FSOpen: Open '\startup.nsh' Success
+2022-06-23T04:41:44.0492861Z INFO - FSOpen: Open '\startup.nsh' Success
+2022-06-23T04:41:44.0510556Z INFO - FSOpen: Open '\startup.nsh' Success
+2022-06-23T04:41:44.0550601Z INFO - Shell> BOOT SUCCESS !!!
+2022-06-23T04:41:44.0664435Z INFO - 'BOOT' is not recognized as an internal or external command, operable program, or script file.
+2022-06-23T04:41:44.0685830Z INFO - Shell> reset -s
+2022-06-23T04:41:44.0712597Z INFO - Reset with <null string> (0 bytes)DXE ResetSystem2: ResetType Shutdown, Call Depth = 1.
+2022-06-23T04:41:56.4241726Z INFO - Segmentation fault (core dumped)
+2022-06-23T04:41:56.4329365Z INFO - ------------------------------------------------
+2022-06-23T04:41:56.4330559Z INFO - --------------Cmd Output Finished---------------
+2022-06-23T04:41:56.4331406Z INFO - --------- Running Time (mm:ss): 00:22 ----------
+2022-06-23T04:41:56.4332193Z INFO - ----------- Return Code: 0x0000008b ------------
+2022-06-23T04:41:56.4332923Z INFO - ------------------------------------------------
+2022-06-23T04:41:56.4333609Z CRITICAL - Flash Image failed
+2022-06-23T04:41:56.4334391Z PROGRESS - End time: 2022-06-23 04:41:56.425749	 Total time Elapsed: 0:00:22
+2022-06-23T04:41:56.4335287Z SECTION - Log file is located at: /home/vsts/work/1/s/Build/BUILDLOG_ArmVirtPkg_With_Run.txt
+2022-06-23T04:41:56.4335984Z SECTION - Summary
+2022-06-23T04:41:56.4336560Z ERROR - Error
+2022-06-23T04:41:56.4532358Z ##[debug]rc:139
+2022-06-23T04:41:56.4541155Z ##[debug]success:false
+2022-06-23T04:41:56.4596885Z ##[error]/opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build failed with return code: 139
+2022-06-23T04:41:56.4605602Z ##[debug]Processed: ##vso[task.issue type=error;]/opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build failed with return code: 139
+2022-06-23T04:41:56.4606578Z ##[debug]task result: Failed
+2022-06-23T04:41:56.4607915Z ##[error]/opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build failed with error: /opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build failed with return code: 139
+2022-06-23T04:41:56.4608938Z ##[debug]Processed: ##vso[task.issue type=error;]/opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build failed with error: /opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build failed with return code: 139
+2022-06-23T04:41:56.4611178Z ##[debug]Processed: ##vso[task.complete result=Failed;]/opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build failed with error: /opt/hostedtoolcache/Python/3.8.12/x64/bin/stuart_build failed with return code: 139
+2022-06-23T04:41:56.4620161Z ##[section]Finishing: Run to shell

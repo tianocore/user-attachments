@@ -1,0 +1,99 @@
+From 51a801a8ea689026065753112ef4f9ad3b1b1a91 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Sat, 21 Nov 2020 16:40:08 +0100
+Subject: [PATCH edk2-test 1/1] [edk2-test] [PATCH] uefi-sct/SctPkg: OpenEx
+ incorrect assertion
+
+The functional tests for OpenEx() use RecordAssertion() statements that
+lack a print code for the Tpl argument. This leads to a segmentation
+violation.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../SimpleFileSystemExBBTestFunction_OpenEx.c             | 8 ++++----
+ .../SimpleFileSystemExBBTestFunction_OpenEx.c             | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
+index c2bf9b4fdc92..193383993cbe 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
+@@ -1155,7 +1155,7 @@ BBTestOpenExBasicTestCheckpoint1_Test1_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid027,
+                      L"OpenEx() Basic Test - checkpoint1 ----Test1----Async",
+-                     L"%a:%d: FileIoEntity->Tpl, Status - %r, File Name - %",
++                     L"%a:%d: Tpl - %d, Status - %r, FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -2152,7 +2152,7 @@ BBTestOpenExBasicTestCheckpoint1_Test3_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid039,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: Tpl - %d, Status - %r, FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -2656,7 +2656,7 @@ BBTestOpenExBasicTestCheckpoint1_Test4_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid043,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async -- Test4----Open File",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: Tpl - %d, Status - %r, FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -3302,7 +3302,7 @@ BBTestOpenExBasicTestCheckpoint1_Test5_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid047,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async -- Test5---Open File",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: Tpl - %d, Status - %r, FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
+index 70ec88f1c065..894d42fc370d 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemExBBTestFunction_OpenEx.c
+@@ -1155,7 +1155,7 @@ BBTestOpenExBasicTestCheckpoint1_Test1_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid027,
+                      L"OpenEx() Basic Test - checkpoint1 ----Test1----Async",
+-                     L"%a:%d: FileIoEntity->Tpl, Status - %r, File Name - %",
++                     L"%a:%d: Tpl - %d, Status - %r, FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -2152,7 +2152,7 @@ BBTestOpenExBasicTestCheckpoint1_Test3_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid039,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: Tpl - %d, Status - %r, FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -2656,7 +2656,7 @@ BBTestOpenExBasicTestCheckpoint1_Test4_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid043,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async -- Test4----Open File",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: Tpl - %d, Status - %r, FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+@@ -3302,7 +3302,7 @@ BBTestOpenExBasicTestCheckpoint1_Test5_Async (
+                      EFI_TEST_ASSERTION_FAILED,
+                      gSimpleFileSystemExBBTestFunctionAssertionGuid047,
+                      L"OpenEx() Basic Test - checkpoint1 ---Async -- Test5---Open File",
+-                     L"%a:%d: FileIoEntity->Tpl,Status - %r,FileName - %s",
++                     L"%a:%d: Tpl - %d, Status - %r, FileName - %s",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      FileIoEntity->Tpl,
+-- 
+2.29.2
+

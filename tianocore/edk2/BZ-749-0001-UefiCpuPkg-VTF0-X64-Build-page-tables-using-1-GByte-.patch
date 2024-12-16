@@ -1,0 +1,578 @@
+From 0a9c6a87df650690fb97cf731cec8e11d4bcb9b1 Mon Sep 17 00:00:00 2001
+Message-Id: <0a9c6a87df650690fb97cf731cec8e11d4bcb9b1.1625228643.git.ashraf.ali.s@intel.com>
+From: Ashraf Ali S <ashraf.ali.s@intel.com>
+Date: Fri, 2 Jul 2021 17:41:26 +0530
+Subject: [PATCH] UefiCpuPkg VTF0 X64: Build page tables using 1-GByte Page
+ Granularity
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3473
+
+X64 Reset Vector Code can access the memory range till 4GB using the
+Linear-Address Translation to a 2-MByte Page, when user wants to use
+more than 4G using 2M Page it will leads to use more number of Page
+table entries. using the 1-GByte Page table user can use more than
+4G Memory by reducing the page table entries using 1-GByte Page,
+this patch attached can access memory range till 512GByte.
+Build Scrips for Reset Vector currently based on Python 2
+which is already EOL, needs to modify the build script based on
+Python 3, update the Binary accordingly.
+
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Harry Han <harry.han@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+Cc: Sangeetha V <sangeetha.v@intel.com>
+Signed-off-by: Ashraf Ali S <ashraf.ali.s@intel.com>
+---
+ .../Vtf0/Bin/ResetVector.ia32.port80.raw      | Bin 516 -> 484 bytes
+ .../ResetVector/Vtf0/Bin/ResetVector.ia32.raw | Bin 484 -> 468 bytes
+ .../Vtf0/Bin/ResetVector.ia32.serial.raw      | Bin 884 -> 868 bytes
+ .../Vtf0/Bin/ResetVector.x64.port80.raw       | Bin 28676 -> 12292 bytes
+ .../ResetVector/Vtf0/Bin/ResetVector.x64.raw  | Bin 28676 -> 12292 bytes
+ .../Vtf0/Bin/ResetVector.x64.serial.raw       | Bin 28676 -> 12292 bytes
+ UefiCpuPkg/ResetVector/Vtf0/Build.py          |  11 +--
+ .../ResetVector/Vtf0/Ia32/PageTables64.asm    |   2 +-
+ UefiCpuPkg/ResetVector/Vtf0/ReadMe.txt        |   2 +-
+ .../Vtf0/Tools/FixupForRawSection.py          |   4 +-
+ UefiCpuPkg/ResetVector/Vtf0/Vtf0.nasmb        |   4 +-
+ .../ResetVector/Vtf0/X64/1GPageTables.asm     |  64 ++++++++++++++++++
+ .../X64/{PageTables.asm => 2MPageTables.asm}  |   0
+ 13 files changed, 77 insertions(+), 10 deletions(-)
+ create mode 100644 UefiCpuPkg/ResetVector/Vtf0/X64/1GPageTables.asm
+ rename UefiCpuPkg/ResetVector/Vtf0/X64/{PageTables.asm => 2MPageTables.asm} (100%)
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.ia32.port80.raw b/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.ia32.port80.raw
+index 2c6ff655ded2a5855ca8f4428d559a7727eb6983..79b23c047bdc6e552d77d5c9e9aeae21ff04d91d 100644
+GIT binary patch
+delta 410
+zcmZo+dBQ9-0SF8a=rRZ}FxWCMF#Invo+zYJ-&~=>P<pEKFmr@L>EYMB8#X*^*s&i7
+zI*-2o*Lifq#%B#L{TUe;3~zVd>wJ;c9c#dNqsaO-vqO<t>wyxZ<^$|Sx+*`qBE-KP
+zRw#MZ?IF_m@c;k+44fxR?lK-MVJf=bP$9%z%Jy2m^*||G=ZV*+3=ec3YyDQrw&BCG
+zhLV39>OTT4_yTke(6spG0}_@eiX$2-m<39tfuvB0QMW|nV~~MBTOFDYFc(>?{CR!5
+z`2b5=qlIr&sV@Ka2ph)3jn)CK3=F06%+4CG<$;o&htnFZ!=g(0n4LMA4`}djk7m=n
+z@tSo9&>Du9B|zggh&^lgwVUBX-))iIZU6Ps_!-61b|^D2IPfbSNPCqzIiFFU^R?Xs
+zd4>r<#gi8>%0vL2z`!uOpJBgKz-zAkjsdS((>jm5W_tbeb@R)JfB*l#TmvLJAN+p?
+a3S}hl`Z9zAvN|lpjbXxs*L#qpCjbB+6v6TU
+
+delta 442
+zcmX9)O-lk%6n)b;mb6f&NEbm;61Fgs7G?G=i3EW`h#0jTXjjt=xN`<_@e*RfKhRH@
+zRthehQp<ioAq+%O48GjhrlO+Pox1Q2_nv#+{d#7P9J~e=HbTgQ&;mk;ijh-3kW;e(
+z2#|b@Yi!yt8wAow*Da-71;Y*UMJdG%{oGQ>0fSK3#P_%@6n3VVmKY~2sF%gXydlkT
+zz2J+}fsf;~_pRoa+J(fR`Ut;~>qat}3#muERkA!QyT~Xg^M>rg%^bM|McBYs`8V0A
+zcP&Nw(O;ogKlFmCBIg5bq<OffWLb~o2jr#sf=_+23&RMToIQfL9{47AKyeO;1a)>J
+zBhR=?>3OE6Mw4r>-vk>Al5t4>DR50tqp6HM5M^V1To7n?Y1=u`A{@A7c!=ymHGRlZ
+zJ}anuVpcRdDYzN0P#%MY-J^!^vR_OvBRp9GvF1f*Ah$29X~lhJI8j|qcKWL;$&ORN
+mb+{6FrzA&7=!a5r41gb~Ws5tejhbe+Ol`#xF!g`tAAbQ#M!vED
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.ia32.raw b/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.ia32.raw
+index e34780a3a2c9b22bd10a1d5a405e344faaff94f3..ce7faa502b858e99908bcdb397b776258205e1d5 100644
+GIT binary patch
+delta 421
+zcmaFDe1%zP0uUG;&}9%{V6bIiVEA8TJW)uczPUn$q4ZSeVde;h(!;MgckBm(&ZDpY
+zbsl}`&d9)Ec)Rmn=Zm!NSOdlzMb@vG9g56a50n@+A7C%iRr%2sA^z>KLdmOc50S=)
+z|NsAI;5=D!m+@c;Q_=N?3L)lFw%6jV2TIvGPrN>5c%buG>$g&-l7BD10Br{v65o74
+z!m|EEaYRD}vp|V7kQ6F0>XvAH3^E94n?v&f<|1pAKd)~$A7DvqwD658)#cwFVZ(U1
+z(K^7DfuU5M*;(VYJW#Upa9X2vSX3z=volBY0S*4`(QKMGUbF51+Qaa&258)`-3%Z4
+zZtt%9ub0NpD4w=MnSsH9U+F;FtJKNSjMDY5-6qI0OaQ6_1rZE@G=l)pF$@fo&qL_h
+zFuI>%zf-_#uKkVyuUXSNkGy7j{quG6%Zz{j|G(S<Bsw4be+DxMO257gVSvmG3vpwZ
+NFyZwchzJ{m0sv1?z^?!R
+
+literal 484
+zcmX9*OG_g`5Uz2YXi!K{AwfI@4Wb8^4I;k92Z}6+5k#W02QLkK9j9Rq9_&L7ZDbtq
+zqIePigaaNjIzCSdixLS)RFt&2cybqA?5!~cU5~H6s_N>tZQD+`9S{Z>1OTb`GBa#G
+zt*_G(GaClinx^RkGo#yGe2LyNvnlO${H9mTj3XK78TZswjJl#0BPWZ(PsE3m63x5<
+zkjV2pUL={H-<6y`Ayi}y>qBYR=+mmu*E{2X*HV!;FJ=@olMU=1D<ODc<ds9CLcd-$
+z>r@&PjmS*9G|11z5fTzEKTW^U3gc6Jd}Rz>i=xwezWi&|RKrFLb)7MgiLyt(A5Nap
+z{K@){_&;%jkXDHiVLej|v^%t)8c;mepB%?^+SRc((Td402KNZ-pIe~y>R7ebhG=Mi
+zG0>h98oCZ15CogOAHb`XKiHDrNJxngrv+CGHM`_x1(RWLh67mGTp&(0SUJnJ3Rcm&
+z65UvCM_?B@w(a-w1uqM*d0DnQmyjJzmTIyi$x?vuV|+aEM~V$8raq+<d#HFpKI8Y<
+TrM$1pedcB-0FmP|Qr7<gpRvyd
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.ia32.serial.raw b/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.ia32.serial.raw
+index 6dfa68eabb48a44bc50a0b7fe678f80b5cdadfd5..6503a988abdac06f9aa88f0a65f2525e12233b0a 100644
+GIT binary patch
+delta 426
+zcmeyu_JnPMtN<&s;Q?I+0R{$J1_p-zMaC0#Rrs4LR2WK6bslDpP$)h8+H+!>JIm{T
+zoku68$xYtMs2t$H#K2&9yYpV>i?r@o1I8OgcCVQoiY!|Xl$bUjU@tOI`Oy_2{_U_r
+z$*XP;k;aGr|Nm#;JXvy=@n8v4(e;K3A?8xfm(zi^wH_#C>pb!L_+($k?)of7kU&X%
+z^8pFV6U7k?70d!9(m+zE#Hd@M@iE8{piK_V2bhbjRsOub-F$#0t<l0as#KSMdxQ<+
+z;YRBKR|bYsd1hyg*YZHg&ckVq)?rble9X=q%?C92w@0&S-gwQr186V9%Rm4A|KIhO
+z`OON2k{`Q%FmEt?H#v*RP`Ks4UK&56c-jtS1_lRyr2}cNv?s4)imrd{GC`hU0?-K)
+zzyM?f2mqbLz%cndgq{tf`x*8-1-$0n?-=l!Bdznu%Ljj6Grj)ylK211_kaHXf4Teb
+e|Nos2{y&2l1two#MwlBG;>Ivx!s|Uq(h~riBD@{|
+
+delta 425
+zcmaFD_JwVNtbi=D;Q?I+0R{$J1_p-zMV1qFRYV&rRDc|Y(&L?nnIjZR54`jN@+Ky@
+zv%mcP|NsBaqZ1S4CZ1G|2xMYlFudJ)uk%G(cdP;9jUu;~%s_<>MRu(RN~~Dff$Sn<
+zl^<OZ;@=J{l)UKn5NUh})X%_qvg9`7!4jsTs|^)G%%z+!X8~2V9w_DPJn`}nP{Cvy
+z#_sxJMvz!Z5vv4H((*)cW<v$DK#2m76e_XlmS}toG6`sBAS=kuA}^IcFRuZGSXqF)
+zv_=cxs8VzO?GZMNha0T}T!DVkWOmkgsRon;tLQwO)@U6TRVvKv%)zPw6y@I@&8B(d
+zB`c7*1Be-zUOt;_%H$+G>%U$aKcjfs4rQRn_>~T%y|SO&#T1?W(j2HroM8dT6;J?X
+zO+L>6re~jL*zXkZns2{jz-!L5&Lb~R`~e2e%P;?5ivNFk_0RwRFIW8q2IYhQ&nCRS
+WJpl|r#)O5qF-(~7`Upe>LIMEmI;Oe+
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.x64.port80.raw b/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.x64.port80.raw
+index 6c0bcc47ebff84830b59047790c70d96e9488296..835f8ea423437fdd8b33470ca07b5d09e27ef5bf 100644
+GIT binary patch
+literal 12292
+zcmeI&+i#oo0mkts4Go129J)fo=$7=rD1$;94uge`K!JtR2m?x1&W9N`jtlni4!~nY
+zMKVPp5;sh{V}AhViU1dVP$**DtP&R#RiF&CsHt!04FZH}-n3u#KY(6K@yE_L{>6E&
+z?8q}SGc)VwyIqx+a)EMza)EMza)EMza)EMza)EMza)EMza)EMz@AU%z;;$<lUAkFl
+z463KNvDDER)G|66gX*QDF{oqcXbfsO9gRWt(a{*xv2-*BwStbuppK)XF{tC|XbkEH
+zbTkI_LpmCRI)RSHpiZQtF{lb1jY0L((HPW8bTkIFl8(lpendxOP^;)@4C-V$8iP88
+zj>e!?)6p2z03D4%ok~YzP(P-lF{sn%Xbfr%9gRW#gpS6beo9AUP=j<d1~o)SV^C}9
+zXbfr{9gRV)r=u~b4RkaHbvhl5LH&%5#-PriqcNzBbTkHaCLN7I{hW@*pw6PBF{rcY
+zXbfr-9gRVqLq}s!=hD#_)Mh#wgW5tzV^G6%GzN7Z9gRVqPe)@=7tqld)P;032K5U%
+z8iTrsj>e!arlT>aU((SS)Ce7oL0v*eV^CY^XbkFCbTkHaDIJYLjndH=)Ma!u26Z_d
+zjX`arqcNx}=x7Y;N;(>Yx{8j*pngq9V^CvsGzN7w9gRU<Lq}s!*V54#)OB<;26a6h
+zjY0i}j>e#FprbLUaXK1<x{;2?pngk7V^BBI(HPXtbTkHa3muI?ZKtC#s9Wi13~GXo
+z#-M&jM`KVs=x7Y;HaZ%Ex}A>3pzfffF{nG~XbkEuIvRtzn~uhy?xCYGsC(&X4C+2Q
+z8iTr@j>e#VPe)@=RXQ4jdVr3`pdO^7F{nS#(HPVp>1Yh<Avzj^dYF#JpdO*4F{nrB
+zXbkExIvRs|oQ}qz{zOM(P?K~t2K59TjX~AuXbh@OM`KWbrlT>aC+TPmszFC%P=BGL
+zF{r=N(HPX<=x7Y;?{qW<^%NbAK|M`JV^Gh~(U>K-6t5!tb>t;Rck;YuqrdUL=bx{4
+znvGRkpIdW7{gY;6;2#&X?x}y+Y^>Qix9R=*-l@h0)!%E)^-c`c=Q<~}+Y6rEU0hmw
+zI)__(+OIBn@ui;P;Qg(STL-GU?%3S3Z*rv5J34vc&eVpda_r=$4PQJrvHJ75q1wS+
+zW2>6~?G_(FIPTxIk9yv!Et~wnjg`IizRuvz)cacRcHY~P);l{tulKb-TX5}g`%rQI
+z*5dr)u)C%*aPhlOOt{h8UpuY1URfL7HPHNY>Ad2Xj!va_a%98To&8ferrNyd`W^L6
+zmDeUN>6vSej9)3$2Ya_|><kvMHCJtpY~N8ov3J{wscfvgc3a<>`#Q^Ki+!|MD~{`I
+zsSM3m-Z-$lvTpu$OQ{SO_f}LkSB6sD7_6+z!SO@g?tt3&7tinI;&HRu+wE4??d$Am
+zpR(Yu-qdH)``>)|&^gsg&+6*z`r_Xy#e=E`pDiBMui4Q)sW`hmyx{8W3Qg~u&h-5B
+zf$6=SYtB%+_?hCP8b>ZmPig6L<Wn0j{^zLw{MJ{v|AKa3KHfQg_hsXq<<-{Pon@Ub
+z7oY4dRt|T&i}x*EomKo%v&C0;Z0$Q^Yxj(;eS54m-(8rQIeL0|T`o{AP%cm|P%cm|
+pP%cm|P%cm|P%cm|@LgMA@vB4sf8V(M=BqR_v-s)J?;L$U`3*d;lz{*M
+
+literal 28676
+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
+BvabLD
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.x64.raw b/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.x64.raw
+index a78d5b407c8a106c221af127216d073cf8fdb99d..80c2de6ed5ef5e8dc5d45297fb83e7085bce0c01 100644
+GIT binary patch
+literal 12292
+zcmeI&OK)6-0mbp-n3#mun2<IGLgPGWLcx%PHx9*+hMMw7$|IOiN}=uWei;u8kTz#z
+zQfUY>BOw;3%YJ|^F=dg1Od`mpk-8udwK7GZICs-*P>WEe*U2A=&w%bop5LAMkMDTS
+zYQ~yQr_)(I+wH2lR0~uKR0~uKR0~uKR0~uKR0~uKR0~uKR0~uKe6JVy3$LzpWd5+!
+z7*tPrFyGM_)B-vhgX*QDF{o4MXbfs09gRWt(a{*xsdO|3wTO<!pcd277}RNWGzN7#
+z9gRVqK}TayXVTFa)LC>i234b@F{pkz8iP8Uj>e#t(9sywIdn7zwUmy=pngC{V^BY&
+zqcNyubTkGvKu2Rx=hD#_)OmC?26a9ijX^D^qcNxp=x7Y;M|3m>wStbupa$t^3~D7E
+zjX|xVqcNz}bTkIFhK|OdE~KL|s2|hO7}Q!i8iQI#M`KVI(a{*xPv~e2>S8(?gSv!{
+z#-N7iXbkF7IvRtzjE=^j*3;1#)CM{lgW5<(V^EjV(HPVfbTkHaB^`}HT}4M@P*>B@
+z7}Pa%GzN7o9gRU<M@M5&!*nzTwTX_#psuH*F{q!?(HPVXbTkGvLPujzH`37<)J=3W
+z2DO=v#-M&iM`KW1=x7Y;W;z;!`Z*nqL5<SU7}PCvGzRqxIvRtzm5#=sZlj|ysN3mi
+z4C)R#8iU$OM`KXi=x7Y;mvl4+btfH-LES}1V^DX~(HPV{bTkIFosPz!?xmwKs4+Sk
+zgSwB7#-Mi4(HPYIbTkI_D>@p3dVr3`pngq9V^9y$(HPWk=x7Y;Avzj^dYF#Jpngk7
+zV^F`NqcN!8)6p1IosPz!9-*T#s7L8&4C*mD8iRVAj>e##prbLUC+TPm>M1%JgL;~d
+z#-N^|qcNyw>1Yh<IXW7H8mFT%sORZu3~GXo#-JK>GzRqo9gRV~NJnE(O*$HbdWnw4
+zpkAh<F{oGQXbfs69gRW#fsV$Y{zyk-P`l`8%)A@Qcai-%@fM>yetE0e-~8hB*BeEv
+zx%B$imTztRyVV?c`^xr1jZa$5<-2Ew{?Rx%*<7Q>f%Z)A*kEI(SUkPAytMZf$J_hn
+zcJ-7eJly_Q`$&Dy1M7PZjSm;SBjZ=?&cw#aoH{<V=D)9vE&FO_aN_8m(WR}=y5(07
+z7JoGH&z|=u7L0%F=91n<U$Ja=8hz~#ivt_d-oN{+#)66CbC;CoEl={`WCpJN@cA(}
+zd;2HOFRzzOY}_-@`h5O8<&%v}rgwaJ%{Rs2$(&MeU32@6#!&5@u}wWQt>JB3q{fQg
+z&FhL4Wo*yXTf^ITG|uYXyl67(YVX|NchR9@;dHr&=605+D~4)=v$ek+Sy)>&`>v(b
+zHkP**)z;SrQy#3St;*4nW8Ln6=H4oQXIcll-P)={#YbPir~gbHe(z7mF0I#kmer?M
+zm;W{?A6!5BbouChO^@_R<vHuqi!^m;DpRvlN2U%ITh^*m_VVi(o%ugu{&M158E^jm
+zq<{X_zjFHx?Y(JRaoXM+w-pQP?GK6t#s7*|=hh$ZcIS4^Uu`O1!*u!69bLJ9bmhL$
+zl^=|@XS-j1=lmz1rMj*bs1~Res1~Res1~Res1~Res1~Res22FXEHL-!vH6dcCq7qh
+Rzx!r&I&(88?>TXI=l^%>e!Ktx
+
+literal 28676
+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
+SPx9m^JvI){eBb~48~hhX6Rzk0
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.x64.serial.raw b/UefiCpuPkg/ResetVector/Vtf0/Bin/ResetVector.x64.serial.raw
+index 61c71349a8a599916f3eeae8c5dee92efb56db71..9a24e8a752440462541a9589e514770692a838e4 100644
+GIT binary patch
+literal 12292
+zcmeI&No<sL9LDjd3`;?ADxy?DDT|5=+Jc~nO9jQc<AxRYZQQpyqvQUYG{lT(ZQ{Wg
+zk6gUT%~}sUrlROY5)WdCrfM_{V;Um~qGHE);A=uhqn`DB5A&J-d^7L7|KId5(@cMV
+zfB(GUT21MZP9U8?I)QWo=>*aVq!UOdkWL_-KsteR0_g<O3H+xguz}qrcGmAE1{&3r
+z+^KgAG-@0j1C7eiG0>>-bPP0V0v!X5nn=e$qbAWY(5PlQ1{yV)j)6u^p<|#?2hlOm
+zsDtSkXw+0X1{!q;9RrQZ(lOAe7CHtRbtoMJjhaTsK%)+$W1vyf=@@9#;dBf%>Igap
+z8a0ECfkw5`G0><Z=@@9#QFIJ6Y9<{6jhaQrK%<VPW1vyT&@s@c*>nsvs*R3;M$MsP
+zpiy(_7--ZyItCgwpN@e>9ZSbRqmH9vpi#%uG0><5bPP1=1Ud#9bs`-DjXH^rfkvH7
+z$3UYN(lOAeQ|K6I)Twj~G^(ABfkt)EG0><*bPP0VF&zVqI*pEjMlGRZpixWd7--b#
+zbPP1=3_1oHwTzB|Mx9B=K%<t^G0>>9=oo0!*>nsv>Kr--8g(um1C8pWW1vyz(J|1d
+z6?6<VY9$>5jXIx>fks_G$3UZ2(J|1d3+WhWR2Llsjk<`Afks_S$3UYlp<|#?m(nrN
+zsLSXWXw>C&3^eKrItCiGnvQ`+T}j74qpqT3pix)TG0>=M=oo0!wR8+LY7HF&jk=DG
+zfkt)HG0>>%=@@9#S~><Abpss(jk=MJfkxd#$3UZQremN{x6m=rs9Wh6Xw+?V3^eL?
+zItChb2OR^Ax|5E9M%_inK%;VW3^eL)ItChb4;=%Ix|fcDM%_opK%?%bW1vwF&@s@c
+z2k97S)I)R(H0ohG1{(DU9RrPel#YQ$_0TcUsK@9SXjGn#fkqYR7--bvbPP1=2|5NE
+zRitB}QBTq_(5R>A7--bfbPP1=89D|U^(-9&je3rbfkr(~$3WK|{57-jg^|IZGaEHB
+zxF@r*X{7$hq>;+YnU3TGW{dWH`l$6RE)`pf-@f!xp;{_VKl{a5R}{W36<c3lQogP5
+zd8s&S-O$2M3tM}O^Hun`Je28fD-2aH$_@UO`Tote{7<?1nQtE%yKZk-Pi<IF85!7=
+z9Occ`(emc8Pi;I^N5fP9e5%TpaZ<<j@|Wcux%D@-H*M=Vr<&>PS+>skCB2^1(>{OC
+zi`_GJ54GiYuJ4*&`l^=vDq`|S`7fH@%a7~%EQ-@Ig~^rIl6kFjVPbhp^}`OAKUlZB
+zuwv|m<r*&JpZAy_{rfZgi>>|GRKKkJExm4Cw&k(zC}vvnGn3nC`9<qnOW)MDlI*v$
+z*O{K>^Y>P__j-J;bjD?C3k$Pvcc0ZXR9e3J0;w=NvvNUob`r}&xzh4AYYT^DRyOx~
+zLH6w%CZ4dZI$<E$y()W0Yqjcw*|y>A;EoB|xx?>-<m{qk)tqh5wmG>oJ3H4qZ~n1X
+zYt`7jEp3?2X$|YYc-v+sdmGT!S}i+wTeZyJ)1LaDQ^&}GtEFRBQ^%~PjQsMhe(2l&
+z?v1-n$z_{n<Ob#?|IA7*GPiU5u3D`{1DzA4WG`c{c5%biEoxZ*`D$|m&Fb6M=f2^-
+z9erD?S0ArOlJh4&vN_<W53zpi`_;{>pX~RIKYWYzE84VTb#>~d^Hx`zbLICd-FvI!
+zs=F(rqm{e&)@qf-za=-1C-1~S^5)jM=6ujKXLHw__q)o&weJpit@_>lua@4X6G$hJ
+uP9U8?I)QWo=>*aVq!UOd@PC*<WpLNNZv^$duDNEF`ui&z_CK=!i^A`|H=E!9
+
+literal 28676
+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
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Build.py b/UefiCpuPkg/ResetVector/Vtf0/Build.py
+index 343c53b5ff..29f29ff0c2 100644
+--- a/UefiCpuPkg/ResetVector/Vtf0/Build.py
++++ b/UefiCpuPkg/ResetVector/Vtf0/Build.py
+@@ -1,7 +1,7 @@
+ ## @file
+ #  Automate the process of building the various reset vector types
+ #
+-#  Copyright (c) 2009, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2009 - 2021, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -32,16 +32,19 @@ for arch in ('ia32', 'x64'):
+             '-o', output,
+             'Vtf0.nasmb',
+             )
++        print(f"Command : {' '.join(commandLine)}")
+         ret = RunCommand(commandLine)
+-        print '\tASM\t' + output
+-        if ret != 0: sys.exit(ret)
++        if ret != 0:
++            print(f"something went wrong while executing the {commandLine[-1]}")
++            sys.exit()
++        print('\tASM\t' + output)
+ 
+         commandLine = (
+             'python',
+             'Tools/FixupForRawSection.py',
+             output,
+             )
+-        print '\tFIXUP\t' + output
++        print('\tFIXUP\t' + output)
+         ret = RunCommand(commandLine)
+         if ret != 0: sys.exit(ret)
+ 
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Ia32/PageTables64.asm b/UefiCpuPkg/ResetVector/Vtf0/Ia32/PageTables64.asm
+index 87a4125d4b..9cc6f56c17 100644
+--- a/UefiCpuPkg/ResetVector/Vtf0/Ia32/PageTables64.asm
++++ b/UefiCpuPkg/ResetVector/Vtf0/Ia32/PageTables64.asm
+@@ -15,7 +15,7 @@ BITS    32
+ SetCr3ForPageTables64:
+ 
+     ;
+-    ; These pages are built into the ROM image in X64/PageTables.asm
++    ; These pages are built into the ROM image in X64/1GPageTables.asm
+     ;
+     mov     eax, ADDR_OF(TopLevelPageDirectory)
+     mov     cr3, eax
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/ReadMe.txt b/UefiCpuPkg/ResetVector/Vtf0/ReadMe.txt
+index e6e5b54243..eb9dd24ee2 100644
+--- a/UefiCpuPkg/ResetVector/Vtf0/ReadMe.txt
++++ b/UefiCpuPkg/ResetVector/Vtf0/ReadMe.txt
+@@ -29,7 +29,7 @@ EBP/RBP - Pointer to the start of the Boot Firmware Volume
+ === HOW TO BUILD VTF0 ===
+ 
+ Dependencies:
+-* Python 2.5~2.7
++* Python 3.0 or newer
+ * Nasm 2.03 or newer
+ 
+ To rebuild the VTF0 binaries:
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py b/UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py
+index c77438a0ce..de771eba22 100644
+--- a/UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py
++++ b/UefiCpuPkg/ResetVector/Vtf0/Tools/FixupForRawSection.py
+@@ -1,7 +1,7 @@
+ ## @file
+ #  Apply fixup to VTF binary image for FFS Raw section
+ #
+-#  Copyright (c) 2008, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2008 - 2021, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -15,6 +15,6 @@ c = ((len(d) + 4 + 7) & ~7) - 4
+ if c > len(d):
+     c -= len(d)
+     f = open(sys.argv[1], 'wb')
+-    f.write('\x90' * c)
++    f.write(b'\x90' * c)
+     f.write(d)
+     f.close()
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Vtf0.nasmb b/UefiCpuPkg/ResetVector/Vtf0/Vtf0.nasmb
+index 493738c79c..0625efc456 100644
+--- a/UefiCpuPkg/ResetVector/Vtf0/Vtf0.nasmb
++++ b/UefiCpuPkg/ResetVector/Vtf0/Vtf0.nasmb
+@@ -2,7 +2,7 @@
+ ; @file
+ ; This file includes all other code files to assemble the reset vector code
+ ;
+-; Copyright (c) 2008 - 2013, Intel Corporation. All rights reserved.<BR>
++; Copyright (c) 2008 - 2021, Intel Corporation. All rights reserved.<BR>
+ ; SPDX-License-Identifier: BSD-2-Clause-Patent
+ ;
+ ;------------------------------------------------------------------------------
+@@ -36,7 +36,7 @@
+ %include "PostCodes.inc"
+ 
+ %ifdef ARCH_X64
+-%include "X64/PageTables.asm"
++%include "X64/1GPageTables.asm"
+ %endif
+ 
+ %ifdef DEBUG_PORT80
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/X64/1GPageTables.asm b/UefiCpuPkg/ResetVector/Vtf0/X64/1GPageTables.asm
+new file mode 100644
+index 0000000000..8ae6c4c98c
+--- /dev/null
++++ b/UefiCpuPkg/ResetVector/Vtf0/X64/1GPageTables.asm
+@@ -0,0 +1,64 @@
++;------------------------------------------------------------------------------
++; @file
++; Emits Page Tables for 1:1 mapping of the addresses 0 - 0x8000000000 (512GB)
++;
++; Copyright (c) 2021, Intel Corporation. All rights reserved.<BR>
++; SPDX-License-Identifier: BSD-2-Clause-Patent
++; Linear-Address Translation to a 1-GByte Page
++;
++;------------------------------------------------------------------------------
++
++BITS    64
++
++%define ALIGN_TOP_TO_4K_FOR_PAGING
++
++%define PAGE_PRESENT            0x01
++%define PAGE_READ_WRITE         0x02
++%define PAGE_USER_SUPERVISOR    0x04
++%define PAGE_WRITE_THROUGH      0x08
++%define PAGE_CACHE_DISABLE      0x010
++%define PAGE_ACCESSED           0x020
++%define PAGE_DIRTY              0x040
++%define PAGE_PAT                0x080
++%define PAGE_GLOBAL             0x0100
++%define PAGE_1G                 0x80
++
++%define PAGE_PDP_ATTR (PAGE_ACCESSED + \
++                       PAGE_READ_WRITE + \
++                       PAGE_PRESENT)
++
++%define PAGE_PDP_1G_ATTR (PAGE_ACCESSED + \
++                       PAGE_READ_WRITE + \
++                       PAGE_PRESENT + \
++                       PAGE_1G)
++
++%define PGTBLS_OFFSET(x) ((x) - TopLevelPageDirectory)
++%define PGTBLS_ADDR(x) (ADDR_OF(TopLevelPageDirectory) + (x))
++
++%define PDP(offset) (ADDR_OF(TopLevelPageDirectory) + (offset) + \
++                     PAGE_PDP_ATTR)
++
++%define PDP_1G(x) ((x << 30) + PAGE_PDP_1G_ATTR)
++
++ALIGN 16
++
++TopLevelPageDirectory:
++
++    ;
++    ; Top level Page Directory Pointers (1 * 512GB entry)
++    ;
++    DQ      PDP(0x1000)
++
++
++    TIMES 0x1000-PGTBLS_OFFSET($) DB 0
++    ;
++    ; Next level Page Directory Pointers (512 * 1GB entries => 512GB)
++    ;
++%assign i 0
++%rep      512
++    DQ    PDP_1G(i)
++    %assign i i+1
++%endrep
++
++
++EndOfPageTables:
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/X64/PageTables.asm b/UefiCpuPkg/ResetVector/Vtf0/X64/2MPageTables.asm
+similarity index 100%
+rename from UefiCpuPkg/ResetVector/Vtf0/X64/PageTables.asm
+rename to UefiCpuPkg/ResetVector/Vtf0/X64/2MPageTables.asm
+-- 
+2.32.0.windows.1
+

@@ -1,0 +1,248 @@
+From 9587272a43b1a326de1f02eaa592ca1a7c847c2c Mon Sep 17 00:00:00 2001
+From: Joey Vagedes <joeyvagedes@microsoft.com>
+Date: Wed, 28 Sep 2022 10:01:29 -0700
+Subject: [PATCH] Add dynamic BaseTools selection for Pytools build
+
+When using pytools to build OvmfPkg, EmulatorPkg, or ArmVirtPkg, add the
+ability to dynamically determine which BaseTools to build with. The Pypi
+BaseTools will be used if present, otherwise defaulting to the in-tree
+Basetools.
+
+Signed-off-by: Joey Vagedes <Joeyvagedes@microsoft.com>
+---
+ ArmVirtPkg/PlatformCI/PlatformBuild.py  | 33 ++++++++++++++++++++--
+ EmulatorPkg/PlatformCI/PlatformBuild.py | 37 +++++++++++++++++++++++--
+ OvmfPkg/PlatformCI/PlatformBuildLib.py  | 37 +++++++++++++++++++++++--
+ 3 files changed, 100 insertions(+), 7 deletions(-)
+
+diff --git a/ArmVirtPkg/PlatformCI/PlatformBuild.py b/ArmVirtPkg/PlatformCI/PlatformBuild.py
+index dff653e919eb..7af8360b38a4 100644
+--- a/ArmVirtPkg/PlatformCI/PlatformBuild.py
++++ b/ArmVirtPkg/PlatformCI/PlatformBuild.py
+@@ -7,6 +7,7 @@
+ import os
+ import logging
+ import io
++import importlib
+ 
+ from edk2toolext.environment import shell_environment
+ from edk2toolext.environment.uefi_build import UefiBuilder
+@@ -40,6 +41,9 @@ class CommonPlatform():
+ 
+ class SettingsManager(UpdateSettingsManager, SetupSettingsManager, PrEvalSettingsManager):
+ 
++    def __init__(self):
++        self.UseBuiltInBaseTools = None
++
+     def GetPackagesSupported(self):
+         ''' return iterable of edk2 packages supported by this build.
+         These should be edk2 workspace relative paths '''
+@@ -105,7 +109,18 @@ def GetActiveScopes(self):
+         scopes = CommonPlatform.Scopes
+         ActualToolChainTag = shell_environment.GetBuildVars().GetValue("TOOL_CHAIN_TAG", "")
+ 
+-        if GetHostInfo().os.upper() == "LINUX" and ActualToolChainTag.upper().startswith("GCC"):
++        is_linux = GetHostInfo().os.upper() == "LINUX"
++
++        if self.UseBuiltInBaseTools is None:
++            if importlib.util.find_spec('edk2basetools') is not None:
++                self.UseBuiltInBaseTools = True
++            else:
++                self.UseBuiltInBaseTools = False
++
++        if self.UseBuiltInBaseTools is True:
++            scopes += ('pipbuild-unix') if is_linux else ('pipbuild-win',)
++
++        if is_linux and ActualToolChainTag.upper().startswith("GCC"):
+             if "AARCH64" in self.ActualArchitectures:
+                 scopes += ("gcc_aarch64_linux",)
+             if "ARM" in self.ActualArchitectures:
+@@ -149,6 +164,7 @@ def GetPlatformDscAndConfig(self) -> tuple:
+ 
+ class PlatformBuilder(UefiBuilder, BuildSettingsManager):
+     def __init__(self):
++        self.UseBuiltInBaseTools = None
+         UefiBuilder.__init__(self)
+ 
+     def AddCommandLineOptions(self, parserObj):
+@@ -179,7 +195,20 @@ def GetActiveScopes(self):
+         ActualToolChainTag = shell_environment.GetBuildVars().GetValue("TOOL_CHAIN_TAG", "")
+         Arch = shell_environment.GetBuildVars().GetValue("TARGET_ARCH", "")
+ 
+-        if GetHostInfo().os.upper() == "LINUX" and ActualToolChainTag.upper().startswith("GCC"):
++        is_linux = GetHostInfo().os.upper() == "LINUX"
++
++        if self.UseBuiltInBaseTools is None:
++            if importlib.util.find_spec('edk2basetools') is not None:
++                self.UseBuiltInBaseTools = True
++                logging.warning("Using Pip Tools based BaseTools")
++            else:
++                self.UseBuiltInBaseTools = False
++                logging.warning("Falling back to using in-tree BaseTools")
++
++        if self.UseBuiltInBaseTools is True:
++            scopes += ('pipbuild-unix') if is_linux else ('pipbuild-win',)
++
++        if is_linux and ActualToolChainTag.upper().startswith("GCC"):
+             if "AARCH64" == Arch:
+                 scopes += ("gcc_aarch64_linux",)
+             elif "ARM" == Arch:
+diff --git a/EmulatorPkg/PlatformCI/PlatformBuild.py b/EmulatorPkg/PlatformCI/PlatformBuild.py
+index 6defbf6ef148..640eb4cbf116 100644
+--- a/EmulatorPkg/PlatformCI/PlatformBuild.py
++++ b/EmulatorPkg/PlatformCI/PlatformBuild.py
+@@ -7,6 +7,7 @@
+ import os
+ import logging
+ import io
++import importlib
+ 
+ from edk2toolext.environment import shell_environment
+ from edk2toolext.environment.uefi_build import UefiBuilder
+@@ -40,6 +41,9 @@ class CommonPlatform():
+ 
+ class SettingsManager(UpdateSettingsManager, SetupSettingsManager, PrEvalSettingsManager):
+ 
++    def __init__(self):
++        self.UseBuiltInBaseTools = None
++
+     def GetPackagesSupported(self):
+         ''' return iterable of edk2 packages supported by this build.
+         These should be edk2 workspace relative paths '''
+@@ -100,7 +104,20 @@ def GetWorkspaceRoot(self):
+ 
+     def GetActiveScopes(self):
+         ''' return tuple containing scopes that should be active for this process '''
+-        return CommonPlatform.Scopes
++        scopes = CommonPlatform.Scopes
++
++        is_linux = GetHostInfo().os.upper() == "LINUX"
++
++        if self.UseBuiltInBaseTools is None:
++            if importlib.util.find_spec('edk2basetools') is not None:
++                self.UseBuiltInBaseTools = True
++            else:
++                self.UseBuiltInBaseTools = False
++
++        if self.UseBuiltInBaseTools is True:
++            scopes += ('pipbuild-unix') if is_linux else ('pipbuild-win',)
++
++        return scopes
+ 
+     def FilterPackagesToTest(self, changedFilesList: list, potentialPackagesList: list) -> list:
+         ''' Filter other cases that this package should be built
+@@ -135,6 +152,7 @@ def GetPlatformDscAndConfig(self) -> tuple:
+ 
+ class PlatformBuilder(UefiBuilder, BuildSettingsManager):
+     def __init__(self):
++        self.UseBuiltInBaseTools = None
+         UefiBuilder.__init__(self)
+ 
+     def AddCommandLineOptions(self, parserObj):
+@@ -161,7 +179,22 @@ def GetPackagesPath(self):
+ 
+     def GetActiveScopes(self):
+         ''' return tuple containing scopes that should be active for this process '''
+-        return CommonPlatform.Scopes
++        scopes = CommonPlatform.Scopes
++
++        is_linux = GetHostInfo().os.upper() == "LINUX"
++
++        if self.UseBuiltInBaseTools is None:
++            if importlib.util.find_spec('edk2basetools') is not None:
++                self.UseBuiltInBaseTools = True
++                logging.warning("Using Pip Tools based BaseTools")
++            else:
++                self.UseBuiltInBaseTools = False
++                logging.warning("Falling back to using in-tree BaseTools")
++
++        if self.UseBuiltInBaseTools is True:
++            scopes += ('pipbuild-unix') if is_linux else ('pipbuild-win',)
++
++        return scopes
+ 
+     def GetName(self):
+         ''' Get the name of the repo, platform, or product being build '''
+diff --git a/OvmfPkg/PlatformCI/PlatformBuildLib.py b/OvmfPkg/PlatformCI/PlatformBuildLib.py
+index bfef9849c749..eb9a4e5d53d8 100644
+--- a/OvmfPkg/PlatformCI/PlatformBuildLib.py
++++ b/OvmfPkg/PlatformCI/PlatformBuildLib.py
+@@ -7,6 +7,7 @@
+ import os
+ import logging
+ import io
++import importlib
+ 
+ from edk2toolext.environment import shell_environment
+ from edk2toolext.environment.uefi_build import UefiBuilder
+@@ -14,7 +15,7 @@
+ from edk2toolext.invocables.edk2_setup import SetupSettingsManager, RequiredSubmodule
+ from edk2toolext.invocables.edk2_update import UpdateSettingsManager
+ from edk2toolext.invocables.edk2_pr_eval import PrEvalSettingsManager
+-from edk2toollib.utility_functions import RunCmd
++from edk2toollib.utility_functions import RunCmd, GetHostInfo
+ 
+ 
+     # ####################################################################################### #
+@@ -22,6 +23,9 @@
+     # ####################################################################################### #
+ class SettingsManager(UpdateSettingsManager, SetupSettingsManager, PrEvalSettingsManager):
+ 
++    def __init__(self):
++        self.UseBuiltInBaseTools = None
++
+     def GetPackagesSupported(self):
+         ''' return iterable of edk2 packages supported by this build.
+         These should be edk2 workspace relative paths '''
+@@ -81,7 +85,19 @@ def GetWorkspaceRoot(self):
+ 
+     def GetActiveScopes(self):
+         ''' return tuple containing scopes that should be active for this process '''
+-        return CommonPlatform.Scopes
++
++        scopes = CommonPlatform.Scopes
++        is_linux = GetHostInfo().os.upper() == "LINUX"
++        if self.UseBuiltInBaseTools is None:
++            if importlib.util.find_spec('edk2basetools') is not None:
++                self.UseBuiltInBaseTools = True
++            else:
++                self.UseBuiltInBaseTools = False
++
++        if self.UseBuiltInBaseTools is True:
++            scopes += ('pipbuild-unix') if is_linux else ('pipbuild-win',)
++
++        return scopes
+ 
+     def FilterPackagesToTest(self, changedFilesList: list, potentialPackagesList: list) -> list:
+         ''' Filter other cases that this package should be built
+@@ -118,6 +134,7 @@ def GetPlatformDscAndConfig(self) -> tuple:
+     # ####################################################################################### #
+ class PlatformBuilder( UefiBuilder, BuildSettingsManager):
+     def __init__(self):
++        self.UseBuiltInBaseTools = None
+         UefiBuilder.__init__(self)
+ 
+     def AddCommandLineOptions(self, parserObj):
+@@ -144,7 +161,21 @@ def GetPackagesPath(self):
+ 
+     def GetActiveScopes(self):
+         ''' return tuple containing scopes that should be active for this process '''
+-        return CommonPlatform.Scopes
++
++        scopes = CommonPlatform.Scopes
++        is_linux = GetHostInfo().os.upper() == "LINUX"
++        if self.UseBuiltInBaseTools is None:
++            if importlib.util.find_spec('edk2basetools') is not None:
++                self.UseBuiltInBaseTools = True
++                logging.warning("Using Pip Tools based BaseTools")
++            else:
++                self.UseBuiltInBaseTools = False
++                logging.warning("Falling back to using in-tree BaseTools")
++
++        if self.UseBuiltInBaseTools is True:
++            scopes += ('pipbuild-unix') if is_linux else ('pipbuild-win',)           
++
++        return scopes
+ 
+     def GetName(self):
+         ''' Get the name of the repo, platform, or product being build '''

@@ -1,0 +1,38 @@
+From 226f79adcc67ea9e677e7cd3d6e03d179fceb48d Mon Sep 17 00:00:00 2001
+From: Ruiyu Ni <ruiyu.ni@intel.com>
+Date: Mon, 15 Jan 2018 11:44:38 +0800
+Subject: [PATCH 3/3] MdeModulePkg/FrameBufferBltLib: Fix copying of unaligned
+ memory
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Reported-by: Christian Ehrhardt <ehrhardt@genua.de>
+Signed-off-by: Christian Ehrhardt <ehrhardt@genua.de>
+Cc: Star Zeng <star.zeng@intel.com>
+Reviewed-by: Ruiyu Ni <ruiyu.ni@intel.com>
+---
+ MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c b/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
+index c88469859b..78dc0c0b51 100644
+--- a/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
++++ b/MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.c
+@@ -280,6 +280,7 @@ FrameBufferBltLibVideoFill (
+     SizeInBytes = WidthInBytes * Height;
+     if (SizeInBytes >= 8) {
+       SetMem32 (Destination, SizeInBytes & ~3, (UINT32) WideFill);
++      Destination += SizeInBytes & ~3;
+       SizeInBytes &= 3;
+     }
+     if (SizeInBytes > 0) {
+@@ -297,6 +298,7 @@ FrameBufferBltLibVideoFill (
+         SizeInBytes = WidthInBytes;
+         if (SizeInBytes >= 8) {
+           SetMem64 (Destination, SizeInBytes & ~7, WideFill);
++          Destination += SizeInBytes & ~7;
+           SizeInBytes &= 7;
+         }
+         if (SizeInBytes > 0) {
+-- 
+2.15.1.windows.2
+

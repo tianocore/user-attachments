@@ -1,0 +1,25 @@
+From 08b77222c99bed34f6edcb9d1ea9366e606059cd Mon Sep 17 00:00:00 2001
+From: BrentHoltsclaw <brent.holtsclaw@intel.com>
+Date: Thu, 2 May 2019 16:47:39 -0700
+Subject: [PATCH 4/6] fix infinite loop
+
+---
+ NetworkPkg/Ip6Dxe/Ip6Nd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/NetworkPkg/Ip6Dxe/Ip6Nd.c b/NetworkPkg/Ip6Dxe/Ip6Nd.c
+index 67d7022a76..d0ba7a0f71 100644
+--- a/NetworkPkg/Ip6Dxe/Ip6Nd.c
++++ b/NetworkPkg/Ip6Dxe/Ip6Nd.c
+@@ -2338,7 +2338,7 @@ Ip6ProcessRouterAdvertise (
+       // Silently ignore unrecognized options
+       //
+       NetbufCopy (Packet, Offset + sizeof (UINT8), sizeof (UINT8), &Length);
+-      if (Length <= 0) {
++      if (Length <= 0 || ((UINT16)Length * 8 > MAX_UINT16-Offset)) {
+         goto Exit;
+       }
+ 
+-- 
+2.20.1.windows.1
+

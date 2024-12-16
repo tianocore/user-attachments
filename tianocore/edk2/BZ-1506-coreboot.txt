@@ -1,0 +1,490 @@
+[DEBUG]  BS: BS_PAYLOAD_BOOT entry times (exec / console): 2 / 14 ms
+[DEBUG]  mp_park_aps done after 0 msecs.
+[DEBUG]  Jumping to boot code at 0x00803344(0x6f9e0000)
+[SPEW ]  CPU0: stack: 0x6fbbdc80 - 0x6fbbfc80, lowest used address 0x6fbbf4d0, stack used: 1968 bytes
+sizeof(UINTN) = 0x4
+Guessing Top of Lower Usable DRAM:
+0. 0000000000000000 - 0000000000000FFF [10]
+1. 0000000000001000 - 000000000009FFFF [01]
+2. 00000000000A0000 - 00000000000FFFFF [02]
+3. 0000000000100000 - 000000006F997FFF [01]
+4. 000000006F998000 - 000000006FFFFFFF [10]
+5. 0000000070000000 - 000000007E7FFFFF [02]
+6. 00000000C0000000 - 00000000EFFFFFFF [02]
+7. 00000000FC800000 - 00000000FC87FFFF [02]
+8. 00000000FD800000 - 00000000FE7FFFFF [02]
+9. 00000000FEB00000 - 00000000FECFFFFF [02]
+10. 00000000FED20000 - 00000000FED7FFFF [02]
+11. 00000000FEDC0000 - 00000000FEDDFFFF [02]
+12. 0000000100000000 - 00000004817FFFFF [01]
+Assuming TOLUD = 0x7E800000
+Building ResourceDescriptorHobs for usable memory:
+0. 0000000000000000 - 0000000000000FFF [10]
+1. 0000000000001000 - 000000000009FFFF [01]
+buildhob: base = 0x1000, size = 0x9F000, type = 0x0
+2. 00000000000A0000 - 00000000000FFFFF [02]
+3. 0000000000100000 - 000000006F997FFF [01]
+buildhob: base = 0x100000, size = 0x6F898000, type = 0x0
+4. 000000006F998000 - 000000006FFFFFFF [10]
+5. 0000000070000000 - 000000007E7FFFFF [02]
+6. 00000000C0000000 - 00000000EFFFFFFF [02]
+7. 00000000FC800000 - 00000000FC87FFFF [02]
+8. 00000000FD800000 - 00000000FE7FFFFF [02]
+9. 00000000FEB00000 - 00000000FECFFFFF [02]
+10. 00000000FED20000 - 00000000FED7FFFF [02]
+11. 00000000FEDC0000 - 00000000FEDDFFFF [02]
+12. 0000000100000000 - 00000004817FFFFF [01]
+buildhob: base = 0x100000000, size = 0x381800000, type = 0x0
+Create smbios table gUniversalPayloadSmbiosTableGuid guid hob
+Find CbMemTable Id 0x534D4254, base 6F998000, size 0x8000
+Detected Smbios Table at 0x6F998000
+Create ACPI table gUniversalPayloadAcpiTableGuid guid hob
+Find CbMemTable Id 0x41435049, base 6F9A0000, size 0x40000
+Detected ACPI Table at 0x6F9A0000
+Rsdp at 0x6F9A0000
+Rsdt at 0x6F9A0030, Xsdt at 0x6F9A00E0
+Found Fadt in Rsdt
+Found MM config address in Rsdt
+PmCtrl  Reg 0x1804
+PmTimer Reg 0x1808
+Reset   Reg 0xCF9
+Reset   Value 0x6
+PmEvt   Reg 0x1800
+PmGpeEn Reg 0x1870
+PcieBaseAddr 0xC0000000
+PcieBaseSize 0x10000000
+Create acpi board info guid hob
+Building ResourceDescriptorHobs for reserved memory:
+0. 0000000000000000 - 0000000000000FFF [10]
+buildhob: base = 0x0, size = 0x1000, type = 0x5
+1. 0000000000001000 - 000000000009FFFF [01]
+2. 00000000000A0000 - 00000000000FFFFF [02]
+buildhob: base = 0xA0000, size = 0x60000, type = 0x5
+3. 0000000000100000 - 000000006F997FFF [01]
+4. 000000006F998000 - 000000006FFFFFFF [10]
+buildhob: base = 0x6F998000, size = 0x668000, type = 0x5
+5. 0000000070000000 - 000000007E7FFFFF [02]
+buildhob: base = 0x70000000, size = 0xE800000, type = 0x5
+6. 00000000C0000000 - 00000000EFFFFFFF [02]
+buildhob: base = 0xC0000000, size = 0x30000000, type = 0x1
+7. 00000000FC800000 - 00000000FC87FFFF [02]
+buildhob: base = 0xFC800000, size = 0x80000, type = 0x1
+8. 00000000FD800000 - 00000000FE7FFFFF [02]
+buildhob: base = 0xFD800000, size = 0x1000000, type = 0x1
+9. 00000000FEB00000 - 00000000FECFFFFF [02]
+buildhob: base = 0xFEB00000, size = 0x200000, type = 0x1
+10. 00000000FED20000 - 00000000FED7FFFF [02]
+buildhob: base = 0xFED20000, size = 0x60000, type = 0x1
+11. 00000000FEDC0000 - 00000000FEDDFFFF [02]
+buildhob: base = 0xFEDC0000, size = 0x20000, type = 0x1
+12. 0000000100000000 - 00000004817FFFFF [01]
+DxeCoreEntryPoint = 0x4DE7833
+PayloadEntry: AddressBits=42 5LevelPaging=0 1GPage=1
+Pml5=1 Pml4=8 Pdp=512 TotalPage=9
+HandOffToDxeCore() Stack Base: 0x4DAF000, Stack Size: 0x20000
+PROGRESS CODE: V03040003 I0
+Loading driver C68DAA4E-7AB5-41E8-A91D-5954421053F3
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F541CC0
+Loading driver at 0x0006F53D000 EntryPoint=0x0006F53DE81 BlSupportDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F53A598
+ProtectUefiImageCommon - 0x6F541CC0
+  - 0x000000006F53D000 - 0x0000000000001E40
+PROGRESS CODE: V03040002 I0
+Failed to add memory space :0xFEC00000 0x1000
+PROGRESS CODE: V03040003 I0
+Loading driver F80697E9-7FD6-4665-8646-88E33EF71DFC
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F541240
+Loading driver at 0x0006F513000 EntryPoint=0x0006F517A3C SecurityStubDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F541818
+ProtectUefiImageCommon - 0x6F541240
+  - 0x000000006F513000 - 0x0000000000007A40
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 94AB2F58-1438-4EF1-9152-18941A3A0E68 6F51A3D8
+InstallProtocolInterface: A46423E3-4617-49F1-B9FF-D1BFA9115839 6F51A3D0
+InstallProtocolInterface: 15853D7C-3DDF-43E0-A1CB-EBF85B8F872C 6F51A3B0
+PROGRESS CODE: V03040003 I0
+Loading driver 1A1E4886-9517-440E-9FDE-3BE44CEE2136
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F53C7C0
+Loading driver at 0x0006F4DB000 EntryPoint=0x0006F4E36CE CpuDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F53C118
+ProtectUefiImageCommon - 0x6F53C7C0
+  - 0x000000006F4DB000 - 0x000000000001B2C0
+PROGRESS CODE: V03040002 I0
+Paging: added 512 pages to page table pool
+CurrentPagingContext:
+  MachineType   - 0x8664
+  PageTableBase - 0x4A01000
+  Attributes    - 0xC0000006
+InstallProtocolInterface: 26BACCB1-6F42-11D4-BCE7-0080C73C8881 6F4EF4C0
+MemoryProtectionCpuArchProtocolNotify:
+ProtectUefiImageCommon - 0x4DF6628
+  - 0x0000000004DCF000 - 0x0000000000031000
+ProtectUefiImageCommon - 0x6F5447C0
+  - 0x000000006F52A000 - 0x000000000000C980
+ProtectUefiImageCommon - 0x6F543B40
+  - 0x000000006F523000 - 0x0000000000006580
+ProtectUefiImageCommon - 0x6F5428C0
+  - 0x000000006F86C000 - 0x0000000000006000
+SetUefiImageMemoryAttributes - 0x000000006F86C000 - 0x0000000000001000 (0x0000000000004000)
+SetUefiImageMemoryAttributes - 0x000000006F86D000 - 0x0000000000003000 (0x0000000000020000)
+SetUefiImageMemoryAttributes - 0x000000006F870000 - 0x0000000000002000 (0x0000000000004000)
+ProtectUefiImageCommon - 0x6F53A140
+  - 0x000000006F866000 - 0x0000000000006000
+SetUefiImageMemoryAttributes - 0x000000006F866000 - 0x0000000000001000 (0x0000000000004000)
+SetUefiImageMemoryAttributes - 0x000000006F867000 - 0x0000000000004000 (0x0000000000020000)
+SetUefiImageMemoryAttributes - 0x000000006F86B000 - 0x0000000000001000 (0x0000000000004000)
+ProtectUefiImageCommon - 0x6F541CC0
+  - 0x000000006F53D000 - 0x0000000000001E40
+ProtectUefiImageCommon - 0x6F541240
+  - 0x000000006F513000 - 0x0000000000007A40
+ProtectUefiImageCommon - 0x6F53C7C0
+  - 0x000000006F4DB000 - 0x000000000001B2C0
+ConvertPages: failed to find range 0 - FFF
+ConvertPages: failed to find range A0000 - BFFFF
+ConvertPages: failed to find range C0000 - FFFFF
+ConvertPages: failed to find range 6F998000 - 6FFFFFFF
+ConvertPages: failed to find range 70000000 - 7E7FFFFF
+ConvertPages: failed to find range C0000000 - EFFFFFFF
+ConvertPages: failed to find range FC800000 - FC87FFFF
+ConvertPages: failed to find range FD800000 - FE7FFFFF
+ConvertPages: failed to find range FEB00000 - FEBFFFFF
+ConvertPages: failed to find range FEC00000 - FEC00FFF
+ConvertPages: failed to find range FEC01000 - FEC7FFFF
+ConvertPages: failed to find range FEC80000 - FECFFFFF
+Failed to update capability: [18] 00000000FED00000 - 00000000FED003FF (C000000000000001 -> C000000000026001)
+ConvertPages: failed to find range FED20000 - FED7FFFF
+ConvertPages: failed to find range FEDC0000 - FEDDFFFF
+AP Loop Mode is 1
+AP Vector: non-16-bit = 6F522000/44A
+WakeupBufferStart = 87000, WakeupBufferSize = DD
+AP Vector: 16-bit = 87000/39, ExchangeInfo = 87039/A4
+CpuDxe: 5-Level Paging = 0
+APIC MODE is 2
+MpInitLib: Find 1 processors in system.
+GetMicrocodePatchInfoFromHob: Microcode patch cache HOB is not found.
+CPU[0000]: Microcode revision = 00000000, expected = 00000000
+Detect CPU count: 1
+Does not find any HOB stored CPU BIST information!
+InstallProtocolInterface: 3FDDA605-A76E-4F46-AD29-12F4531B3D08 6F4EF460
+PROGRESS CODE: V03040003 I0
+Loading driver C8339973-A563-4561-B858-D8476F9DEFC4
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F53B140
+Loading driver at 0x0006F51E000 EntryPoint=0x0006F51EE8C Metronome.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F53B718
+ProtectUefiImageCommon - 0x6F53B140
+  - 0x000000006F51E000 - 0x0000000000001B00
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 26BACCB2-6F42-11D4-BCE7-0080C73C8881 6F51F980
+PROGRESS CODE: V03040003 I0
+Loading driver B601F8C4-43B7-4784-95B1-F4226CB40CEE
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F5378C0
+Loading driver at 0x0006F860000 EntryPoint=0x0006F862528 RuntimeDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F537798
+ProtectUefiImageCommon - 0x6F5378C0
+  - 0x000000006F860000 - 0x0000000000006000
+SetUefiImageMemoryAttributes - 0x000000006F860000 - 0x0000000000001000 (0x0000000000004008)
+SetUefiImageMemoryAttributes - 0x000000006F861000 - 0x0000000000003000 (0x0000000000020008)
+SetUefiImageMemoryAttributes - 0x000000006F864000 - 0x0000000000002000 (0x0000000000004008)
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: B7DFB4E1-052F-449F-87BE-9818FC91B733 6F8640C0
+PROGRESS CODE: V03040003 I0
+Loading driver 4B28E4C7-FF36-4E10-93CF-A82159E777C5
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F521CC0
+Loading driver at 0x0006F85A000 EntryPoint=0x0006F85C7DB ResetSystemRuntimeDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F521818
+ProtectUefiImageCommon - 0x6F521CC0
+  - 0x000000006F85A000 - 0x0000000000006000
+SetUefiImageMemoryAttributes - 0x000000006F85A000 - 0x0000000000001000 (0x0000000000004008)
+SetUefiImageMemoryAttributes - 0x000000006F85B000 - 0x0000000000003000 (0x0000000000020008)
+SetUefiImageMemoryAttributes - 0x000000006F85E000 - 0x0000000000002000 (0x0000000000004008)
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 27CFAC88-46CC-11D4-9A38-0090273FC14D 0
+InstallProtocolInterface: 9DA34AE0-EAF9-4BBF-8EC3-FD60226C44BE 6F85E148
+InstallProtocolInterface: 695D7835-8D47-4C11-AB22-FA8ACCE7AE7A 6F85E188
+InstallProtocolInterface: 2DF6BA0B-7092-440D-BD04-FB091EC3F3C1 6F85E108
+PROGRESS CODE: V03040003 I0
+Loading driver CBD2E4D5-7068-4FF5-B462-9822B4AD8D60
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F520B40
+Loading driver at 0x0006F84A000 EntryPoint=0x0006F853C04 VariableRuntimeDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F520098
+ProtectUefiImageCommon - 0x6F520B40
+  - 0x000000006F84A000 - 0x0000000000010000
+SetUefiImageMemoryAttributes - 0x000000006F84A000 - 0x0000000000001000 (0x0000000000004008)
+SetUefiImageMemoryAttributes - 0x000000006F84B000 - 0x000000000000D000 (0x0000000000020008)
+SetUefiImageMemoryAttributes - 0x000000006F858000 - 0x0000000000002000 (0x0000000000004008)
+PROGRESS CODE: V03040002 I0
+Variable driver will work at emulated non-volatile variable mode!
+Variable driver will work with auth variable format!
+InstallProtocolInterface: CD3D0A05-9E24-437C-A891-1EE053DB7638 6F858280
+InstallProtocolInterface: AF23B340-97B4-4685-8D4F-A3F28169B21D 6F858250
+InstallProtocolInterface: 1E5668E2-8481-11D4-BCF1-0080C73C8881 0
+NOTICE - AuthVariableLibInitialize() returns Unsupported!
+Variable driver will continue to work without auth variable support!
+RecordSecureBootPolicyVarData GetVariable SecureBoot Status E
+InstallProtocolInterface: 6441F818-6362-4E44-B570-7DBA31DD2453 0
+VarCheckLibRegisterSetVariableCheckHandler - 0x6F84FC90 Success
+InstallProtocolInterface: 81D1675C-86F6-48DF-BD95-9A6E4F0925C3 6F8581E0
+PROGRESS CODE: V03040003 I0
+Loading driver A19B1FE7-C1BC-49F8-875F-54A5D542443F
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F51DBC0
+Loading driver at 0x0006F50D000 EntryPoint=0x0006F50E567 CpuIo2Dxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F51DF18
+ProtectUefiImageCommon - 0x6F51DBC0
+  - 0x000000006F50D000 - 0x0000000000002180
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: AD61F191-AE5F-4C0E-B9FA-E869D288C64F 6F50F000
+PROGRESS CODE: V03040003 I0
+Loading driver 96B5C032-DF4C-4B6E-8232-438DCF448D0E
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F51D240
+Loading driver at 0x0006F511000 EntryPoint=0x0006F512078 NullMemoryTestDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F51D518
+ProtectUefiImageCommon - 0x6F51D240
+  - 0x000000006F511000 - 0x0000000000001E40
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 309DE7F1-7F5E-4ACE-B49C-531BE5AA95EF 6F512C80
+PROGRESS CODE: V03040003 I0
+Loading driver 348C4D62-BFBD-4882-9ECE-C80BB1C4783B
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F51CCC0
+Loading driver at 0x0006F499000 EntryPoint=0x0006F4B357F HiiDatabase.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F51CB18
+ProtectUefiImageCommon - 0x6F51CCC0
+  - 0x000000006F499000 - 0x0000000000020840
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: E9CA4775-8657-47FC-97E7-7ED65A084324 6F4B93A8
+InstallProtocolInterface: 0FD96974-23AA-4CDC-B9CB-98D17750322A 6F4B9420
+InstallProtocolInterface: EF9FC172-A1B2-4693-B327-6D32FC416042 6F4B9448
+InstallProtocolInterface: 587E72D7-CC50-4F79-8209-CA291FC1A10F 6F4B94A0
+InstallProtocolInterface: 0A8BADD5-03B8-4D19-B128-7B8F0EDAA596 6F4B94D0
+InstallProtocolInterface: 31A6406A-6BDF-4E46-B2A2-EBAA89C40920 6F4B93C8
+InstallProtocolInterface: 1A1241E6-8F19-41A9-BC0E-E8EF39E06546 6F4B93F0
+PROGRESS CODE: V03040003 I0
+Loading driver 13AC6DD0-73D0-11D4-B06B-00AA00BD6DE7
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F51BBC0
+Loading driver at 0x0006F4FF000 EntryPoint=0x0006F5036C8 EbcDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F51B098
+ProtectUefiImageCommon - 0x6F51BBC0
+  - 0x000000006F4FF000 - 0x0000000000006080
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 13AC6DD1-73D0-11D4-B06B-00AA00BD6DE7 6F51B998
+InstallProtocolInterface: 96F46153-97A7-4793-ACC1-FA19BF78EA97 6F504A60
+InstallProtocolInterface: 2755590C-6F3C-42FA-9EA4-A3BA543CDA25 6F51B198
+InstallProtocolInterface: AAEACCFD-F27B-4C17-B610-75CA1F2DFB52 6F51B318
+PROGRESS CODE: V03040003 I0
+Loading driver F9D88642-0737-49BC-81B5-6889CD57D9EA
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F510B40
+Loading driver at 0x0006F4FA000 EntryPoint=0x0006F4FC8E7 SmbiosDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F51B818
+ProtectUefiImageCommon - 0x6F510B40
+  - 0x000000006F4FA000 - 0x0000000000004180
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 03583FF6-CB36-4940-947E-B9B39F4AFAF7 6F4FDFF0
+SmbiosAdd: Smbios type 0 with size 0x72 is added to 32-bit table
+SmbiosAdd: Smbios type 0 with size 0x72 is added to 64-bit table
+SmbiosCreateTable: Initialize 32-bit entry point structure
+SmbiosCreateTable() re-allocate SMBIOS 32-bit table
+SmbiosCreateTable: Initialize 64-bit entry point structure
+SmbiosCreate64BitTable() re-allocate SMBIOS 64-bit table
+SmbiosAdd: Smbios type 1 with size 0x49 is added to 32-bit table
+SmbiosAdd: Smbios type 1 with size 0x49 is added to 64-bit table
+SmbiosAdd: Smbios type 2 with size 0x2A is added to 32-bit table
+SmbiosAdd: Smbios type 2 with size 0x2A is added to 64-bit table
+SmbiosAdd: Smbios type 3 with size 0x1D is added to 32-bit table
+SmbiosAdd: Smbios type 3 with size 0x1D is added to 64-bit table
+SmbiosAdd: Smbios type 4 with size 0x61 is added to 32-bit table
+SmbiosAdd: Smbios type 4 with size 0x61 is added to 64-bit table
+SmbiosAdd: Smbios type 7 with size 0x23 is added to 32-bit table
+SmbiosAdd: Smbios type 7 with size 0x23 is added to 64-bit table
+SmbiosAdd: Smbios type 7 with size 0x23 is added to 32-bit table
+SmbiosAdd: Smbios type 7 with size 0x23 is added to 64-bit table
+SmbiosAdd: Smbios type 7 with size 0x23 is added to 32-bit table
+SmbiosAdd: Smbios type 7 with size 0x23 is added to 64-bit table
+SmbiosAdd: Smbios type 7 with size 0x23 is added to 32-bit table
+SmbiosAdd: Smbios type 7 with size 0x23 is added to 64-bit table
+SmbiosAdd: Smbios type 15 with size 0x19 is added to 32-bit table
+SmbiosAdd: Smbios type 15 with size 0x19 is added to 64-bit table
+SmbiosAdd: Smbios type 16 with size 0x19 is added to 32-bit table
+SmbiosAdd: Smbios type 16 with size 0x19 is added to 64-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 64-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 64-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 64-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 64-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 64-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 64-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 64-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 32-bit table
+SmbiosAdd: Smbios type 17 with size 0x70 is added to 64-bit table
+SmbiosAdd: Smbios type 19 with size 0x21 is added to 32-bit table
+SmbiosAdd: Smbios type 19 with size 0x21 is added to 64-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 32-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 64-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 32-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 64-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 32-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 64-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 32-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 64-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 32-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 64-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 32-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 64-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 32-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 64-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 32-bit table
+SmbiosAdd: Smbios type 20 with size 0x25 is added to 64-bit table
+SmbiosAdd: Smbios type 32 with size 0xD is added to 32-bit table
+SmbiosAdd: Smbios type 32 with size 0xD is added to 64-bit table
+SmbiosAdd: Smbios type 41 with size 0x26 is added to 32-bit table
+SmbiosAdd: Smbios type 41 with size 0x26 is added to 64-bit table
+SmbiosAdd: Smbios type 41 with size 0x22 is added to 32-bit table
+SmbiosAdd: Smbios type 41 with size 0x22 is added to 64-bit table
+SmbiosAdd: Smbios type 41 with size 0x28 is added to 32-bit table
+SmbiosAdd: Smbios type 41 with size 0x28 is added to 64-bit table
+SmbiosAdd: Smbios type 133 with size 0x15 is added to 32-bit table
+SmbiosAdd: Smbios type 133 with size 0x15 is added to 64-bit table
+PROGRESS CODE: V03040003 I0
+Loading driver 9A5163E7-5C29-453F-825C-837A46A81E15
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F50A2C0
+Loading driver at 0x0006F4F7000 EntryPoint=0x0006F4F8A94 SerialDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F50A618
+ProtectUefiImageCommon - 0x6F50A2C0
+  - 0x000000006F4F7000 - 0x00000000000027C0
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: BB25CF6F-F1D4-11D2-9A0C-0090273FC1FD 6F4F9540
+InstallProtocolInterface: 09576E91-6D3F-11D2-8E39-00A0C969723B 6F4F9620
+PROGRESS CODE: V03040003 I0
+Loading driver 9622E42C-8E38-4A08-9E8F-54F784652F6B
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F5091C0
+Loading driver at 0x0006F4CB000 EntryPoint=0x0006F4CF770 AcpiTableDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F509B98
+ProtectUefiImageCommon - 0x6F5091C0
+  - 0x000000006F4CB000 - 0x0000000000007A00
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: FFE06BDD-6107-46A6-7BB2-5A9C7EC5275C 6F509620
+InstallProtocolInterface: EB97088E-CFDF-49C6-BE4B-D906A5B20E86 6F509630
+PROGRESS CODE: V03040003 I0
+Loading driver 6CE6B0DE-781C-4F6C-B42D-98346C614BEC
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F5080C0
+Loading driver at 0x0006F4D3000 EntryPoint=0x0006F4D4BEC HpetTimerDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F508A98
+ProtectUefiImageCommon - 0x6F5080C0
+  - 0x000000006F4D3000 - 0x0000000000003880
+PROGRESS CODE: V03040002 I0
+Init HPET Timer Driver
+HPET Base Address = 0xFED00000
+  HPET_GENERAL_CAPABILITIES_ID  = 0x031ABA858086A701
+  HPET_GENERAL_CONFIGURATION    = 0x0000000000000000
+  HPET_GENERAL_INTERRUPT_STATUS = 0x0000000000000000
+  HPET_MAIN_COUNTER             = 0x000000001E6645BC
+  HPET Main Counter Period      = 52083333 (fs)
+  HPET_TIMER0_CONFIGURATION     = 0x00F0000000008030
+  HPET_TIMER0_COMPARATOR        = 0xFFFFFFFFFFFFFFFF
+  HPET_TIMER0_MSI_ROUTE         = 0x0000000000000000
+  HPET_TIMER1_CONFIGURATION     = 0x00F0000000008000
+  HPET_TIMER1_COMPARATOR        = 0x00000000FFFFFFFF
+  HPET_TIMER1_MSI_ROUTE         = 0x0000000000000000
+  HPET_TIMER2_CONFIGURATION     = 0x00F0080000008000
+  HPET_TIMER2_COMPARATOR        = 0x000000006FCCDAE0
+  HPET_TIMER2_MSI_ROUTE         = 0x0000000000000000
+  HPET_TIMER3_CONFIGURATION     = 0x00F0100000008000
+  HPET_TIMER3_COMPARATOR        = 0x00000000FFFFFFFF
+  HPET_TIMER3_MSI_ROUTE         = 0x0000000000000000
+  HPET_TIMER4_CONFIGURATION     = 0x000000000000C000
+  HPET_TIMER4_COMPARATOR        = 0x00000000FFFFFFFF
+  HPET_TIMER4_MSI_ROUTE         = 0x0000000000000000
+  HPET_TIMER5_CONFIGURATION     = 0x000000000000C000
+  HPET_TIMER5_COMPARATOR        = 0x00000000FFFFFFFF
+  HPET_TIMER5_MSI_ROUTE         = 0x0000000000000000
+  HPET_TIMER6_CONFIGURATION     = 0x000000000000C000
+  HPET_TIMER6_COMPARATOR        = 0x00000000FFFFFFFF
+  HPET_TIMER6_MSI_ROUTE         = 0x0000000000000000
+  HPET_TIMER7_CONFIGURATION     = 0x000000000000C000
+  HPET_TIMER7_COMPARATOR        = 0x00000000FFFFFFFF
+  HPET_TIMER7_MSI_ROUTE         = 0x0000000000000000
+Choose 64-bit HPET timer.
+HPET Interrupt Mode MSI
+HPET Interrupt Vector     = 0x40
+HPET Counter Mask         = 0xFFFFFFFFFFFFFFFF
+HPET Timer Period         = 100000
+HPET Timer Count          = 0x000000000002EE00
+HPET_TIMER0_CONFIGURATION = 0x00F000000000C034
+HPET_TIMER0_COMPARATOR    = 0x000000001E6F0FBD
+HPET_TIMER0_MSI_ROUTE     = 0xFEE0000000000140
+InstallProtocolInterface: 26BACCB3-6F42-11D4-BCE7-0080C73C8881 6F4D6680
+PROGRESS CODE: V03040003 I0
+Loading driver 42857F0A-13F2-4B21-8A23-53D3F714B840
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F5084C0
+Loading driver at 0x0006F846000 EntryPoint=0x0006F847FD7 CapsuleRuntimeDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F507F18
+ProtectUefiImageCommon - 0x6F5084C0
+  - 0x000000006F846000 - 0x0000000000004000
+SetUefiImageMemoryAttributes - 0x000000006F846000 - 0x0000000000001000 (0x0000000000004008)
+SetUefiImageMemoryAttributes - 0x000000006F847000 - 0x0000000000002000 (0x0000000000020008)
+SetUefiImageMemoryAttributes - 0x000000006F849000 - 0x0000000000001000 (0x0000000000004008)
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 5053697E-2CBC-4819-90D9-0580DEEE5754 0
+PROGRESS CODE: V03040003 I0
+Loading driver AD608272-D07F-4964-801E-7BD3B7888652
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F5071C0
+Loading driver at 0x0006F842000 EntryPoint=0x0006F843D1D MonotonicCounterRuntimeDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F507418
+ProtectUefiImageCommon - 0x6F5071C0
+  - 0x000000006F842000 - 0x0000000000004000
+SetUefiImageMemoryAttributes - 0x000000006F842000 - 0x0000000000001000 (0x0000000000004008)
+SetUefiImageMemoryAttributes - 0x000000006F843000 - 0x0000000000002000 (0x0000000000020008)
+SetUefiImageMemoryAttributes - 0x000000006F845000 - 0x0000000000001000 (0x0000000000004008)
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 1DA97072-BDDC-4B30-99F1-72A0B56FFF2A 0
+PROGRESS CODE: V03040003 I0
+Loading driver 378D7B65-8DA9-4773-B6E4-A47826A833E1
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F506140
+Loading driver at 0x0006F83C000 EntryPoint=0x0006F83F32F PcRtc.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F506E18
+ProtectUefiImageCommon - 0x6F506140
+  - 0x000000006F83C000 - 0x0000000000006000
+SetUefiImageMemoryAttributes - 0x000000006F83C000 - 0x0000000000001000 (0x0000000000004008)
+SetUefiImageMemoryAttributes - 0x000000006F83D000 - 0x0000000000004000 (0x0000000000020008)
+SetUefiImageMemoryAttributes - 0x000000006F841000 - 0x0000000000001000 (0x0000000000004008)
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: 27CFAC87-46CC-11D4-9A38-0090273FC14D 0
+PROGRESS CODE: V03040003 I0
+Loading driver EBF342FE-B1D3-4EF8-957C-8048606FF671
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F4DABC0
+Loading driver at 0x0006F43D000 EntryPoint=0x0006F44F09C SetupBrowser.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F4DAF18
+ProtectUefiImageCommon - 0x6F4DABC0
+  - 0x000000006F43D000 - 0x000000000001B100
+PROGRESS CODE: V03040002 I0
+InstallProtocolInterface: B9D4C360-BCFB-4F9B-9298-53C136982258 6F457B70
+InstallProtocolInterface: A770C357-B693-4E6D-A6CF-D21C728E550B 6F457BA0
+InstallProtocolInterface: 1F73B18D-4630-43C1-A1DE-6F80855D7DA4 6F457B80
+PROGRESS CODE: V03040003 I0
+Loading driver 128FB770-5E79-4176-9E51-9BB268A17DD1
+InstallProtocolInterface: 5B1B31A1-9562-11D2-8E3F-00A0C969723B 6F4D9040
+Loading driver at 0x0006F466000 EntryPoint=0x0006F46E26F PciHostBridgeDxe.efi
+InstallProtocolInterface: BC62157E-3E33-4FEC-9920-2D3B36D750DF 6F4D9D18
+ProtectUefiImageCommon - 0x6F4D9040
+  - 0x000000006F466000 - 0x000000000000E240
+PROGRESS CODE: V03040002 I0
+InitRootBridge: populated root bus 0, with room for 130 subordinate bus(es)
+RootBridge: PciRoot(0x0)
+  Support/Attr: 7001F / 7001F
+    DmaAbove4G: No
+NoExtConfSpace: No
+     AllocAttr: 0 ()
+           Bus: 0 - 82 Translation=0
+            Io: 2000 - EFBF Translation=0
+           Mem: 7EA00000 - FE03EFFF Translation=0
+    MemAbove4G: 481800000 - FFFEFFFFEFFFFFFF Translation=0
+          PMem: FFFFFFFFFFFFFFFF - 0 Translation=0
+   PMemAbove4G: FFFFFFFFFFFFFFFF - 0 Translation=0
+
+ASSERT_EFI_ERROR (Status = Not Found)
+
+DXE_ASSERT!: [PciHostBridgeDxe] /home/cssdesk/PTL_SDV/tianocore/edk2/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c (389): !(((INTN)(RETURN_STATUS)(CheckStatus)) < 0)

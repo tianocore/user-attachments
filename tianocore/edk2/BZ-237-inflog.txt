@@ -1,0 +1,371 @@
+
+Unused global variable in file: MdeModulePkg/Application/HelloWorld/HelloWorld.c
+mstringhelptokenid, line 29
+
+Inf redundant definition in file: MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf
+DebugAgentLib, line 77
+PerformanceLib, line 79
+
+Unused global variable in file: MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterGraphics.c
+mcrlfstring, line 19
+
+Unused global variable in file: MdeModulePkg/Universal/Disk/PartitionDxe/Udf.c
+gudfdevpathguid, line 45
+
+Unused global variable in file: MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableDxe/FirmwarePerformanceDxe.c
+mlegacybootevent, line 48
+mreadytobootevent, line 47
+
+Dead code function in file: MdeModulePkg/Universal/DebugSupportDxe/Ia32/PlDebugSupport.c
+interruptdistrubutionhub, line 271
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcInt.c
+returnebcstack, line 1276
+getebcstack, line 1243
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcExecute.c
+ebcexecute, line 1423
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/X64/EbcSupport.c
+pushu64, line 110
+executeebcimageentrypoint, line 306
+ebcinterpret, line 155
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcDebuggerHook.c
+ebcdebuggerhookexecuteend, line 118
+ebcdebuggerhookexecuteebcimageentrypoint, line 75
+ebcdebuggerhookexecutestart, line 104
+ebcdebuggerhookebcinterpret, line 90
+ebcdebuggerhookunload, line 44
+
+Inf redundant definition in file: MdeModulePkg/Universal/EbcDxe/EbcDxe.inf
+gEfiEbcSimpleDebuggerProtocolGuid, line 72
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbSupportString.c
+stricmpunicodeandascii, line 415
+asciitoupper, line 335
+strgetnewtokenfield, line 679
+patchforstrtokenafter, line 713
+strgetnexttokenfield, line 696
+strtokenfield, line 606
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbHook.c
+ebcdebuggerhookexecuteend, line 620
+ebcdebuggerhookexecuteebcimageentrypoint, line 500
+ebcdebuggerhookebcinterpret, line 521
+ebcdebuggerhookexecutestart, line 541
+ebcdebuggerhookunload, line 423
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcExecute.c
+ebcexecute, line 1423
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbCmdExtIo.c
+debuggerextioiw, line 59
+debuggerextioow, line 142
+debuggerextioib, line 30
+debuggerextioid, line 87
+debuggerextiood, line 170
+debuggerextioob, line 114
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbDisasmSupport.c
+edbprintimmdata64n, line 686
+edbsetoffset, line 38
+edbprintdata32s, line 930
+edbprintdata8s, line 868
+edbprintimmdata8, line 556
+edbprintimmdata16, line 582
+edbprintimmdata64, line 634
+edbprintdata64s, line 961
+edbprintdata16s, line 899
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbSupportUI.c
+edbsprint, line 709
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbCmdExtPci.c
+debuggerextpcicfgb, line 84
+debuggerextpcipcid, line 57
+debuggerextpcipcil, line 30
+debuggerextpcicfgw, line 112
+debuggerextpcicfgd, line 139
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/X64/EbcSupport.c
+pushu64, line 110
+executeebcimageentrypoint, line 306
+ebcinterpret, line 155
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcInt.c
+returnebcstack, line 1276
+getebcstack, line 1243
+
+Unused global variable in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbSupportString.c
+mfieldbuffer, line 487
+
+Inf redundant definition in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger.inf
+gEfiEbcSimpleDebuggerProtocolGuid, line 98
+
+Dead code function in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbSupportString.c
+asciistrtokenfield, line 892
+strtokenline, line 567
+stricmpunicodeandascii, line 415
+asciistrgetnexttokenline, line 948
+xtoi, line 26
+asciistrgetnexttokenfield, line 982
+lxtoi, line 90
+asciitoupper, line 335
+asciistrbrk, line 824
+asciistrtokenline, line 853
+patchforstrtokenbefore, line 750
+asciistrgetnewtokenfield, line 965
+patchforasciistrtokenbefore, line 1036
+strgetnewtokenline, line 645
+asciiatoi, line 269
+patchforstrtokenafter, line 713
+asciistrspn, line 786
+strcmpunicodeandascii, line 356
+asciistrgetnewtokenline, line 931
+strgetnexttokenfield, line 696
+atoi, line 155
+asciixtoi, line 205
+strgetnexttokenline, line 662
+patchforasciistrtokenafter, line 999
+strbrk, line 538
+strtokenfield, line 606
+strduplicate, line 470
+strgetnewtokenfield, line 679
+strspn, line 499
+strendwith, line 439
+
+Unused global variable in file: MdeModulePkg/Universal/EbcDxe/EbcDebugger/EdbSupportString.c
+mfieldbuffer, line 487
+mlinebuffer, line 486
+masciilinebuffer, line 773
+masciifieldbuffer, line 774
+
+Dead code function in file: MdeModulePkg/Universal/Acpi/BootScriptExecutorDxe/X64/SetIdtEntry.c
+acquirepage, line 193
+pagefaulthandler, line 228
+
+Unused global variable in file: MdeModulePkg/Universal/Acpi/BootScriptExecutorDxe/X64/SetIdtEntry.c
+mpagefaultindex, line 33
+
+Unused global variable in file: MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableSmm/FirmwarePerformanceSmm.c
+msmramisoutofresource, line 52
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regcomp.c
+onig_set_default_case_fold_flag, line 118
+onig_add_end_call, line 6242
+onig_new_without_alloc, line 6176
+exec_end_call_list, line 6256
+onig_end, line 6272
+onig_get_default_case_fold_flag, line 112
+onig_transfer, line 5933
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regparse.c
+onig_set_parse_depth_limit, line 192
+onig_get_callout_tag_end, line 1635
+onig_callout_tag_is_exist_at_callout_num, line 1773
+callout_name_table_clear, line 1249
+onig_set_capture_num_limit, line 175
+onig_strncmp, line 333
+free_callout_func_list, line 1174
+global_callout_name_table_free, line 1258
+onig_set_warn_func, line 152
+i_free_callout_name_entry, line 1238
+onig_name_to_backref_number, line 1088
+onig_get_callout_tag_start, line 1627
+i_names, line 743
+onig_number_of_names, line 805
+onig_noname_group_capture_is_active, line 1112
+onig_foreach_name, line 758
+onig_global_callout_names_free, line 1713
+onig_set_verb_warn_func, line 157
+onig_get_callout_name_by_name_id, line 1704
+onig_get_parse_depth_limit, line 186
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regposix.c
+reg_set_encoding, line 242
+regfree, line 235
+onig2posix_error_code, line 56
+i_wrapper, line 274
+reg_number_of_names, line 297
+regcomp, line 145
+reg_foreach_name, line 283
+regexec, line 177
+reg_name_to_group_numbers, line 261
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/OnigurumaUefiPort.c
+onigstrcmp, line 29
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regenc.c
+ss_apply_all_case_fold, line 556
+onigenc_is_valid_mbc_string, line 782
+onigenc_length_check_is_valid_mbc_string, line 768
+onigenc_mb2_code_to_mbclen, line 848
+onigenc_mb4_is_code_ctype, line 963
+onigenc_end, line 81
+onigenc_mbn_mbc_to_code, line 788
+onigenc_set_default_encoding, line 133
+onigenc_mb4_code_to_mbclen, line 855
+onigenc_apply_all_case_fold_with_map, line 565
+onigenc_mb2_code_to_mbc, line 864
+onigenc_mb4_code_to_mbc, line 881
+onigenc_get_left_adjust_char_head, line 478
+onigenc_mb2_is_code_ctype, line 948
+onigenc_get_default_encoding, line 127
+onigenc_mbn_mbc_case_fold, line 806
+onigenc_set_default_caseconv_table, line 471
+onigenc_strlen_null, line 243
+onigenc_get_case_fold_codes_by_str_with_map, line 593
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regtrav.c
+onig_capture_tree_traverse, line 67
+capture_tree_traverse, line 35
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regexec.c
+onig_get_progress_callout, line 5101
+onig_get_right_range_by_callout_args, line 5246
+onig_get_retraction_callout, line 5114
+onig_set_retry_limit_in_match_of_match_param, line 74
+onig_get_syntax, line 5061
+onig_get_contents_by_callout_args, line 5145
+onig_copy_encoding, line 5090
+onig_get_callout_num_by_callout_args, line 5127
+onig_get_args_num_by_callout_args, line 5177
+onig_number_of_capture_histories, line 5073
+onig_get_capture_range_in_callout, line 5271
+onig_set_match_stack_limit_size, line 1126
+onig_get_start_by_callout_args, line 5240
+onig_set_match_stack_limit_size_of_match_param, line 66
+onig_get_case_fold_flag, line 5055
+onig_get_string_by_callout_args, line 5228
+onig_get_retry_counter_by_callout_args, line 5264
+onig_get_passed_args_num_by_callout_args, line 5193
+onig_get_callout_in_by_callout_args, line 5133
+onig_set_callout_data_by_tag, line 1375
+onig_setup_builtin_monitors_by_ascii_encoded_name, line 5695
+onig_get_used_stack_size_in_callout, line 5313
+onig_builtin_monitor, line 5626
+onig_get_encoding, line 5043
+onig_get_capture_tree, line 733
+onig_get_callout_data_by_tag, line 1327
+onig_set_retry_limit_in_match, line 1158
+onig_match_with_param, line 4331
+onig_region_set, line 794
+onig_get_retry_limit_in_match, line 1147
+history_tree_clone, line 710
+onig_new_match_param, line 1172
+onig_number_of_captures, line 5067
+onig_get_string_end_by_callout_args, line 5234
+onig_get_name_id_by_callout_args, line 5139
+onig_region_copy, line 846
+onig_get_contents_end_by_callout_args, line 5161
+onig_set_callout_user_data_of_match_param, line 104
+onig_get_match_stack_limit_size, line 1120
+onig_get_current_by_callout_args, line 5252
+onig_set_progress_callout_of_match_param, line 82
+onig_set_callout_data_by_callout_args, line 1389
+onig_get_regex_by_callout_args, line 5258
+onig_set_retraction_callout_of_match_param, line 93
+onig_get_options, line 5049
+onig_scan, line 4994
+onig_set_retraction_callout, line 5120
+onig_match, line 4318
+onig_free_match_param, line 1196
+onig_set_progress_callout, line 5107
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/reggnu.c
+re_alloc_pattern, line 100
+re_search, line 69
+re_compile_pattern, line 79
+re_match, line 61
+re_adjust_startpos, line 41
+re_free_registers, line 34
+re_mbcinit, line 118
+re_free_pattern, line 94
+re_set_casetable, line 112
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regposerr.c
+regerror, line 88
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regversion.c
+onig_version, line 35
+onig_copyright, line 47
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/unicode.c
+onig_unicode_define_user_property, line 723
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/onig_init.c
+onig_init, line 34
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regsyntax.c
+onig_set_syntax_op2, line 264
+onig_set_syntax_op, line 258
+onig_set_default_syntax, line 242
+onig_get_syntax_behavior, line 294
+onig_set_syntax_options, line 276
+onig_get_syntax_op2, line 288
+onig_get_syntax_op, line 282
+onig_set_meta_char, line 306
+onig_get_syntax_options, line 300
+onig_set_syntax_behavior, line 270
+onig_copy_syntax, line 252
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/st.c
+onig_st_init_numtable, line 182
+onig_st_add_direct, line 308
+delete_never, line 465
+onig_st_init_strtable, line 195
+numcmp, line 577
+strhash, line 538
+onig_st_init_table, line 175
+onig_st_delete, line 391
+onig_st_delete_safe, line 433
+onig_st_copy, line 350
+onig_st_init_strtable_with_size, line 201
+onig_st_cleanup_safe, line 477
+onig_st_init_numtable_with_size, line 188
+numhash, line 584
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regcomp.c
+endcalltop, line 6240
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regparse.c
+onigsyntaxruby, line 94
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regposix.c
+onig2posix_error_code.o2p, line 58
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regenc.c
+onigenciso_8859_1_tolowercasetable, line 398
+ss_apply_all_case_fold.ss, line 559
+onigencdefaultcharencoding, line 32
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regexec.c
+outfp, line 5622
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regposerr.c
+estring, line 62
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regversion.c
+onig_copyright.s, line 49
+onig_version.s, line 37
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regsyntax.c
+onigsyntaxemacs, line 86
+onigsyntaxjava, line 145
+onigsyntaxposixbasic, line 48
+onigsyntaxgrep, line 107
+onigsyntaxperl_ng, line 201
+onigsyntaxasis, line 32
+onigsyntaxgnuregex, line 129
+
+Unused global variable in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/st.c
+type_strhash, line 48
+type_numhash, line 41
+
+Unused global variable in file: MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskImpl.c
+mramdiskstoragename, line 18
+
+Dead code function in file: MdeModulePkg/Universal/CapsulePei/X64/X64Entry.c
+pagefaulthandler, line 153
+acquirepage, line 114

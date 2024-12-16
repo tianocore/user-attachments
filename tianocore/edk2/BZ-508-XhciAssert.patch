@@ -1,0 +1,24 @@
+diff --git a/MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassImpl.c b/MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassImpl.c
+index bbd19e0447..e487b12372 100644
+--- a/MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassImpl.c
++++ b/MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassImpl.c
+@@ -106,7 +106,7 @@ UsbMassReadBlocks (
+   EFI_STATUS          Status;
+   EFI_TPL             OldTpl;
+   UINTN               TotalBlock;
+-
++  static  BOOLEAN     ResetNotRun = TRUE;
+   //
+   // Raise TPL to TPL_CALLBACK to serialize all its operations
+   // to protect shared data structures.
+@@ -175,6 +175,10 @@ UsbMassReadBlocks (
+     DEBUG ((EFI_D_ERROR, "UsbMassReadBlocks: UsbBootReadBlocks (%r) -> Reset\n", Status));
+     UsbMassReset (This, TRUE);
+   }
++  if (ResetNotRun) {
++    ResetNotRun = FALSE;
++    UsbMassReset (This, TRUE);
++  }
+ 
+ ON_EXIT:
+   gBS->RestoreTPL (OldTpl);

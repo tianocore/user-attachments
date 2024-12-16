@@ -1,0 +1,41 @@
+From 309c88d43ef04b8e1b9dbc582467263d964cc55b Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Thu, 22 Dec 2022 10:57:21 +0530
+Subject: [PATCH] IntelFsp2Pkg: Fix BaseFspCommonLib coverity issues
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=4200
+
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ IntelFsp2Pkg/Library/BaseFspCommonLib/FspCommonLib.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/IntelFsp2Pkg/Library/BaseFspCommonLib/FspCommonLib.c b/IntelFsp2Pkg/Library/BaseFspCommonLib/FspCommonLib.c
+index a22b0e7825..cda2a7b247 100644
+--- a/IntelFsp2Pkg/Library/BaseFspCommonLib/FspCommonLib.c
++++ b/IntelFsp2Pkg/Library/BaseFspCommonLib/FspCommonLib.c
+@@ -377,7 +377,8 @@ GetFspSiliconInitUpdDataPointer (
+ 
+   @param[in] Id       Measurement point ID.
+ 
+-  @return performance timestamp.
++  @return performance timestamp if current PerfIdx is valid,
++          else return 0 as invalid performance timestamp
+ **/
+ UINT64
+ EFIAPI
+@@ -395,9 +396,10 @@ SetFspMeasurePoint (
+   if (FspData->PerfIdx < sizeof (FspData->PerfData) / sizeof (FspData->PerfData[0])) {
+     FspData->PerfData[FspData->PerfIdx]                  = AsmReadTsc ();
+     ((UINT8 *)(&FspData->PerfData[FspData->PerfIdx]))[7] = Id;
++    return FspData->PerfData[(FspData->PerfIdx)++];
+   }
+ 
+-  return FspData->PerfData[(FspData->PerfIdx)++];
++  return (UINT64)0x0000000000000000;
+ }
+ 
+ /**
+-- 
+2.36.1.windows.1
+

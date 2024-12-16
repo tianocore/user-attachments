@@ -1,0 +1,709 @@
+=~=~=~=~=~=~=~=~=~=~=~= PuTTY log 2017.09.14 13:48:31 =~=~=~=~=~=~=~=~=~=~=~=
+source /usr/local/dpdk/dpaa2/dynamic_dpl.sh dpmac.1
+Using board type as 2088
+Using High Performance Buffers
+mkdir: cannot create directory â/mnt/hugepagesâ: File exists
+
+##################### Container  dprc.2  is created ####################
+
+Container dprc.2 have following resources :=>
+
+ * 16 DPBP
+ * 8 DPCON
+ * 8 DPSECI
+ * 1 DPNI
+ * 10 DPIO
+ * 2 DPCI
+
+
+######################### Configured Interfaces #########################
+
+Interface Name        Endpoint              Mac Address              
+==============        ========              ==================       
+dpni.1                dpmac.1               00:00:00:00:0:1          
+
+root@localhost:~# cat /sys/dev/fsl
+fsl_aiop_console  fsl_mc_console    fsl-usdpaa-irq    
+root@localhost:~# cat /dev/fsl_mc_console 
+[I, PLATFORM]  Freescale LS2
+
+clocks: [IN:700.0] [SYS BUS:0.7]
+
+Platform status: 
+DCACHE ICACHE
+ON     ON     
+
+SoC id:LS2088AE
+SVR:0x87090010
+Major:1
+Minor:0
+
+XFI[8] on SerDes 1, lane 0 spread on 1 lane(s)
+XFI[7] on SerDes 1, lane 1 spread on 1 lane(s)
+XFI[6] on SerDes 1, lane 2 spread on 1 lane(s)
+XFI[5] on SerDes 1, lane 3 spread on 1 lane(s)
+XFI[4] on SerDes 1, lane 4 spread on 1 lane(s)
+XFI[3] on SerDes 1, lane 5 spread on 1 lane(s)
+XFI[2] on SerDes 1, lane 6 spread on 1 lane(s)
+XFI[1] on SerDes 1, lane 7 spread on 49 lane(s)
+[I]  MC firmware version: 10.3.2
+[I]  MC DDR base: 0x0000000090000000
+[I]  MC DDR Size = 0x0000000010000000
+[I]  MC Attributes (AMQ): ICID-0; BMT-1; PL-1; BDI-1; VA-0
+[I]  Executing dtc_drv_init...
+[I]  Executing resman_drv_init...
+[I]  Executing linkman_drv_init...
+[I, RESMAN]  Executing cmdif_srv_init...
+[I, RESMAN]  CPM 0 CCSR = 0x0000000021000000)
+[I, RESMAN]  CPM 1 CCSR = 0x0000000021001000)
+[I]  Executing lcfg_drv_init...
+[I]  LCFG CCSR: 0x0000000028240000
+[I]  LCFG Window base: 0x0000000080000000; LCFG Window size = 0x0000000020000000
+[I]  Executing dpmng_drv_init...
+[I]  Executing pebm_drv_init...
+[I]  PEBM CCSR: 0x0000000028200000
+[I]  PEBM memory base: 0x4C00000000, size: 0x400000
+[I, QBMAN]  Executing qbman_drv_init...
+[I, QBMAN]  QBMAN CCSR: 0x0000000028180000
+[I, QBMAN]  qbman_block_init, CCSR=0x0x28180000, block=0x0x08168040
+[I, QBMAN]  qbman_block_init_complete, block=0x0x08168040
+[I]  Executing eiop_drv_init...
+[I]  EIOP 0 CCSR: 0x0000000028b90000
+[I, CTLU]  Loading WRIOP soft parser library : PC = 0x73c size = 388 bytes
+[I, CTLU]  Loading WRIOP soft parser library : PC = 0x73c size = 388 bytes
+[I]  Executing caam_drv_init...
+[I]  CAAM CCSR: 0x0000000028000000
+[I]  Executing dce_drv_init...
+[I]  DCE CCSR: 0x0000000028120000
+[I, DCE]  dce_block_init, CCSR=0x0x28120000, block=0x0x08169080
+[I, DCE]  DCE errata requires setting SMW/RCACR
+[I, DCE]  DCE errata requires disabling dynamic power management
+[I]  Executing qdma_drv_init...
+[I]  QDMA CCSR: 0x0000000028380000
+[I, CTLU]  Executing dpdbg_drv_init...
+[I, CTLU]  DPDBG created in container 255
+[I, DPAIOP]  Executing dpaiop_drv_init...
+[I, DPAIOP]  AIOP 0 CCSR: 0x0000000028900000
+[I, RESMAN]  Executing dprc_drv_init...
+[I]  Executing dpmac_drv_init...
+[I]  Executing dpio_drv_init...
+[I]  Executing dpbp_drv_init...
+[I, DPNI]  Executing dpni_drv_init...
+[I, DPMNG]  Executing dpsw_drv_init...
+[I]  Executing dpdmux_drv_init...
+[I]  Executing dpcon_drv_init...
+[I]  Executing dpci_drv_init...
+[I]  Executing dpseci_drv_init...
+[I]  Executing dpdcei_drv_init...
+[I]  Executing dpdmai_drv_init...
+[I]  Executing dprtc_drv_init...
+[I]  Executing dpmcp_drv_init...
+[I, CMDIF]  Executing cmdif_client_init...
+[I]  Waiting for indication to process DPL...
+[I, RESMAN]  Handling command: dprc_get_container_id for DPRC -1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_create_container for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 2 on portal id 1
+[I]  Handling command: dpbp_open on DPBP 0
+[I]  Handling command: dpbp_init
+[I]  Handling command: dpbp_get_attributes on DPBP 0
+[I]  Handling command: dpio_open on DPIO 0
+[I]  Handling command: dpio_init
+[I]  Handling command: dpio_get_attributes on DPIO 0
+[I]  Handling command: dpio_enable on DPIO 0
+[I, DPNI]  Handling command: dpni_open on DPNI 0
+[I, DPNI]  Handling command: dpni_create
+[I, DPNI]  Handling command: dpni_get_attributes on DPNI 0
+[I]  Handling command: dpmac_open on DPMAC 8
+[I]  Handling command: dpmac_create
+[I]  Handling command: dpmac_get_attributes on DPMAC 8
+[I, RESMAN]  Handling command: dprc_connect for DPRC 2 on portal id 1
+[I, DPNI]  Handling command: dpni_set_rx_buffer_layout on DPNI 0
+[I, DPNI]  Handling command: dpni_set_tx_buffer_layout on DPNI 0
+[I, DPNI]  Handling command: dpni_set_tx_conf_buffer_layout on DPNI 0
+[I, DPNI]  Handling command: dpni_get_tx_data_offset on DPNI 0
+[I]  Handling command: dpbp_enable on DPBP 0
+[I, DPNI]  Handling command: dpni_set_pools on DPNI 0
+[I, DPNI]  Handling command: dpni_set_tx_flow on DPNI 0
+[I, DPNI]  Handling command: dpni_set_tx_conf on DPNI 0
+[I, DPNI]  Handling command: dpni_get_tx_conf on DPNI 0
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 0
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 0
+[I, DPNI]  Handling command: dpni_enable on DPNI 0
+[I]  Handling command: dpmac_set_link_state on DPMAC 8
+[I, DPNI]  Handling command: dpni_get_rx_flow on DPNI 0
+[I, DPNI]  Handling command: dpni_get_qdid on DPNI 0
+[I, DPNI]  Handling command: dpni_get_max_frame_length on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, RESMAN]  Handling command: dprc_create_container for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 3 on portal id 2
+[I]  Handling command: dpbp_open on DPBP 1
+[I]  Handling command: dpbp_init
+[I]  Handling command: dpbp_get_attributes on DPBP 1
+[I]  Handling command: dpio_open on DPIO 1
+[I]  Handling command: dpio_init
+[I]  Handling command: dpio_get_attributes on DPIO 1
+[I]  Handling command: dpio_enable on DPIO 1
+[I, DPNI]  Handling command: dpni_open on DPNI 1
+[I, DPNI]  Handling command: dpni_create
+[I, DPNI]  Handling command: dpni_get_attributes on DPNI 1
+[I]  Handling command: dpmac_open on DPMAC 7
+[I]  Handling command: dpmac_create
+[I]  Handling command: dpmac_get_attributes on DPMAC 7
+[I, RESMAN]  Handling command: dprc_connect for DPRC 3 on portal id 2
+[I, DPNI]  Handling command: dpni_set_rx_buffer_layout on DPNI 1
+[I, DPNI]  Handling command: dpni_set_tx_buffer_layout on DPNI 1
+[I, DPNI]  Handling command: dpni_set_tx_conf_buffer_layout on DPNI 1
+[I, DPNI]  Handling command: dpni_get_tx_data_offset on DPNI 1
+[I]  Handling command: dpbp_enable on DPBP 1
+[I, DPNI]  Handling command: dpni_set_pools on DPNI 1
+[I, DPNI]  Handling command: dpni_set_tx_flow on DPNI 1
+[I, DPNI]  Handling command: dpni_set_tx_conf on DPNI 1
+[I, DPNI]  Handling command: dpni_get_tx_conf on DPNI 1
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 1
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 1
+[I, DPNI]  Handling command: dpni_enable on DPNI 1
+[I]  Handling command: dpmac_set_link_state on DPMAC 7
+[I, DPNI]  Handling command: dpni_get_rx_flow on DPNI 1
+[I, DPNI]  Handling command: dpni_get_qdid on DPNI 1
+[I, DPNI]  Handling command: dpni_get_max_frame_length on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, RESMAN]  Handling command: dprc_create_container for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 4 on portal id 3
+[I]  Handling command: dpbp_open on DPBP 2
+[I]  Handling command: dpbp_init
+[I]  Handling command: dpbp_get_attributes on DPBP 2
+[I]  Handling command: dpio_open on DPIO 2
+[I]  Handling command: dpio_init
+[I]  Handling command: dpio_get_attributes on DPIO 2
+[I]  Handling command: dpio_enable on DPIO 2
+[I, DPNI]  Handling command: dpni_open on DPNI 2
+[I, DPNI]  Handling command: dpni_create
+[I, DPNI]  Handling command: dpni_get_attributes on DPNI 2
+[I]  Handling command: dpmac_open on DPMAC 6
+[I]  Handling command: dpmac_create
+[I]  Handling command: dpmac_get_attributes on DPMAC 6
+[I, RESMAN]  Handling command: dprc_connect for DPRC 4 on portal id 3
+[I, DPNI]  Handling command: dpni_set_rx_buffer_layout on DPNI 2
+[I, DPNI]  Handling command: dpni_set_tx_buffer_layout on DPNI 2
+[I, DPNI]  Handling command: dpni_set_tx_conf_buffer_layout on DPNI 2
+[I, DPNI]  Handling command: dpni_get_tx_data_offset on DPNI 2
+[I]  Handling command: dpbp_enable on DPBP 2
+[I, DPNI]  Handling command: dpni_set_pools on DPNI 2
+[I, DPNI]  Handling command: dpni_set_tx_flow on DPNI 2
+[I, DPNI]  Handling command: dpni_set_tx_conf on DPNI 2
+[I, DPNI]  Handling command: dpni_get_tx_conf on DPNI 2
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 2
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 2
+[I, DPNI]  Handling command: dpni_enable on DPNI 2
+[I]  Handling command: dpmac_set_link_state on DPMAC 6
+[I, DPNI]  Handling command: dpni_get_rx_flow on DPNI 2
+[I, DPNI]  Handling command: dpni_get_qdid on DPNI 2
+[I, DPNI]  Handling command: dpni_get_max_frame_length on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, RESMAN]  Handling command: dprc_create_container for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 5 on portal id 4
+[I]  Handling command: dpbp_open on DPBP 3
+[I]  Handling command: dpbp_init
+[I]  Handling command: dpbp_get_attributes on DPBP 3
+[I]  Handling command: dpio_open on DPIO 3
+[I]  Handling command: dpio_init
+[I]  Handling command: dpio_get_attributes on DPIO 3
+[I]  Handling command: dpio_enable on DPIO 3
+[I, DPNI]  Handling command: dpni_open on DPNI 3
+[I, DPNI]  Handling command: dpni_create
+[I, DPNI]  Handling command: dpni_get_attributes on DPNI 3
+[I]  Handling command: dpmac_open on DPMAC 5
+[I]  Handling command: dpmac_create
+[I]  Handling command: dpmac_get_attributes on DPMAC 5
+[I, RESMAN]  Handling command: dprc_connect for DPRC 5 on portal id 4
+[I, DPNI]  Handling command: dpni_set_rx_buffer_layout on DPNI 3
+[I, DPNI]  Handling command: dpni_set_tx_buffer_layout on DPNI 3
+[I, DPNI]  Handling command: dpni_set_tx_conf_buffer_layout on DPNI 3
+[I, DPNI]  Handling command: dpni_get_tx_data_offset on DPNI 3
+[I]  Handling command: dpbp_enable on DPBP 3
+[I, DPNI]  Handling command: dpni_set_pools on DPNI 3
+[I, DPNI]  Handling command: dpni_set_tx_flow on DPNI 3
+[I, DPNI]  Handling command: dpni_set_tx_conf on DPNI 3
+[I, DPNI]  Handling command: dpni_get_tx_conf on DPNI 3
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 3
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 3
+[I, DPNI]  Handling command: dpni_enable on DPNI 3
+[I]  Handling command: dpmac_set_link_state on DPMAC 5
+[I, DPNI]  Handling command: dpni_get_rx_flow on DPNI 3
+[I, DPNI]  Handling command: dpni_get_qdid on DPNI 3
+[I, DPNI]  Handling command: dpni_get_max_frame_length on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, RESMAN]  Handling command: dprc_create_container for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 6 on portal id 5
+[I]  Handling command: dpbp_open on DPBP 4
+[I]  Handling command: dpbp_init
+[I]  Handling command: dpbp_get_attributes on DPBP 4
+[I]  Handling command: dpio_open on DPIO 4
+[I]  Handling command: dpio_init
+[I]  Handling command: dpio_get_attributes on DPIO 4
+[I]  Handling command: dpio_enable on DPIO 4
+[I, DPNI]  Handling command: dpni_open on DPNI 4
+[I, DPNI]  Handling command: dpni_create
+[I, DPNI]  Handling command: dpni_get_attributes on DPNI 4
+[I]  Handling command: dpmac_open on DPMAC 4
+[I]  Handling command: dpmac_create
+[I]  Handling command: dpmac_get_attributes on DPMAC 4
+[I, RESMAN]  Handling command: dprc_connect for DPRC 6 on portal id 5
+[I, DPNI]  Handling command: dpni_set_rx_buffer_layout on DPNI 4
+[I, DPNI]  Handling command: dpni_set_tx_buffer_layout on DPNI 4
+[I, DPNI]  Handling command: dpni_set_tx_conf_buffer_layout on DPNI 4
+[I, DPNI]  Handling command: dpni_get_tx_data_offset on DPNI 4
+[I]  Handling command: dpbp_enable on DPBP 4
+[I, DPNI]  Handling command: dpni_set_pools on DPNI 4
+[I, DPNI]  Handling command: dpni_set_tx_flow on DPNI 4
+[I, DPNI]  Handling command: dpni_set_tx_conf on DPNI 4
+[I, DPNI]  Handling command: dpni_get_tx_conf on DPNI 4
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 4
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 4
+[I, DPNI]  Handling command: dpni_enable on DPNI 4
+[I]  Handling command: dpmac_set_link_state on DPMAC 4
+[I, DPNI]  Handling command: dpni_get_rx_flow on DPNI 4
+[I, DPNI]  Handling command: dpni_get_qdid on DPNI 4
+[I, DPNI]  Handling command: dpni_get_max_frame_length on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, RESMAN]  Handling command: dprc_create_container for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 7 on portal id 6
+[I]  Handling command: dpbp_open on DPBP 5
+[I]  Handling command: dpbp_init
+[I]  Handling command: dpbp_get_attributes on DPBP 5
+[I]  Handling command: dpio_open on DPIO 5
+[I]  Handling command: dpio_init
+[I]  Handling command: dpio_get_attributes on DPIO 5
+[I]  Handling command: dpio_enable on DPIO 5
+[I, DPNI]  Handling command: dpni_open on DPNI 5
+[I, DPNI]  Handling command: dpni_create
+[I, DPNI]  Handling command: dpni_get_attributes on DPNI 5
+[I]  Handling command: dpmac_open on DPMAC 3
+[I]  Handling command: dpmac_create
+[I]  Handling command: dpmac_get_attributes on DPMAC 3
+[I, RESMAN]  Handling command: dprc_connect for DPRC 7 on portal id 6
+[I, DPNI]  Handling command: dpni_set_rx_buffer_layout on DPNI 5
+[I, DPNI]  Handling command: dpni_set_tx_buffer_layout on DPNI 5
+[I, DPNI]  Handling command: dpni_set_tx_conf_buffer_layout on DPNI 5
+[I, DPNI]  Handling command: dpni_get_tx_data_offset on DPNI 5
+[I]  Handling command: dpbp_enable on DPBP 5
+[I, DPNI]  Handling command: dpni_set_pools on DPNI 5
+[I, DPNI]  Handling command: dpni_set_tx_flow on DPNI 5
+[I, DPNI]  Handling command: dpni_set_tx_conf on DPNI 5
+[I, DPNI]  Handling command: dpni_get_tx_conf on DPNI 5
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 5
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 5
+[I, DPNI]  Handling command: dpni_enable on DPNI 5
+[I]  Handling command: dpmac_set_link_state on DPMAC 3
+[I, DPNI]  Handling command: dpni_get_rx_flow on DPNI 5
+[I, DPNI]  Handling command: dpni_get_qdid on DPNI 5
+[I, DPNI]  Handling command: dpni_get_max_frame_length on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, RESMAN]  Handling command: dprc_create_container for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 8 on portal id 7
+[I]  Handling command: dpbp_open on DPBP 6
+[I]  Handling command: dpbp_init
+[I]  Handling command: dpbp_get_attributes on DPBP 6
+[I]  Handling command: dpio_open on DPIO 6
+[I]  Handling command: dpio_init
+[I]  Handling command: dpio_get_attributes on DPIO 6
+[I]  Handling command: dpio_enable on DPIO 6
+[I, DPNI]  Handling command: dpni_open on DPNI 6
+[I, DPNI]  Handling command: dpni_create
+[I, DPNI]  Handling command: dpni_get_attributes on DPNI 6
+[I]  Handling command: dpmac_open on DPMAC 2
+[I]  Handling command: dpmac_create
+[I]  Handling command: dpmac_get_attributes on DPMAC 2
+[I, RESMAN]  Handling command: dprc_connect for DPRC 8 on portal id 7
+[I, DPNI]  Handling command: dpni_set_rx_buffer_layout on DPNI 6
+[I, DPNI]  Handling command: dpni_set_tx_buffer_layout on DPNI 6
+[I, DPNI]  Handling command: dpni_set_tx_conf_buffer_layout on DPNI 6
+[I, DPNI]  Handling command: dpni_get_tx_data_offset on DPNI 6
+[I]  Handling command: dpbp_enable on DPBP 6
+[I, DPNI]  Handling command: dpni_set_pools on DPNI 6
+[I, DPNI]  Handling command: dpni_set_tx_flow on DPNI 6
+[I, DPNI]  Handling command: dpni_set_tx_conf on DPNI 6
+[I, DPNI]  Handling command: dpni_get_tx_conf on DPNI 6
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 6
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 6
+[I, DPNI]  Handling command: dpni_enable on DPNI 6
+[I]  Handling command: dpmac_set_link_state on DPMAC 2
+[I, DPNI]  Handling command: dpni_get_rx_flow on DPNI 6
+[I, DPNI]  Handling command: dpni_get_qdid on DPNI 6
+[I, DPNI]  Handling command: dpni_get_max_frame_length on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, RESMAN]  Handling command: dprc_create_container for DPRC 1 on portal id 0
+[I, RESMAN]  Handling command: dprc_open for DPRC 9 on portal id 8
+[I]  Handling command: dpbp_open on DPBP 7
+[I]  Handling command: dpbp_init
+[I]  Handling command: dpbp_get_attributes on DPBP 7
+[I]  Handling command: dpio_open on DPIO 7
+[I]  Handling command: dpio_init
+[I]  Handling command: dpio_get_attributes on DPIO 7
+[I]  Handling command: dpio_enable on DPIO 7
+[I, DPNI]  Handling command: dpni_open on DPNI 7
+[I, DPNI]  Handling command: dpni_create
+[I, DPNI]  Handling command: dpni_get_attributes on DPNI 7
+[I]  Handling command: dpmac_open on DPMAC 1
+[I]  Handling command: dpmac_create
+[I]  Handling command: dpmac_get_attributes on DPMAC 1
+[I, RESMAN]  Handling command: dprc_connect for DPRC 9 on portal id 8
+[I, DPNI]  Handling command: dpni_set_rx_buffer_layout on DPNI 7
+[I, DPNI]  Handling command: dpni_set_tx_buffer_layout on DPNI 7
+[I, DPNI]  Handling command: dpni_set_tx_conf_buffer_layout on DPNI 7
+[I, DPNI]  Handling command: dpni_get_tx_data_offset on DPNI 7
+[I]  Handling command: dpbp_enable on DPBP 7
+[I, DPNI]  Handling command: dpni_set_pools on DPNI 7
+[I, DPNI]  Handling command: dpni_set_tx_flow on DPNI 7
+[I, DPNI]  Handling command: dpni_set_tx_conf on DPNI 7
+[I, DPNI]  Handling command: dpni_get_tx_conf on DPNI 7
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 7
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 7
+[I, DPNI]  Handling command: dpni_enable on DPNI 7
+[I]  Handling command: dpmac_set_link_state on DPMAC 1
+[I, DPNI]  Handling command: dpni_get_rx_flow on DPNI 7
+[I, DPNI]  Handling command: dpni_get_qdid on DPNI 7
+[I, DPNI]  Handling command: dpni_get_max_frame_length on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_add_mac_addr on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 2
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 1
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 4
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 5
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 0
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 6
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 7
+[I, DPNI]  Handling command: dpni_get_link_state on DPNI 3

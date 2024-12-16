@@ -1,0 +1,44 @@
+From 692f65c789b0c480f49bd5009c96cc436030cc68 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 19:30:20 +0530
+Subject: [PATCH] NetworkPkg/Library/DxeHttpLib: Fix MISSING_BREAK Coverity
+ issue
+
+The function HttpParseMessageBody has a switch-case on Parser->State
+in which
+
+case BodyParserChunkSizeStart: falls through to
+case BodyParserChunkSize:
+
+While this may be intentional, it is not evident to any general code
+reader as well as any static analyzer tool. Just adding
+
+    // No break; here as this is an intentional fallthrough.
+
+as comment in between makes any reader as well as Coverity happy.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4323
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c b/NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c
+index 6a5d78629b..b8e8ad3ebb 100644
+--- a/NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c
++++ b/NetworkPkg/Library/DxeHttpLib/DxeHttpLib.c
+@@ -1238,6 +1238,9 @@ HttpParseMessageBody (
+         //
+         Parser->CurrentChunkSize = 0;
+         Parser->State            = BodyParserChunkSize;
++        //
++        // No break; here as this is an intentional fallthrough.
++        //
+       case BodyParserChunkSize:
+         if (!NET_IS_HEX_CHAR (*Char)) {
+           if (*Char == ';') {
+-- 
+2.36.1.windows.1
+

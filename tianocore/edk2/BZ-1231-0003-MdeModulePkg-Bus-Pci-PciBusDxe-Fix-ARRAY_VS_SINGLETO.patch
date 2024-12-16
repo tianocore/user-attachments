@@ -1,0 +1,89 @@
+From cc265763ee3891d5723dced751cb686c26d94b3c Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:05:31 +0530
+Subject: [PATCH 3/5] MdeModulePkg/Bus/Pci/PciBusDxe: Fix ARRAY_VS_SINGLETON
+ Coverity issues
+
+The function PciHostBridgeResourceAllocator is not making use of the
+generic approach as is used in one of the other function namely -
+DumpResourceMap. As a result, the following warnings can be seen as
+reported by Coverity e.g.
+
+(30) Event address_of:	Taking address with "&IoBridge" yields a
+     singleton pointer.
+(31) Event callee_ptr_arith:	Passing "&IoBridge" to function
+     "FindResourceNode" which uses it as an array. This might corrupt
+     or misinterpret adjacent memory locations.
+
+Hence, adopt the generic approach to fix the issues at relevant points.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4239
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c | 37 +++++++++++++++++++++----
+ 1 file changed, 31 insertions(+), 6 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
+index 84fc0161a19c..71767d3793d4 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
+@@ -485,6 +485,8 @@ PciHostBridgeResourceAllocator (
+   UINT64                                         Mem64ResStatus;
+   UINT64                                         PMem64ResStatus;
+   UINT32                                         MaxOptionRomSize;
++  PCI_RESOURCE_NODE                              **ChildResources;
++  UINTN                                          ChildResourceCount;
+   PCI_RESOURCE_NODE                              *IoBridge;
+   PCI_RESOURCE_NODE                              *Mem32Bridge;
+   PCI_RESOURCE_NODE                              *PMem32Bridge;
+@@ -895,16 +897,39 @@ PciHostBridgeResourceAllocator (
+     // Create the entire system resource map from the information collected by
+     // enumerator. Several resource tree was created
+     //
+-    FindResourceNode (RootBridgeDev, &IoPool, &IoBridge);
+-    FindResourceNode (RootBridgeDev, &Mem32Pool, &Mem32Bridge);
+-    FindResourceNode (RootBridgeDev, &PMem32Pool, &PMem32Bridge);
+-    FindResourceNode (RootBridgeDev, &Mem64Pool, &Mem64Bridge);
+-    FindResourceNode (RootBridgeDev, &PMem64Pool, &PMem64Bridge);
+-
++    ChildResourceCount = FindResourceNode (RootBridgeDev, &IoPool, NULL);
++    ChildResources = AllocatePool (sizeof (PCI_RESOURCE_NODE *) * ChildResourceCount);
++    ASSERT (ChildResources != NULL);
++    FindResourceNode (RootBridgeDev, &IoPool, &ChildResources[0]);
++    IoBridge = ChildResources[0];
+     ASSERT (IoBridge     != NULL);
++
++    ChildResourceCount = FindResourceNode (RootBridgeDev, &Mem32Pool, NULL);
++    ChildResources = AllocatePool (sizeof (PCI_RESOURCE_NODE *) * ChildResourceCount);
++    ASSERT (ChildResources != NULL);
++    FindResourceNode (RootBridgeDev, &Mem32Pool, &ChildResources[0]);
++    Mem32Bridge = ChildResources[0];
+     ASSERT (Mem32Bridge  != NULL);
++
++    ChildResourceCount = FindResourceNode (RootBridgeDev, &PMem32Pool, NULL);
++    ChildResources = AllocatePool (sizeof (PCI_RESOURCE_NODE *) * ChildResourceCount);
++    ASSERT (ChildResources != NULL);
++    FindResourceNode (RootBridgeDev, &PMem32Pool, &ChildResources[0]);
++    PMem32Bridge = ChildResources[0];
+     ASSERT (PMem32Bridge != NULL);
++
++    ChildResourceCount = FindResourceNode (RootBridgeDev, &Mem64Pool, NULL);
++    ChildResources = AllocatePool (sizeof (PCI_RESOURCE_NODE *) * ChildResourceCount);
++    ASSERT (ChildResources != NULL);
++    FindResourceNode (RootBridgeDev, &Mem64Pool, &ChildResources[0]);
++    Mem64Bridge = ChildResources[0];
+     ASSERT (Mem64Bridge  != NULL);
++
++    ChildResourceCount = FindResourceNode (RootBridgeDev, &PMem64Pool, NULL);
++    ChildResources = AllocatePool (sizeof (PCI_RESOURCE_NODE *) * ChildResourceCount);
++    ASSERT (ChildResources != NULL);
++    FindResourceNode (RootBridgeDev, &PMem64Pool, &ChildResources[0]);
++    PMem64Bridge = ChildResources[0];
+     ASSERT (PMem64Bridge != NULL);
+ 
+     //
+-- 
+2.36.1.windows.1
+

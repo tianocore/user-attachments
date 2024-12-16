@@ -1,0 +1,90 @@
+From eec461d48e187182cddce1ba8df23456696e0190 Mon Sep 17 00:00:00 2001
+From: Siyuan Fu <siyuan.fu@intel.com>
+Date: Fri, 16 Aug 2019 09:27:21 +0800
+Subject: [Patch] Generate random number between 1024 and 65535, until max
+ retry count reached.
+
+Change-Id: Ic0ce2dfc00e96cd3c16672a6ba4ab5829492a032
+---
+ NetworkPkg/Udp4Dxe/Udp4Impl.c | 34 +++++++++++-----------------------
+ NetworkPkg/Udp4Dxe/Udp4Impl.h |  1 +
+ 2 files changed, 12 insertions(+), 23 deletions(-)
+
+diff --git a/NetworkPkg/Udp4Dxe/Udp4Impl.c b/NetworkPkg/Udp4Dxe/Udp4Impl.c
+index fb1951fb13..9807981214 100644
+--- a/NetworkPkg/Udp4Dxe/Udp4Impl.c
++++ b/NetworkPkg/Udp4Dxe/Udp4Impl.c
+@@ -9,7 +9,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ #include "Udp4Impl.h"
+ 
+-UINT16  mUdp4RandomPort;
++UINT16  mUdp4RandomPort = UDP4_PORT_KNOWN;
+ 
+ /**
+   This function checks and timeouts the I/O datagrams holding by the corresponding
+@@ -576,7 +576,7 @@ Udp4Bind (
+   )
+ {
+   EFI_IPv4_ADDRESS  *StationAddress;
+-  UINT16            StartPort;
++  UINT16            RetryCount;
+ 
+   if (ConfigData->AcceptAnyPort) {
+     return EFI_SUCCESS;
+@@ -604,31 +604,19 @@ Udp4Bind (
+       //
+       ConfigData->StationPort = mUdp4RandomPort;
+     } else {
+-
+-      StartPort = mUdp4RandomPort;
+-
+-      while (Udp4FindInstanceByPort(InstanceList, StationAddress, mUdp4RandomPort)) {
+-
+-        mUdp4RandomPort++;
+-        if (mUdp4RandomPort == 0) {
+-          mUdp4RandomPort = UDP4_PORT_KNOWN;
+-        }
+-
+-        if (mUdp4RandomPort == StartPort) {
+-          //
+-          // No available port.
+-          //
+-          return EFI_OUT_OF_RESOURCES;
+-        }
++      RetryCount = 0;
++      do {
++        RetryCount ++;
++        mUdp4RandomPort = (UINT16) NetRandomInitSeed ();
++      } while ((RetryCount < UDP4_RANDOM_PORT_MAX_RETRY_COUNT) &&
++               ((mUdp4RandomPort < UDP4_PORT_KNOWN) || Udp4FindInstanceByPort(InstanceList, StationAddress, mUdp4RandomPort)));
++
++      if (RetryCount == UDP4_RANDOM_PORT_MAX_RETRY_COUNT) {
++        return EFI_OUT_OF_RESOURCES;
+       }
+ 
+       ConfigData->StationPort = mUdp4RandomPort;
+     }
+-
+-    mUdp4RandomPort++;
+-    if (mUdp4RandomPort == 0) {
+-      mUdp4RandomPort = UDP4_PORT_KNOWN;
+-    }
+   }
+ 
+   return EFI_SUCCESS;
+diff --git a/NetworkPkg/Udp4Dxe/Udp4Impl.h b/NetworkPkg/Udp4Dxe/Udp4Impl.h
+index a5dd1ecabe..06f5bd0cdc 100644
+--- a/NetworkPkg/Udp4Dxe/Udp4Impl.h
++++ b/NetworkPkg/Udp4Dxe/Udp4Impl.h
+@@ -45,6 +45,7 @@ extern UINT16                          mUdp4RandomPort;
+ #define UDP4_MAX_DATA_SIZE    65507
+ 
+ #define UDP4_PORT_KNOWN       1024
++#define UDP4_RANDOM_PORT_MAX_RETRY_COUNT    10000
+ 
+ #define UDP4_SERVICE_DATA_SIGNATURE  SIGNATURE_32('U', 'd', 'p', '4')
+ 
+-- 
+2.19.1.windows.1
+

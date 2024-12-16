@@ -1,0 +1,25 @@
+From ac91b5a7dfc7be86f7c5c9b86646e8ff3291dd49 Mon Sep 17 00:00:00 2001
+From: BrentHoltsclaw <brent.holtsclaw@intel.com>
+Date: Thu, 2 May 2019 16:42:00 -0700
+Subject: [PATCH 3/6] Fix cache poisoning from predictable UDP
+
+---
+ NetworkPkg/Udp4Dxe/Udp4Impl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/Network/Udp4Dxe/Udp4Impl.c b/MdeModulePkg/Universal/Network/Udp4Dxe/Udp4Impl.c
+index fb1951fb13..c1fbe0b3be 100644
+--- a/NetworkPkg/Udp4Dxe/Udp4Impl.c
++++ b/NetworkPkg/Udp4Dxe/Udp4Impl.c
+@@ -625,7 +625,7 @@ Udp4Bind (
+       ConfigData->StationPort = mUdp4RandomPort;
+     }
+ 
+-    mUdp4RandomPort++;
++    mUdp4RandomPort = (UINT16) (((UINT16) NetRandomInitSeed ()) % UDP4_PORT_KNOWN + UDP4_PORT_KNOWN);
+     if (mUdp4RandomPort == 0) {
+       mUdp4RandomPort = UDP4_PORT_KNOWN;
+     }
+-- 
+2.20.1.windows.1
+

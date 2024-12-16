@@ -1,0 +1,56 @@
+From 9cada4805d319a3f69a5164b8f7fb3374d1d6e92 Mon Sep 17 00:00:00 2001
+From: Gerd Hoffmann <kraxel@redhat.com>
+Date: Tue, 14 Feb 2023 17:02:04 +0100
+Subject: [PATCH 1/1] NetworkPkg/IScsiDxe: add checks to IScsiBuildKeyValueList
+
+Check we have any data left (Len > 0) before advancing the Data pointer
+and reducing Len.  Avoids wrapping Len.
+
+Also replace the AsciiStrLen() call with an open-coded loop which
+likewise checks Len to make sure we don't overrun the buffer.
+
+Bugzilla: https://bugzilla.tianocore.org/show_bug.cgi?id=4207
+Reported-by: Jeremy Boone <jeremy.boone@nccgroup.com>
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ NetworkPkg/IScsiDxe/IScsiProto.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/NetworkPkg/IScsiDxe/IScsiProto.c b/NetworkPkg/IScsiDxe/IScsiProto.c
+index ef587649a05e..88e7946d3f78 100644
+--- a/NetworkPkg/IScsiDxe/IScsiProto.c
++++ b/NetworkPkg/IScsiDxe/IScsiProto.c
+@@ -1903,9 +1903,8 @@ IScsiBuildKeyValueList (
+       Data++;
+     }
+ 
+-    if (*Data == '=') {
++    if ((Len > 0) && (*Data == '=')) {
+       *Data = '\0';
+-
+       Data++;
+       Len--;
+     } else {
+@@ -1917,8 +1916,17 @@ IScsiBuildKeyValueList (
+ 
+     InsertTailList (ListHead, &KeyValuePair->List);
+ 
+-    Data += AsciiStrLen (KeyValuePair->Value) + 1;
+-    Len  -= (UINT32)AsciiStrLen (KeyValuePair->Value) + 1;
++    while ((Len > 0) && (*Data != '\0')) {
++      Len--;
++      Data++;
++    }
++
++    if ((Len > 0) && (*Data == '\0')) {
++      Data++;
++      Len--;
++    } else {
++      goto ON_ERROR;
++    }
+   }
+ 
+   return ListHead;
+-- 
+2.39.1
+

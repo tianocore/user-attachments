@@ -1,0 +1,60 @@
+From b7cb30a2c277d1beaa0491b37000c7253fd036c5 Mon Sep 17 00:00:00 2001
+From: Wenyi Xie <xiewenyi2@huawei.com>
+Date: Tue, 14 Jun 2022 10:59:52 +0800
+Subject: [PATCH EDK2 v1 1/1] edksetup.sh:The version compare issue in shell
+ script
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3948
+
+In function of SetupPython3, the version of python will be
+compared to get the new one. When python 3.10 is compared with
+python 3.4, the result is not right. Because the version number
+is treated as a float and 3.10 is smaller than 3.4.
+So using sort to arrange the version from old to new in order
+to get the new one.
+
+Cc: Andrew Fish <afish@apple.com>
+Cc: Leif Lindholm <quic_llindhol@quicinc.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Signed-off-by: Wenyi Xie <xiewenyi2@huawei.com>
+---
+ edksetup.sh | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/edksetup.sh b/edksetup.sh
+index 06d2f041e635..b9da62440f71 100755
+--- a/edksetup.sh
++++ b/edksetup.sh
+@@ -20,6 +20,11 @@
+ SCRIPTNAME="edksetup.sh"
+ RECONFIG=FALSE
+ 
++function IsVersionGreaterThan()
++{
++  test "$(echo "$@" | tr " " "\n" | sort -V | head -n 1)" != "$1";
++}
++
+ function HelpMsg()
+ {
+   echo "Usage: $SCRIPTNAME [Options]"
+@@ -122,7 +127,7 @@ function SetupPython3()
+       export PYTHON_COMMAND=$python
+       continue
+     fi
+-      if [[ "$origin_version" < "$python_version" ]]; then
++    if IsVersionGreaterThan $python_version $origin_version; then
+       origin_version=$python_version
+       export PYTHON_COMMAND=$python
+     fi
+@@ -164,7 +169,7 @@ function SetupPython()
+         export PYTHON_COMMAND=$python
+         continue
+       fi
+-      if [[ "$origin_version" < "$python_version" ]]; then
++      if IsVersionGreaterThan $python_version $origin_version; then
+         origin_version=$python_version
+         export PYTHON_COMMAND=$python
+       fi
+-- 
+2.20.1.windows.1
+

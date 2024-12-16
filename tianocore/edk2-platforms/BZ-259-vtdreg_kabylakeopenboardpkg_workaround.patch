@@ -1,0 +1,25 @@
+diff --git a/IntelSiliconPkg/Feature/VTd/IntelVTdDxe/VtdReg.c b/IntelSiliconPkg/Feature/VTd/IntelVTdDxe/VtdReg.c
+index 45285510a5..1960fa1179 100644
+--- a/IntelSiliconPkg/Feature/VTd/IntelVTdDxe/VtdReg.c
++++ b/IntelSiliconPkg/Feature/VTd/IntelVTdDxe/VtdReg.c
+@@ -145,16 +145,16 @@ InvalidateVtdIOTLBGlobal (
+   //
+   // Invalidate the context cache
+   //
+-  if (mVtdUnitInformation[VtdIndex].HasDirtyContext) {
++ // if (mVtdUnitInformation[VtdIndex].HasDirtyContext) {
+     InvalidateContextCache (VtdIndex);
+-  }
++  //}
+ 
+   //
+   // Invalidate the IOTLB cache
+   //
+-  if (mVtdUnitInformation[VtdIndex].HasDirtyContext || mVtdUnitInformation[VtdIndex].HasDirtyPages) {
++  //if (mVtdUnitInformation[VtdIndex].HasDirtyContext || mVtdUnitInformation[VtdIndex].HasDirtyPages) {
+     InvalidateIOTLB (VtdIndex);
+-  }
++  //}
+ 
+   return EFI_SUCCESS;
+ }

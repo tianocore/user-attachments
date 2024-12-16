@@ -1,0 +1,54 @@
+From abb3136c5328c62c0ced2953e8f258cbaab780cd Mon Sep 17 00:00:00 2001
+From: Abhi Singh <Abhi.Singh@arm.com>
+Date: Tue, 22 Aug 2023 11:53:11 -0500
+Subject: [PATCH V1 1/1] uefi-sct/SctPkg: RouteConfig() returns
+ EFI_ACCESS_DENIED passes with warning
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3759
+
+HIIConfigAccess and HIIConfigRouting Protocol RouteConfig tests assertions
+store a failure when RouteConfig returns EFI_ACCESS_DENIED. In the UEFI SPEC
+RouteConfig in both protocols can return EFI_ACCESS_DENIED when the action
+violates a system policy. The tests now record a pass with warning.
+
+Cc: G Edhaya Chandran <Edhaya.Chandran@arm.com>
+Cc: Barton Gao <gaojie@byosoft.com.cn>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@amd.com>
+Cc: Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>
+Cc: Sunny Wang <Sunny.Wang@arm.com>
+Signed-off-by: Abhi Singh <Abhi.Singh@arm.com>
+Change-Id: I8591c3d7b0855133141779d3c53a159129400815
+---
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestFunction.c   | 2 +-
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxTest/HIIConfigRoutingBBTestFunction.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestFunction.c
+index b3276487bb3c..8e46b547bdfe 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestFunction.c
+@@ -521,7 +521,7 @@ BBTestRouteConfigFunctionTestCheckpoint1 (
+                  );
+   if ( (EFI_SUCCESS == Status) && (Progress == Resp + SctStrLen (Resp)) ) {
+     AssertionType = EFI_TEST_ASSERTION_PASSED;
+-  } else if ( EFI_OUT_OF_RESOURCES == Status ) {
++  } else if ( (EFI_OUT_OF_RESOURCES == Status) || (EFI_ACCESS_DENIED == Status) ) {
+     AssertionType = EFI_TEST_ASSERTION_WARNING;
+   } else {
+     AssertionType = EFI_TEST_ASSERTION_FAILED;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxTest/HIIConfigRoutingBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxTest/HIIConfigRoutingBBTestFunction.c
+index d4bd23d1fd82..9d7a7dcf42e2 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxTest/HIIConfigRoutingBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxTest/HIIConfigRoutingBBTestFunction.c
+@@ -546,7 +546,7 @@ BBTestRouteConfigFunctionTestCheckpoint1 (
+ 
+   if ( (EFI_SUCCESS == Status) && (Progress == Resp2 + SctStrLen (Resp2)) ) {
+     AssertionType = EFI_TEST_ASSERTION_PASSED;
+-  } else if ( EFI_OUT_OF_RESOURCES == Status ){
++  } else if ( (EFI_OUT_OF_RESOURCES == Status) || (EFI_ACCESS_DENIED == Status) ) {
+     AssertionType = EFI_TEST_ASSERTION_WARNING;
+   } else {
+     AssertionType = EFI_TEST_ASSERTION_FAILED;
+-- 
+2.34.1
+

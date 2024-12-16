@@ -1,0 +1,45 @@
+From c466e3dee49ad96f5a8df33210d4ee2b11dcf977 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:07:29 +0530
+Subject: [PATCH 3/3] MdeModulePkg/Core/PiSmmCore: Fix OVERRUN Coverity issue
+
+The function InternalFreePoolByIndex has an
+
+  ASSERT (PoolIndex < MAX_POOL_INDEX);
+
+but this is applicable only in DEBUG mode. In RELEASE, there is no
+limit check on the PoolIndex which can lead to OVERRUN while accessing
+mSmmPoolLists array later on.
+
+Hence, to avoid OVERRUN, add limit check on PoolIndex.
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4299
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Core/PiSmmCore/Pool.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/MdeModulePkg/Core/PiSmmCore/Pool.c b/MdeModulePkg/Core/PiSmmCore/Pool.c
+index e1ff40a8ea55..e0c044c2668b 100644
+--- a/MdeModulePkg/Core/PiSmmCore/Pool.c
++++ b/MdeModulePkg/Core/PiSmmCore/Pool.c
+@@ -213,6 +213,10 @@ InternalFreePoolByIndex (
+   PoolTail->Signature           = 0;
+   PoolTail->Size                = 0;
+   ASSERT (PoolIndex < MAX_POOL_INDEX);
++  if (PoolIndex >= MAX_POOL_INDEX) {
++    return EFI_NOT_FOUND;
++  }
++
+   InsertHeadList (&mSmmPoolLists[SmmPoolType][PoolIndex], &FreePoolHdr->Link);
+   return EFI_SUCCESS;
+ }
+-- 
+2.36.1.windows.1
+

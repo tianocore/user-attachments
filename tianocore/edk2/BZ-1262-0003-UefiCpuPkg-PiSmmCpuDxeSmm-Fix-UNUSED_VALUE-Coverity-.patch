@@ -1,0 +1,35 @@
+From de1037d0ccecc995de52f8b596987a82440db2e3 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:09:47 +0530
+Subject: [PATCH 3/3] UefiCpuPkg/PiSmmCpuDxeSmm: Fix UNUSED_VALUE Coverity
+ issue
+
+The function InitializeSmmCpuSemaphores adds SemaphoreSize to the
+variable SemaphoreAddr and in the immediate next code line does a
+re-assignment on the SemaphoreAddr variable thereby making previous
+update redundant. Hence delete the redundant statement.
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4267
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ UefiCpuPkg/PiSmmCpuDxeSmm/MpService.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/UefiCpuPkg/PiSmmCpuDxeSmm/MpService.c b/UefiCpuPkg/PiSmmCpuDxeSmm/MpService.c
+index a0967eb69c71..ba2e8a604fab 100644
+--- a/UefiCpuPkg/PiSmmCpuDxeSmm/MpService.c
++++ b/UefiCpuPkg/PiSmmCpuDxeSmm/MpService.c
+@@ -1982,7 +1982,6 @@ InitializeSmmCpuSemaphores (
+   SemaphoreAddr                                  += SemaphoreSize;
+   mSmmCpuSemaphores.SemaphoreGlobal.CodeAccessCheckLock
+                  = (SPIN_LOCK *)SemaphoreAddr;
+-  SemaphoreAddr += SemaphoreSize;
+ 
+   SemaphoreAddr                          = (UINTN)SemaphoreBlock + GlobalSemaphoresSize;
+   mSmmCpuSemaphores.SemaphoreCpu.Busy    = (SPIN_LOCK *)SemaphoreAddr;
+-- 
+2.36.1.windows.1
+

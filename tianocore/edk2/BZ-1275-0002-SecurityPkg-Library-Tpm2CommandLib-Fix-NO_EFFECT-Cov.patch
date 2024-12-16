@@ -1,0 +1,37 @@
+From 791573e5169cedc8eccebff04230a1ced07db10a Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:25:04 +0530
+Subject: [PATCH 2/2] SecurityPkg/Library/Tpm2CommandLib: Fix NO_EFFECT
+ Coverity issue
+
+PcrIndex is a variable of type UINT8 (8 bits, unsigned) and hence the
+check (PcrIndex < 0) will never be TRUE.
+
+So, the check can be removed altogether.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Min Xu <min.m.xu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4279
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ SecurityPkg/Library/Tpm2CommandLib/Tpm2Integrity.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/SecurityPkg/Library/Tpm2CommandLib/Tpm2Integrity.c b/SecurityPkg/Library/Tpm2CommandLib/Tpm2Integrity.c
+index 94e93b26428f..1989c93c874c 100644
+--- a/SecurityPkg/Library/Tpm2CommandLib/Tpm2Integrity.c
++++ b/SecurityPkg/Library/Tpm2CommandLib/Tpm2Integrity.c
+@@ -761,8 +761,7 @@ Tpm2PcrReadForActiveBank (
+ 
+   PcrIndex = (UINT8)PcrHandle;
+ 
+-  if ((PcrIndex < 0) ||
+-      (PcrIndex >= IMPLEMENTATION_PCR))
++  if (PcrIndex >= IMPLEMENTATION_PCR)
+   {
+     return EFI_INVALID_PARAMETER;
+   }
+-- 
+2.36.1.windows.1
+

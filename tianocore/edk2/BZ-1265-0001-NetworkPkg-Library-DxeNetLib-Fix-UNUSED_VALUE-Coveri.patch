@@ -1,0 +1,45 @@
+From d27b93217e24140137ccc4266d195172188d094e Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:12:17 +0530
+Subject: [PATCH 1/1] NetworkPkg/Library/DxeNetLib: Fix UNUSED_VALUE Coverity
+ issue
+
+The return value stored in Status in the for loop is not made of any
+use thereafter and hence it remains as UNUSED. Assuming, there is a
+need to continue to iterate through all the devices in the handle
+database even if there is some error intermediately, the storage in
+Status can be done away with.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4270
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Library/DxeNetLib/DxeNetLib.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/NetworkPkg/Library/DxeNetLib/DxeNetLib.c b/NetworkPkg/Library/DxeNetLib/DxeNetLib.c
+index fd4a9e15a892..577738f95ce3 100644
+--- a/NetworkPkg/Library/DxeNetLib/DxeNetLib.c
++++ b/NetworkPkg/Library/DxeNetLib/DxeNetLib.c
+@@ -1791,11 +1791,11 @@ NetLibDefaultUnload (
+     // the devices in the handle database.
+     //
+     for (Index2 = 0; Index2 < DeviceHandleCount; Index2++) {
+-      Status = gBS->DisconnectController (
+-                      DeviceHandleBuffer[Index2],
+-                      DriverBinding->DriverBindingHandle,
+-                      NULL
+-                      );
++      gBS->DisconnectController (
++             DeviceHandleBuffer[Index2],
++             DriverBinding->DriverBindingHandle,
++             NULL
++             );
+     }
+ 
+     //
+-- 
+2.36.1.windows.1
+

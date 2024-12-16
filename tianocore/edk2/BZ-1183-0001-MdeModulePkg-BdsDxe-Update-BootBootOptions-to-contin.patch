@@ -1,0 +1,38 @@
+From 4572d99da76209ff8a3421649bec637666fe5290 Mon Sep 17 00:00:00 2001
+From: Liming Gao <gaoliming@byosoft.com.cn>
+Date: Mon, 16 Jan 2023 14:08:36 +0800
+Subject: [PATCH] MdeModulePkg BdsDxe: Update BootBootOptions() to continue
+ boot next option
+
+BZ: https://bugzilla.tianocore.org/show_bug.cgi?id=4302
+
+Signed-off-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ MdeModulePkg/Universal/BdsDxe/BdsEntry.c | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/BdsDxe/BdsEntry.c b/MdeModulePkg/Universal/BdsDxe/BdsEntry.c
+index 766dde3aae..7e9f03d06c 100644
+--- a/MdeModulePkg/Universal/BdsDxe/BdsEntry.c
++++ b/MdeModulePkg/Universal/BdsDxe/BdsEntry.c
+@@ -412,17 +412,6 @@ BootBootOptions (
+     // now boot will be performed.
+     //
+     EfiBootManagerBoot (&BootOptions[Index]);
+-
+-    //
+-    // If the boot via Boot#### returns with a status of EFI_SUCCESS, platform firmware
+-    // supports boot manager menu, and if firmware is configured to boot in an
+-    // interactive mode, the boot manager will stop processing the BootOrder variable and
+-    // present a boot manager menu to the user.
+-    //
+-    if ((BootManagerMenu != NULL) && (BootOptions[Index].Status == EFI_SUCCESS)) {
+-      EfiBootManagerBoot (BootManagerMenu);
+-      break;
+-    }
+   }
+ 
+   return (BOOLEAN)(Index < BootOptionCount);
+-- 
+2.37.3.windows.1
+

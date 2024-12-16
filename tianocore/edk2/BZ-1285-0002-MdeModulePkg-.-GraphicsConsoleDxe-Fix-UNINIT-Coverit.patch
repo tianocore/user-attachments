@@ -1,0 +1,40 @@
+From fa14276438e78987652337958640fcfcc6af92d4 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:47:16 +0530
+Subject: [PATCH 2/3] MdeModulePkg/.../GraphicsConsoleDxe: Fix UNINIT Coverity
+ issue
+
+Full pathname - MdeModulePkg/Universal/Console/GraphicsConsoleDxe
+
+The BltChar remains uninitialized if GraphicsOutput is not NULL and
+if FeaturePcdGet (PcdUgaConsumeSupport) is not supported.
+
+Nothing is required to be done in this scenario and hence return.
+
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4291
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c   | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c b/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
+index dea310e237f9..ceb75b4aa954 100644
+--- a/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
++++ b/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
+@@ -1985,6 +1985,11 @@ FlushCursor (
+                EFI_GLYPH_HEIGHT,
+                EFI_GLYPH_WIDTH * sizeof (EFI_UGA_PIXEL)
+                );
++  } else {
++    //
++    // Nothing to do as BltChar remains uninitialized.
++    //
++    return EFI_SUCCESS;
+   }
+ 
+   GetTextColors (This, &Foreground.Pixel, &Background.Pixel);
+-- 
+2.36.1.windows.1
+

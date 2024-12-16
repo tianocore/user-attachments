@@ -1,0 +1,13 @@
+diff --git a/NetworkPkg/UefiPxeBcDxe/PxeBcDhcp4.c b/NetworkPkg/UefiPxeBcDxe/PxeBcDhcp4.c
+index 5d0726f..4bc4bc3 100644
+--- a/NetworkPkg/UefiPxeBcDxe/PxeBcDhcp4.c
++++ b/NetworkPkg/UefiPxeBcDxe/PxeBcDhcp4.c
+@@ -867,7 +867,7 @@ PxeBcCacheDhcp4Offer (
+         //
+         Private->OfferIndex[OfferType][Private->OfferCount[OfferType]] = Private->OfferNum;
+         Private->OfferCount[OfferType]++;
+-      } else if (Private->OfferCount[OfferType] > 0) {
++      } else if (Private->OfferCount[OfferType] == 0) {
+         //
+         // Only cache the first PXE10/WFM11a offer, and discard the others.
+         //

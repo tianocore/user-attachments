@@ -1,0 +1,44 @@
+From 42debefc863e9d5de7dc6bb14d29073b5284ea9f Mon Sep 17 00:00:00 2001
+From: Ashraf Ali S <ashraf.ali.s@intel.com>
+Date: Fri, 23 Jul 2021 14:02:23 +0530
+Subject: [PATCH v2 2/2] UefiCpuPkg: ResetVector Tool additional debug prints
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3506
+
+Before executing the nasm command, added print statement to know what
+commands are executing.
+before printing the output file need check the status of command which
+is executed. if the status is 0 then only print the output file name.
+
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Harry Han <harry.han@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+Cc: Sangeetha V <sangeetha.v@intel.com>
+Signed-off-by: Ashraf Ali S <ashraf.ali.s@intel.com>
+---
+ UefiCpuPkg/ResetVector/Vtf0/Build.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/UefiCpuPkg/ResetVector/Vtf0/Build.py b/UefiCpuPkg/ResetVector/Vtf0/Build.py
+index 55f4edd87b..b791d32762 100644
+--- a/UefiCpuPkg/ResetVector/Vtf0/Build.py
++++ b/UefiCpuPkg/ResetVector/Vtf0/Build.py
+@@ -32,9 +32,12 @@ for arch in ('ia32', 'x64'):
+             '-o', output,
+             'Vtf0.nasmb',
+             )
++        print(f"Command : {' '.join(commandLine)}")
+         ret = RunCommand(commandLine)
++        if ret != 0:
++            print(f"something went wrong while executing {commandLine[-1]}")
++            sys.exit()
+         print('\tASM\t' + output)
+-        if ret != 0: sys.exit(ret)
+ 
+         commandLine = (
+             'python',
+-- 
+2.30.2.windows.1
+

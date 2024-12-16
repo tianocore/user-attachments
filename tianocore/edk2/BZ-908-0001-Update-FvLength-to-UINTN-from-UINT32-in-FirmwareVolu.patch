@@ -1,0 +1,299 @@
+From 87120c9f4689d35952a7957a136da35a54ec2154 Mon Sep 17 00:00:00 2001
+Message-Id: <87120c9f4689d35952a7957a136da35a54ec2154.1640976311.git.ashraf.ali.s@intel.com>
+From: Ashraf Ali S <ashraf.ali.s@intel.com>
+Date: Fri, 31 Dec 2021 21:20:02 +0530
+Subject: [PATCH] Update FvLength to UINTN from UINT32 in FirmwareVolumeInfo
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3792
+
+Pi/PiFirmwareVolume FvLength has been assigned as UINT64, and
+Ppi/FirmwareVolumeInfo FvLength has mentioned as UINT32 which will
+break the X64 build, updating the FvLenth to UINTN will support for both
+
+Cc: Rangasai V Chaganty <rangasai.v.chaganty@intel.com>
+Cc: Digant H Solanki <digant.h.solanki@intel.com>
+Cc: Sangeetha V <sangeetha.v@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com> [dandanbi]
+Cc: Liming Gao <gaoliming@byosoft.com.cn> [lgao4]
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Harry Han <harry.han@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+Cc: Andrew Fish <afish@apple.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+Cc: Rebecca Cran <rebecca@bsdio.com>
+Cc: Peter Grehan <grehan@freebsd.org>
+
+Signed-off-by: Ashraf Ali S <ashraf.ali.s@intel.com>
+---
+ EmulatorPkg/Library/SecPeiServicesLib/PeiServicesLib.c    | 2 +-
+ IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c     | 2 +-
+ IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c     | 2 +-
+ MdeModulePkg/Core/Pei/FwVol/FwVol.c                       | 8 ++++----
+ MdeModulePkg/Core/Pei/FwVol/FwVol.h                       | 2 +-
+ MdeModulePkg/Core/Pei/PeiMain.h                           | 2 +-
+ MdePkg/Include/Library/PeiServicesLib.h                   | 4 ++--
+ MdePkg/Include/Ppi/FirmwareVolumeInfo.h                   | 2 +-
+ MdePkg/Include/Ppi/FirmwareVolumeInfo2.h                  | 2 +-
+ MdePkg/Library/PeiServicesLib/PeiServicesLib.c            | 6 +++---
+ OvmfPkg/Bhyve/PlatformPei/Fv.c                            | 2 +-
+ OvmfPkg/PlatformPei/Fv.c                                  | 2 +-
+ OvmfPkg/XenPlatformPei/Fv.c                               | 2 +-
+ SecurityPkg/FvReportPei/FvReportPei.c                     | 2 +-
+ .../RecoveryModuleLoadPei/RecoveryModuleLoadPei.c         | 2 +-
+ 15 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/EmulatorPkg/Library/SecPeiServicesLib/PeiServicesLib.c b/EmulatorPkg/Library/SecPeiServicesLib/PeiServicesLib.c
+index 9409cbdb66..4cbe02a627 100644
+--- a/EmulatorPkg/Library/SecPeiServicesLib/PeiServicesLib.c
++++ b/EmulatorPkg/Library/SecPeiServicesLib/PeiServicesLib.c
+@@ -545,7 +545,7 @@ EFIAPI
+ PeiServicesInstallFvInfoPpi (
+   IN CONST EFI_GUID  *FvFormat  OPTIONAL,
+   IN CONST VOID      *FvInfo,
+-  IN       UINT32    FvInfoSize,
++  IN       UINTN     FvInfoSize,
+   IN CONST EFI_GUID  *ParentFvName  OPTIONAL,
+   IN CONST EFI_GUID  *ParentFileName OPTIONAL
+   )
+diff --git a/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c b/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c
+index b0c6b2f8a6..f5f3836635 100644
+--- a/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c
++++ b/IntelFsp2WrapperPkg/FspmWrapperPeim/FspmWrapperPeim.c
+@@ -195,7 +195,7 @@ FspmWrapperInit (
+     PeiServicesInstallFvInfoPpi (
+       NULL,
+       (VOID *)(UINTN)PcdGet32 (PcdFspmBaseAddress),
+-      (UINT32)((EFI_FIRMWARE_VOLUME_HEADER *)(UINTN)PcdGet32 (PcdFspmBaseAddress))->FvLength,
++      (UINTN)((EFI_FIRMWARE_VOLUME_HEADER *)(UINTN)PcdGet32 (PcdFspmBaseAddress))->FvLength,
+       NULL,
+       NULL
+       );
+diff --git a/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c b/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c
+index fadadd40e6..25a13e78fd 100644
+--- a/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c
++++ b/IntelFsp2WrapperPkg/FspsWrapperPeim/FspsWrapperPeim.c
+@@ -426,7 +426,7 @@ FspsWrapperInitDispatchMode (
+   PeiServicesInstallFvInfoPpi (
+     NULL,
+     (VOID *)(UINTN)PcdGet32 (PcdFspsBaseAddress),
+-    (UINT32)((EFI_FIRMWARE_VOLUME_HEADER *)(UINTN)PcdGet32 (PcdFspsBaseAddress))->FvLength,
++    (UINTN)((EFI_FIRMWARE_VOLUME_HEADER *)(UINTN)PcdGet32 (PcdFspsBaseAddress))->FvLength,
+     NULL,
+     NULL
+     );
+diff --git a/MdeModulePkg/Core/Pei/FwVol/FwVol.c b/MdeModulePkg/Core/Pei/FwVol/FwVol.c
+index 60bbe57332..28c0c5d4da 100644
+--- a/MdeModulePkg/Core/Pei/FwVol/FwVol.c
++++ b/MdeModulePkg/Core/Pei/FwVol/FwVol.c
+@@ -1542,7 +1542,7 @@ ProcessFvFile (
+     PeiServicesInstallFvInfo2Ppi (
+       &FvHeader->FileSystemGuid,
+       (VOID **)FvHeader,
+-      (UINT32)FvHeader->FvLength,
++      (UINTN)FvHeader->FvLength,
+       &ParentFvImageInfo.FvName,
+       &FileInfo.FileName,
+       AuthenticationStatus
+@@ -1551,7 +1551,7 @@ ProcessFvFile (
+     PeiServicesInstallFvInfoPpi (
+       &FvHeader->FileSystemGuid,
+       (VOID **)FvHeader,
+-      (UINT32)FvHeader->FvLength,
++      (UINTN)FvHeader->FvLength,
+       &ParentFvImageInfo.FvName,
+       &FileInfo.FileName
+       );
+@@ -2293,7 +2293,7 @@ FindUnknownFormatFvInfo (
+   IN  PEI_CORE_INSTANCE  *PrivateData,
+   IN  EFI_GUID           *Format,
+   OUT VOID               **FvInfo,
+-  OUT UINT32             *FvInfoSize,
++  OUT UINTN              *FvInfoSize,
+   OUT UINT32             *AuthenticationStatus
+   )
+ {
+@@ -2350,7 +2350,7 @@ ThirdPartyFvPpiNotifyCallback (
+   PEI_CORE_INSTANCE            *PrivateData;
+   EFI_PEI_FIRMWARE_VOLUME_PPI  *FvPpi;
+   VOID                         *FvInfo;
+-  UINT32                       FvInfoSize;
++  UINTN                        FvInfoSize;
+   UINT32                       AuthenticationStatus;
+   EFI_STATUS                   Status;
+   EFI_PEI_FV_HANDLE            FvHandle;
+diff --git a/MdeModulePkg/Core/Pei/FwVol/FwVol.h b/MdeModulePkg/Core/Pei/FwVol/FwVol.h
+index 7d1dc9cba1..faf8cb4f64 100644
+--- a/MdeModulePkg/Core/Pei/FwVol/FwVol.h
++++ b/MdeModulePkg/Core/Pei/FwVol/FwVol.h
+@@ -343,7 +343,7 @@ FindUnknownFormatFvInfo (
+   IN  PEI_CORE_INSTANCE  *PrivateData,
+   IN  EFI_GUID           *Format,
+   OUT VOID               **FvInfo,
+-  OUT UINT32             *FvInfoSize,
++  OUT UINTN              *FvInfoSize,
+   OUT UINT32             *AuthenticationStatus
+   );
+ 
+diff --git a/MdeModulePkg/Core/Pei/PeiMain.h b/MdeModulePkg/Core/Pei/PeiMain.h
+index 556beddad5..a0db84e8ea 100644
+--- a/MdeModulePkg/Core/Pei/PeiMain.h
++++ b/MdeModulePkg/Core/Pei/PeiMain.h
+@@ -151,7 +151,7 @@ typedef struct {
+ typedef struct {
+   EFI_GUID                     FvFormat;
+   VOID                         *FvInfo;
+-  UINT32                       FvInfoSize;
++  UINTN                        FvInfoSize;
+   UINT32                       AuthenticationStatus;
+   EFI_PEI_NOTIFY_DESCRIPTOR    NotifyDescriptor;
+ } PEI_CORE_UNKNOW_FORMAT_FV_INFO;
+diff --git a/MdePkg/Include/Library/PeiServicesLib.h b/MdePkg/Include/Library/PeiServicesLib.h
+index 0ca032e411..006d0a093b 100644
+--- a/MdePkg/Include/Library/PeiServicesLib.h
++++ b/MdePkg/Include/Library/PeiServicesLib.h
+@@ -485,7 +485,7 @@ EFIAPI
+ PeiServicesInstallFvInfoPpi (
+   IN CONST EFI_GUID  *FvFormat  OPTIONAL,
+   IN CONST VOID      *FvInfo,
+-  IN       UINT32    FvInfoSize,
++  IN       UINTN     FvInfoSize,
+   IN CONST EFI_GUID  *ParentFvName  OPTIONAL,
+   IN CONST EFI_GUID  *ParentFileName OPTIONAL
+   );
+@@ -525,7 +525,7 @@ EFIAPI
+ PeiServicesInstallFvInfo2Ppi (
+   IN CONST EFI_GUID  *FvFormat  OPTIONAL,
+   IN CONST VOID      *FvInfo,
+-  IN       UINT32    FvInfoSize,
++  IN       UINTN     FvInfoSize,
+   IN CONST EFI_GUID  *ParentFvName  OPTIONAL,
+   IN CONST EFI_GUID  *ParentFileName  OPTIONAL,
+   IN       UINT32    AuthenticationStatus
+diff --git a/MdePkg/Include/Ppi/FirmwareVolumeInfo.h b/MdePkg/Include/Ppi/FirmwareVolumeInfo.h
+index 322989170d..6ef3b47297 100644
+--- a/MdePkg/Include/Ppi/FirmwareVolumeInfo.h
++++ b/MdePkg/Include/Ppi/FirmwareVolumeInfo.h
+@@ -39,7 +39,7 @@ struct _EFI_PEI_FIRMWARE_VOLUME_INFO_PPI {
+   /// Size of the data provided by FvInfo. For memory-mapped firmware volumes,
+   /// this is typically the size of the firmware volume.
+   ///
+-  UINT32      FvInfoSize;
++  UINTN       FvInfoSize;
+   ///
+   /// If the firmware volume originally came from a firmware file, then these
+   /// point to the parent firmware volume name and firmware volume file.
+diff --git a/MdePkg/Include/Ppi/FirmwareVolumeInfo2.h b/MdePkg/Include/Ppi/FirmwareVolumeInfo2.h
+index 398c5d09e3..0d0107900d 100644
+--- a/MdePkg/Include/Ppi/FirmwareVolumeInfo2.h
++++ b/MdePkg/Include/Ppi/FirmwareVolumeInfo2.h
+@@ -39,7 +39,7 @@ struct _EFI_PEI_FIRMWARE_VOLUME_INFO2_PPI {
+   /// Size of the data provided by FvInfo. For memory-mapped firmware volumes,
+   /// this is typically the size of the firmware volume.
+   ///
+-  UINT32      FvInfoSize;
++  UINTN       FvInfoSize;
+   ///
+   /// If the firmware volume originally came from a firmware file, then these
+   /// point to the parent firmware volume name and firmware volume file.
+diff --git a/MdePkg/Library/PeiServicesLib/PeiServicesLib.c b/MdePkg/Library/PeiServicesLib/PeiServicesLib.c
+index 98cc69c3a2..89c840a017 100644
+--- a/MdePkg/Library/PeiServicesLib/PeiServicesLib.c
++++ b/MdePkg/Library/PeiServicesLib/PeiServicesLib.c
+@@ -622,7 +622,7 @@ InternalPeiServicesInstallFvInfoPpi (
+   IN       BOOLEAN   InstallFvInfoPpi,
+   IN CONST EFI_GUID  *FvFormat  OPTIONAL,
+   IN CONST VOID      *FvInfo,
+-  IN       UINT32    FvInfoSize,
++  IN       UINTN     FvInfoSize,
+   IN CONST EFI_GUID  *ParentFvName  OPTIONAL,
+   IN CONST EFI_GUID  *ParentFileName  OPTIONAL,
+   IN       UINT32    AuthenticationStatus
+@@ -729,7 +729,7 @@ EFIAPI
+ PeiServicesInstallFvInfoPpi (
+   IN CONST EFI_GUID  *FvFormat  OPTIONAL,
+   IN CONST VOID      *FvInfo,
+-  IN       UINT32    FvInfoSize,
++  IN       UINTN     FvInfoSize,
+   IN CONST EFI_GUID  *ParentFvName  OPTIONAL,
+   IN CONST EFI_GUID  *ParentFileName OPTIONAL
+   )
+@@ -773,7 +773,7 @@ EFIAPI
+ PeiServicesInstallFvInfo2Ppi (
+   IN CONST EFI_GUID  *FvFormat  OPTIONAL,
+   IN CONST VOID      *FvInfo,
+-  IN       UINT32    FvInfoSize,
++  IN       UINTN     FvInfoSize,
+   IN CONST EFI_GUID  *ParentFvName  OPTIONAL,
+   IN CONST EFI_GUID  *ParentFileName  OPTIONAL,
+   IN       UINT32    AuthenticationStatus
+diff --git a/OvmfPkg/Bhyve/PlatformPei/Fv.c b/OvmfPkg/Bhyve/PlatformPei/Fv.c
+index 575600aa70..49a3ec53bf 100644
+--- a/OvmfPkg/Bhyve/PlatformPei/Fv.c
++++ b/OvmfPkg/Bhyve/PlatformPei/Fv.c
+@@ -83,7 +83,7 @@ PeiFvInitialization (
+   PeiServicesInstallFvInfoPpi (
+     NULL,
+     (VOID *)(UINTN)PcdGet32 (PcdOvmfDxeMemFvBase),
+-    PcdGet32 (PcdOvmfDxeMemFvSize),
++    (UINTN)PcdGet32 (PcdOvmfDxeMemFvSize),
+     NULL,
+     NULL
+     );
+diff --git a/OvmfPkg/PlatformPei/Fv.c b/OvmfPkg/PlatformPei/Fv.c
+index 8cd8cacc59..b88ac1c525 100644
+--- a/OvmfPkg/PlatformPei/Fv.c
++++ b/OvmfPkg/PlatformPei/Fv.c
+@@ -83,7 +83,7 @@ PeiFvInitialization (
+   PeiServicesInstallFvInfoPpi (
+     NULL,
+     (VOID *)(UINTN)PcdGet32 (PcdOvmfDxeMemFvBase),
+-    PcdGet32 (PcdOvmfDxeMemFvSize),
++    (UINTN)PcdGet32 (PcdOvmfDxeMemFvSize),
+     NULL,
+     NULL
+     );
+diff --git a/OvmfPkg/XenPlatformPei/Fv.c b/OvmfPkg/XenPlatformPei/Fv.c
+index 871a2c1c5b..bcf7825c4e 100644
+--- a/OvmfPkg/XenPlatformPei/Fv.c
++++ b/OvmfPkg/XenPlatformPei/Fv.c
+@@ -65,7 +65,7 @@ PeiFvInitialization (
+   PeiServicesInstallFvInfoPpi (
+     NULL,
+     (VOID *)(UINTN)PcdGet32 (PcdOvmfDxeMemFvBase),
+-    PcdGet32 (PcdOvmfDxeMemFvSize),
++    (UINTN)PcdGet32 (PcdOvmfDxeMemFvSize),
+     NULL,
+     NULL
+     );
+diff --git a/SecurityPkg/FvReportPei/FvReportPei.c b/SecurityPkg/FvReportPei/FvReportPei.c
+index 846605cda1..c43de87193 100644
+--- a/SecurityPkg/FvReportPei/FvReportPei.c
++++ b/SecurityPkg/FvReportPei/FvReportPei.c
+@@ -275,7 +275,7 @@ ReportHashedFv (
+     PeiServicesInstallFvInfoPpi (
+       FvFormat,
+       (VOID *)(UINTN)FvInfo->Base,
+-      (UINT32)FvInfo->Length,
++      (UINTN)FvInfo->Length,
+       NULL,
+       NULL
+       );
+diff --git a/SignedCapsulePkg/Universal/RecoveryModuleLoadPei/RecoveryModuleLoadPei.c b/SignedCapsulePkg/Universal/RecoveryModuleLoadPei/RecoveryModuleLoadPei.c
+index b361e90d25..cffaf0114d 100644
+--- a/SignedCapsulePkg/Universal/RecoveryModuleLoadPei/RecoveryModuleLoadPei.c
++++ b/SignedCapsulePkg/Universal/RecoveryModuleLoadPei/RecoveryModuleLoadPei.c
+@@ -483,7 +483,7 @@ CreateHobForRecoveryCapsule (
+   PeiServicesInstallFvInfoPpi (
+     &FvHeader->FileSystemGuid,
+     (VOID *)FvHeader,
+-    (UINT32)FvHeader->FvLength,
++    (UINTN)FvHeader->FvLength,
+     NULL,
+     NULL
+     );
+-- 
+2.30.2.windows.1
+

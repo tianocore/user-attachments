@@ -1,0 +1,1997 @@
+From 640ca2287a7ddfd91d762d8f11d02ec97d1bcc51 Mon Sep 17 00:00:00 2001
+From: Doug Flick <dougflick@microsoft.com>
+Date: Tue, 14 Mar 2023 11:47:47 -0700
+Subject: [PATCH 1/2] SECURITY_PATCH adding fix and unit test to prove fix
+
+---
+ .../DxeTpm2MeasureBootLib.c                   |  15 +-
+ .../DxeTpm2MeasureBootLib.inf                 |   2 +
+ .../DxeTpm2MeasureBootLibSanitization.c       |  65 +++++++
+ .../DxeTpm2MeasureBootLibSanitization.h       |  50 +++++
+ .../DxeTpm2MeasureBootLibSanitizationTest.c   | 134 ++++++++++++++
+ ...Tpm2MeasureBootLibSanitizationTestHost.inf |  27 +++
+ .../DxeTpmMeasureBootLib.c                    |  15 +-
+ .../DxeTpmMeasureBootLib.inf                  |   2 +
+ .../DxeTpmMeasureBootLibSanitization.c        |  64 +++++++
+ .../DxeTpmMeasureBootLibSanitization.h        |  48 +++++
+ .../DxeTpmMeasureBootLibSanitizationTest.c    | 172 ++++++++++++++++++
+ ...eTpmMeasureBootLibSanitizationTestHost.inf |  27 +++
+ SecurityPkg/Test/SecurityPkgHostTest.dsc      |   4 +-
+ 13 files changed, 616 insertions(+), 9 deletions(-)
+ create mode 100644 SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.c
+ create mode 100644 SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.h
+ create mode 100644 SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTest.c
+ create mode 100644 SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf
+ create mode 100644 SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.c
+ create mode 100644 SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.h
+ create mode 100644 SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTest.c
+ create mode 100644 SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf
+
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
+index 36a256a7af..ed8c6aec63 100644
+--- a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
+@@ -44,6 +44,8 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ #include <Library/HobLib.h>
+ #include <Protocol/CcMeasurement.h>
+ 
++#include "DxeTpm2MeasureBootLibSanitization.h" // mschange
++
+ typedef struct {
+   EFI_TCG2_PROTOCOL              *Tcg2Protocol;
+   EFI_CC_MEASUREMENT_PROTOCOL    *CcProtocol;
+@@ -398,6 +400,7 @@ Tcg2MeasurePeImage (
+   Status    = EFI_UNSUPPORTED;
+   ImageLoad = NULL;
+   EventPtr  = NULL;
++  Tcg2Event = NULL;
+ 
+   Tcg2Protocol = MeasureBootProtocols->Tcg2Protocol;
+   CcProtocol   = MeasureBootProtocols->CcProtocol;
+@@ -413,18 +416,22 @@ Tcg2MeasurePeImage (
+   }
+ 
+   FilePathSize = (UINT32)GetDevicePathSize (FilePath);
++  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
++  if (EFI_ERROR (Status)) {
++    return EFI_UNSUPPORTED;
++  }
+ 
+   //
+   // Determine destination PCR by BootPolicy
+   //
+-  EventSize = sizeof (*ImageLoad) - sizeof (ImageLoad->DevicePath) + FilePathSize;
+-  EventPtr  = AllocateZeroPool (EventSize + sizeof (EFI_TCG2_EVENT) - sizeof (Tcg2Event->Event));
++  // from a malicious GPT disk partition
++  EventPtr = AllocateZeroPool (EventSize);
+   if (EventPtr == NULL) {
+     return EFI_OUT_OF_RESOURCES;
+   }
+ 
+-  Tcg2Event                       = (EFI_TCG2_EVENT *)EventPtr;
+-  Tcg2Event->Size                 = EventSize + sizeof (EFI_TCG2_EVENT) - sizeof (Tcg2Event->Event);
++  Tcg2Event       = (EFI_TCG2_EVENT *)EventPtr;
++  Tcg2Event->Size = EventSize;
+   Tcg2Event->Header.HeaderSize    = sizeof (EFI_TCG2_EVENT_HEADER);
+   Tcg2Event->Header.HeaderVersion = EFI_TCG2_EVENT_HEADER_VERSION;
+   ImageLoad                       = (EFI_IMAGE_LOAD_EVENT *)Tcg2Event->Event;
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.inf b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.inf
+index 6dca79a20c..8c2062705f 100644
+--- a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.inf
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.inf
+@@ -37,6 +37,7 @@
+ 
+ [Sources]
+   DxeTpm2MeasureBootLib.c
++  DxeTpm2MeasureBootLibSanitization.c
+ 
+ [Packages]
+   MdePkg/MdePkg.dec
+@@ -46,6 +47,7 @@
+ 
+ [LibraryClasses]
+   BaseMemoryLib
++  SafeIntLib
+   DebugLib
+   MemoryAllocationLib
+   DevicePathLib
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.c b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.c
+new file mode 100644
+index 0000000000..74c29ad754
+--- /dev/null
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.c
+@@ -0,0 +1,65 @@
++/** @file
++  The library instance provides security service of TPM2 measure boot and
++  Confidential Computing (CC) measure boot.
++
++  Caution: This file requires additional review when modified.
++  This library will have external input - PE/COFF image and GPT partition.
++  This external input must be validated carefully to avoid security issue like
++  buffer overflow, integer overflow.
++
++  This file will pull out the validation logic from the following functions, in an
++  attempt to validate the untrusted input in the form of unit tests
++
++  These are those functions:
++
++  DxeTpm2MeasureBootLibImageRead() function will make sure the PE/COFF image content
++  read is within the image buffer.
++
++  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
++  data structure within this image buffer before use.
++
++  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
++  partition data carefully.
++
++  Copyright (c) Microsoft Corporation.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++#include <Uefi.h>
++#include <Uefi/UefiSpec.h>
++#include <Library/SafeIntLib.h>
++#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
++#include <Library/BaseLib.h>
++#include <IndustryStandard/UefiTcgPlatform.h>
++#include <Protocol/BlockIo.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Protocol/Tcg2Protocol.h>
++
++#include "DxeTpm2MeasureBootLibSanitization.h"
++
++EFI_STATUS
++SanitizePeImageEventSize (
++  IN  UINT32                      FilePathSize,
++  OUT UINT32                      *EventSize
++  )
++{
++  EFI_STATUS  Status;
++
++  // Replacing logic:
++  // sizeof (*ImageLoad) - sizeof (ImageLoad->DevicePath) + FilePathSize;
++  Status = SafeUint32Add (OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath), FilePathSize, EventSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
++    return EFI_BAD_BUFFER_SIZE;
++  }
++
++  // Replacing logic:
++  // EventSize + sizeof (EFI_TCG2_EVENT) - sizeof (Tcg2Event->Event)
++  Status = SafeUint32Add (*EventSize, OFFSET_OF (EFI_TCG2_EVENT, Event), EventSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
++    return EFI_BAD_BUFFER_SIZE;
++  }
++
++  return EFI_SUCCESS;
++}
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.h b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.h
+new file mode 100644
+index 0000000000..8898c0eca7
+--- /dev/null
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.h
+@@ -0,0 +1,50 @@
++/** @file
++  This file includes the function prototypes for the sanitization functions.
++
++  These are those functions:
++
++  DxeTpm2MeasureBootLibImageRead() function will make sure the PE/COFF image content
++  read is within the image buffer.
++
++  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
++  data structure within this image buffer before use.
++
++  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
++  partition data carefully.
++
++  Copyright (c) Microsoft Corporation.<BR>
++  SP
++
++**/
++
++#ifndef DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
++#define DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
++
++#include <Uefi.h>
++#include <Uefi/UefiSpec.h>
++
++/* This function will validate that the PeImage Event Size from the loaded image is sane
++* It will check the following:
++*  - EventSize does not overflow
++*
++* @param[in] ImageLoad - Pointer to the EFI_IMAGE_LOAD_EVENT structure. This buffer may be NULL and should only be used for size validation.
++* @param[in] Tcg2Event - Pointer to the EFI_TCG2_EVENT structure. This buffer may be NULL and should only be used for size validation.
++* @param[in] FilePathSize - Size of the file path.
++* @param[out] EventSize - Pointer to the event size.
++*
++* @retval EFI_SUCCESS
++*   The event size is valid.
++*
++* @retval EFI_OUT_OF_RESOURCES
++*   Overflow would have occurred.
++*
++* @retval EFI_INVALID_PARAMETER
++*   One of the passed parameters was invalid.
++*/
++EFI_STATUS
++SanitizePeImageEventSize (
++  IN  UINT32                      FilePathSize,
++  OUT UINT32                      *EventSize
++  );
++
++#endif // DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTest.c b/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTest.c
+new file mode 100644
+index 0000000000..580fcb53e2
+--- /dev/null
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTest.c
+@@ -0,0 +1,134 @@
++/** @file
++This file includes the unit test cases for the DxeTpm2MeasureBootLibSanitizationTest.c.
++
++Copyright (c) Microsoft Corporation.<BR>
++SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++
++#include <Uefi.h>
++#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
++#include <Library/UnitTestLib.h>
++#include <Protocol/BlockIo.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Library/BaseMemoryLib.h>
++#include <IndustryStandard/UefiTcgPlatform.h>
++#include <Protocol/Tcg2Protocol.h>
++
++#include "../DxeTpm2MeasureBootLibSanitization.h"
++
++#define UNIT_TEST_NAME     "DxeTpm2MeasureBootLibSanitizationTest"
++#define UNIT_TEST_VERSION  "1.0"
++
++/*
++* This function tests the SanitizePeImageEventSize function.
++* It's intent is to test that the untrusted input from a file path when generating a
++* EFI_IMAGE_LOAD_EVENT structure will not cause an overflow when calculating
++* the event size when allocating space 
++*
++* @param[in] Context  The unit test context.
++*
++* @retval UNIT_TEST_PASSED  The test passed.
++* @retval UNIT_TEST_ERROR_TEST_FAILED  The test failed.
++*/
++static
++UNIT_TEST_STATUS
++EFIAPI
++TestSanitizePeImageEventSize (
++  IN UNIT_TEST_CONTEXT  Context
++  )
++{
++  UINT32                EventSize;
++  UINTN                 ExistingLogicEventSize;
++  UINT32                FilePathSize;
++  EFI_STATUS            Status;
++  EFI_IMAGE_LOAD_EVENT  *ImageLoadEvent;
++  EFI_TCG2_EVENT        *Tcg2Event;
++
++  Tcg2Event      = NULL;
++  ImageLoadEvent = NULL;
++
++  FilePathSize = 255;
++
++  // Test that a normal PE image passes validation
++  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
++  UT_ASSERT_EQUAL (Status, EFI_SUCCESS);
++
++  // Test that the event size is correct compared to the existing logic
++  ExistingLogicEventSize  = OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath) + FilePathSize;
++  ExistingLogicEventSize += OFFSET_OF (EFI_TCG2_EVENT, Event);
++
++  if (EventSize != ExistingLogicEventSize) {
++    UT_LOG_ERROR ("SanitizePeImageEventSize returned an incorrect event size. Expected %u, got %u\n", ExistingLogicEventSize, EventSize);
++    return UNIT_TEST_ERROR_TEST_FAILED;
++  }
++
++  // Test that the event size may not overflow
++  Status = SanitizePeImageEventSize (MAX_UINT32, &EventSize);
++  UT_ASSERT_EQUAL (Status, EFI_BAD_BUFFER_SIZE);
++
++  DEBUG ((DEBUG_INFO, "%a: Test passed\n", __FUNCTION__));
++
++  return UNIT_TEST_PASSED;
++}
++
++// *--------------------------------------------------------------------*
++// *  Unit Test Code Main Function
++// *--------------------------------------------------------------------*
++
++EFI_STATUS
++EFIAPI
++UefiTestMain (
++  VOID
++  )
++{
++  EFI_STATUS                  Status;
++  UNIT_TEST_FRAMEWORK_HANDLE  Framework;
++  UNIT_TEST_SUITE_HANDLE      Tcg2MeasureBootLibValidationTestSuite;
++
++  Framework = NULL;
++
++  DEBUG ((DEBUG_INFO, "%a: TestMain() - Start\n", UNIT_TEST_NAME));
++
++  Status = InitUnitTestFramework (&Framework, UNIT_TEST_NAME, gEfiCallerBaseName, UNIT_TEST_VERSION);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "%a: Failed in InitUnitTestFramework. Status = %r\n", UNIT_TEST_NAME, Status));
++    goto EXIT;
++  }
++
++  Status = CreateUnitTestSuite (&Tcg2MeasureBootLibValidationTestSuite, Framework, "Tcg2MeasureBootLibValidationTestSuite", "Common.Tcg2MeasureBootLibValidation", NULL, NULL);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "%s: Failed in CreateUnitTestSuite for Tcg2MeasureBootLibValidationTestSuite\n", UNIT_TEST_NAME));
++    Status = EFI_OUT_OF_RESOURCES;
++    goto EXIT;
++  }
++
++  // -----------Suite---------------------------------Description----------------------------Class----------------------------------Test Function------------------------Pre---Clean-Context
++  AddTestCase (Tcg2MeasureBootLibValidationTestSuite, "Tests PE Image and FileSize checks for overflow", "Common.Tcg2MeasureBootLibValidation", TestSanitizePeImageEventSize, NULL, NULL, NULL);
++
++  Status = RunAllTestSuites (Framework);
++
++EXIT:
++  if (Framework != NULL) {
++    FreeUnitTestFramework (Framework);
++  }
++
++  DEBUG ((DEBUG_INFO, "%a: TestMain() - End\n", UNIT_TEST_NAME));
++  return Status;
++}
++
++/**
++ * @brief Host application main function for UefiTestMain
++ *
++ * @param argc - The number of command line arguments
++ * @param argv - The command line arguments
++ * @return int - The status of the test
++ */
++int
++main (
++  int   argc,
++  char  *argv[]
++  )
++{
++  return (int)UefiTestMain ();
++}
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf b/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf
+new file mode 100644
+index 0000000000..b345472fee
+--- /dev/null
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf
+@@ -0,0 +1,27 @@
++## @file
++#
++# Copyright (C) Microsoft Corporation.<BR>
++# Spdx-License-Identifier: BSD-2-Clause-Patent
++##
++
++[Defines]
++  INF_VERSION                    = 0x00010006
++  BASE_NAME                      = DxeTpm2MeasuredBootLibTest
++  FILE_GUID                      = 144d757f-d423-484e-9309-a23695fad5bd
++  MODULE_TYPE                    = HOST_APPLICATION
++  VERSION_STRING                 = 1.0
++  ENTRY_POINT                    = main
++
++[Sources]
++  DxeTpm2MeasureBootLibSanitizationTest.c
++  ../DxeTpm2MeasureBootLibSanitization.c
++
++[Packages]
++  MdePkg/MdePkg.dec
++
++[LibraryClasses]
++  BaseLib
++  DebugLib
++  UnitTestLib
++  PrintLib
++  SafeIntLib
+\ No newline at end of file
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
+index 220393dd2b..0520f98af8 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
+@@ -17,6 +17,7 @@
+ 
+ Copyright (c) 2009 - 2018, Intel Corporation. All rights reserved.<BR>
+ SPDX-License-Identifier: BSD-2-Clause-Patent
++Copyright (c) Microsoft Corporation.<BR>
+ 
+ **/
+ 
+@@ -40,6 +41,8 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ #include <Library/SecurityManagementLib.h>
+ #include <Library/HobLib.h>
+ 
++#include "DxeTpmMeasureBootLibSanitization.h"
++
+ //
+ // Flag to check GPT partition. It only need be measured once.
+ //
+@@ -333,18 +336,22 @@ TcgMeasurePeImage (
+   ImageLoad     = NULL;
+   SectionHeader = NULL;
+   Sha1Ctx       = NULL;
++  TcgEvent      = NULL;
+   FilePathSize  = (UINT32)GetDevicePathSize (FilePath);
+ 
+-  //
+   // Determine destination PCR by BootPolicy
+   //
+-  EventSize = sizeof (*ImageLoad) - sizeof (ImageLoad->DevicePath) + FilePathSize;
+-  TcgEvent  = AllocateZeroPool (EventSize + sizeof (TCG_PCR_EVENT));
++  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
++  if (EFI_ERROR (Status)) {
++    return EFI_UNSUPPORTED;
++  }
++
++  TcgEvent = AllocateZeroPool (EventSize);
+   if (TcgEvent == NULL) {
+     return EFI_OUT_OF_RESOURCES;
+   }
+ 
+-  TcgEvent->EventSize = EventSize;
++  TcgEvent->EventSize = EventSize - sizeof(TCG_PCR_EVENT_HDR);
+   ImageLoad           = (EFI_IMAGE_LOAD_EVENT *)TcgEvent->Event;
+ 
+   switch (ImageType) {
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.inf b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.inf
+index ebab6f7c1e..52d57b8444 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.inf
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.inf
+@@ -32,6 +32,7 @@
+ 
+ [Sources]
+   DxeTpmMeasureBootLib.c
++  DxeTpmMeasureBootLibSanitization.c
+ 
+ [Packages]
+   MdePkg/MdePkg.dec
+@@ -41,6 +42,7 @@
+ 
+ [LibraryClasses]
+   BaseMemoryLib
++  SafeIntLib
+   DebugLib
+   MemoryAllocationLib
+   DevicePathLib
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.c b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.c
+new file mode 100644
+index 0000000000..5d121be723
+--- /dev/null
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.c
+@@ -0,0 +1,64 @@
++/** @file
++  The library instance provides security service of TPM2 measure boot and
++  Confidential Computing (CC) measure boot.
++
++  Caution: This file requires additional review when modified.
++  This library will have external input - PE/COFF image and GPT partition.
++  This external input must be validated carefully to avoid security issue like
++  buffer overflow, integer overflow.
++
++  This file will pull out the validation logic from the following functions, in an
++  attempt to validate the untrusted input in the form of unit tests
++
++  These are those functions:
++
++  DxeTpmMeasureBootLibImageRead() function will make sure the PE/COFF image content
++  read is within the image buffer.
++
++  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
++  data structure within this image buffer before use.
++
++  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
++  partition data carefully.
++
++  Copyright (c) Microsoft Corporation.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++#include <Uefi.h>
++#include <Uefi/UefiSpec.h>
++#include <Library/SafeIntLib.h>
++#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
++#include <Library/BaseLib.h>
++#include <IndustryStandard/UefiTcgPlatform.h>
++#include <Protocol/BlockIo.h>
++#include <Library/MemoryAllocationLib.h>
++
++#include "DxeTpmMeasureBootLibSanitization.h"
++
++EFI_STATUS
++SanitizePeImageEventSize (
++  IN  UINT32                      FilePathSize,
++  OUT UINT32                      *EventSize
++  )
++{
++  EFI_STATUS  Status;
++
++  // Replacing logic:
++  // sizeof (*ImageLoad) - sizeof (ImageLoad->DevicePath) + FilePathSize;
++  Status = SafeUint32Add (OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath), FilePathSize, EventSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
++    return EFI_BAD_BUFFER_SIZE;
++  }
++
++  // Replacing logic:
++  // EventSize + sizeof (TCG_PCR_EVENT_HDR)
++  Status = SafeUint32Add (*EventSize, sizeof (TCG_PCR_EVENT_HDR), EventSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
++    return EFI_BAD_BUFFER_SIZE;
++  }
++
++  return EFI_SUCCESS;
++}
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.h b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.h
+new file mode 100644
+index 0000000000..e142a067a9
+--- /dev/null
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.h
+@@ -0,0 +1,48 @@
++/** @file
++  This file includes the function prototypes for the sanitization functions.
++
++  These are those functions:
++
++  DxeTpmMeasureBootLibImageRead() function will make sure the PE/COFF image content
++  read is within the image buffer.
++
++  TcgMeasurePeImage() function will accept untrusted PE/COFF image and validate its
++  data structure within this image buffer before use.
++
++  TcgMeasureGptTable() function will receive untrusted GPT partition table, and parse
++  partition data carefully.
++
++  Copyright (c) Microsoft Corporation.<BR>
++  SP
++
++**/
++
++#ifndef DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
++#define DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
++
++#include <Uefi.h>
++#include <Uefi/UefiSpec.h>
++
++/* This function will validate that the PeImage Event Size from the loaded image is sane
++* It will check the following:
++*  - EventSize does not overflow
++*
++* @param[in] FilePathSize - Size of the file path.
++* @param[out] EventSize - Pointer to the event size.
++*
++* @retval EFI_SUCCESS
++*   The event size is valid.
++*
++* @retval EFI_OUT_OF_RESOURCES
++*   Overflow would have occurred.
++*
++* @retval EFI_INVALID_PARAMETER
++*   One of the passed parameters was invalid.
++*/
++EFI_STATUS
++SanitizePeImageEventSize (
++  IN  UINT32                      FilePathSize,
++  OUT UINT32                      *EventSize
++  );
++
++#endif // DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTest.c b/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTest.c
+new file mode 100644
+index 0000000000..4f6524bda0
+--- /dev/null
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTest.c
+@@ -0,0 +1,172 @@
++/** @file
++This file includes the unit test cases for the DxeTpmMeasureBootLibSanitizationTest.c.
++
++Copyright (c) Microsoft Corporation.<BR>
++SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++
++#include <Uefi.h>
++#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
++#include <Library/UnitTestLib.h>
++#include <Protocol/BlockIo.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Library/BaseMemoryLib.h>
++#include <IndustryStandard/UefiTcgPlatform.h>
++
++#include "../DxeTpmMeasureBootLibSanitization.h"
++
++#define UNIT_TEST_NAME     "DxeTpmMeasureBootLibSanitizationTest"
++#define UNIT_TEST_VERSION  "1.0"
++
++/*
++* This function tests the SanitizePeImageEventSize function.
++* It's intent is to test that the untrusted input from a file path for an
++* EFI_IMAGE_LOAD_EVENT structure will not cause an overflow when calculating
++* the event size when allocating space 
++*
++* @param[in] Context  The unit test context.
++*
++* @retval UNIT_TEST_PASSED  The test passed.
++* @retval UNIT_TEST_ERROR_TEST_FAILED  The test failed.
++*/
++static
++UNIT_TEST_STATUS
++EFIAPI
++TestSanitizePeImageEventSize (
++  IN UNIT_TEST_CONTEXT  Context
++  )
++{
++  UINT32                    EventSize;
++  UINTN                     ExistingLogicEventSize;
++  UINT32                    FilePathSize;
++  EFI_STATUS                Status;
++  EFI_DEVICE_PATH_PROTOCOL  DevicePath;
++  EFI_IMAGE_LOAD_EVENT      *ImageLoadEvent;
++  UNIT_TEST_STATUS          TestStatus;
++  TCG_PCR_EVENT             *TcgEvent;
++
++  TestStatus = UNIT_TEST_ERROR_TEST_FAILED;
++  TcgEvent   = NULL;
++
++  // Generate EFI_DEVICE_PATH_PROTOCOL test data
++  DevicePath.Type      = 0;
++  DevicePath.SubType   = 0;
++  DevicePath.Length[0] = 0;
++  DevicePath.Length[1] = 0;
++
++  // Generate EFI_IMAGE_LOAD_EVENT test data
++  ImageLoadEvent = AllocateZeroPool (sizeof (EFI_IMAGE_LOAD_EVENT) + sizeof (EFI_DEVICE_PATH_PROTOCOL));
++  if (ImageLoadEvent == NULL) {
++    DEBUG ((DEBUG_ERROR, "%a: AllocateZeroPool failed\n", __FUNCTION__));
++    goto Exit;
++  }
++
++  // Populate EFI_IMAGE_LOAD_EVENT54 test data
++  ImageLoadEvent->ImageLocationInMemory = (EFI_PHYSICAL_ADDRESS)0x12345678;
++  ImageLoadEvent->ImageLengthInMemory   = 0x1000;
++  ImageLoadEvent->ImageLinkTimeAddress  = (UINTN)ImageLoadEvent;
++  ImageLoadEvent->LengthOfDevicePath    = sizeof (EFI_DEVICE_PATH_PROTOCOL);
++  CopyMem (ImageLoadEvent->DevicePath, &DevicePath, sizeof (EFI_DEVICE_PATH_PROTOCOL));
++
++  FilePathSize = 255;
++
++  // Test that a normal PE image passes validation
++  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
++  if (EFI_ERROR (Status)) {
++    UT_LOG_ERROR ("SanitizePeImageEventSize failed with %r\n", Status);
++    goto Exit;
++  }
++
++  // Test that the event size is correct compared to the existing logic
++  ExistingLogicEventSize  = OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath) + FilePathSize;
++  ExistingLogicEventSize += sizeof (TCG_PCR_EVENT_HDR);
++
++  if (EventSize != ExistingLogicEventSize) {
++    UT_LOG_ERROR ("SanitizePeImageEventSize returned an incorrect event size. Expected %u, got %u\n", ExistingLogicEventSize, EventSize);
++    goto Exit;
++  }
++
++  // Test that the event size may not overflow
++  Status = SanitizePeImageEventSize (MAX_UINT32, &EventSize);
++  if (Status != EFI_BAD_BUFFER_SIZE) {
++    UT_LOG_ERROR ("SanitizePeImageEventSize succeded when it was supposed to fail with %r\n", Status);
++    goto Exit;
++  }
++
++  TestStatus = UNIT_TEST_PASSED;
++Exit:
++
++  if (ImageLoadEvent != NULL) {
++    FreePool (ImageLoadEvent);
++  }
++
++  if (TestStatus == UNIT_TEST_ERROR_TEST_FAILED) {
++    DEBUG ((DEBUG_ERROR, "%a: Test failed\n", __FUNCTION__));
++  } else {
++    DEBUG ((DEBUG_INFO, "%a: Test passed\n", __FUNCTION__));
++  }
++
++  return TestStatus;
++}
++
++// *--------------------------------------------------------------------*
++// *  Unit Test Code Main Function
++// *--------------------------------------------------------------------*
++
++EFI_STATUS
++EFIAPI
++UefiTestMain (
++  VOID
++  )
++{
++  EFI_STATUS                  Status;
++  UNIT_TEST_FRAMEWORK_HANDLE  Framework;
++  UNIT_TEST_SUITE_HANDLE      TcgMeasureBootLibValidationTestSuite;
++
++  Framework = NULL;
++
++  DEBUG ((DEBUG_INFO, "%a: TestMain() - Start\n", UNIT_TEST_NAME));
++
++  Status = InitUnitTestFramework (&Framework, UNIT_TEST_NAME, gEfiCallerBaseName, UNIT_TEST_VERSION);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "%a: Failed in InitUnitTestFramework. Status = %r\n", UNIT_TEST_NAME, Status));
++    goto EXIT;
++  }
++
++  Status = CreateUnitTestSuite (&TcgMeasureBootLibValidationTestSuite, Framework, "TcgMeasureBootLibValidationTestSuite", "Common.TcgMeasureBootLibValidation", NULL, NULL);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "%s: Failed in CreateUnitTestSuite for TcgMeasureBootLibValidationTestSuite\n", UNIT_TEST_NAME));
++    Status = EFI_OUT_OF_RESOURCES;
++    goto EXIT;
++  }
++
++  // -----------Suite---------------------------------Description----------------------------Class----------------------------------Test Function------------------------Pre---Clean-Context
++  AddTestCase (TcgMeasureBootLibValidationTestSuite, "Tests PE Image and FileSize checks for overflow", "Common.TcgMeasureBootLibValidation", TestSanitizePeImageEventSize, NULL, NULL, NULL);
++
++  Status = RunAllTestSuites (Framework);
++
++EXIT:
++  if (Framework != NULL) {
++    FreeUnitTestFramework (Framework);
++  }
++
++  DEBUG ((DEBUG_INFO, "%a: TestMain() - End\n", UNIT_TEST_NAME));
++  return Status;
++}
++
++/**
++ * @brief Host application main function for UefiTestMain
++ *
++ * @param argc - The number of command line arguments
++ * @param argv - The command line arguments
++ * @return int - The status of the test
++ */
++int
++main (
++  int   argc,
++  char  *argv[]
++  )
++{
++  return (int)UefiTestMain ();
++}
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf b/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf
+new file mode 100644
+index 0000000000..f08f843662
+--- /dev/null
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf
+@@ -0,0 +1,27 @@
++## @file
++#
++# Copyright (C) Microsoft Corporation.<BR>
++# Spdx-License-Identifier: BSD-2-Clause-Patent
++##
++
++[Defines]
++  INF_VERSION                    = 0x00010006
++  BASE_NAME                      = DxeTpmMeasuredBootLibTest
++  FILE_GUID                      = eb01bc38-309c-4d3e-967e-9f078c90772f
++  MODULE_TYPE                    = HOST_APPLICATION
++  VERSION_STRING                 = 1.0
++  ENTRY_POINT                    = main
++
++[Sources]
++  DxeTpmMeasureBootLibSanitizationTest.c
++  ../DxeTpmMeasureBootLibSanitization.c
++
++[Packages]
++  MdePkg/MdePkg.dec
++
++[LibraryClasses]
++  BaseLib
++  DebugLib
++  UnitTestLib
++  PrintLib
++  SafeIntLib
+\ No newline at end of file
+diff --git a/SecurityPkg/Test/SecurityPkgHostTest.dsc b/SecurityPkg/Test/SecurityPkgHostTest.dsc
+index c4df01fe1b..1332b455d9 100644
+--- a/SecurityPkg/Test/SecurityPkgHostTest.dsc
++++ b/SecurityPkg/Test/SecurityPkgHostTest.dsc
+@@ -25,7 +25,9 @@
+   SecurityPkg/Library/SecureBootVariableLib/UnitTest/MockUefiRuntimeServicesTableLib.inf
+   SecurityPkg/Library/SecureBootVariableLib/UnitTest/MockPlatformPKProtectionLib.inf
+   SecurityPkg/Library/SecureBootVariableLib/UnitTest/MockUefiLib.inf
+-
++  SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf
++  SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf
++  
+   #
+   # Build SecurityPkg HOST_APPLICATION Tests
+   #
+
+From 09b3538a2d4e884c86f8991e755162ad9282d29b Mon Sep 17 00:00:00 2001
+From: Douglas Flick <dougflick@microsoft.com>
+Date: Wed, 6 Dec 2023 11:37:35 -0800
+Subject: [PATCH 2/2] Uncrustify
+
+---
+ .../DxeTpm2MeasureBootLib.c                   |   6 +-
+ .../DxeTpm2MeasureBootLibSanitization.c       | 130 +++----
+ .../DxeTpm2MeasureBootLibSanitization.h       | 100 ++---
+ .../DxeTpm2MeasureBootLibSanitizationTest.c   | 268 +++++++-------
+ ...Tpm2MeasureBootLibSanitizationTestHost.inf |   3 +-
+ .../DxeTpmMeasureBootLib.c                    |   2 +-
+ .../DxeTpmMeasureBootLibSanitization.c        | 128 +++----
+ .../DxeTpmMeasureBootLibSanitization.h        |  96 ++---
+ .../DxeTpmMeasureBootLibSanitizationTest.c    | 344 +++++++++---------
+ ...eTpmMeasureBootLibSanitizationTestHost.inf |   3 +-
+ 10 files changed, 541 insertions(+), 539 deletions(-)
+
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
+index ed8c6aec63..859dc14232 100644
+--- a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
+@@ -416,7 +416,7 @@ Tcg2MeasurePeImage (
+   }
+ 
+   FilePathSize = (UINT32)GetDevicePathSize (FilePath);
+-  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
++  Status       = SanitizePeImageEventSize (FilePathSize, &EventSize);
+   if (EFI_ERROR (Status)) {
+     return EFI_UNSUPPORTED;
+   }
+@@ -430,8 +430,8 @@ Tcg2MeasurePeImage (
+     return EFI_OUT_OF_RESOURCES;
+   }
+ 
+-  Tcg2Event       = (EFI_TCG2_EVENT *)EventPtr;
+-  Tcg2Event->Size = EventSize;
++  Tcg2Event                       = (EFI_TCG2_EVENT *)EventPtr;
++  Tcg2Event->Size                 = EventSize;
+   Tcg2Event->Header.HeaderSize    = sizeof (EFI_TCG2_EVENT_HEADER);
+   Tcg2Event->Header.HeaderVersion = EFI_TCG2_EVENT_HEADER_VERSION;
+   ImageLoad                       = (EFI_IMAGE_LOAD_EVENT *)Tcg2Event->Event;
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.c b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.c
+index 74c29ad754..2710be4ea2 100644
+--- a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.c
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.c
+@@ -1,65 +1,65 @@
+-/** @file
+-  The library instance provides security service of TPM2 measure boot and
+-  Confidential Computing (CC) measure boot.
+-
+-  Caution: This file requires additional review when modified.
+-  This library will have external input - PE/COFF image and GPT partition.
+-  This external input must be validated carefully to avoid security issue like
+-  buffer overflow, integer overflow.
+-
+-  This file will pull out the validation logic from the following functions, in an
+-  attempt to validate the untrusted input in the form of unit tests
+-
+-  These are those functions:
+-
+-  DxeTpm2MeasureBootLibImageRead() function will make sure the PE/COFF image content
+-  read is within the image buffer.
+-
+-  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
+-  data structure within this image buffer before use.
+-
+-  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
+-  partition data carefully.
+-
+-  Copyright (c) Microsoft Corporation.<BR>
+-  SPDX-License-Identifier: BSD-2-Clause-Patent
+-**/
+-#include <Uefi.h>
+-#include <Uefi/UefiSpec.h>
+-#include <Library/SafeIntLib.h>
+-#include <Library/UefiLib.h>
+-#include <Library/DebugLib.h>
+-#include <Library/BaseLib.h>
+-#include <IndustryStandard/UefiTcgPlatform.h>
+-#include <Protocol/BlockIo.h>
+-#include <Library/MemoryAllocationLib.h>
+-#include <Protocol/Tcg2Protocol.h>
+-
+-#include "DxeTpm2MeasureBootLibSanitization.h"
+-
+-EFI_STATUS
+-SanitizePeImageEventSize (
+-  IN  UINT32                      FilePathSize,
+-  OUT UINT32                      *EventSize
+-  )
+-{
+-  EFI_STATUS  Status;
+-
+-  // Replacing logic:
+-  // sizeof (*ImageLoad) - sizeof (ImageLoad->DevicePath) + FilePathSize;
+-  Status = SafeUint32Add (OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath), FilePathSize, EventSize);
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
+-    return EFI_BAD_BUFFER_SIZE;
+-  }
+-
+-  // Replacing logic:
+-  // EventSize + sizeof (EFI_TCG2_EVENT) - sizeof (Tcg2Event->Event)
+-  Status = SafeUint32Add (*EventSize, OFFSET_OF (EFI_TCG2_EVENT, Event), EventSize);
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
+-    return EFI_BAD_BUFFER_SIZE;
+-  }
+-
+-  return EFI_SUCCESS;
+-}
++/** @file
++  The library instance provides security service of TPM2 measure boot and
++  Confidential Computing (CC) measure boot.
++
++  Caution: This file requires additional review when modified.
++  This library will have external input - PE/COFF image and GPT partition.
++  This external input must be validated carefully to avoid security issue like
++  buffer overflow, integer overflow.
++
++  This file will pull out the validation logic from the following functions, in an
++  attempt to validate the untrusted input in the form of unit tests
++
++  These are those functions:
++
++  DxeTpm2MeasureBootLibImageRead() function will make sure the PE/COFF image content
++  read is within the image buffer.
++
++  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
++  data structure within this image buffer before use.
++
++  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
++  partition data carefully.
++
++  Copyright (c) Microsoft Corporation.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++#include <Uefi.h>
++#include <Uefi/UefiSpec.h>
++#include <Library/SafeIntLib.h>
++#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
++#include <Library/BaseLib.h>
++#include <IndustryStandard/UefiTcgPlatform.h>
++#include <Protocol/BlockIo.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Protocol/Tcg2Protocol.h>
++
++#include "DxeTpm2MeasureBootLibSanitization.h"
++
++EFI_STATUS
++SanitizePeImageEventSize (
++  IN  UINT32  FilePathSize,
++  OUT UINT32  *EventSize
++  )
++{
++  EFI_STATUS  Status;
++
++  // Replacing logic:
++  // sizeof (*ImageLoad) - sizeof (ImageLoad->DevicePath) + FilePathSize;
++  Status = SafeUint32Add (OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath), FilePathSize, EventSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
++    return EFI_BAD_BUFFER_SIZE;
++  }
++
++  // Replacing logic:
++  // EventSize + sizeof (EFI_TCG2_EVENT) - sizeof (Tcg2Event->Event)
++  Status = SafeUint32Add (*EventSize, OFFSET_OF (EFI_TCG2_EVENT, Event), EventSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
++    return EFI_BAD_BUFFER_SIZE;
++  }
++
++  return EFI_SUCCESS;
++}
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.h b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.h
+index 8898c0eca7..ba2c6171ed 100644
+--- a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.h
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLibSanitization.h
+@@ -1,50 +1,50 @@
+-/** @file
+-  This file includes the function prototypes for the sanitization functions.
+-
+-  These are those functions:
+-
+-  DxeTpm2MeasureBootLibImageRead() function will make sure the PE/COFF image content
+-  read is within the image buffer.
+-
+-  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
+-  data structure within this image buffer before use.
+-
+-  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
+-  partition data carefully.
+-
+-  Copyright (c) Microsoft Corporation.<BR>
+-  SP
+-
+-**/
+-
+-#ifndef DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
+-#define DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
+-
+-#include <Uefi.h>
+-#include <Uefi/UefiSpec.h>
+-
+-/* This function will validate that the PeImage Event Size from the loaded image is sane
+-* It will check the following:
+-*  - EventSize does not overflow
+-*
+-* @param[in] ImageLoad - Pointer to the EFI_IMAGE_LOAD_EVENT structure. This buffer may be NULL and should only be used for size validation.
+-* @param[in] Tcg2Event - Pointer to the EFI_TCG2_EVENT structure. This buffer may be NULL and should only be used for size validation.
+-* @param[in] FilePathSize - Size of the file path.
+-* @param[out] EventSize - Pointer to the event size.
+-*
+-* @retval EFI_SUCCESS
+-*   The event size is valid.
+-*
+-* @retval EFI_OUT_OF_RESOURCES
+-*   Overflow would have occurred.
+-*
+-* @retval EFI_INVALID_PARAMETER
+-*   One of the passed parameters was invalid.
+-*/
+-EFI_STATUS
+-SanitizePeImageEventSize (
+-  IN  UINT32                      FilePathSize,
+-  OUT UINT32                      *EventSize
+-  );
+-
+-#endif // DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
++/** @file
++  This file includes the function prototypes for the sanitization functions.
++
++  These are those functions:
++
++  DxeTpm2MeasureBootLibImageRead() function will make sure the PE/COFF image content
++  read is within the image buffer.
++
++  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
++  data structure within this image buffer before use.
++
++  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
++  partition data carefully.
++
++  Copyright (c) Microsoft Corporation.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++
++**/
++
++#ifndef DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
++#define DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
++
++#include <Uefi.h>
++#include <Uefi/UefiSpec.h>
++
++/* This function will validate that the PeImage Event Size from the loaded image is sane
++* It will check the following:
++*  - EventSize does not overflow
++*
++* @param[in] ImageLoad - Pointer to the EFI_IMAGE_LOAD_EVENT structure. This buffer may be NULL and should only be used for size validation.
++* @param[in] Tcg2Event - Pointer to the EFI_TCG2_EVENT structure. This buffer may be NULL and should only be used for size validation.
++* @param[in] FilePathSize - Size of the file path.
++* @param[out] EventSize - Pointer to the event size.
++*
++* @retval EFI_SUCCESS
++*   The event size is valid.
++*
++* @retval EFI_OUT_OF_RESOURCES
++*   Overflow would have occurred.
++*
++* @retval EFI_INVALID_PARAMETER
++*   One of the passed parameters was invalid.
++*/
++EFI_STATUS
++SanitizePeImageEventSize (
++  IN  UINT32  FilePathSize,
++  OUT UINT32  *EventSize
++  );
++
++#endif // DXE_TPM2_MEASURE_BOOT_LIB_VALIDATION
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTest.c b/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTest.c
+index 580fcb53e2..faf1b3bfb3 100644
+--- a/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTest.c
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTest.c
+@@ -1,134 +1,134 @@
+-/** @file
+-This file includes the unit test cases for the DxeTpm2MeasureBootLibSanitizationTest.c.
+-
+-Copyright (c) Microsoft Corporation.<BR>
+-SPDX-License-Identifier: BSD-2-Clause-Patent
+-**/
+-
+-#include <Uefi.h>
+-#include <Library/UefiLib.h>
+-#include <Library/DebugLib.h>
+-#include <Library/UnitTestLib.h>
+-#include <Protocol/BlockIo.h>
+-#include <Library/MemoryAllocationLib.h>
+-#include <Library/BaseMemoryLib.h>
+-#include <IndustryStandard/UefiTcgPlatform.h>
+-#include <Protocol/Tcg2Protocol.h>
+-
+-#include "../DxeTpm2MeasureBootLibSanitization.h"
+-
+-#define UNIT_TEST_NAME     "DxeTpm2MeasureBootLibSanitizationTest"
+-#define UNIT_TEST_VERSION  "1.0"
+-
+-/*
+-* This function tests the SanitizePeImageEventSize function.
+-* It's intent is to test that the untrusted input from a file path when generating a
+-* EFI_IMAGE_LOAD_EVENT structure will not cause an overflow when calculating
+-* the event size when allocating space 
+-*
+-* @param[in] Context  The unit test context.
+-*
+-* @retval UNIT_TEST_PASSED  The test passed.
+-* @retval UNIT_TEST_ERROR_TEST_FAILED  The test failed.
+-*/
+-static
+-UNIT_TEST_STATUS
+-EFIAPI
+-TestSanitizePeImageEventSize (
+-  IN UNIT_TEST_CONTEXT  Context
+-  )
+-{
+-  UINT32                EventSize;
+-  UINTN                 ExistingLogicEventSize;
+-  UINT32                FilePathSize;
+-  EFI_STATUS            Status;
+-  EFI_IMAGE_LOAD_EVENT  *ImageLoadEvent;
+-  EFI_TCG2_EVENT        *Tcg2Event;
+-
+-  Tcg2Event      = NULL;
+-  ImageLoadEvent = NULL;
+-
+-  FilePathSize = 255;
+-
+-  // Test that a normal PE image passes validation
+-  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
+-  UT_ASSERT_EQUAL (Status, EFI_SUCCESS);
+-
+-  // Test that the event size is correct compared to the existing logic
+-  ExistingLogicEventSize  = OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath) + FilePathSize;
+-  ExistingLogicEventSize += OFFSET_OF (EFI_TCG2_EVENT, Event);
+-
+-  if (EventSize != ExistingLogicEventSize) {
+-    UT_LOG_ERROR ("SanitizePeImageEventSize returned an incorrect event size. Expected %u, got %u\n", ExistingLogicEventSize, EventSize);
+-    return UNIT_TEST_ERROR_TEST_FAILED;
+-  }
+-
+-  // Test that the event size may not overflow
+-  Status = SanitizePeImageEventSize (MAX_UINT32, &EventSize);
+-  UT_ASSERT_EQUAL (Status, EFI_BAD_BUFFER_SIZE);
+-
+-  DEBUG ((DEBUG_INFO, "%a: Test passed\n", __FUNCTION__));
+-
+-  return UNIT_TEST_PASSED;
+-}
+-
+-// *--------------------------------------------------------------------*
+-// *  Unit Test Code Main Function
+-// *--------------------------------------------------------------------*
+-
+-EFI_STATUS
+-EFIAPI
+-UefiTestMain (
+-  VOID
+-  )
+-{
+-  EFI_STATUS                  Status;
+-  UNIT_TEST_FRAMEWORK_HANDLE  Framework;
+-  UNIT_TEST_SUITE_HANDLE      Tcg2MeasureBootLibValidationTestSuite;
+-
+-  Framework = NULL;
+-
+-  DEBUG ((DEBUG_INFO, "%a: TestMain() - Start\n", UNIT_TEST_NAME));
+-
+-  Status = InitUnitTestFramework (&Framework, UNIT_TEST_NAME, gEfiCallerBaseName, UNIT_TEST_VERSION);
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "%a: Failed in InitUnitTestFramework. Status = %r\n", UNIT_TEST_NAME, Status));
+-    goto EXIT;
+-  }
+-
+-  Status = CreateUnitTestSuite (&Tcg2MeasureBootLibValidationTestSuite, Framework, "Tcg2MeasureBootLibValidationTestSuite", "Common.Tcg2MeasureBootLibValidation", NULL, NULL);
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "%s: Failed in CreateUnitTestSuite for Tcg2MeasureBootLibValidationTestSuite\n", UNIT_TEST_NAME));
+-    Status = EFI_OUT_OF_RESOURCES;
+-    goto EXIT;
+-  }
+-
+-  // -----------Suite---------------------------------Description----------------------------Class----------------------------------Test Function------------------------Pre---Clean-Context
+-  AddTestCase (Tcg2MeasureBootLibValidationTestSuite, "Tests PE Image and FileSize checks for overflow", "Common.Tcg2MeasureBootLibValidation", TestSanitizePeImageEventSize, NULL, NULL, NULL);
+-
+-  Status = RunAllTestSuites (Framework);
+-
+-EXIT:
+-  if (Framework != NULL) {
+-    FreeUnitTestFramework (Framework);
+-  }
+-
+-  DEBUG ((DEBUG_INFO, "%a: TestMain() - End\n", UNIT_TEST_NAME));
+-  return Status;
+-}
+-
+-/**
+- * @brief Host application main function for UefiTestMain
+- *
+- * @param argc - The number of command line arguments
+- * @param argv - The command line arguments
+- * @return int - The status of the test
+- */
+-int
+-main (
+-  int   argc,
+-  char  *argv[]
+-  )
+-{
+-  return (int)UefiTestMain ();
+-}
++/** @file
++This file includes the unit test cases for the DxeTpm2MeasureBootLibSanitizationTest.c.
++
++Copyright (c) Microsoft Corporation.<BR>
++SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++
++#include <Uefi.h>
++#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
++#include <Library/UnitTestLib.h>
++#include <Protocol/BlockIo.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Library/BaseMemoryLib.h>
++#include <IndustryStandard/UefiTcgPlatform.h>
++#include <Protocol/Tcg2Protocol.h>
++
++#include "../DxeTpm2MeasureBootLibSanitization.h"
++
++#define UNIT_TEST_NAME     "DxeTpm2MeasureBootLibSanitizationTest"
++#define UNIT_TEST_VERSION  "1.0"
++
++/*
++* This function tests the SanitizePeImageEventSize function.
++* It's intent is to test that the untrusted input from a file path when generating a
++* EFI_IMAGE_LOAD_EVENT structure will not cause an overflow when calculating
++* the event size when allocating space
++*
++* @param[in] Context  The unit test context.
++*
++* @retval UNIT_TEST_PASSED  The test passed.
++* @retval UNIT_TEST_ERROR_TEST_FAILED  The test failed.
++*/
++static
++UNIT_TEST_STATUS
++EFIAPI
++TestSanitizePeImageEventSize (
++  IN UNIT_TEST_CONTEXT  Context
++  )
++{
++  UINT32                EventSize;
++  UINTN                 ExistingLogicEventSize;
++  UINT32                FilePathSize;
++  EFI_STATUS            Status;
++  EFI_IMAGE_LOAD_EVENT  *ImageLoadEvent;
++  EFI_TCG2_EVENT        *Tcg2Event;
++
++  Tcg2Event      = NULL;
++  ImageLoadEvent = NULL;
++
++  FilePathSize = 255;
++
++  // Test that a normal PE image passes validation
++  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
++  UT_ASSERT_EQUAL (Status, EFI_SUCCESS);
++
++  // Test that the event size is correct compared to the existing logic
++  ExistingLogicEventSize  = OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath) + FilePathSize;
++  ExistingLogicEventSize += OFFSET_OF (EFI_TCG2_EVENT, Event);
++
++  if (EventSize != ExistingLogicEventSize) {
++    UT_LOG_ERROR ("SanitizePeImageEventSize returned an incorrect event size. Expected %u, got %u\n", ExistingLogicEventSize, EventSize);
++    return UNIT_TEST_ERROR_TEST_FAILED;
++  }
++
++  // Test that the event size may not overflow
++  Status = SanitizePeImageEventSize (MAX_UINT32, &EventSize);
++  UT_ASSERT_EQUAL (Status, EFI_BAD_BUFFER_SIZE);
++
++  DEBUG ((DEBUG_INFO, "%a: Test passed\n", __FUNCTION__));
++
++  return UNIT_TEST_PASSED;
++}
++
++// *--------------------------------------------------------------------*
++// *  Unit Test Code Main Function
++// *--------------------------------------------------------------------*
++
++EFI_STATUS
++EFIAPI
++UefiTestMain (
++  VOID
++  )
++{
++  EFI_STATUS                  Status;
++  UNIT_TEST_FRAMEWORK_HANDLE  Framework;
++  UNIT_TEST_SUITE_HANDLE      Tcg2MeasureBootLibValidationTestSuite;
++
++  Framework = NULL;
++
++  DEBUG ((DEBUG_INFO, "%a: TestMain() - Start\n", UNIT_TEST_NAME));
++
++  Status = InitUnitTestFramework (&Framework, UNIT_TEST_NAME, gEfiCallerBaseName, UNIT_TEST_VERSION);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "%a: Failed in InitUnitTestFramework. Status = %r\n", UNIT_TEST_NAME, Status));
++    goto EXIT;
++  }
++
++  Status = CreateUnitTestSuite (&Tcg2MeasureBootLibValidationTestSuite, Framework, "Tcg2MeasureBootLibValidationTestSuite", "Common.Tcg2MeasureBootLibValidation", NULL, NULL);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "%s: Failed in CreateUnitTestSuite for Tcg2MeasureBootLibValidationTestSuite\n", UNIT_TEST_NAME));
++    Status = EFI_OUT_OF_RESOURCES;
++    goto EXIT;
++  }
++
++  // -----------Suite---------------------------------Description----------------------------Class----------------------------------Test Function------------------------Pre---Clean-Context
++  AddTestCase (Tcg2MeasureBootLibValidationTestSuite, "Tests PE Image and FileSize checks for overflow", "Common.Tcg2MeasureBootLibValidation", TestSanitizePeImageEventSize, NULL, NULL, NULL);
++
++  Status = RunAllTestSuites (Framework);
++
++EXIT:
++  if (Framework != NULL) {
++    FreeUnitTestFramework (Framework);
++  }
++
++  DEBUG ((DEBUG_INFO, "%a: TestMain() - End\n", UNIT_TEST_NAME));
++  return Status;
++}
++
++/**
++ * @brief Host application main function for UefiTestMain
++ *
++ * @param argc - The number of command line arguments
++ * @param argv - The command line arguments
++ * @return int - The status of the test
++ */
++int
++main (
++  int   argc,
++  char  *argv[]
++  )
++{
++  return (int)UefiTestMain ();
++}
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf b/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf
+index b345472fee..a372562a18 100644
+--- a/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/InternalUnitTest/DxeTpm2MeasureBootLibSanitizationTestHost.inf
+@@ -1,7 +1,8 @@
+ ## @file
+ #
+ # Copyright (C) Microsoft Corporation.<BR>
+-# Spdx-License-Identifier: BSD-2-Clause-Patent
++# SPDX-License-Identifier: BSD-2-Clause-Patent
++#
+ ##
+ 
+ [Defines]
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
+index 0520f98af8..738f36f372 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
+@@ -351,7 +351,7 @@ TcgMeasurePeImage (
+     return EFI_OUT_OF_RESOURCES;
+   }
+ 
+-  TcgEvent->EventSize = EventSize - sizeof(TCG_PCR_EVENT_HDR);
++  TcgEvent->EventSize = EventSize - sizeof (TCG_PCR_EVENT_HDR);
+   ImageLoad           = (EFI_IMAGE_LOAD_EVENT *)TcgEvent->Event;
+ 
+   switch (ImageType) {
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.c b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.c
+index 5d121be723..07e07e4524 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.c
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.c
+@@ -1,64 +1,64 @@
+-/** @file
+-  The library instance provides security service of TPM2 measure boot and
+-  Confidential Computing (CC) measure boot.
+-
+-  Caution: This file requires additional review when modified.
+-  This library will have external input - PE/COFF image and GPT partition.
+-  This external input must be validated carefully to avoid security issue like
+-  buffer overflow, integer overflow.
+-
+-  This file will pull out the validation logic from the following functions, in an
+-  attempt to validate the untrusted input in the form of unit tests
+-
+-  These are those functions:
+-
+-  DxeTpmMeasureBootLibImageRead() function will make sure the PE/COFF image content
+-  read is within the image buffer.
+-
+-  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
+-  data structure within this image buffer before use.
+-
+-  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
+-  partition data carefully.
+-
+-  Copyright (c) Microsoft Corporation.<BR>
+-  SPDX-License-Identifier: BSD-2-Clause-Patent
+-**/
+-#include <Uefi.h>
+-#include <Uefi/UefiSpec.h>
+-#include <Library/SafeIntLib.h>
+-#include <Library/UefiLib.h>
+-#include <Library/DebugLib.h>
+-#include <Library/BaseLib.h>
+-#include <IndustryStandard/UefiTcgPlatform.h>
+-#include <Protocol/BlockIo.h>
+-#include <Library/MemoryAllocationLib.h>
+-
+-#include "DxeTpmMeasureBootLibSanitization.h"
+-
+-EFI_STATUS
+-SanitizePeImageEventSize (
+-  IN  UINT32                      FilePathSize,
+-  OUT UINT32                      *EventSize
+-  )
+-{
+-  EFI_STATUS  Status;
+-
+-  // Replacing logic:
+-  // sizeof (*ImageLoad) - sizeof (ImageLoad->DevicePath) + FilePathSize;
+-  Status = SafeUint32Add (OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath), FilePathSize, EventSize);
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
+-    return EFI_BAD_BUFFER_SIZE;
+-  }
+-
+-  // Replacing logic:
+-  // EventSize + sizeof (TCG_PCR_EVENT_HDR)
+-  Status = SafeUint32Add (*EventSize, sizeof (TCG_PCR_EVENT_HDR), EventSize);
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
+-    return EFI_BAD_BUFFER_SIZE;
+-  }
+-
+-  return EFI_SUCCESS;
+-}
++/** @file
++  The library instance provides security service of TPM2 measure boot and
++  Confidential Computing (CC) measure boot.
++
++  Caution: This file requires additional review when modified.
++  This library will have external input - PE/COFF image and GPT partition.
++  This external input must be validated carefully to avoid security issue like
++  buffer overflow, integer overflow.
++
++  This file will pull out the validation logic from the following functions, in an
++  attempt to validate the untrusted input in the form of unit tests
++
++  These are those functions:
++
++  DxeTpmMeasureBootLibImageRead() function will make sure the PE/COFF image content
++  read is within the image buffer.
++
++  Tcg2MeasurePeImage() function will accept untrusted PE/COFF image and validate its
++  data structure within this image buffer before use.
++
++  Tcg2MeasureGptTable() function will receive untrusted GPT partition table, and parse
++  partition data carefully.
++
++  Copyright (c) Microsoft Corporation.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++#include <Uefi.h>
++#include <Uefi/UefiSpec.h>
++#include <Library/SafeIntLib.h>
++#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
++#include <Library/BaseLib.h>
++#include <IndustryStandard/UefiTcgPlatform.h>
++#include <Protocol/BlockIo.h>
++#include <Library/MemoryAllocationLib.h>
++
++#include "DxeTpmMeasureBootLibSanitization.h"
++
++EFI_STATUS
++SanitizePeImageEventSize (
++  IN  UINT32  FilePathSize,
++  OUT UINT32  *EventSize
++  )
++{
++  EFI_STATUS  Status;
++
++  // Replacing logic:
++  // sizeof (*ImageLoad) - sizeof (ImageLoad->DevicePath) + FilePathSize;
++  Status = SafeUint32Add (OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath), FilePathSize, EventSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
++    return EFI_BAD_BUFFER_SIZE;
++  }
++
++  // Replacing logic:
++  // EventSize + sizeof (TCG_PCR_EVENT_HDR)
++  Status = SafeUint32Add (*EventSize, sizeof (TCG_PCR_EVENT_HDR), EventSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "EventSize would overflow!\n"));
++    return EFI_BAD_BUFFER_SIZE;
++  }
++
++  return EFI_SUCCESS;
++}
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.h b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.h
+index e142a067a9..c4c5325b11 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.h
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLibSanitization.h
+@@ -1,48 +1,48 @@
+-/** @file
+-  This file includes the function prototypes for the sanitization functions.
+-
+-  These are those functions:
+-
+-  DxeTpmMeasureBootLibImageRead() function will make sure the PE/COFF image content
+-  read is within the image buffer.
+-
+-  TcgMeasurePeImage() function will accept untrusted PE/COFF image and validate its
+-  data structure within this image buffer before use.
+-
+-  TcgMeasureGptTable() function will receive untrusted GPT partition table, and parse
+-  partition data carefully.
+-
+-  Copyright (c) Microsoft Corporation.<BR>
+-  SP
+-
+-**/
+-
+-#ifndef DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
+-#define DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
+-
+-#include <Uefi.h>
+-#include <Uefi/UefiSpec.h>
+-
+-/* This function will validate that the PeImage Event Size from the loaded image is sane
+-* It will check the following:
+-*  - EventSize does not overflow
+-*
+-* @param[in] FilePathSize - Size of the file path.
+-* @param[out] EventSize - Pointer to the event size.
+-*
+-* @retval EFI_SUCCESS
+-*   The event size is valid.
+-*
+-* @retval EFI_OUT_OF_RESOURCES
+-*   Overflow would have occurred.
+-*
+-* @retval EFI_INVALID_PARAMETER
+-*   One of the passed parameters was invalid.
+-*/
+-EFI_STATUS
+-SanitizePeImageEventSize (
+-  IN  UINT32                      FilePathSize,
+-  OUT UINT32                      *EventSize
+-  );
+-
+-#endif // DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
++/** @file
++  This file includes the function prototypes for the sanitization functions.
++
++  These are those functions:
++
++  DxeTpmMeasureBootLibImageRead() function will make sure the PE/COFF image content
++  read is within the image buffer.
++
++  TcgMeasurePeImage() function will accept untrusted PE/COFF image and validate its
++  data structure within this image buffer before use.
++
++  TcgMeasureGptTable() function will receive untrusted GPT partition table, and parse
++  partition data carefully.
++
++  Copyright (c) Microsoft Corporation.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++
++**/
++
++#ifndef DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
++#define DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
++
++#include <Uefi.h>
++#include <Uefi/UefiSpec.h>
++
++/* This function will validate that the PeImage Event Size from the loaded image is sane
++* It will check the following:
++*  - EventSize does not overflow
++*
++* @param[in] FilePathSize - Size of the file path.
++* @param[out] EventSize - Pointer to the event size.
++*
++* @retval EFI_SUCCESS
++*   The event size is valid.
++*
++* @retval EFI_OUT_OF_RESOURCES
++*   Overflow would have occurred.
++*
++* @retval EFI_INVALID_PARAMETER
++*   One of the passed parameters was invalid.
++*/
++EFI_STATUS
++SanitizePeImageEventSize (
++  IN  UINT32  FilePathSize,
++  OUT UINT32  *EventSize
++  );
++
++#endif // DXE_TPM_MEASURE_BOOT_LIB_VALIDATION
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTest.c b/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTest.c
+index 4f6524bda0..328f3e603d 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTest.c
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTest.c
+@@ -1,172 +1,172 @@
+-/** @file
+-This file includes the unit test cases for the DxeTpmMeasureBootLibSanitizationTest.c.
+-
+-Copyright (c) Microsoft Corporation.<BR>
+-SPDX-License-Identifier: BSD-2-Clause-Patent
+-**/
+-
+-#include <Uefi.h>
+-#include <Library/UefiLib.h>
+-#include <Library/DebugLib.h>
+-#include <Library/UnitTestLib.h>
+-#include <Protocol/BlockIo.h>
+-#include <Library/MemoryAllocationLib.h>
+-#include <Library/BaseMemoryLib.h>
+-#include <IndustryStandard/UefiTcgPlatform.h>
+-
+-#include "../DxeTpmMeasureBootLibSanitization.h"
+-
+-#define UNIT_TEST_NAME     "DxeTpmMeasureBootLibSanitizationTest"
+-#define UNIT_TEST_VERSION  "1.0"
+-
+-/*
+-* This function tests the SanitizePeImageEventSize function.
+-* It's intent is to test that the untrusted input from a file path for an
+-* EFI_IMAGE_LOAD_EVENT structure will not cause an overflow when calculating
+-* the event size when allocating space 
+-*
+-* @param[in] Context  The unit test context.
+-*
+-* @retval UNIT_TEST_PASSED  The test passed.
+-* @retval UNIT_TEST_ERROR_TEST_FAILED  The test failed.
+-*/
+-static
+-UNIT_TEST_STATUS
+-EFIAPI
+-TestSanitizePeImageEventSize (
+-  IN UNIT_TEST_CONTEXT  Context
+-  )
+-{
+-  UINT32                    EventSize;
+-  UINTN                     ExistingLogicEventSize;
+-  UINT32                    FilePathSize;
+-  EFI_STATUS                Status;
+-  EFI_DEVICE_PATH_PROTOCOL  DevicePath;
+-  EFI_IMAGE_LOAD_EVENT      *ImageLoadEvent;
+-  UNIT_TEST_STATUS          TestStatus;
+-  TCG_PCR_EVENT             *TcgEvent;
+-
+-  TestStatus = UNIT_TEST_ERROR_TEST_FAILED;
+-  TcgEvent   = NULL;
+-
+-  // Generate EFI_DEVICE_PATH_PROTOCOL test data
+-  DevicePath.Type      = 0;
+-  DevicePath.SubType   = 0;
+-  DevicePath.Length[0] = 0;
+-  DevicePath.Length[1] = 0;
+-
+-  // Generate EFI_IMAGE_LOAD_EVENT test data
+-  ImageLoadEvent = AllocateZeroPool (sizeof (EFI_IMAGE_LOAD_EVENT) + sizeof (EFI_DEVICE_PATH_PROTOCOL));
+-  if (ImageLoadEvent == NULL) {
+-    DEBUG ((DEBUG_ERROR, "%a: AllocateZeroPool failed\n", __FUNCTION__));
+-    goto Exit;
+-  }
+-
+-  // Populate EFI_IMAGE_LOAD_EVENT54 test data
+-  ImageLoadEvent->ImageLocationInMemory = (EFI_PHYSICAL_ADDRESS)0x12345678;
+-  ImageLoadEvent->ImageLengthInMemory   = 0x1000;
+-  ImageLoadEvent->ImageLinkTimeAddress  = (UINTN)ImageLoadEvent;
+-  ImageLoadEvent->LengthOfDevicePath    = sizeof (EFI_DEVICE_PATH_PROTOCOL);
+-  CopyMem (ImageLoadEvent->DevicePath, &DevicePath, sizeof (EFI_DEVICE_PATH_PROTOCOL));
+-
+-  FilePathSize = 255;
+-
+-  // Test that a normal PE image passes validation
+-  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
+-  if (EFI_ERROR (Status)) {
+-    UT_LOG_ERROR ("SanitizePeImageEventSize failed with %r\n", Status);
+-    goto Exit;
+-  }
+-
+-  // Test that the event size is correct compared to the existing logic
+-  ExistingLogicEventSize  = OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath) + FilePathSize;
+-  ExistingLogicEventSize += sizeof (TCG_PCR_EVENT_HDR);
+-
+-  if (EventSize != ExistingLogicEventSize) {
+-    UT_LOG_ERROR ("SanitizePeImageEventSize returned an incorrect event size. Expected %u, got %u\n", ExistingLogicEventSize, EventSize);
+-    goto Exit;
+-  }
+-
+-  // Test that the event size may not overflow
+-  Status = SanitizePeImageEventSize (MAX_UINT32, &EventSize);
+-  if (Status != EFI_BAD_BUFFER_SIZE) {
+-    UT_LOG_ERROR ("SanitizePeImageEventSize succeded when it was supposed to fail with %r\n", Status);
+-    goto Exit;
+-  }
+-
+-  TestStatus = UNIT_TEST_PASSED;
+-Exit:
+-
+-  if (ImageLoadEvent != NULL) {
+-    FreePool (ImageLoadEvent);
+-  }
+-
+-  if (TestStatus == UNIT_TEST_ERROR_TEST_FAILED) {
+-    DEBUG ((DEBUG_ERROR, "%a: Test failed\n", __FUNCTION__));
+-  } else {
+-    DEBUG ((DEBUG_INFO, "%a: Test passed\n", __FUNCTION__));
+-  }
+-
+-  return TestStatus;
+-}
+-
+-// *--------------------------------------------------------------------*
+-// *  Unit Test Code Main Function
+-// *--------------------------------------------------------------------*
+-
+-EFI_STATUS
+-EFIAPI
+-UefiTestMain (
+-  VOID
+-  )
+-{
+-  EFI_STATUS                  Status;
+-  UNIT_TEST_FRAMEWORK_HANDLE  Framework;
+-  UNIT_TEST_SUITE_HANDLE      TcgMeasureBootLibValidationTestSuite;
+-
+-  Framework = NULL;
+-
+-  DEBUG ((DEBUG_INFO, "%a: TestMain() - Start\n", UNIT_TEST_NAME));
+-
+-  Status = InitUnitTestFramework (&Framework, UNIT_TEST_NAME, gEfiCallerBaseName, UNIT_TEST_VERSION);
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "%a: Failed in InitUnitTestFramework. Status = %r\n", UNIT_TEST_NAME, Status));
+-    goto EXIT;
+-  }
+-
+-  Status = CreateUnitTestSuite (&TcgMeasureBootLibValidationTestSuite, Framework, "TcgMeasureBootLibValidationTestSuite", "Common.TcgMeasureBootLibValidation", NULL, NULL);
+-  if (EFI_ERROR (Status)) {
+-    DEBUG ((DEBUG_ERROR, "%s: Failed in CreateUnitTestSuite for TcgMeasureBootLibValidationTestSuite\n", UNIT_TEST_NAME));
+-    Status = EFI_OUT_OF_RESOURCES;
+-    goto EXIT;
+-  }
+-
+-  // -----------Suite---------------------------------Description----------------------------Class----------------------------------Test Function------------------------Pre---Clean-Context
+-  AddTestCase (TcgMeasureBootLibValidationTestSuite, "Tests PE Image and FileSize checks for overflow", "Common.TcgMeasureBootLibValidation", TestSanitizePeImageEventSize, NULL, NULL, NULL);
+-
+-  Status = RunAllTestSuites (Framework);
+-
+-EXIT:
+-  if (Framework != NULL) {
+-    FreeUnitTestFramework (Framework);
+-  }
+-
+-  DEBUG ((DEBUG_INFO, "%a: TestMain() - End\n", UNIT_TEST_NAME));
+-  return Status;
+-}
+-
+-/**
+- * @brief Host application main function for UefiTestMain
+- *
+- * @param argc - The number of command line arguments
+- * @param argv - The command line arguments
+- * @return int - The status of the test
+- */
+-int
+-main (
+-  int   argc,
+-  char  *argv[]
+-  )
+-{
+-  return (int)UefiTestMain ();
+-}
++/** @file
++This file includes the unit test cases for the DxeTpmMeasureBootLibSanitizationTest.c.
++
++Copyright (c) Microsoft Corporation.<BR>
++SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++
++#include <Uefi.h>
++#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
++#include <Library/UnitTestLib.h>
++#include <Protocol/BlockIo.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Library/BaseMemoryLib.h>
++#include <IndustryStandard/UefiTcgPlatform.h>
++
++#include "../DxeTpmMeasureBootLibSanitization.h"
++
++#define UNIT_TEST_NAME     "DxeTpmMeasureBootLibSanitizationTest"
++#define UNIT_TEST_VERSION  "1.0"
++
++/*
++* This function tests the SanitizePeImageEventSize function.
++* It's intent is to test that the untrusted input from a file path for an
++* EFI_IMAGE_LOAD_EVENT structure will not cause an overflow when calculating
++* the event size when allocating space
++*
++* @param[in] Context  The unit test context.
++*
++* @retval UNIT_TEST_PASSED  The test passed.
++* @retval UNIT_TEST_ERROR_TEST_FAILED  The test failed.
++*/
++static
++UNIT_TEST_STATUS
++EFIAPI
++TestSanitizePeImageEventSize (
++  IN UNIT_TEST_CONTEXT  Context
++  )
++{
++  UINT32                    EventSize;
++  UINTN                     ExistingLogicEventSize;
++  UINT32                    FilePathSize;
++  EFI_STATUS                Status;
++  EFI_DEVICE_PATH_PROTOCOL  DevicePath;
++  EFI_IMAGE_LOAD_EVENT      *ImageLoadEvent;
++  UNIT_TEST_STATUS          TestStatus;
++  TCG_PCR_EVENT             *TcgEvent;
++
++  TestStatus = UNIT_TEST_ERROR_TEST_FAILED;
++  TcgEvent   = NULL;
++
++  // Generate EFI_DEVICE_PATH_PROTOCOL test data
++  DevicePath.Type      = 0;
++  DevicePath.SubType   = 0;
++  DevicePath.Length[0] = 0;
++  DevicePath.Length[1] = 0;
++
++  // Generate EFI_IMAGE_LOAD_EVENT test data
++  ImageLoadEvent = AllocateZeroPool (sizeof (EFI_IMAGE_LOAD_EVENT) + sizeof (EFI_DEVICE_PATH_PROTOCOL));
++  if (ImageLoadEvent == NULL) {
++    DEBUG ((DEBUG_ERROR, "%a: AllocateZeroPool failed\n", __FUNCTION__));
++    goto Exit;
++  }
++
++  // Populate EFI_IMAGE_LOAD_EVENT54 test data
++  ImageLoadEvent->ImageLocationInMemory = (EFI_PHYSICAL_ADDRESS)0x12345678;
++  ImageLoadEvent->ImageLengthInMemory   = 0x1000;
++  ImageLoadEvent->ImageLinkTimeAddress  = (UINTN)ImageLoadEvent;
++  ImageLoadEvent->LengthOfDevicePath    = sizeof (EFI_DEVICE_PATH_PROTOCOL);
++  CopyMem (ImageLoadEvent->DevicePath, &DevicePath, sizeof (EFI_DEVICE_PATH_PROTOCOL));
++
++  FilePathSize = 255;
++
++  // Test that a normal PE image passes validation
++  Status = SanitizePeImageEventSize (FilePathSize, &EventSize);
++  if (EFI_ERROR (Status)) {
++    UT_LOG_ERROR ("SanitizePeImageEventSize failed with %r\n", Status);
++    goto Exit;
++  }
++
++  // Test that the event size is correct compared to the existing logic
++  ExistingLogicEventSize  = OFFSET_OF (EFI_IMAGE_LOAD_EVENT, DevicePath) + FilePathSize;
++  ExistingLogicEventSize += sizeof (TCG_PCR_EVENT_HDR);
++
++  if (EventSize != ExistingLogicEventSize) {
++    UT_LOG_ERROR ("SanitizePeImageEventSize returned an incorrect event size. Expected %u, got %u\n", ExistingLogicEventSize, EventSize);
++    goto Exit;
++  }
++
++  // Test that the event size may not overflow
++  Status = SanitizePeImageEventSize (MAX_UINT32, &EventSize);
++  if (Status != EFI_BAD_BUFFER_SIZE) {
++    UT_LOG_ERROR ("SanitizePeImageEventSize succeded when it was supposed to fail with %r\n", Status);
++    goto Exit;
++  }
++
++  TestStatus = UNIT_TEST_PASSED;
++Exit:
++
++  if (ImageLoadEvent != NULL) {
++    FreePool (ImageLoadEvent);
++  }
++
++  if (TestStatus == UNIT_TEST_ERROR_TEST_FAILED) {
++    DEBUG ((DEBUG_ERROR, "%a: Test failed\n", __FUNCTION__));
++  } else {
++    DEBUG ((DEBUG_INFO, "%a: Test passed\n", __FUNCTION__));
++  }
++
++  return TestStatus;
++}
++
++// *--------------------------------------------------------------------*
++// *  Unit Test Code Main Function
++// *--------------------------------------------------------------------*
++
++EFI_STATUS
++EFIAPI
++UefiTestMain (
++  VOID
++  )
++{
++  EFI_STATUS                  Status;
++  UNIT_TEST_FRAMEWORK_HANDLE  Framework;
++  UNIT_TEST_SUITE_HANDLE      TcgMeasureBootLibValidationTestSuite;
++
++  Framework = NULL;
++
++  DEBUG ((DEBUG_INFO, "%a: TestMain() - Start\n", UNIT_TEST_NAME));
++
++  Status = InitUnitTestFramework (&Framework, UNIT_TEST_NAME, gEfiCallerBaseName, UNIT_TEST_VERSION);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "%a: Failed in InitUnitTestFramework. Status = %r\n", UNIT_TEST_NAME, Status));
++    goto EXIT;
++  }
++
++  Status = CreateUnitTestSuite (&TcgMeasureBootLibValidationTestSuite, Framework, "TcgMeasureBootLibValidationTestSuite", "Common.TcgMeasureBootLibValidation", NULL, NULL);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "%s: Failed in CreateUnitTestSuite for TcgMeasureBootLibValidationTestSuite\n", UNIT_TEST_NAME));
++    Status = EFI_OUT_OF_RESOURCES;
++    goto EXIT;
++  }
++
++  // -----------Suite---------------------------------Description----------------------------Class----------------------------------Test Function------------------------Pre---Clean-Context
++  AddTestCase (TcgMeasureBootLibValidationTestSuite, "Tests PE Image and FileSize checks for overflow", "Common.TcgMeasureBootLibValidation", TestSanitizePeImageEventSize, NULL, NULL, NULL);
++
++  Status = RunAllTestSuites (Framework);
++
++EXIT:
++  if (Framework != NULL) {
++    FreeUnitTestFramework (Framework);
++  }
++
++  DEBUG ((DEBUG_INFO, "%a: TestMain() - End\n", UNIT_TEST_NAME));
++  return Status;
++}
++
++/**
++ * @brief Host application main function for UefiTestMain
++ *
++ * @param argc - The number of command line arguments
++ * @param argv - The command line arguments
++ * @return int - The status of the test
++ */
++int
++main (
++  int   argc,
++  char  *argv[]
++  )
++{
++  return (int)UefiTestMain ();
++}
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf b/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf
+index f08f843662..ce990c95d9 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/InternalUnitTest/DxeTpmMeasureBootLibSanitizationTestHost.inf
+@@ -1,7 +1,8 @@
+ ## @file
+ #
+ # Copyright (C) Microsoft Corporation.<BR>
+-# Spdx-License-Identifier: BSD-2-Clause-Patent
++# SPDX-License-Identifier: BSD-2-Clause-Patent
++#
+ ##
+ 
+ [Defines]

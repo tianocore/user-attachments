@@ -1,0 +1,39 @@
+From e187409bab1dccade35250ed98719336bf751ae9 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:05:33 +0530
+Subject: [PATCH 1/3] MdeModulePkg/Core/PiSmmCore: Fix UNUSED_VALUE Coverity
+ issue
+
+The return value from SmmGetDepexSectionAndPreProccess is stored in
+Status, but it is not made of any use and later Status gets overriden.
+
+Assuming this is deliberate, remove the return value storage in Status.
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4299
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Core/PiSmmCore/Dispatcher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Core/PiSmmCore/Dispatcher.c b/MdeModulePkg/Core/PiSmmCore/Dispatcher.c
+index f635565dd19e..49cd132c465d 100644
+--- a/MdeModulePkg/Core/PiSmmCore/Dispatcher.c
++++ b/MdeModulePkg/Core/PiSmmCore/Dispatcher.c
+@@ -1003,7 +1003,7 @@ SmmDispatcher (
+         //
+         // If Section Extraction Protocol did not let the Depex be read before retry the read
+         //
+-        Status = SmmGetDepexSectionAndPreProccess (DriverEntry);
++        SmmGetDepexSectionAndPreProccess (DriverEntry);
+       }
+ 
+       if (DriverEntry->Dependent) {
+-- 
+2.36.1.windows.1
+

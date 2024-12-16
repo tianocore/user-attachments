@@ -1,0 +1,33 @@
+From b71237bdb25028ddc0f62ac94326badc5942947f Mon Sep 17 00:00:00 2001
+From: G Edhaya Chandran <edhaya.chandran@arm.com>
+Date: Wed, 23 Oct 2024 08:55:44 +0530
+Subject: [PATCH v3 1/1] edk2-test: uefi-sct: Correct the vlanId check in
+ DevicePath Test
+
+The DevicePathBBTest wrongly flags the failure for a valid VLAN device
+path node. For e.g. value 4040
+The range check for vlanId is corrected to fix this issue.
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=4710
+
+Signed-off-by: G Edhaya Chandran <edhaya.chandran@arm.com>
+---
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePath/BlackBoxTest/DevicePathBBTestFunction.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePath/BlackBoxTest/DevicePathBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePath/BlackBoxTest/DevicePathBBTestFunction.c
+index c8757e958a22..dbf39b77dd01 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePath/BlackBoxTest/DevicePathBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePath/BlackBoxTest/DevicePathBBTestFunction.c
+@@ -682,7 +682,7 @@ BBTestDevicePathNodeConformanceAutoTest (
+     //
+     else if ((Type == 3) && (SubType == 20)) {
+       Vlan = (VLAN_DEVICE_PATH *) DevicePath;
+-      if (Vlan->VlanId > 4094 || Vlan->VlanId) {
++      if (Vlan->VlanId > 4094 || Vlan->VlanId < 1) {
+         AssertionType = EFI_TEST_ASSERTION_FAILED;
+       } else {
+         AssertionType = EFI_TEST_ASSERTION_PASSED;
+-- 
+2.25.1
+

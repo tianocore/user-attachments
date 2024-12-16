@@ -1,0 +1,169 @@
+From c6607711a01b172688d228ba36dce92148df5152 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Tue, 29 Dec 2020 03:53:36 +0100
+Subject: [PATCH edk2-test 1/1] uefi-sct/SctPkg: typo Positoin
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3244
+
+%s/Positoin/Position/g
+%s/positoin/position/g
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../BlackBoxTest/SimpleTextOutBBTestConformance_efi.c         | 4 ++--
+ .../BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c        | 4 ++--
+ .../BlackBoxTest/SimpleTextOutBBTestFunction_efi.c            | 4 ++--
+ .../BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c           | 4 ++--
+ .../BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c        | 4 ++--
+ .../BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c           | 4 ++--
+ .../SctPkg/TestInfrastructure/SCT/Framework/UI/KeyFunction.c  | 2 +-
+ 7 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_efi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_efi.c
+index 3b394f242434..8b8c3f86f3ca 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_efi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_efi.c
+@@ -840,7 +840,7 @@ BBTestSetCursorPositionConformanceAutoTest (
+                      AssertionType,
+                      gSimpleTextOutputConformanceTestAssertionGuid009,
+                      L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPosition() with invalid position, mode position integrity",
+-                     L"%a:%d: Mode=%d, Positoin=(%d x %d) Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
++                     L"%a:%d: Mode=%d, Position=(%d x %d) Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                      L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                      __FILE__,
+                      (UINTN)__LINE__,
+@@ -873,7 +873,7 @@ BBTestSetCursorPositionConformanceAutoTest (
+                      StandardLib,
+                      AssertionType,
+                      gSimpleTextOutputConformanceTestAssertionGuid010,
+-                     L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPositoin() with invalid Position",
++                     L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPosition() with invalid Position",
+                      L"%a:%d: Status = %r, Mode = %d, Position = (%d x %d)",
+                      __FILE__,
+                      (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c
+index 9afb3c0882b7..99e14d7b3bae 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c
+@@ -838,7 +838,7 @@ BBTestSetCursorPositionConformanceAutoTest (
+                      AssertionType,
+                      gSimpleTextOutputConformanceTestAssertionGuid009,
+                      L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPosition() with invalid position, mode position integrity",
+-                     L"%a:%d: Mode=%d, Positoin=(%d x %d) Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
++                     L"%a:%d: Mode=%d, Position=(%d x %d) Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                      L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                      __FILE__,
+                      (UINTN)__LINE__,
+@@ -871,7 +871,7 @@ BBTestSetCursorPositionConformanceAutoTest (
+                      StandardLib,
+                      AssertionType,
+                      gSimpleTextOutputConformanceTestAssertionGuid010,
+-                     L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPositoin() with invalid Position",
++                     L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPosition() with invalid Position",
+                      L"%a:%d: Status = %r, Mode = %d, Position = (%d x %d)",
+                      __FILE__,
+                      (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_efi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_efi.c
+index e59e51fc12bb..6b3db8a054ab 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_efi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_efi.c
+@@ -4835,7 +4835,7 @@ BBTestSetCursorPositionFunctionManualTest (
+       BackupMode (SimpleOut, &ModeExpected);
+ 
+       //
+-      // Set cursor positoin to (IndexRow * IndexColumn)
++      // Set cursor position to (IndexRow * IndexColumn)
+       //
+       Status = SimpleOut->SetCursorPosition (SimpleOut, IndexColumn, IndexRow);
+ 
+@@ -5155,7 +5155,7 @@ BBTestSetCursorPositionFunctionAutoTest (
+         BackupMode (SimpleOut, &ModeExpected);
+ 
+         //
+-        // Set cursor positoin to (IndexRow * IndexColumn)
++        // Set cursor position to (IndexRow * IndexColumn)
+         //
+         Status = SimpleOut->SetCursorPosition (SimpleOut, IndexColumn, IndexRow);
+ 
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+index 9b0ae233ce5f..04724f554e09 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+@@ -4123,7 +4123,7 @@ BBTestSetCursorPositionFunctionManualTest (
+       BackupMode (SimpleOut, &ModeExpected);
+ 
+       //
+-      // Set cursor positoin to (IndexRow * IndexColumn)
++      // Set cursor position to (IndexRow * IndexColumn)
+       //
+       Status = SimpleOut->SetCursorPosition (SimpleOut, IndexColumn, IndexRow);
+ 
+@@ -4414,7 +4414,7 @@ BBTestSetCursorPositionFunctionAutoTest (
+         BackupMode (SimpleOut, &ModeExpected);
+ 
+         //
+-        // Set cursor positoin to (IndexRow * IndexColumn)
++        // Set cursor position to (IndexRow * IndexColumn)
+         //
+         Status = SimpleOut->SetCursorPosition (SimpleOut, IndexColumn, IndexRow);
+ 
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c
+index 9afb3c0882b7..99e14d7b3bae 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestConformance_uefi.c
+@@ -838,7 +838,7 @@ BBTestSetCursorPositionConformanceAutoTest (
+                      AssertionType,
+                      gSimpleTextOutputConformanceTestAssertionGuid009,
+                      L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPosition() with invalid position, mode position integrity",
+-                     L"%a:%d: Mode=%d, Positoin=(%d x %d) Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
++                     L"%a:%d: Mode=%d, Position=(%d x %d) Current: Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d. "\
+                      L" Expected:Cursor Position(%d x %d), Mode=%d, MaxMode=%d, Attribute=%d, CursorVisible=%d.",
+                      __FILE__,
+                      (UINTN)__LINE__,
+@@ -871,7 +871,7 @@ BBTestSetCursorPositionConformanceAutoTest (
+                      StandardLib,
+                      AssertionType,
+                      gSimpleTextOutputConformanceTestAssertionGuid010,
+-                     L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPositoin() with invalid Position",
++                     L"EFI_SIMPLE_TEXT_OUT_PROTOCOL.SetCursorPosition - SetCursorPosition() with invalid Position",
+                      L"%a:%d: Status = %r, Mode = %d, Position = (%d x %d)",
+                      __FILE__,
+                      (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+index 9b0ae233ce5f..04724f554e09 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestFunction_uefi.c
+@@ -4123,7 +4123,7 @@ BBTestSetCursorPositionFunctionManualTest (
+       BackupMode (SimpleOut, &ModeExpected);
+ 
+       //
+-      // Set cursor positoin to (IndexRow * IndexColumn)
++      // Set cursor position to (IndexRow * IndexColumn)
+       //
+       Status = SimpleOut->SetCursorPosition (SimpleOut, IndexColumn, IndexRow);
+ 
+@@ -4414,7 +4414,7 @@ BBTestSetCursorPositionFunctionAutoTest (
+         BackupMode (SimpleOut, &ModeExpected);
+ 
+         //
+-        // Set cursor positoin to (IndexRow * IndexColumn)
++        // Set cursor position to (IndexRow * IndexColumn)
+         //
+         Status = SimpleOut->SetCursorPosition (SimpleOut, IndexColumn, IndexRow);
+ 
+diff --git a/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/UI/KeyFunction.c b/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/UI/KeyFunction.c
+index 56756a93865b..c02fc58f935d 100644
+--- a/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/UI/KeyFunction.c
++++ b/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/UI/KeyFunction.c
+@@ -1862,7 +1862,7 @@ Routine Description:
+   X0          - the top left X position in screen
+   Y0          - the top left Y position in screen
+   X1          - the bottom right X position in screen
+-  Y1          - the bottom right Y positoin in screen
++  Y1          - the bottom right Y position in screen
+ 
+ Returns:
+ 
+-- 
+2.30.1
+

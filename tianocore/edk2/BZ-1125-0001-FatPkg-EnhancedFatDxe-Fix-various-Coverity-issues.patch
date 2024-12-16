@@ -1,0 +1,80 @@
+From c5d528566856adec019f9fa05d557a8f38edb9a8 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 21 Dec 2022 16:53:29 +0530
+Subject: [PATCH] FatPkg/EnhancedFatDxe: Fix various Coverity issues
+
+The functions FatGetDirEntInfo and FatOpenDirEnt in the file
+FatPkg/EnhancedFatDxe/DirectoryManage.c contains the code statements
+
+      Cluster            = (Entry->FileClusterHigh << 16) | Entry->FileCluster;
+      and
+      OFile->FileCluster = ((DirEnt->Entry.FileClusterHigh) << 16) | (DirEnt->Entry.FileCluster);
+
+respectively. In both these statements, there is an "Operand1" with
+type "UINT16" (16 bits, unsigned) which is promoted in the operation
+"(Operand1 << 16) | Operand2" to type "int" (32 bits, signed), then
+sign-extended to type "unsigned long long" (64 bits, unsigned). If the
+result of "(Operand1 << 16) | Operand2" is greater than 0x7FFFFFFF,
+the upper bits of the result will all be 1. So to avoid sign-extension,
+typecast "Operand1" with UINTN which is the data type of the variable
+on the LHS of the assignment.
+
+The function FatInitializeDiskCache in the file
+FatPkg/EnhancedFatDxe/DiskCache.c evaluates an expression
+
+FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment
+and
+assigns it to DataCacheSize which is of type UINTN;
+
+As per Coverity report,
+FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment is a
+potentially overflowing expression with type "int" (32 bits, signed)
+evaluated using 32-bit arithmetic, and then used in a context that
+expects an expression of type "UINTN" (64 bits, unsigned).
+To avoid overflow, cast "FAT_DATACACHE_GROUP_COUNT" to type "UINTN".
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4249
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ FatPkg/EnhancedFatDxe/DirectoryManage.c | 4 ++--
+ FatPkg/EnhancedFatDxe/DiskCache.c       | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/FatPkg/EnhancedFatDxe/DirectoryManage.c b/FatPkg/EnhancedFatDxe/DirectoryManage.c
+index 723fc35f38..cdae864be0 100644
+--- a/FatPkg/EnhancedFatDxe/DirectoryManage.c
++++ b/FatPkg/EnhancedFatDxe/DirectoryManage.c
+@@ -474,7 +474,7 @@ FatGetDirEntInfo (
+     Info       = Buffer;
+     Info->Size = ResultSize;
+     if ((Entry->Attributes & FAT_ATTRIBUTE_DIRECTORY) != 0) {
+-      Cluster            = (Entry->FileClusterHigh << 16) | Entry->FileCluster;
++      Cluster            = ((UINTN)(Entry->FileClusterHigh) << 16) | (UINTN)Entry->FileCluster;
+       Info->PhysicalSize = FatPhysicalDirSize (Volume, Cluster);
+       Info->FileSize     = Info->PhysicalSize;
+     } else {
+@@ -1167,7 +1167,7 @@ FatOpenDirEnt (
+       //
+       Volume             = Parent->Volume;
+       OFile->FullPathLen = Parent->FullPathLen + 1 + StrLen (DirEnt->FileString);
+-      OFile->FileCluster = ((DirEnt->Entry.FileClusterHigh) << 16) | (DirEnt->Entry.FileCluster);
++      OFile->FileCluster = ((UINTN)(DirEnt->Entry.FileClusterHigh) << 16) | (DirEnt->Entry.FileCluster);
+       InsertTailList (&Parent->ChildHead, &OFile->ChildLink);
+     } else {
+       //
+diff --git a/FatPkg/EnhancedFatDxe/DiskCache.c b/FatPkg/EnhancedFatDxe/DiskCache.c
+index d1a34a6a64..d56e338586 100644
+--- a/FatPkg/EnhancedFatDxe/DiskCache.c
++++ b/FatPkg/EnhancedFatDxe/DiskCache.c
+@@ -477,7 +477,7 @@ FatInitializeDiskCache (
+   DiskCache[CacheFat].BaseAddress   = Volume->FatPos;
+   DiskCache[CacheFat].LimitAddress  = Volume->FatPos + Volume->FatSize;
+   FatCacheSize                      = FatCacheGroupCount << DiskCache[CacheFat].PageAlignment;
+-  DataCacheSize                     = FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment;
++  DataCacheSize                     = (UINTN)FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment;
+   //
+   // Allocate the Fat Cache buffer
+   //
+-- 
+2.36.1.windows.1
+

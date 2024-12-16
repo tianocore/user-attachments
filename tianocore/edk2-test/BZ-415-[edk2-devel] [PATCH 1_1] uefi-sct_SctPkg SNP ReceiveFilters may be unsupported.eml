@@ -1,0 +1,408 @@
+X-Account-Key: account3
+X-UIDL: 1MCqx8-1iIrAq2HnE-008ybx
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <xypron.glpk@gmx.de>
+Received: from mout.gmx.net ([212.227.17.22]) by mx-ha.gmx.net (mxgmx017
+ [212.227.15.9]) with ESMTPS (Nemesis) id 1MdMgM-1hb1ym1FgW-00ZR3h for
+ <xypron.glpk@gmx.de>; Tue, 17 Sep 2019 07:09:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=badeba3b8450; t=1568696981;
+	bh=ZG7UCWpTyTRox0S8i0VIJDf3djrQscUYMAcJJwHVVJI=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=Mi+951NxOod6Gpnkw6o/NKd/muMFnO/DksP6gXE4ILXd3IJ/F4/IHvAXF45ytwEHc
+	 QamDWxBMd2b+w5R/CVpwUJG3rWhAmRDCPdnDj1DqfT+cObB8RVg9VgOhU6+gh0ay85
+	 i1ake21oqzJLniSeiSZGRWKK8X+ztBdWibJMOvwo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from LT02.fritz.box ([88.152.145.122]) by mail.gmx.com (mrgmx101
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0MJXEd-1iD6gY0TZT-0032EG; Tue, 17
+ Sep 2019 07:09:41 +0200
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+To: EDK II Development <devel@edk2.groups.io>
+Cc: Eric Jin <eric.jin@intel.com>,
+	Supreeth Venkatesh <supreeth.venkatesh@arm.com>,
+	Stephano Cetola <stephano.cetola@linux.intel.com>,
+	Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [edk2-devel] [PATCH 1/1] uefi-sct/SctPkg: SNP ReceiveFilters may be unsupported
+Date: Tue, 17 Sep 2019 07:09:30 +0200
+Message-Id: <20190917050930.3228-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dV9tDlzh1tzVRlLO1RGki6BFQFzZPfbzHtRjlHmwmw1MuVwdwPP
+ aBfJYnu5rr/xPQlb+5nYCeCUbh5Ct0SJKljPuJTVBOW1rbR8W0x+vTgdSQVkNVtVu82CPHa
+ KbeMhEOieEoMwYjJCo3FECphazOC/kvg9IUNmwwvysJUFEFfeviLLtI5lORfb0P1gnbBWFH
+ ZmY8M5WTRdGJg1cuX9BrQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mzkSEwFKBbI=:WITS4HEbdpNU2FZMQMrAxy
+ gUvpciKavUCt4HJ+idNm8PdLB3lveCnLYqQLLpn09gRGO857Vlg9OkFLrB9NocwX9POPBF7Su
+ 1khg8YhMH3pycArE1mjD/1zpKR1oYIZa8ks786uaQ27k2RAMk9prw5xCtc+vI9orrHLhZSL3H
+ h06dySFcpjUpKd0KE6qXWsQfc0qCHhzPW20VpPfSfkEERl1sw7m2rr7hmz7FnO2fm75LP661i
+ U2OcMagkO7eA6V0wtmonx6GfR0mCtdhw1qYOY+YOmHQz6/Idym0a4QLk78RA8ZlknOPP1+sp5
+ 7krbyr+yRfatIpHnKPCI8K/o0Jh3sDyKGka/kmZyro06sV4KQ9kcYvbPN2aKPfaFbTe1GM6Ex
+ z7lvXMTRma8harSdhJzHy+9SBEIvlEHbAsk282UpvjsKbD2ZoE778poonD+Gt0Sf21uKX3+5c
+ acVpSh/w7Oiy3fMyF5uK352PRiEwAzXre+u5bNJMCM5JcDu1CF5UpaquggjbqYhIlixxdaL3b
+ q+1uiUBCU/1XX1I6aPhETYNH82Dhgb8QFP1WaxPcCD7IPOgsymCofWufND9lzxBupkTuaes4l
+ evedp3jwWDlnLh6H35H1afDf3WaDWqbtoHDI07mjKPf4miCgZpKHYDdUhWZTc/qxXbLwHiY3d
+ 8SPFNTCsIdbyoYQgZLzfqhcMIokNZrMTK30soADHpfPzTOfYDNAeo2PznwbF2o5iQWKfglHNA
+ EOlJAh1PdF16n4DPcFzxKMvpRRf15OAEEV8plMivPMvf8P10UC4sF5k/M4tKa9DWOciN50Haa
+ yaslN62llr1dkYqM5cy+oQAiVZ+qYrcERKRlgFUm1wCCsWg07//8D5KRFIcjPZbBUIX4YPrQW
+ vijtf0WwBn3b4jNUVTx6GnQP2H+AkU86CoBdDmDPnCf4uvn3C6YSxvVn/7KNIqRYi0trlKqn0
+ IAaRmJKvAFTVh/2oTiFKBnC5O2O4XnLkj0GEOp0Cs4pPbkC8yjg0k9amZ5KqCpIl/uifnZ5Cw
+ 8cStaf/7bZjOzvBThRaxNtGClZV1OScDIEF3S49qJ0VuJqTPAZoIWl6LRcren6eK6u7GdCui2
+ 7VEecm+bDL+okM4h7Vok1hxoA72BCH5EDSGTje3glF7YUUUkFUWt/Wz4byDHBguzlKLIUMHtw
+ MQzN6Ocm9AfbD5h74tl9KtablugTHs0Amb51SIqyS1cSst7Yxb1ONu+EVuiaUfGZZB5gdtaeC
+ Kv5igqlMqWHYOr5SXp4gkFI5jMU3aniRNqCPq3bLpxiO6a3LRzoujLjz2v7I=
+Envelope-To: <xypron.glpk@gmx.de>
+X-GMX-Antispam: 0 (Mail was not recognized as spam); Detail=V3;
+X-Spam-Flag: NO
+X-UI-Filterresults: notjunk:1;V03:K0:uq+NwzAC5xk=:lC8GUWds56lvCI4dh0IbKXAk1p
+ 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
+ 3PUfBqLYSkAi6gRcdIA==
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3D2197
+
+If EFI_SIMPLE_NETWORK.ReceiveFilters() is not supported, it will return
+EFI_UNSUPPORTED. In this case do not expect input parameters to be checked
+for conformance.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../SimpleNetworkBBTestConformance.c          | 223 +++++++++++-------
+ 1 file changed, 138 insertions(+), 85 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/Black=
+BoxTest/SimpleNetworkBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EF=
+I/Protocol/SimpleNetwork/BlackBoxTest/SimpleNetworkBBTestConformance.c
+index 9bd21a76..09b47ee6 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest=
+/SimpleNetworkBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleNetwork/BlackBoxTest=
+/SimpleNetworkBBTestConformance.c
+@@ -626,22 +626,31 @@ BBTestReceiveFilterConformanceTest (
+   // Call ReceiveFilters() function if network interface not start.=0D
+   //=0D
+   Status =3D SnpInterface->ReceiveFilters (SnpInterface, 0, 0, FALSE, 0, N=
+ULL);=0D
+-  if ((Status =3D=3D EFI_NOT_STARTED) && (SnpInterface->Mode->State =3D=3D=
+ EfiSimpleNetworkStopped)) {=0D
+-    AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++  if (Status =3D=3D EFI_UNSUPPORTED) {=0D
++    StandardLib->RecordMessage(=0D
++                   StandardLib,=0D
++                   EFI_VERBOSE_LEVEL_QUIET,=0D
++                   L"ReceiveFilters isn't supported, Status - %r\n",=0D
++                   Status=0D
++                   );=0D
+   } else {=0D
+-    AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
+-  }=0D
++    if ((Status =3D=3D EFI_NOT_STARTED) && (SnpInterface->Mode->State =3D=
+=3D EfiSimpleNetworkStopped)) {=0D
++      AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++    } else {=0D
++      AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++    }=0D
+ =0D
+-  StandardLib->RecordAssertion (=0D
+-                 StandardLib,=0D
+-                 AssertionType,=0D
+-                 gSimpleNetworkBBTestConformanceAssertionGuid006,=0D
+-                 L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke Rec=
+eiveFilters() when network interface not start.",=0D
+-                 L"%a:%d:Status - %r",=0D
+-                 __FILE__,=0D
+-                 (UINTN)__LINE__,=0D
+-                 Status=0D
+-                 );=0D
++    StandardLib->RecordAssertion (=0D
++                   StandardLib,=0D
++                   AssertionType,=0D
++                   gSimpleNetworkBBTestConformanceAssertionGuid006,=0D
++                   L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke R=
+eceiveFilters() when network interface not start.",=0D
++                   L"%a:%d:Status - %r",=0D
++                   __FILE__,=0D
++                   (UINTN)__LINE__,=0D
++                   Status=0D
++                   );=0D
++  }=0D
+ =0D
+   //=0D
+   // Assertion Point 5.6.2.2=0D
+@@ -653,22 +662,31 @@ BBTestReceiveFilterConformanceTest (
+   }=0D
+ =0D
+   Status =3D SnpInterface->ReceiveFilters (SnpInterface, 0, 0, FALSE, 0, N=
+ULL);=0D
+-  if (Status =3D=3D EFI_DEVICE_ERROR) {=0D
+-    AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++  if (Status =3D=3D EFI_UNSUPPORTED) {=0D
++    StandardLib->RecordMessage(=0D
++                   StandardLib,=0D
++                   EFI_VERBOSE_LEVEL_QUIET,=0D
++                   L"ReceiveFilters isn't supported, Status - %r\n",=0D
++                   Status=0D
++                   );=0D
+   } else {=0D
+-    AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
+-  }=0D
++    if (Status =3D=3D EFI_DEVICE_ERROR) {=0D
++      AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++    } else {=0D
++      AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++    }=0D
+ =0D
+-  StandardLib->RecordAssertion (=0D
+-                 StandardLib,=0D
+-                 AssertionType,=0D
+-                 gSimpleNetworkBBTestConformanceAssertionGuid007,=0D
+-                 L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke Rec=
+eiveFilters() when network interface not initialized.",=0D
+-                 L"%a:%d:Status - %r",=0D
+-                 __FILE__,=0D
+-                 (UINTN)__LINE__,=0D
+-                 Status=0D
+-                 );=0D
++    StandardLib->RecordAssertion (=0D
++                   StandardLib,=0D
++                   AssertionType,=0D
++                   gSimpleNetworkBBTestConformanceAssertionGuid007,=0D
++                   L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke R=
+eceiveFilters() when network interface not initialized.",=0D
++                   L"%a:%d:Status - %r",=0D
++                   __FILE__,=0D
++                   (UINTN)__LINE__,=0D
++                   Status=0D
++                   );=0D
++  }=0D
+ =0D
+   //=0D
+   // Assertion Point 5.6.2.3=0D
+@@ -683,22 +701,31 @@ BBTestReceiveFilterConformanceTest (
+   //  Call ReceiveFilters with invalide Enable=0D
+   //=0D
+   Status =3D SnpInterface->ReceiveFilters (SnpInterface, ~(SnpInterface->M=
+ode->ReceiveFilterMask), 0, FALSE, 0, NULL);=0D
+-  if (Status =3D=3D EFI_INVALID_PARAMETER) {=0D
+-    AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++  if (Status =3D=3D EFI_UNSUPPORTED) {=0D
++    StandardLib->RecordMessage(=0D
++                   StandardLib,=0D
++                   EFI_VERBOSE_LEVEL_QUIET,=0D
++                   L"ReceiveFilters isn't supported, Status - %r\n",=0D
++                   Status=0D
++                   );=0D
+   } else {=0D
+-    AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
+-  }=0D
++    if (Status =3D=3D EFI_INVALID_PARAMETER) {=0D
++      AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++    } else {=0D
++      AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++    }=0D
+ =0D
+-  StandardLib->RecordAssertion (=0D
+-                 StandardLib,=0D
+-                 AssertionType,=0D
+-                 gSimpleNetworkBBTestConformanceAssertionGuid008,=0D
+-                 L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke Rec=
+eiveFilters() with invalid Enable.",=0D
+-                 L"%a:%d:Status - %r",=0D
+-                 __FILE__,=0D
+-                 (UINTN)__LINE__,=0D
+-                 Status=0D
+-                 );  =0D
++    StandardLib->RecordAssertion (=0D
++                   StandardLib,=0D
++                   AssertionType,=0D
++                   gSimpleNetworkBBTestConformanceAssertionGuid008,=0D
++                   L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke R=
+eceiveFilters() with invalid Enable.",=0D
++                   L"%a:%d:Status - %r",=0D
++                   __FILE__,=0D
++                   (UINTN)__LINE__,=0D
++                   Status=0D
++                   );=0D
++  }=0D
+ =0D
+   //=0D
+   //  Call ReceiveFilters with invalide MCastFilterCnt=0D
+@@ -713,59 +740,85 @@ BBTestReceiveFilterConformanceTest (
+     MAC.Addr[5] =3D 0x02;=0D
+ =0D
+     Status =3D SnpInterface->ReceiveFilters (SnpInterface, EFI_SIMPLE_NETW=
+ORK_RECEIVE_MULTICAST, 0, FALSE, SnpInterface->Mode->MaxMCastFilterCount + =
+1, &MAC);=0D
+-    if (Status =3D=3D EFI_INVALID_PARAMETER) {=0D
+-      AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++    if (Status =3D=3D EFI_UNSUPPORTED) {=0D
++      StandardLib->RecordMessage(=0D
++                     StandardLib,=0D
++                     EFI_VERBOSE_LEVEL_QUIET,=0D
++                     L"ReceiveFilters isn't supported, Status - %r\n",=0D
++                     Status=0D
++                     );=0D
+     } else {=0D
+-      AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++      if (Status =3D=3D EFI_INVALID_PARAMETER) {=0D
++        AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++      } else {=0D
++        AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++      }=0D
++=0D
++      StandardLib->RecordAssertion (=0D
++                     StandardLib,=0D
++                     AssertionType,=0D
++                     gSimpleNetworkBBTestConformanceAssertionGuid009,=0D
++                     L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke=
+ ReceiveFilters() with invalid MCastFilterCnt is greater than Snp->Mode->Ma=
+xMCastFilterCount.",=0D
++                     L"%a:%d:Status - %r",=0D
++                     __FILE__,=0D
++                     (UINTN)__LINE__,=0D
++                     Status=0D
++                     );=0D
+     }=0D
+ =0D
+-    StandardLib->RecordAssertion (=0D
+-                   StandardLib,=0D
+-                   AssertionType,=0D
+-                   gSimpleNetworkBBTestConformanceAssertionGuid009,=0D
+-                   L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke R=
+eceiveFilters() with invalid MCastFilterCnt is greater than Snp->Mode->MaxM=
+CastFilterCount.",=0D
+-                   L"%a:%d:Status - %r",=0D
+-                   __FILE__,=0D
+-                   (UINTN)__LINE__,=0D
+-                   Status=0D
+-                   );=0D
+-=0D
+     Status =3D SnpInterface->ReceiveFilters (SnpInterface, EFI_SIMPLE_NETW=
+ORK_RECEIVE_MULTICAST, 0, FALSE, 0, &MAC);=0D
+-    if (Status =3D=3D EFI_INVALID_PARAMETER) {=0D
+-      AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++    if (Status =3D=3D EFI_UNSUPPORTED) {=0D
++      StandardLib->RecordMessage(=0D
++                     StandardLib,=0D
++                     EFI_VERBOSE_LEVEL_QUIET,=0D
++                     L"ReceiveFilters isn't supported, Status - %r\n",=0D
++                     Status=0D
++                     );=0D
+     } else {=0D
+-      AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++      if (Status =3D=3D EFI_INVALID_PARAMETER) {=0D
++        AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++      } else {=0D
++        AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++      }=0D
++=0D
++      StandardLib->RecordAssertion (=0D
++                     StandardLib,=0D
++                     AssertionType,=0D
++                     gSimpleNetworkBBTestConformanceAssertionGuid043,=0D
++                     L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke=
+ ReceiveFilters() with invalid MCastFilterCnt is 0.",=0D
++                     L"%a:%d:Status - %r",=0D
++                     __FILE__,=0D
++                     (UINTN)__LINE__,=0D
++                     Status=0D
++                     );=0D
+     }=0D
+ =0D
+-    StandardLib->RecordAssertion (=0D
+-                   StandardLib,=0D
+-                   AssertionType,=0D
+-                   gSimpleNetworkBBTestConformanceAssertionGuid043,=0D
+-                   L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke R=
+eceiveFilters() with invalid MCastFilterCnt is 0.",=0D
+-                   L"%a:%d:Status - %r",=0D
+-                   __FILE__,=0D
+-                   (UINTN)__LINE__,=0D
+-                   Status=0D
+-                   );=0D
+-=0D
+     Status =3D SnpInterface->ReceiveFilters (SnpInterface, EFI_SIMPLE_NETW=
+ORK_RECEIVE_MULTICAST, 0, FALSE, 1, NULL);=0D
+-    if (Status =3D=3D EFI_INVALID_PARAMETER) {=0D
+-      AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++    if (Status =3D=3D EFI_UNSUPPORTED) {=0D
++      StandardLib->RecordMessage(=0D
++                     StandardLib,=0D
++                     EFI_VERBOSE_LEVEL_QUIET,=0D
++                     L"ReceiveFilters isn't supported, Status - %r\n",=0D
++                     Status=0D
++                     );=0D
+     } else {=0D
+-      AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++      if (Status =3D=3D EFI_INVALID_PARAMETER) {=0D
++        AssertionType =3D EFI_TEST_ASSERTION_PASSED;=0D
++      } else {=0D
++        AssertionType =3D EFI_TEST_ASSERTION_FAILED;=0D
++      }=0D
++=0D
++      StandardLib->RecordAssertion (=0D
++                       StandardLib,=0D
++                       AssertionType,=0D
++                       gSimpleNetworkBBTestConformanceAssertionGuid010,=0D
++                       L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invo=
+ke ReceiveFilters() with MCastFilterCnt not match MCastFilter.",=0D
++                       L"%a:%d:Status - %r",=0D
++                       __FILE__,=0D
++                       (UINTN)__LINE__,=0D
++                       Status=0D
++                       );=0D
+     }=0D
+-=0D
+-    StandardLib->RecordAssertion (=0D
+-                   StandardLib,=0D
+-                   AssertionType,=0D
+-                   gSimpleNetworkBBTestConformanceAssertionGuid010,=0D
+-                   L"EFI_SIMPLE_NETWORK_PROTOCOL.ReceiveFilters - Invoke R=
+eceiveFilters() with MCastFilterCnt not match MCastFilter.",=0D
+-                   L"%a:%d:Status - %r",=0D
+-                   __FILE__,=0D
+-                   (UINTN)__LINE__,=0D
+-                   Status=0D
+-                   );=0D
+-=0D
+   }=0D
+ =0D
+   //=0D
+--=20
+2.23.0
+
+

@@ -1,0 +1,44 @@
+From a1045d679e13ee7268ba6c50e8aeeafc5ac2361f Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 18:51:41 +0530
+Subject: [PATCH] MdePkg/Library/BasePrintLib: Fix MISSING_BREAK Coverity issue
+
+The function BasePrintLibSPrintMarker has a switch-case on variable
+FormatCharacter in which
+
+case '0': falls through to
+case '1':
+
+While this may be intentional, it is not evident to any general code
+reader as well as any static analyzer tool. Just adding
+
+    // No break; here as this is an intentional fallthrough.
+
+as comment in between makes any reader as well as Coverity happy.
+
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4319
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdePkg/Library/BasePrintLib/PrintLibInternal.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/MdePkg/Library/BasePrintLib/PrintLibInternal.c b/MdePkg/Library/BasePrintLib/PrintLibInternal.c
+index 42b598a432..dca3b89755 100644
+--- a/MdePkg/Library/BasePrintLib/PrintLibInternal.c
++++ b/MdePkg/Library/BasePrintLib/PrintLibInternal.c
+@@ -742,6 +742,9 @@ BasePrintLibSPrintMarker (
+                 Flags |= PREFIX_ZERO;
+               }
+ 
++              //
++              // No break; here as this is an intentional pass-through
++              //
+             case '1':
+             case '2':
+             case '3':
+-- 
+2.36.1.windows.1
+

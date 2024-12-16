@@ -1,0 +1,244 @@
+Frame 4489: 1514 bytes on wire (12112 bits), 1514 bytes captured (12112 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 588098, Ack: 26, Len: 1448
+    Sequence number: 588098    (relative sequence number)
+    [Next sequence number: 589546    (relative sequence number)]
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+    TCP segment data (1448 bytes)
+
+Frame 4490: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 566378, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 566378    (relative ack number)
+    Window size value: 96
+    [Calculated window size: 24576]
+    [Window size scaling factor: 256]
+
+Frame 4491: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 570722, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 570722    (relative ack number)
+    Window size value: 79
+    [Calculated window size: 20224]
+    [Window size scaling factor: 256]
+
+Frame 4492: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 573618, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 573618    (relative ack number)
+    Window size value: 67
+    [Calculated window size: 17152]
+    [Window size scaling factor: 256]
+
+Frame 4493: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 577962, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 577962    (relative ack number)
+    Window size value: 50
+    [Calculated window size: 12800]
+    [Window size scaling factor: 256]
+
+Frame 4494: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 582306, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 582306    (relative ack number)
+    Window size value: 33
+    [Calculated window size: 8448]
+    [Window size scaling factor: 256]
+
+Frame 4495: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 585202, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 585202    (relative ack number)
+    Window size value: 22
+    [Calculated window size: 5632]
+    [Window size scaling factor: 256]
+
+Frame 4496: 1514 bytes on wire (12112 bits), 1514 bytes captured (12112 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 589546, Ack: 26, Len: 1448
+    Sequence number: 589546    (relative sequence number)
+    [Next sequence number: 590994    (relative sequence number)]
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+    TCP segment data (1448 bytes)
+
+Frame 4497: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 589546, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 589546    (relative ack number)
+    Window size value: 5
+    [Calculated window size: 1280]
+    [Window size scaling factor: 256]
+
+Frame 4498: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+Frame 4500: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4501: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+Frame 4502: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4503: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+
+Frame 4504: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4505: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+Frame 4506: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4507: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+Frame 4508: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4509: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+Frame 4510: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4511: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+Frame 4512: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4513: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+Frame 4514: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4515: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 0
+    [Calculated window size: 0]
+    [Window size scaling factor: 256]
+
+Frame 4516: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 260
+    [Calculated window size: 66560]
+    [Window size scaling factor: 256]
+
+Frame 4517: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4518: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 1452 (1452), Dst Port: 80 (80), Seq: 590754, Ack: 26, Len: 0
+    Sequence number: 590754    (relative sequence number)
+    Acknowledgment number: 26    (relative ack number)
+    Window size value: 32767
+    [Calculated window size: 2097088]
+    [Window size scaling factor: 64]
+
+Frame 4520: 66 bytes on wire (528 bits), 66 bytes captured (528 bits) on interface 0
+Transmission Control Protocol, Src Port: 80 (80), Dst Port: 1452 (1452), Seq: 26, Ack: 590994, Len: 0
+    Sequence number: 26    (relative sequence number)
+    Acknowledgment number: 590994    (relative ack number)
+    Window size value: 260
+    [Calculated window size: 66560]
+    [Window size scaling factor: 256]

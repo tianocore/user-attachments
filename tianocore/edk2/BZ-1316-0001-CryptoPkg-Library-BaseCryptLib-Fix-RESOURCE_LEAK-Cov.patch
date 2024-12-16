@@ -1,0 +1,197 @@
+From c2e92d5ddb2b1b3b3a563e7f542accd46c24db58 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Fri, 27 Jan 2023 16:53:17 +0530
+Subject: [PATCH] CryptoPkg/Library/BaseCryptLib: Fix RESOURCE_LEAK Coverity
+ issues
+
+As per Coverity reports, the function Pkcs7GetCertificatesList and the
+function RsaSetKey leaks the storage pointed by various variables in the
+failure paths.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Xiaoyu Lu <xiaoyu1.lu@intel.com>
+Cc: Guomin Jiang <guomin.jiang@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4307
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../BaseCryptLib/Pk/CryptPkcs7VerifyCommon.c  |  4 ++
+ .../Library/BaseCryptLib/Pk/CryptRsaBasic.c   | 68 ++++++++++++++++---
+ 2 files changed, 62 insertions(+), 10 deletions(-)
+
+diff --git a/CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyCommon.c b/CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyCommon.c
+index 4e5a14e352..1707c673b0 100644
+--- a/CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyCommon.c
++++ b/CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyCommon.c
+@@ -744,6 +744,10 @@ _Error:
+     *UnchainCerts     = NULL;
+   }
+ 
++  if (CtxChain != NULL) {
++    sk_X509_free(CtxChain);
++  }
++
+   return Status;
+ }
+ 
+diff --git a/CryptoPkg/Library/BaseCryptLib/Pk/CryptRsaBasic.c b/CryptoPkg/Library/BaseCryptLib/Pk/CryptRsaBasic.c
+index 5bd740bf75..f9d6127f6d 100644
+--- a/CryptoPkg/Library/BaseCryptLib/Pk/CryptRsaBasic.c
++++ b/CryptoPkg/Library/BaseCryptLib/Pk/CryptRsaBasic.c
+@@ -95,6 +95,7 @@ RsaSetKey (
+   BIGNUM  *BnDp;
+   BIGNUM  *BnDq;
+   BIGNUM  *BnQInv;
++  BOOLEAN Status;
+ 
+   //
+   // Check input parameters.
+@@ -132,6 +133,8 @@ RsaSetKey (
+     case RsaKeyN:
+     case RsaKeyE:
+     case RsaKeyD:
++      Status = FALSE;
++
+       if (BnN == NULL) {
+         BnN = BN_new ();
+       }
+@@ -145,7 +148,7 @@ RsaSetKey (
+       }
+ 
+       if ((BnN == NULL) || (BnE == NULL) || (BnD == NULL)) {
+-        return FALSE;
++        goto Exit1;
+       }
+ 
+       switch (KeyTag) {
+@@ -159,11 +162,26 @@ RsaSetKey (
+           BnD = BN_bin2bn (BigNumber, (UINT32)BnSize, BnD);
+           break;
+         default:
+-          return FALSE;
++          goto Exit1;
+       }
+ 
+       if (RSA_set0_key (RsaKey, BN_dup (BnN), BN_dup (BnE), BN_dup (BnD)) == 0) {
+-        return FALSE;
++        goto Exit1;
++      }
++
++      Status = TRUE;
++
++Exit1:
++      if (BnN != NULL) {
++        BN_free (BnN);
++      }
++
++      if (BnE != NULL) {
++        BN_free (BnE);
++      }
++
++      if (BnD != NULL) {
++        BN_free (BnD);
+       }
+ 
+       break;
+@@ -173,6 +191,8 @@ RsaSetKey (
+     //
+     case RsaKeyP:
+     case RsaKeyQ:
++      Status = FALSE;
++
+       if (BnP == NULL) {
+         BnP = BN_new ();
+       }
+@@ -182,7 +202,7 @@ RsaSetKey (
+       }
+ 
+       if ((BnP == NULL) || (BnQ == NULL)) {
+-        return FALSE;
++        goto Exit2;
+       }
+ 
+       switch (KeyTag) {
+@@ -193,11 +213,22 @@ RsaSetKey (
+           BnQ = BN_bin2bn (BigNumber, (UINT32)BnSize, BnQ);
+           break;
+         default:
+-          return FALSE;
++          goto Exit2;
+       }
+ 
+       if (RSA_set0_factors (RsaKey, BN_dup (BnP), BN_dup (BnQ)) == 0) {
+-        return FALSE;
++        goto Exit2;
++      }
++
++      Status = TRUE;
++
++Exit2:
++      if (BnP != NULL) {
++        BN_free (BnP);
++      }
++
++      if (BnQ != NULL) {
++        BN_free (BnQ);
+       }
+ 
+       break;
+@@ -209,6 +240,8 @@ RsaSetKey (
+     case RsaKeyDp:
+     case RsaKeyDq:
+     case RsaKeyQInv:
++      Status = FALSE;
++
+       if (BnDp == NULL) {
+         BnDp = BN_new ();
+       }
+@@ -222,7 +255,7 @@ RsaSetKey (
+       }
+ 
+       if ((BnDp == NULL) || (BnDq == NULL) || (BnQInv == NULL)) {
+-        return FALSE;
++        goto Exit3;
+       }
+ 
+       switch (KeyTag) {
+@@ -236,11 +269,26 @@ RsaSetKey (
+           BnQInv = BN_bin2bn (BigNumber, (UINT32)BnSize, BnQInv);
+           break;
+         default:
+-          return FALSE;
++          goto Exit3;
+       }
+ 
+       if (RSA_set0_crt_params (RsaKey, BN_dup (BnDp), BN_dup (BnDq), BN_dup (BnQInv)) == 0) {
+-        return FALSE;
++        goto Exit3;
++      }
++
++      Status = TRUE;
++
++Exit3:
++      if (BnDp != NULL) {
++        BN_free (BnDp);
++      }
++
++      if (BnDq != NULL) {
++        BN_free (BnDq);
++      }
++
++      if (BnQInv != NULL) {
++        BN_free (BnQInv);
+       }
+ 
+       break;
+@@ -249,7 +297,7 @@ RsaSetKey (
+       return FALSE;
+   }
+ 
+-  return TRUE;
++  return Status;
+ }
+ 
+ /**
+-- 
+2.36.1.windows.1
+

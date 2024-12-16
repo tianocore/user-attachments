@@ -1,0 +1,95 @@
+From d6ca337ecbe33db74cc0d9cf1991444c319097b0 Mon Sep 17 00:00:00 2001
+From: Baraneedharan Anbazhagan <anbazhagan@hp.com>
+Date: Wed, 7 Sep 2022 11:00:22 -0500
+Subject: [PATCH] MdeModulePkg: Use configurable PCD for AHCI command retries
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=4011
+
+AHCI commands are retried internally which prevents platform feature
+like drive password to process correctly entered password on subsequent
+attempts. PCD allows the platform to determine the number of retries.
+
+Signed-off-by: Baraneedharan Anbazhagan <anbazhagan@hp.com>
+---
+ MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c           | 6 +++---
+ MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.h           | 2 --
+ MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf | 3 ++-
+ MdeModulePkg/MdeModulePkg.dec                              | 4 ++++
+ 4 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c
+index a240be940d..bf8105d4e7 100644
+--- a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c
++++ b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c
+@@ -983,7 +983,7 @@ AhciPioTransfer (
+   CmdList.AhciCmdCfl = EFI_AHCI_FIS_REGISTER_H2D_LENGTH / 4;
+   CmdList.AhciCmdW   = Read ? 0 : 1;
+ 
+-  for (Retry = 0; Retry < AHCI_COMMAND_RETRIES; Retry++) {
++  for (Retry = 0; Retry < PcdGet32 (PcdAhciCommandRetryCount); Retry++) {
+     AhciBuildCommand (
+       PciIo,
+       AhciRegisters,
+@@ -1190,7 +1190,7 @@ AhciDmaTransfer (
+     }
+ 
+     gBS->RestoreTPL (OldTpl);
+-    for (Retry = 0; Retry < AHCI_COMMAND_RETRIES; Retry++) {
++    for (Retry = 0; Retry < PcdGet32 (PcdAhciCommandRetryCount); Retry++) {
+       AhciBuildCommand (
+         PciIo,
+         AhciRegisters,
+@@ -1385,7 +1385,7 @@ AhciNonDataTransfer (
+ 
+   CmdList.AhciCmdCfl = EFI_AHCI_FIS_REGISTER_H2D_LENGTH / 4;
+ 
+-  for (Retry = 0; Retry < AHCI_COMMAND_RETRIES; Retry++) {
++  for (Retry = 0; Retry < PcdGet32 (PcdAhciCommandRetryCount); Retry++) {
+     AhciBuildCommand (
+       PciIo,
+       AhciRegisters,
+diff --git a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.h b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.h
+index 7802ebd200..66256bf718 100644
+--- a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.h
++++ b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.h
+@@ -193,8 +193,6 @@ typedef union {
+ #define   AHCI_PORT_DEVSLP_DITO_MASK      0x01FF8000
+ #define   AHCI_PORT_DEVSLP_DM_MASK        0x1E000000
+ 
+-#define AHCI_COMMAND_RETRIES  5
+-
+ #pragma pack(1)
+ //
+ // Command List structure includes total 32 entries.
+diff --git a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
+index a3e42a9ab4..78caa3c458 100644
+--- a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
++++ b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
+@@ -65,7 +65,8 @@
+   gEdkiiAtaAtapiPolicyProtocolGuid              ## CONSUMES
+ 
+ [Pcd]
+-  gEfiMdeModulePkgTokenSpaceGuid.PcdAtaSmartEnable   ## SOMETIMES_CONSUMES
++  gEfiMdeModulePkgTokenSpaceGuid.PcdAtaSmartEnable          ## SOMETIMES_CONSUMES
++  gEfiMdeModulePkgTokenSpaceGuid.PcdAhciCommandRetryCount   ## SOMETIMES_CONSUMES
+ 
+ # [Event]
+ # EVENT_TYPE_PERIODIC_TIMER ## SOMETIMES_CONSUMES
+diff --git a/MdeModulePkg/MdeModulePkg.dec b/MdeModulePkg/MdeModulePkg.dec
+index 7d98910832..58e6ab0048 100644
+--- a/MdeModulePkg/MdeModulePkg.dec
++++ b/MdeModulePkg/MdeModulePkg.dec
+@@ -1574,6 +1574,10 @@
+   # @Prompt SD/MMC Host Controller Operations Timeout (us).
+   gEfiMdeModulePkgTokenSpaceGuid.PcdSdMmcGenericTimeoutValue|1000000|UINT32|0x00000031
+ 
++  ## The Retry Count of AHCI command if there is a failure
++  # @Prompt The value of Retry Count,  Default value is 5.
++  gEfiMdeModulePkgTokenSpaceGuid.PcdAhciCommandRetryCount|5|UINT32|0x00000032
++
+ [PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
+   ## This PCD defines the Console output row. The default value is 25 according to UEFI spec.
+   #  This PCD could be set to 0 then console output would be at max column and max row.
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,62 @@
+From 62bf4857204759f2ac63ac48183a9346459039fd Mon Sep 17 00:00:00 2001
+From: Grant Likely <grant.likely@arm.com>
+Date: Tue, 10 Nov 2020 12:24:11 +0000
+Subject: [PATCH] Fix missing symbols on edk2-test build
+
+EDK2 has removed some deprecated function wrappers. The BlackBoxTest
+still uses StrnCpy() and UnicodeValueToString(). This patch fixes the
+build, but there is no way that it is actually correct. Needs someone to
+trace the code path and propose a proper fix.
+
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+ .../Dependency/SampleDriver/DriverSample.c             | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ConfigKeywordHandler/BlackBoxTest/Dependency/SampleDriver/DriverSample.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ConfigKeywordHandler/BlackBoxTest/Dependency/SampleDriver/DriverSample.c
+index fe973a33..eeb08d33 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ConfigKeywordHandler/BlackBoxTest/Dependency/SampleDriver/DriverSample.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ConfigKeywordHandler/BlackBoxTest/Dependency/SampleDriver/DriverSample.c
+@@ -920,8 +920,9 @@ ExtractConfig (
+ 
+       BackupChar = Value[ValueStrLen];
+       *Value++   = L'=';
+-      Value += UnicodeValueToString (
++      Value += UnicodeValueToStringS (
+                  Value, 
++                 BufferSize - StrLen(Results),
+                  PREFIX_ZERO | RADIX_HEX, 
+                  PrivateData->Configuration.NameValueVar0, 
+                  sizeof (PrivateData->Configuration.NameValueVar0) * 2
+@@ -939,8 +940,9 @@ ExtractConfig (
+ 
+       BackupChar = Value[ValueStrLen];
+       *Value++   = L'=';
+-      Value += UnicodeValueToString (
++      Value += UnicodeValueToStringS (
+                 Value, 
++                BufferSize - StrLen(Results),
+                 PREFIX_ZERO | RADIX_HEX, 
+                 PrivateData->Configuration.NameValueVar1, 
+                 sizeof (PrivateData->Configuration.NameValueVar1) * 2
+@@ -962,7 +964,7 @@ ExtractConfig (
+       //
+       StrPointer = (CHAR16 *) PrivateData->Configuration.NameValueVar2;
+       for (; *StrPointer != L'\0'; StrPointer++) {
+-        Value += UnicodeValueToString (Value, PREFIX_ZERO | RADIX_HEX, *StrPointer, 4);
++        Value += UnicodeValueToStringS (Value, BufferSize - StrLen(Results), PREFIX_ZERO | RADIX_HEX, *StrPointer, 4);
+       }
+     }
+     
+@@ -2262,7 +2264,7 @@ DriverSampleInit (
+   
+   DEBUG ((DEBUG_INFO|DEBUG_LOAD, "$$$$ \n Status = %r, Results = %S, ProgressErr = %d $$$$ \n", Status, Results, ProgressErr));
+   TmpStr = L"NAMESPACE=x-UEFI-ns&PATH=01041400f4274aa000df424db55239511302113d7fff0400&KEYWORD=iSCSIBootEnable&VALUE=00";
+-  StrnCpy (Results, TmpStr, StrLen(TmpStr));
++  StrnCpyS (Results, StrLen(Results), TmpStr, StrLen(TmpStr));
+   //
+   // Change value from '0' to '1' or from '1' to '0'
+   //  
+-- 
+2.20.1
+

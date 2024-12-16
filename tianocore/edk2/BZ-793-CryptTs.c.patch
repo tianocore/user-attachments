@@ -1,0 +1,13 @@
+Index: Library/BaseCryptLib/Pk/CryptTs.c
+===================================================================
+--- Library/BaseCryptLib/Pk/CryptTs.c	(revision 42777)
++++ Library/BaseCryptLib/Pk/CryptTs.c	(working copy)
+@@ -155,7 +155,7 @@
+   }
+ 
+   Str = (CONST CHAR8*)Asn1Time->data;
+-  SetMem (EfiTime, 0, sizeof (EFI_TIME));
++  SetMem (EfiTime, sizeof (EFI_TIME), 0);
+ 
+   Index = 0;
+   if (Asn1Time->type == V_ASN1_UTCTIME) {               /* two digit year */

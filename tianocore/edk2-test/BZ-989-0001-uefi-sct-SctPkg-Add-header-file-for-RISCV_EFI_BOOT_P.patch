@@ -1,0 +1,115 @@
+From 097d73773d36284ed224bea6ee3c936fd9472739 Mon Sep 17 00:00:00 2001
+From: Sunil V L <sunilvl@ventanamicro.com>
+Date: Wed, 8 Jun 2022 20:15:25 +0530
+Subject: [PATCH 1/5] uefi-sct/SctPkg: Add header file for
+ RISCV_EFI_BOOT_PROTOCOL
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3837
+
+RISC-V platforms need to support new RISCV_EFI_BOOT_PROTOCOL
+to communicate the boot hart ID to the operating system. Add
+the required header file for this protocol.
+
+The specification of the protocol is maintained at:
+https://github.com/riscv-non-isa/riscv-uefi
+
+Cc: G Edhaya Chandran <Edhaya.Chandran@arm.com>
+Cc: Barton Gao <gaojie@byosoft.com.cn>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@amd.com>
+Cc: Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>
+Cc: Eric Jin <eric.jin@intel.com>
+Cc: Arvin Chen <arvinx.chen@intel.com>
+Cc: Supreeth Venkatesh <Supreeth.Venkatesh@amd.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Cc: Abner Chang <abner.chang@hpe.com>
+
+Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+Reviewed-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Tested-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+ uefi-sct/SctPkg/UEFI/Protocol/RiscVBoot.h | 72 +++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+ create mode 100644 uefi-sct/SctPkg/UEFI/Protocol/RiscVBoot.h
+
+diff --git a/uefi-sct/SctPkg/UEFI/Protocol/RiscVBoot.h b/uefi-sct/SctPkg/UEFI/Protocol/RiscVBoot.h
+new file mode 100644
+index 00000000..71367425
+--- /dev/null
++++ b/uefi-sct/SctPkg/UEFI/Protocol/RiscVBoot.h
+@@ -0,0 +1,72 @@
++/** @file
++
++  Copyright (c) 2022, Ventana Micro Systems Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  RiscVBoot.h
++
++Abstract:
++
++  This UEFI protocol for RISC-V systems provides early information to the bootloaders or Operating
++  Systems. Firmwares like EDK2/u-boot need to implement this protocol on RISC-V UEFI systems.
++--*/
++
++#ifndef _RISCV_BOOT_H_
++#define _RISCV_BOOT_H_
++
++
++//
++// Global ID for the RISC-V Boot Protocol
++//
++#define RISCV_EFI_BOOT_PROTOCOL_GUID \
++	{ 0xccd15fec, 0x6f73, 0x4eec, { 0x83, 0x95, 0x3e, 0x69, 0xe4, 0xb9, 0x40, 0xbf } }
++
++typedef struct _RISCV_EFI_BOOT_PROTOCOL RISCV_EFI_BOOT_PROTOCOL;
++
++typedef
++EFI_STATUS
++(EFIAPI *EFI_GET_BOOT_HARTID) (
++  IN RISCV_EFI_BOOT_PROTOCOL    *This,
++  OUT UINTN 			*BootHartId
++  )
++/*++
++
++  Routine Description:
++    This interface provides the hartid of the boot cpu.
++
++  Arguments:
++    This          - Protocol instance pointer.
++    BootHartId    - Pointer to the variable receiving the hartid of the boot cpu.
++
++  Returns:
++    EFI_SUCCESS 	  - The boot hart id could be returned.
++    EFI_INVALID_PARAMETER - This parameter is NULL or does not point to a valid
++			    RISCV_EFI_BOOT_PROTOCOL implementation.
++    EFI_INVALID_PARAMETER - BootHartId parameter is NULL.
++
++--*/
++;
++
++//
++// Interface structure for the RISC-V Boot Protocol
++//
++struct _RISCV_EFI_BOOT_PROTOCOL {
++  UINTN    		Revision;
++  EFI_GET_BOOT_HARTID  	GetBootHartId;
++};
++
++extern EFI_GUID gBlackBoxEfiRiscVBootProtocolGuid;
++
++#endif
+-- 
+2.25.1
+

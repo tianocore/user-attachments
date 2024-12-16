@@ -1,0 +1,206 @@
+diff --git a/StdLib/LibC/StdLib/Environs.c b/StdLib/LibC/StdLib/Environs.c
+index a29cb9954cf9..e059145d8322 100644
+--- a/StdLib/LibC/StdLib/Environs.c
++++ b/StdLib/LibC/StdLib/Environs.c
+@@ -151,7 +151,7 @@ system(const char *string)
+   if( string == NULL) {
+     return 1;
+   }
+-  (void)AsciiStrToUnicodeStr( string, gMD->UString);
++  (void)AsciiStrToUnicodeStrS( string, gMD->UString, UNICODE_STRING_MAX);
+   OpStat = ShellExecute( &MyHandle, gMD->UString, FALSE, NULL, &CmdStat);
+   if(OpStat == RETURN_SUCCESS) {
+     EFIerrno = CmdStat;
+@@ -177,10 +177,11 @@ char   *getenv(const char *name)
+   const CHAR16  *EfiEnv;
+   char          *retval = NULL;
+ 
+-  (void)AsciiStrToUnicodeStr( name, gMD->UString);
++  (void)AsciiStrToUnicodeStrS( name, gMD->UString, UNICODE_STRING_MAX);
+   EfiEnv = ShellGetEnvironmentVariable(gMD->UString);
+   if(EfiEnv != NULL) {
+-    retval = UnicodeStrToAsciiStr( EfiEnv, gMD->ASgetenv);
++    (void)UnicodeStrToAsciiStrS( EfiEnv, gMD->ASgetenv, UNICODE_STRING_MAX);
++    retval = gMD->ASgetenv;
+   }
+ 
+   return retval;
+@@ -238,8 +239,8 @@ setenv (
+     //
+     //  Convert the strings
+     //
+-    AsciiStrToUnicodeStr ( name, UName );
+-    AsciiStrToUnicodeStr ( value, UValue );
++    AsciiStrToUnicodeStrS ( name, UName, UNICODE_STRING_MAX );
++    AsciiStrToUnicodeStrS ( value, UValue, UNICODE_STRING_MAX );
+ 
+     //
+     //  Determine if the string is already present
+diff --git a/StdLib/LibC/StdLib/realpath.c b/StdLib/LibC/StdLib/realpath.c
+index 6d75f17a394d..988060dce2d6 100644
+--- a/StdLib/LibC/StdLib/realpath.c
++++ b/StdLib/LibC/StdLib/realpath.c
+@@ -14,6 +14,7 @@
+ #include <Library/BaseLib.h>
+ #include <Library/MemoryAllocationLib.h>
+ #include <errno.h>
++#include <limits.h>
+ 
+ /** The realpath() function shall derive, from the pathname pointed to by
+     file_name, an absolute pathname that names the same file, whose resolution
+@@ -47,8 +48,8 @@ realpath(
+     errno = ENOMEM;
+     return (NULL);
+   }
+-  AsciiStrToUnicodeStr(file_name, Temp);
++  AsciiStrToUnicodeStrS(file_name, Temp, UNICODE_STRING_MAX);
+   PathCleanUpDirectories(Temp);
+-  UnicodeStrToAsciiStr(Temp, resolved_name);
++  UnicodeStrToAsciiStrS(Temp, resolved_name, UNICODE_STRING_MAX);
+   return (resolved_name);
+ }
+diff --git a/StdLib/LibC/String/Concatenation.c b/StdLib/LibC/String/Concatenation.c
+index e76bea0bf858..1d026f37d522 100644
+--- a/StdLib/LibC/String/Concatenation.c
++++ b/StdLib/LibC/String/Concatenation.c
+@@ -15,6 +15,7 @@
+ 
+ #include  <LibConfig.h>
+ 
++#include <limits.h>
+ #include  <string.h>
+ 
+ /** The strcat function appends a copy of the string pointed to by s2
+@@ -28,7 +29,8 @@
+ char *
+ strcat(char * __restrict s1, const char * __restrict s2)
+ {
+-  return AsciiStrCat( s1, s2);
++  AsciiStrCatS( s1, UNICODE_STRING_MAX, s2);
++  return s1;
+ }
+ 
+ /** The strncat function appends not more than n characters (a null character
+@@ -43,7 +45,8 @@ strcat(char * __restrict s1, const char * __restrict s2)
+ char *
+ strncat(char * __restrict s1, const char * __restrict s2, size_t n)
+ {
+-  return AsciiStrnCat( s1, s2, n);
++  AsciiStrnCatS( s1, UNICODE_STRING_MAX, s2, n);
++  return s1;
+ }
+ 
+ /** The strncatX function appends not more than n characters (a null character
+diff --git a/StdLib/LibC/String/Copying.c b/StdLib/LibC/String/Copying.c
+index 3234eccf0808..a45a6df141c0 100644
+--- a/StdLib/LibC/String/Copying.c
++++ b/StdLib/LibC/String/Copying.c
+@@ -16,6 +16,7 @@
+ 
+ #include  <LibConfig.h>
+ 
++#include <limits.h>
+ #include  <stdlib.h>
+ #include  <string.h>
+ 
+@@ -73,7 +74,8 @@ strcpy(char * __restrict s1, const char * __restrict s2)
+ 
+   //while ( *s1++ = *s2++)  /* Empty Body */;
+   //return(s1ret);
+-  return AsciiStrCpy( s1, s2);
++  AsciiStrCpyS( s1, UNICODE_STRING_MAX, s2);
++  return s1;
+ }
+ 
+ /** The strncpy function copies not more than n characters (characters that
+@@ -89,7 +91,8 @@ strcpy(char * __restrict s1, const char * __restrict s2)
+ **/
+ char     *strncpy(char * __restrict s1, const char * __restrict s2, size_t n)
+ {
+-  return AsciiStrnCpy( s1, s2, n);
++  AsciiStrnCpyS( s1, UNICODE_STRING_MAX, s2, n);
++  return s1;
+   //char *dest = s1;
+ 
+   //while(n != 0) {
+diff --git a/StdLib/LibC/Uefi/Devices/Utility/Path.c b/StdLib/LibC/Uefi/Devices/Utility/Path.c
+index 96392e018dac..671f6e374bb5 100644
+--- a/StdLib/LibC/Uefi/Devices/Utility/Path.c
++++ b/StdLib/LibC/Uefi/Devices/Utility/Path.c
+@@ -110,7 +110,8 @@ NormalizePath( const char *path)
+   wchar_t  *NewPath;
+   size_t    Length;
+ 
+-  OldPath = AsciiStrToUnicodeStr(path, gMD->UString);
++  AsciiStrToUnicodeStrS(path, gMD->UString, UNICODE_STRING_MAX);
++  OldPath = gMD->UString;
+   Length  = wcslen(OldPath) + 1;
+ 
+   NewPath = calloc(Length, sizeof(wchar_t));
+diff --git a/StdLib/LibC/Uefi/SysCalls.c b/StdLib/LibC/Uefi/SysCalls.c
+index faa73ed7a4ee..711c01cf155e 100644
+--- a/StdLib/LibC/Uefi/SysCalls.c
++++ b/StdLib/LibC/Uefi/SysCalls.c
+@@ -1320,7 +1320,8 @@ char
+     errno = ERANGE;
+     return (NULL);
+   }
+-  return (UnicodeStrToAsciiStr(Cwd, buf));
++  UnicodeStrToAsciiStrS(Cwd, buf, UNICODE_STRING_MAX);
++  return buf;
+ }
+ 
+ /** Change the current working directory.
+@@ -1358,7 +1359,7 @@ chdir (const char *path)
+         errno = ENOMEM;
+         return -1;
+       }
+-      AsciiStrToUnicodeStr(path, UnicodePath);
++      AsciiStrToUnicodeStrS(path, UnicodePath, UNICODE_STRING_MAX);
+       Status = gEfiShellProtocol->SetCurDir(NULL, UnicodePath);
+       FreePool(UnicodePath);
+       if (EFI_ERROR(Status)) {
+diff --git a/StdLib/LibC/Wchar/Concatenation.c b/StdLib/LibC/Wchar/Concatenation.c
+index cf595a461f0e..5b40335b4578 100644
+--- a/StdLib/LibC/Wchar/Concatenation.c
++++ b/StdLib/LibC/Wchar/Concatenation.c
+@@ -31,7 +31,8 @@
+ **/
+ wchar_t *wcscat(wchar_t * __restrict s1, const wchar_t * __restrict s2)
+ {
+-  return (wchar_t *)StrCat( (CHAR16 *)s1, (CONST CHAR16 *)s2);
++  StrCatS( (CHAR16 *)s1, UNICODE_STRING_MAX, (CONST CHAR16 *)s2);
++  return s1;
+ }
+ 
+ /** The wcsncat function appends not more than n wide characters (a null wide
+@@ -44,5 +45,6 @@ wchar_t *wcscat(wchar_t * __restrict s1, const wchar_t * __restrict s2)
+ **/
+ wchar_t *wcsncat(wchar_t * __restrict s1, const wchar_t * __restrict s2, size_t n)
+ {
+-  return (wchar_t *)StrnCat( (CHAR16 *)s1, (CONST CHAR16 *)s2, (UINTN)n);
++  StrnCatS( (CHAR16 *)s1, UNICODE_STRING_MAX, (CONST CHAR16 *)s2, (UINTN)n);
++  return s1;
+ }
+diff --git a/StdLib/LibC/Wchar/Copying.c b/StdLib/LibC/Wchar/Copying.c
+index 7075437965ad..2d4a57b3edff 100644
+--- a/StdLib/LibC/Wchar/Copying.c
++++ b/StdLib/LibC/Wchar/Copying.c
+@@ -29,7 +29,7 @@
+ **/
+ wchar_t *wcscpy(wchar_t * __restrict s1, const wchar_t * __restrict s2)
+ {
+-  return (wchar_t *)StrCpy( (CHAR16 *)s1, (CONST CHAR16 *)s2);
++  return (wchar_t *)StrCpyS( (CHAR16 *)s1, UNICODE_STRING_MAX, (CONST CHAR16 *)s2);
+ }
+ 
+ /** The wcsncpy function copies not more than n wide characters (those that
+@@ -44,7 +44,7 @@ wchar_t *wcscpy(wchar_t * __restrict s1, const wchar_t * __restrict s2)
+ **/
+ wchar_t *wcsncpy(wchar_t * __restrict s1, const wchar_t * __restrict s2, size_t n)
+ {
+-  return (wchar_t *)StrnCpy( (CHAR16 *)s1, (CONST CHAR16 *)s2, (UINTN)n);
++  return (wchar_t *)StrnCpyS( (CHAR16 *)s1, UNICODE_STRING_MAX, (CONST CHAR16 *)s2, (UINTN)n);
+ }
+ 
+ /** The wmemcpy function copies n wide characters from the object pointed to by

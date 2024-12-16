@@ -1,0 +1,47 @@
+From 94e53f3cbb99f751ce3f86ab38fc299c33a92526 Mon Sep 17 00:00:00 2001
+Message-Id: <94e53f3cbb99f751ce3f86ab38fc299c33a92526.1603776166.git.weijiwei@byosoft.com.cn>
+From: Jiwei Wei <weijiwei@byosoft.com.cn>
+Date: Tue, 27 Oct 2020 11:02:37 +0800
+Subject: [PATCH] NetworkPkg:remove the "class\subclass" in VFR
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2437
+
+class/subclass is the obseleted key word in VFR file.
+In NetworkPkg,it is not used any longer.
+Now remove them from VFR.
+
+Signed-off-by: Jiwei Wei <weijiwei@byosoft.com.cn>
+---
+ NetworkPkg/Ip4Dxe/Ip4Config2.vfr                                | 2 --
+ .../WifiConnectionManagerDxe/WifiConnectionManagerDxe.vfr       | 2 --
+ 2 files changed, 4 deletions(-)
+
+diff --git a/NetworkPkg/Ip4Dxe/Ip4Config2.vfr b/NetworkPkg/Ip4Dxe/Ip4Config2.vfr
+index d85a99180e..4e8670b1a4 100644
+--- a/NetworkPkg/Ip4Dxe/Ip4Config2.vfr
++++ b/NetworkPkg/Ip4Dxe/Ip4Config2.vfr
+@@ -13,8 +13,6 @@ formset
+   guid     = IP4_CONFIG2_NVDATA_GUID,
+   title    = STRING_TOKEN(STR_IP4_CONFIG2_FORM_TITLE),
+   help     = STRING_TOKEN(STR_IP4_CONFIG2_FORM_HELP),
+-  class    = EFI_NETWORK_DEVICE_CLASS,
+-  subclass = 0x03,
+ 
+   varstore IP4_CONFIG2_IFR_NVDATA,
+     name = IP4_CONFIG2_IFR_NVDATA,
+diff --git a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionManagerDxe.vfr b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionManagerDxe.vfr
+index b0ef187535..e29dcbd515 100644
+--- a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionManagerDxe.vfr
++++ b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionManagerDxe.vfr
+@@ -15,8 +15,6 @@ formset
+   guid     = WIFI_CONNECTION_MANAGER_CONFIG_GUID,
+   title    = STRING_TOKEN(STR_WIFI_MGR_FORM_TITLE),
+   help     = STRING_TOKEN(STR_WIFI_MGR_FORM_HELP),
+-  class    = EFI_NETWORK_DEVICE_CLASS,
+-  subclass = 0x03,
+ 
+   varstore WIFI_MANAGER_IFR_NVDATA,
+     varid = MANAGER_VARSTORE_ID,
+-- 
+2.26.2.windows.1
+

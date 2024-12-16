@@ -1,0 +1,122 @@
+From 58224d799190e47033c53dd1146d4f1c3adaca27 Mon Sep 17 00:00:00 2001
+From: Jiaxin Wu <Jiaxin.wu@intel.com>
+Date: Mon, 29 Apr 2019 09:51:53 +0800
+Subject: [PATCH v1] MdeModulePkg/Ip4Dxe: Check the received package length.
+
+This patch is to check the received package length to make sure the package
+has a valid length field.
+
+Cc: Fu Siyuan <siyuan.fu@intel.com>
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Wu Jiaxin <jiaxin.wu@intel.com>
+Reviewed-by: Siyuan Fu <siyuan.fu@intel.com>
+---
+ .../Universal/Network/Ip4Dxe/Ip4Input.c       | 46 +++++++++++++++----
+ 1 file changed, 37 insertions(+), 9 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/Network/Ip4Dxe/Ip4Input.c b/MdeModulePkg/Universal/Network/Ip4Dxe/Ip4Input.c
+index 24c5846588..20790aa35c 100644
+--- a/MdeModulePkg/Universal/Network/Ip4Dxe/Ip4Input.c
++++ b/MdeModulePkg/Universal/Network/Ip4Dxe/Ip4Input.c
+@@ -1,9 +1,9 @@
+ /** @file
+   IP4 input process.
+ 
+-Copyright (c) 2005 - 2018, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2005 - 2019, Intel Corporation. All rights reserved.<BR>
+ (C) Copyright 2015 Hewlett-Packard Development Company, L.P.<BR>
+ 
+ SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -709,14 +709,10 @@ Ip4PreProcessPacket (
+   UINT16                    Checksum;
+ 
+   //
+   // Check if the IP4 header is correctly formatted.
+   //
+-  if ((*Packet)->TotalSize < IP4_MIN_HEADLEN) {
+-    return EFI_INVALID_PARAMETER;
+-  }
+-
+   HeadLen  = (Head->HeadLen << 2);
+   TotalLen = NTOHS (Head->TotalLen);
+ 
+   //
+   // Mnp may deliver frame trailer sequence up, trim it off.
+@@ -806,10 +802,34 @@ Ip4PreProcessPacket (
+   }
+ 
+   return EFI_SUCCESS;
+ }
+ 
++/**
++  This function checks the IPv4 packet length.
++
++  @param[in]       Packet          Pointer to the IPv4 Packet to be checked.
++
++  @retval TRUE                   The input IPv4 packet length is valid.
++  @retval FALSE                  The input IPv4 packet length is invalid.
++
++**/
++BOOLEAN
++Ip4IsValidPacketLength (
++  IN NET_BUF        *Packet
++  )
++{
++  //
++  // Check the IP4 packet length.
++  //
++  if (Packet->TotalSize < IP4_MIN_HEADLEN) {
++    return FALSE;
++  }
++
++  return TRUE;
++}
++
+ /**
+   The IP4 input routine. It is called by the IP4_INTERFACE when a
+   IP4 fragment is received from MNP.
+ 
+   @param[in]  Ip4Instance        The IP4 child that request the receive, most like
+@@ -842,10 +862,14 @@ Ip4AccpetFrame (
+ 
+   if (EFI_ERROR (IoStatus) || (IpSb->State == IP4_SERVICE_DESTROY)) {
+     goto DROP;
+   }
+ 
++  if (!Ip4IsValidPacketLength (Packet)) {
++    goto RESTART;
++  }
++
+   Head      = (IP4_HEAD *) NetbufGetByte (Packet, 0, NULL);
+   ASSERT (Head != NULL);
+   OptionLen = (Head->HeadLen << 2) - IP4_MIN_HEADLEN;
+   if (OptionLen > 0) {
+     Option = (UINT8 *) (Head + 1);
+@@ -888,14 +912,18 @@ Ip4AccpetFrame (
+   //
+   // If the packet is protected by tunnel mode, parse the inner Ip Packet.
+   //
+   ZeroMem (&ZeroHead, sizeof (IP4_HEAD));
+   if (0 == CompareMem (Head, &ZeroHead, sizeof (IP4_HEAD))) {
+-  // Packet may have been changed. Head, HeadLen, TotalLen, and
+-  // info must be reloaded bofore use. The ownership of the packet
+-  // is transfered to the packet process logic.
+-  //
++    // Packet may have been changed. Head, HeadLen, TotalLen, and
++    // info must be reloaded bofore use. The ownership of the packet
++    // is transfered to the packet process logic.
++    //
++    if (!Ip4IsValidPacketLength (Packet)) {
++      goto RESTART;
++    }
++    
+     Head = (IP4_HEAD *) NetbufGetByte (Packet, 0, NULL);
+     ASSERT (Head != NULL);
+     Status = Ip4PreProcessPacket (
+                IpSb,
+                &Packet,
+-- 
+2.17.1.windows.2
+

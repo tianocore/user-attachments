@@ -1,0 +1,28 @@
+From 33f3c346bd88659c894f489db73b36c4f6d3f9e2 Mon Sep 17 00:00:00 2001
+Message-Id: <33f3c346bd88659c894f489db73b36c4f6d3f9e2.1533608203.git.steven.arnold@dektech.com.au>
+From: Steven Arnold <steven.arnold@dektech.com.au>
+Date: Tue, 7 Aug 2018 12:02:45 +1000
+Subject: [PATCH] EmulatorPkg/Sec: Retain temporary stack on X64
+
+Workaround reference to temporary stack in PPI services by
+not clearing the temporary stack when switching stacks.
+---
+ EmulatorPkg/Sec/X64/SwitchRam.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/EmulatorPkg/Sec/X64/SwitchRam.S b/EmulatorPkg/Sec/X64/SwitchRam.S
+index 9ed1f91..4596a66 100644
+--- a/EmulatorPkg/Sec/X64/SwitchRam.S
++++ b/EmulatorPkg/Sec/X64/SwitchRam.S
+@@ -62,7 +62,7 @@ ASM_PFX(SecTemporaryRamSupport):
+   movq    %rdx, %rcx
+   movq    %r9,  %rdx
+   subq    $0x28, %rsp   // Allocate register spill area & 16-byte align stack
+-  call    ASM_PFX(ZeroMem)
++//  call    ASM_PFX(ZeroMem)
+   addq    $0x28, %rsp
+ 
+   // This data comes off the NEW stack
+-- 
+2.7.4
+

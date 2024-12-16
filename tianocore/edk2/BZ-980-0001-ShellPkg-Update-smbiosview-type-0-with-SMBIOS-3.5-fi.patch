@@ -1,0 +1,51 @@
+From 8568d62995ac71af6a36b8a89c7146e74c9392d3 Mon Sep 17 00:00:00 2001
+Message-Id: <8568d62995ac71af6a36b8a89c7146e74c9392d3.1650436414.git.bo-changx.ke@intel.com>
+From: Bo Chang Ke <bo-changx.ke@intel.com>
+Date: Wed, 20 Apr 2022 14:14:38 +0800
+Subject: [PATCH] ShellPkg: Update smbiosview type 0 with SMBIOS 3.5 fields
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3906
+
+update smbiosview type 0 related fileds.
+
+Signed-off-by: Bo Chang Ke <bo-changx.ke@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+---
+ .../UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c       | 6 ++++++
+ .../SmbiosView/SmbiosViewStrings.uni                        | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+index b144600a25..618bcd1590 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+@@ -1536,6 +1536,12 @@ DisplayBiosCharacteristicsExt2 (
+       if (BIT (byte2, 4) != 0) {
+         ShellPrintHiiEx (-1, -1, NULL, STRING_TOKEN (STR_SMBIOSVIEW_PRINTINFO_VIRTUAL_MACHINE), gShellDebug1HiiHandle);
+       }
++      if (BIT (byte2, 5) != 0) {
++        ShellPrintHiiEx(-1,-1,NULL,STRING_TOKEN (STR_SMBIOSVIEW_PRINTINFO_MCFG_SUPPORTED), gShellDebug1HiiHandle);
++      }
++      if (BIT (byte2, 6) != 0) {
++        ShellPrintHiiEx(-1,-1,NULL,STRING_TOKEN (STR_SMBIOSVIEW_PRINTINFO_MCFG_ENABLED), gShellDebug1HiiHandle);
++      }
+ 
+       ShellPrintHiiEx (-1, -1, NULL, STRING_TOKEN (STR_SMBIOSVIEW_PRINTINFO_BITS_RSVD_FOR_FUTURE), gShellDebug1HiiHandle, 5);
+     } else {
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
+index 9433e8a25f..5a83e9834b 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
+@@ -163,6 +163,8 @@
+ #string STR_SMBIOSVIEW_PRINTINFO_ENABLE_TAR_CONT_DIST           #language en-US "Enable Targeted Content Distribution\r\n"
+ #string STR_SMBIOSVIEW_PRINTINFO_UEFI_SPEC_SUPPORT              #language en-US "UEFI Specification is supported\r\n"
+ #string STR_SMBIOSVIEW_PRINTINFO_VIRTUAL_MACHINE                #language en-US "The SMBIOS table describes a virtual machine\r\n"
++#string STR_SMBIOSVIEW_PRINTINFO_MCFG_SUPPORTED                 #language en-US "Manufacturing mode is supported\r\n"
++#string STR_SMBIOSVIEW_PRINTINFO_MCFG_ENABLED                   #language en-US "Manufacturing mode is enabled\r\n"
+ #string STR_SMBIOSVIEW_PRINTINFO_BITS_RSVD_FOR_FUTURE           #language en-US " Bits %d:7 are reserved for future assignment\r\n"
+ #string STR_SMBIOSVIEW_PRINTINFO_PROCESSOR_FAMILY               #language en-US "Processor Family: "
+ #string STR_SMBIOSVIEW_PRINTINFO_OTHER                          #language en-US "Other\r\n"
+-- 
+2.32.0.windows.1
+

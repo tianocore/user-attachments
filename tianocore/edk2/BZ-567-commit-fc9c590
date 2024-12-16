@@ -1,0 +1,21 @@
+From fc9c5901aa68b30800a4833349cb15abe318122d Mon Sep 17 00:00:00 2001
+From: Bret Barkelew <brbarkel@microsoft.com>
+Date: Fri, 19 Jan 2018 12:20:20 -0800
+Subject: [TCBZ2811] Remove a debug statement that may cause a machine check.
+
+
+diff --git a/SecurityPkg/Tcg/Tcg2Smm/Tcg2Smm.c b/SecurityPkg/Tcg/Tcg2Smm/Tcg2Smm.c
+index 372cf01a49..bd27489946 100644
+--- a/SecurityPkg/Tcg/Tcg2Smm/Tcg2Smm.c
++++ b/SecurityPkg/Tcg/Tcg2Smm/Tcg2Smm.c
+@@ -610,7 +610,9 @@ UpdateHID (
+ 
+         CopyMem(DataPtr, Hid, TPM_HID_ACPI_SIZE);
+       }
+-      DEBUG((DEBUG_INFO, "TPM2 ACPI _HID is patched to %a\n", DataPtr));
++      // MSChange: this line prints out data with the null-termination removed, can cause page fault
++      //           and then a machine check
++      //DEBUG((DEBUG_INFO, "TPM2 ACPI _HID is patched to %a\n", DataPtr));
+ 
+       return Status;
+     }

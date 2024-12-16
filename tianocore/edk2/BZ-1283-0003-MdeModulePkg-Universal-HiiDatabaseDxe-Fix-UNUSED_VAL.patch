@@ -1,0 +1,36 @@
+From f60af322e61d4f29bf74b2f6169e152651584f15 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:31:02 +0530
+Subject: [PATCH 3/3] MdeModulePkg/Universal/HiiDatabaseDxe: Fix UNUSED_VALUE
+ Coverity issue
+
+The return value stored in "Status" after call to the function
+FindQuestionDefaultSetting is not made of any use thereafter, it
+remains as UNUSED and later it gets overriden.
+
+Assuming this is deliberate, the storage in "Status" can be removed.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4288
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/HiiDatabaseDxe/Database.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c b/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
+index d149973cf92c..d9973cb0eb6b 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
+@@ -1049,7 +1049,7 @@ UpdateDefaultSettingInFormPackage (
+           if (Width > 0) {
+             EfiVarStoreIndex = IsEfiVarStoreQuestion (IfrQuestionHdr, EfiVarStoreList, EfiVarStoreNumber);
+             if (EfiVarStoreIndex < EfiVarStoreNumber) {
+-              Status = FindQuestionDefaultSetting (IfrDefault->DefaultId, EfiVarStoreList[EfiVarStoreIndex], IfrQuestionHdr, &IfrDefault->Value, Width, QuestionReferBitField);
++              FindQuestionDefaultSetting (IfrDefault->DefaultId, EfiVarStoreList[EfiVarStoreIndex], IfrQuestionHdr, &IfrDefault->Value, Width, QuestionReferBitField);
+             }
+           }
+         }
+-- 
+2.36.1.windows.1
+

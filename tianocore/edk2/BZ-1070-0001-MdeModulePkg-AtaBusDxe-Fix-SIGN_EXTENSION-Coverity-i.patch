@@ -1,0 +1,33 @@
+From e8a7c9b5cdadd8df644d7a01e09ef1e8f3a8b0d0 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Fri, 23 Dec 2022 10:22:47 +0530
+Subject: [PATCH] MdeModulePkg/AtaBusDxe: Fix SIGN_EXTENSION Coverity issue
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4209
+
+Line number 365 does contain a typecast with UINT32, but it is after
+all the operations (16-bit left shift followed by OR'ing) are over.
+To avoid any SIGN_EXTENSION, typecast the intermediate result after
+16-bit left shift operation immediately with UINT32.
+
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Ata/AtaBusDxe/AtaPassThruExecute.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Bus/Ata/AtaBusDxe/AtaPassThruExecute.c b/MdeModulePkg/Bus/Ata/AtaBusDxe/AtaPassThruExecute.c
+index 4334169d25..081cd5595a 100644
+--- a/MdeModulePkg/Bus/Ata/AtaBusDxe/AtaPassThruExecute.c
++++ b/MdeModulePkg/Bus/Ata/AtaBusDxe/AtaPassThruExecute.c
+@@ -362,7 +362,7 @@ IdentifyAtaDevice (
+     // Check logical block size
+     //
+     if ((PhyLogicSectorSupport & BIT12) != 0) {
+-      BlockMedia->BlockSize = (UINT32)(((IdentifyData->logic_sector_size_hi << 16) | IdentifyData->logic_sector_size_lo) * sizeof (UINT16));
++      BlockMedia->BlockSize = (((UINT32)(IdentifyData->logic_sector_size_hi << 16) | IdentifyData->logic_sector_size_lo) * sizeof (UINT16));
+     }
+ 
+     AtaDevice->BlockIo.Revision = EFI_BLOCK_IO_PROTOCOL_REVISION2;
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,274 @@
+edhcha01@edhcha01-VirtualBox:~/sct_workspace/edk2$ git branch
+  UDK2018
+* master
+
+
+./SctPkg/build.sh AARCH64 GCC
+Target: AARCH64
+Build: other
+TOOLCHAIN is GCC49
+Toolchain prefix: GCC49_AARCH64_PREFIX=aarch64-linux-gnu-
+Initializing workspace
+Loading previous configuration from /home/edhcha01/sct_workspace/edk2/Conf/BuildEnv.sh
+WORKSPACE: /home/edhcha01/sct_workspace/edk2
+EDK_TOOLS_PATH: /home/edhcha01/sct_workspace/edk2/BaseTools
+CONF_PATH: /home/edhcha01/sct_workspace/edk2/Conf
+using prebuilt tools
+Building GenBin
+make: Entering directory '/home/edhcha01/sct_workspace/edk2-test/uefi-sct/SctPkg/Tools/Source/GenBin'
+Attempting to detect ARCH from 'uname -m': x86_64
+Detected ARCH of X64 using uname.
+gcc -o /home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/bin/GenBin   GenBin.o -L/home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/libs 
+make: Leaving directory '/home/edhcha01/sct_workspace/edk2-test/uefi-sct/SctPkg/Tools/Source/GenBin'
+/home/edhcha01/sct_workspace/edk2
+Build environment: Linux-4.15.0-51-generic-x86_64-with-Ubuntu-18.04-bionic
+Build start time: 09:58:31, Jun.27 2019
+
+WORKSPACE        = /home/edhcha01/sct_workspace/edk2
+EDK_TOOLS_PATH   = /home/edhcha01/sct_workspace/edk2/BaseTools
+CONF_PATH        = /home/edhcha01/sct_workspace/edk2/Conf
+PYTHON_COMMAND   = /usr/bin/python3.6
+
+
+Architecture(s)  = AARCH64
+Build target     = DEBUG
+Toolchain        = GCC49
+
+Active Platform          = /home/edhcha01/sct_workspace/edk2/SctPkg/UEFI/UEFI_SCT.dsc
+
+Processing meta-data .......build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/bootservices/imageservices/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/BootServices/ImageServices/BlackBoxTest/ImageBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/bootservices/memoryallocationservices/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/BootServices/MemoryAllocationServices/BlackBoxTest/MemoryAllocationServicesBBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/bootservices/miscbootservices/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/bootservices/protocolhandlerservices/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/BootServices/ProtocolHandlerServices/BlackBoxTest/ProtocolHandlerBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/bootservices/protocolhandlerservices/blackboxtest/protocoldefinition.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/BootServices/ProtocolHandlerServices/BlackBoxTest/ProtocolHandlerBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/runtimeservices/miscruntimeservices/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/runtimeservices/timeservices/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TimeServices/BlackBoxTest/TimeServicesBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/blockio/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo/BlackBoxTest/BlockIoBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/blockio2/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/BlockIo2/BlackBoxTest/BlockIo2BBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/busspecificdriveroverride/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/BusSpecificDriverOverride/BlackBoxTest/BusSpecificDriverOverrideBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/debugport/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/DebugPort/BlackBoxTest/DebugPortBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/devicepathutilities/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathUtilities/BlackBoxTest/DevicePathUtilitiesBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/devicepathtotext/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/diskio/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/DiskIo/BlackBoxTest/DiskIoBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/diskio2/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/DiskIo2/BlackBoxTest/DiskIo2BBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/platformdriveroverride/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/PlatformDriverOverride/BlackBoxTest/PlatformDriverOverrideBBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/scsiio/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/ScsiIo/BlackBoxTest/ScsiIoBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/extscsipassthru/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/ExtScsiPassThru/BlackBoxTest/ExtScsiPassThruBBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/simplefilesystem/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/simplepointer/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/SimplePointer/BlackBoxTest/SimplePointerBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/unicodecollation2/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/UnicodeCollation2/BlackBoxTest/UnicodeCollation2BBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/regularexpression/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/RegularExpression/BlackBoxTest/RegularExpressionBBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/driverdiagnostics2/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/DriverDiagnostics2/BlackBoxTest/DriverDiagnostics2BBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/acpitable/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/ACPITable/BlackBoxTest/AcpiTableProtocolBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/componentname2/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/ComponentName2/BlackBoxTest/ComponentName2BBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/vlanconfig/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/VlanConfig/BlackBoxTest/VlanConfigBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/ipsecconfig/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/IPsecConfig/BlackBoxTest/IPsecConfigBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/ipsec2/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/IPsec2/BlackBoxTest/IPsec2BBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/absolutepointer/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/AbsolutePointer/BlackBoxTest/AbsolutePointerBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/platformtodriverconfiguration/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/PlatformToDriverConfiguration/BlackBoxTest/PlatformToDriverConfigurationBBTest.inf
+.build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/firmwaremanagement/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/FirmwareManagement/BlackBoxTest/FirmwareManagementBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/atapassthru/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/AtaPassThru/BlackBoxTest/AtaPassThruBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/storagesecuritycommand/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/StorageSecurityCommand/BlackBoxTest/StorageSecurityCommandBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/adapterinfo/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/AdapterInfo/BlackBoxTest/AdapterInfoProtocolBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/timestamp/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/TimeStamp/BlackBoxTest/TimeStampProtocolBBTest.inf
+build: : warning: Module MetaFile [Sources] is missing local header!
+    Local Header: /home/edhcha01/sct_workspace/edk2/sctpkg/testcase/uefi/efi/protocol/randomnumber/blackboxtest/guid.h not found in /home/edhcha01/sct_workspace/edk2/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTest.inf
+....... done!
+Building ... /home/edhcha01/sct_workspace/edk2/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf [AARCH64]
+Building ... /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas.inf [AARCH64]
+make: Nothing to be done for 'tbuild'.
+Building ... /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib.inf [AARCH64]
+"aarch64-linux-gnu-gcc"   -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=EasLibStrings -g -Os -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -include AutoGen.h -fno-common -mlittle-endian -fno-short-enums -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -Wno-address -fno-asynchronous-unwind-tables -fno-pic -fno-pie -ffixed-x18 -O0 -mcmodel=small -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -ffreestanding -nostdinc -nostdlib -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error -DEFI_DEBUG -mstrict-align -mgeneral-regs-only -c -o /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas/OUTPUT/Core/Eas.obj -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Arg -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Exec -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Load -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Core -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher -I/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas/DEBUG -I/home/edhcha01/sct_workspace/edk2/MdePkg -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include/AArch64 -I/home/edhcha01/sct_workspace/edk2/SctPkg -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include/Legacy -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Drivers/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Rivl /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Core/Eas.c
+Building ... /home/edhcha01/sct_workspace/edk2/MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf [AARCH64]
+"aarch64-linux-gnu-gcc"   -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=EntsLibStrings -g -Os -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -include AutoGen.h -fno-common -mlittle-endian -fno-short-enums -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -Wno-address -fno-asynchronous-unwind-tables -fno-pic -fno-pie -ffixed-x18 -O0 -mcmodel=small -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -ffreestanding -nostdinc -nostdlib -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error -DEFI_DEBUG -mstrict-align -mgeneral-regs-only -c -o /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib/OUTPUT/./EntsLib.obj -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/Aarch64 -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib -I/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib/DEBUG -I/home/edhcha01/sct_workspace/edk2/MdePkg -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include/AArch64 -I/home/edhcha01/sct_workspace/edk2/SctPkg -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include/Legacy -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Drivers/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Rivl /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib.c
+Building ... /home/edhcha01/sct_workspace/edk2/SctPkg/Library/SctLib/SctLib.inf [AARCH64]
+In file included from /home/edhcha01/sct_workspace/edk2/MdePkg/Include/PiDxe.h:14:0,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/Include/Efi.h:39,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/Include/SctLib.h:20,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include/Sct.h:34,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Core/Eas.c:26:
+/home/edhcha01/sct_workspace/edk2/MdePkg/Include/Uefi/UefiSpec.h:1781:0: warning: "EFI_SPECIFICATION_VERSION" redefined
+ #define EFI_SPECIFICATION_VERSION       EFI_SYSTEM_TABLE_REVISION
+ ^
+<command-line>:0:0: note: this is the location of the previous definition
+make: Nothing to be done for 'tbuild'.
+Building ... /home/edhcha01/sct_workspace/edk2/MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf [AARCH64]
+"aarch64-linux-gnu-gcc"   -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=SctLibStrings -g -Os -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -include AutoGen.h -fno-common -mlittle-endian -fno-short-enums -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -Wno-address -fno-asynchronous-unwind-tables -fno-pic -fno-pie -ffixed-x18 -O0 -mcmodel=small -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -ffreestanding -nostdinc -nostdlib -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error -DEFI_DEBUG -c -o /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/Library/SctLib/SctLib/OUTPUT/./Alloc.obj -I/home/edhcha01/sct_workspace/edk2/SctPkg/Library/SctLib/Aarch64 -I/home/edhcha01/sct_workspace/edk2/SctPkg/Library/SctLib -I/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/Library/SctLib/SctLib/DEBUG -I/home/edhcha01/sct_workspace/edk2/MdePkg -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include/AArch64 -I/home/edhcha01/sct_workspace/edk2/SctPkg -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include/Legacy -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Drivers/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Rivl /home/edhcha01/sct_workspace/edk2/SctPkg/Library/SctLib/Alloc.c
+make: Nothing to be done for 'tbuild'.
+Building ... /home/edhcha01/sct_workspace/edk2/MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf [AARCH64]
+In file included from /home/edhcha01/sct_workspace/edk2/MdePkg/Include/PiDxe.h:14:0,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/Include/Efi.h:39,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib.c:26:
+/home/edhcha01/sct_workspace/edk2/MdePkg/Include/Uefi/UefiSpec.h:1781:0: warning: "EFI_SPECIFICATION_VERSION" redefined
+ #define EFI_SPECIFICATION_VERSION       EFI_SYSTEM_TABLE_REVISION
+ ^
+<command-line>:0:0: note: this is the location of the previous definition
+In file included from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Rivl/Rivl.h:30:0,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Include/Eas.h:36,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include/Sct.h:64,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Core/Eas.c:26:
+/home/edhcha01/sct_workspace/edk2/SctPkg/Include/Library/EntsLib.h:72:46: fatal error: Guid/SalSystemTable.h: No such file or directory
+ #include EFI_GUID_DEFINITION (SalSystemTable)
+                                              ^
+compilation terminated.
+GNUmakefile:324: recipe for target '/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas/OUTPUT/Core/Eas.obj' failed
+make: *** [/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas/OUTPUT/Core/Eas.obj] Error 1
+
+
+build.py...
+ : error 7000: Failed to execute command
+	make tbuild [/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas]
+
+
+build.py...
+ : error 7000: Failed to execute command
+	make tbuild [/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib]
+
+
+build.py...
+ : error F002: Failed to build module
+	/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas.inf [AARCH64, GCC49, DEBUG]
+
+- Failed -
+Build end time: 09:59:06, Jun.27 2019
+Build total time: 00:00:35
+
+
+
+======================================================================================================================================================================================
+
+edhcha01@edhcha01-VirtualBox:~/sct_workspace/edk2$ git branch
+* (HEAD detached at edk2-stable201905)
+  UDK2018
+  master
+  
+  
+  edhcha01@edhcha01-VirtualBox:~/sct_workspace/edk2$ ./SctPkg/build.sh AARCH64 GCC
+Target: AARCH64
+Build: other
+TOOLCHAIN is GCC49
+Toolchain prefix: GCC49_AARCH64_PREFIX=aarch64-linux-gnu-
+Initializing workspace
+Loading previous configuration from /home/edhcha01/sct_workspace/edk2/Conf/BuildEnv.sh
+WORKSPACE: /home/edhcha01/sct_workspace/edk2
+EDK_TOOLS_PATH: /home/edhcha01/sct_workspace/edk2/BaseTools
+CONF_PATH: /home/edhcha01/sct_workspace/edk2/Conf
+using prebuilt tools
+Building GenBin
+make: Entering directory '/home/edhcha01/sct_workspace/edk2-test/uefi-sct/SctPkg/Tools/Source/GenBin'
+Attempting to detect ARCH from 'uname -m': x86_64
+Detected ARCH of X64 using uname.
+gcc  -c  -I /home/edhcha01/sct_workspace/edk2/BaseTools/Source/C -I /home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/Include/Common -I /home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/Include/ -I /home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/Include/IndustryStandard -I /home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/Common/ -I .. -I . -I /home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/Include/X64/  -MD -fshort-wchar -fno-strict-aliasing -fwrapv -fno-delete-null-pointer-checks -Wall -Werror -Wno-deprecated-declarations -Wno-stringop-truncation -Wno-restrict -Wno-unused-result -nostdlib -g -O2  GenBin.c -o GenBin.o
+gcc -o /home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/bin/GenBin   GenBin.o -L/home/edhcha01/sct_workspace/edk2/BaseTools/Source/C/libs 
+make: Leaving directory '/home/edhcha01/sct_workspace/edk2-test/uefi-sct/SctPkg/Tools/Source/GenBin'
+/home/edhcha01/sct_workspace/edk2
+Build environment: Linux-4.15.0-51-generic-x86_64-with-Ubuntu-18.04-bionic
+Build start time: 09:55:15, Jun.27 2019
+
+WORKSPACE        = /home/edhcha01/sct_workspace/edk2
+EDK_TOOLS_PATH   = /home/edhcha01/sct_workspace/edk2/BaseTools
+CONF_PATH        = /home/edhcha01/sct_workspace/edk2/Conf
+PYTHON_COMMAND   = /usr/bin/python3.6
+
+
+Architecture(s)  = AARCH64
+Build target     = DEBUG
+Toolchain        = GCC49
+
+Active Platform          = /home/edhcha01/sct_workspace/edk2/SctPkg/UEFI/UEFI_SCT.dsc
+
+Processing meta-data .............................. done!
+Building ... /home/edhcha01/sct_workspace/edk2/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib.inf [AARCH64]
+"aarch64-linux-gnu-gcc"   -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=CompilerIntrinsicsLibStrings -g -Os -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -include AutoGen.h -fno-common -mlittle-endian -fno-short-enums -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -Wno-address -fno-asynchronous-unwind-tables -fno-pic -fno-pie -ffixed-x18 -O0 -mcmodel=small -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -ffreestanding -nostdinc -nostdlib -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error -DEFI_DEBUG -mstrict-align -mgeneral-regs-only -c -o /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib/OUTPUT/./memcpy.obj -I/home/edhcha01/sct_workspace/edk2/ArmPkg/Library/CompilerIntrinsicsLib -I/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib/DEBUG -I/home/edhcha01/sct_workspace/edk2/MdePkg -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include/AArch64 -I/home/edhcha01/sct_workspace/edk2/ArmPkg -I/home/edhcha01/sct_workspace/edk2/ArmPkg/Include /home/edhcha01/sct_workspace/edk2/ArmPkg/Library/CompilerIntrinsicsLib/memcpy.c
+Building ... /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas.inf [AARCH64]
+Building ... /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib.inf [AARCH64]
+"aarch64-linux-gnu-gcc"   -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=EasLibStrings -g -Os -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -include AutoGen.h -fno-common -mlittle-endian -fno-short-enums -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -Wno-address -fno-asynchronous-unwind-tables -fno-pic -fno-pie -ffixed-x18 -O0 -mcmodel=small -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -ffreestanding -nostdinc -nostdlib -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error -DEFI_DEBUG -mstrict-align -mgeneral-regs-only -c -o /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas/OUTPUT/Core/Eas.obj -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Arg -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Exec -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Load -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Core -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher -I/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas/DEBUG -I/home/edhcha01/sct_workspace/edk2/MdePkg -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include/AArch64 -I/home/edhcha01/sct_workspace/edk2/SctPkg -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include/Legacy -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Drivers/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Rivl /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Core/Eas.c
+Building ... /home/edhcha01/sct_workspace/edk2/MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf [AARCH64]
+"aarch64-linux-gnu-gcc"   -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=CompilerIntrinsicsLibStrings -g -Os -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -include AutoGen.h -fno-common -mlittle-endian -fno-short-enums -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -Wno-address -fno-asynchronous-unwind-tables -fno-pic -fno-pie -ffixed-x18 -O0 -mcmodel=small -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -ffreestanding -nostdinc -nostdlib -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error -DEFI_DEBUG -mstrict-align -mgeneral-regs-only -c -o /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib/OUTPUT/./memset.obj -I/home/edhcha01/sct_workspace/edk2/ArmPkg/Library/CompilerIntrinsicsLib -I/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib/DEBUG -I/home/edhcha01/sct_workspace/edk2/MdePkg -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include/AArch64 -I/home/edhcha01/sct_workspace/edk2/ArmPkg -I/home/edhcha01/sct_workspace/edk2/ArmPkg/Include /home/edhcha01/sct_workspace/edk2/ArmPkg/Library/CompilerIntrinsicsLib/memset.c
+"aarch64-linux-gnu-gcc"   -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=EntsLibStrings -g -Os -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -include AutoGen.h -fno-common -mlittle-endian -fno-short-enums -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -Wno-address -fno-asynchronous-unwind-tables -fno-pic -fno-pie -ffixed-x18 -O0 -mcmodel=small -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -ffreestanding -nostdinc -nostdlib -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error -DEFI_DEBUG -mstrict-align -mgeneral-regs-only -c -o /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib/OUTPUT/./EntsLib.obj -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/Aarch64 -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib -I/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib/DEBUG -I/home/edhcha01/sct_workspace/edk2/MdePkg -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include/AArch64 -I/home/edhcha01/sct_workspace/edk2/SctPkg -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/Include/Legacy -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Drivers/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Include -I/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Rivl /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib.c
+"aarch64-linux-gnu-gcc"   -g -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -ffunction-sections -fdata-sections -include AutoGen.h -fno-common -DSTRING_ARRAY_NAME=UefiApplicationEntryPointStrings -g -Os -fshort-wchar -fno-builtin -fno-strict-aliasing -Wall -Werror -Wno-array-bounds -include AutoGen.h -fno-common -mlittle-endian -fno-short-enums -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -Wno-address -fno-asynchronous-unwind-tables -fno-pic -fno-pie -ffixed-x18 -O0 -mcmodel=small -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -D EFIAARCH64 -D EFI_SPECIFICATION_VERSION=0x00020028 -D TIANO_RELEASE_VERSION=0x00080006 -ffreestanding -nostdinc -nostdlib -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error -DEFI_DEBUG -c -o /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint/OUTPUT/./ApplicationEntryPoint.obj -I/home/edhcha01/sct_workspace/edk2/MdePkg/Library/UefiApplicationEntryPoint -I/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint/DEBUG -I/home/edhcha01/sct_workspace/edk2/MdePkg -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include -I/home/edhcha01/sct_workspace/edk2/MdePkg/Include/AArch64 /home/edhcha01/sct_workspace/edk2/MdePkg/Library/UefiApplicationEntryPoint/ApplicationEntryPoint.c
+In file included from /home/edhcha01/sct_workspace/edk2/MdePkg/Include/PiDxe.h:14:0,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/Include/Efi.h:39,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/Include/SctLib.h:20,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include/Sct.h:34,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Core/Eas.c:26:
+/home/edhcha01/sct_workspace/edk2/MdePkg/Include/Uefi/UefiSpec.h:1781:0: warning: "EFI_SPECIFICATION_VERSION" redefined
+ #define EFI_SPECIFICATION_VERSION       EFI_SYSTEM_TABLE_REVISION
+ ^
+<command-line>:0:0: note: this is the location of the previous definition
+In file included from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Rivl/Rivl.h:30:0,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Include/Eas.h:36,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/Include/Sct.h:64,
+                 from /home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Core/Eas.c:26:
+/home/edhcha01/sct_workspace/edk2/SctPkg/Include/Library/EntsLib.h:72:46: fatal error: Guid/SalSystemTable.h: No such file or directory
+ #include EFI_GUID_DEFINITION (SalSystemTable)
+                                              ^
+compilation terminated.
+"aarch64-linux-gnu-ar" cr /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib/OUTPUT/CompilerIntrinsicsLib.lib  @/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib/OUTPUT/object_files.lst
+In file included from /home/edhcha01/sct_workspace/edk2/MdePkg/Include/Uefi.h:18:0,
+                 from /home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint/DEBUG/AutoGen.h:16,
+                 from <command-line>:0:
+/home/edhcha01/sct_workspace/edk2/MdePkg/Include/Uefi/UefiSpec.h:1781:0: warning: "EFI_SPECIFICATION_VERSION" redefined
+ #define EFI_SPECIFICATION_VERSION       EFI_SYSTEM_TABLE_REVISION
+ ^
+<command-line>:0:0: note: this is the location of the previous definition
+GNUmakefile:324: recipe for target '/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas/OUTPUT/Core/Eas.obj' failed
+make: *** [/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas/OUTPUT/Core/Eas.obj] Error 1
+
+
+build.py...
+ : error 7000: Failed to execute command
+	make tbuild [/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas]
+
+
+build.py...
+ : error 7000: Failed to execute command
+	make tbuild [/home/edhcha01/sct_workspace/edk2/Build/UefiSct/DEBUG_GCC49/AARCH64/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/EntsLib]
+
+
+build.py...
+ : error F002: Failed to build module
+	/home/edhcha01/sct_workspace/edk2/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasDispatcher/Eas.inf [AARCH64, GCC49, DEBUG]
+
+- Failed -
+Build end time: 09:55:56, Jun.27 2019
+Build total time: 00:00:42
+
+
+
+

@@ -1,0 +1,13 @@
+(Python 3.7.2 on win32
+Traceback (most recent call last):
+  File "C:\FW\edk2-ws\edk2\BaseTools\Source\Python\build\BuildReport.py", line 1657, in _InvokeEotTool
+    from Eot.EotMain import Eot
+  File "C:\FW\edk2-ws\edk2\BaseTools\Source\Python\Eot\EotMain.py", line 23, in <module>
+    from Eot import c
+  File "C:\FW\edk2-ws\edk2\BaseTools\Source\Python\Eot\c.py", line 17, in <module>
+    from . import CodeFragmentCollector
+  File "C:\FW\edk2-ws\edk2\BaseTools\Source\Python\Eot\CodeFragmentCollector.py", line 19, in <module>
+    import antlr4 as antlr
+ModuleNotFoundError: No module named 'antlr4'
+)
+BuildReport.py: : warning: Failed to generate execution order prediction report, for some error occurred in executing EOT.

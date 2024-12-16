@@ -1,0 +1,55 @@
+From 22438e1465aeb7f2e467aa0bbfaa14e3745aa872 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Fri, 1 Jan 2021 20:17:43 +0100
+Subject: [PATCH 1/1] uefi-sct/SctPkg: format string
+ BBTestFatToStrFunctionAutoTest
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3146
+
+EFI_UNICODE_COLLATION_PROTOCOL.FatToStr() expects as parameter Fat an ASCII
+string not a wide string.
+
+In function BBTestFatToStrFunctionAutoTest() this string is supplied as
+TestData[Index].
+
+When printing this string we cannot use "%s" but we must use "%a".
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../BlackBoxTest/UnicodeCollation2BBTestFunction.c          | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UnicodeCollation2/BlackBoxTest/UnicodeCollation2BBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UnicodeCollation2/BlackBoxTest/UnicodeCollation2BBTestFunction.c
+index 8bf5170f..22b57f21 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UnicodeCollation2/BlackBoxTest/UnicodeCollation2BBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UnicodeCollation2/BlackBoxTest/UnicodeCollation2BBTestFunction.c
+@@ -636,7 +636,7 @@ BBTestFatToStrFunctionAutoTest (
+                    AssertionType,
+                    gUnicodeCollationFunctionTestAssertionGuid007,
+                    L"EFI_UNICODE_COLLATION_PROTOCOL.FatToStr - Verification of FatToStr interface",
+-                   L"%a:%d: Fat='%s', FatToStr='%s', FatSize=%d, StrSize=%d",
++                   L"%a:%d: Fat='%a', FatToStr='%s', FatSize=%d, StrSize=%d",
+                    __FILE__,
+                    (UINTN)__LINE__,
+                    TestData[Index],
+@@ -668,7 +668,7 @@ BBTestFatToStrFunctionAutoTest (
+                      AssertionType,
+                      gUnicodeCollationFunctionTestAssertionGuid008,
+                      L"EFI_UNICODE_COLLATION_PROTOCOL.FatToStr - Verification of FatToStr interface",
+-                     L"%a:%d: Fat='%s', FatToStr='%s', FatSize=%d, StrSize=%d",
++                     L"%a:%d: Fat='%a', FatToStr='%s', FatSize=%d, StrSize=%d",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      TestData[Index],
+@@ -701,7 +701,7 @@ BBTestFatToStrFunctionAutoTest (
+                      AssertionType,
+                      gUnicodeCollationFunctionTestAssertionGuid009,
+                      L"EFI_UNICODE_COLLATION_PROTOCOL.FatToStr - Verification of FatToStr interface",
+-                     L"%a:%d: Fat='%s', FatToStr='%s', FatSize=%d, StrSize=%d",
++                     L"%a:%d: Fat='%a', FatToStr='%s', FatSize=%d, StrSize=%d",
+                      __FILE__,
+                      (UINTN)__LINE__,
+                      TestData[Index],
+-- 
+2.29.2
+

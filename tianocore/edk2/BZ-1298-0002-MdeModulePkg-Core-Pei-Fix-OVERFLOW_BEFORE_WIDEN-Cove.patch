@@ -1,0 +1,40 @@
+From fb1b772fedddd5514473f6d9330f341760fd570c Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:08:45 +0530
+Subject: [PATCH 2/4] MdeModulePkg/Core/Pei: Fix OVERFLOW_BEFORE_WIDEN Coverity
+ issue
+
+"Pages * EFI_PAGE_SIZE" is a potentially overflowing expression with
+type "unsigned int" (32 bits, unsigned) evaluated using 32-bit
+arithmetic, and then used in a context that expects an expression of
+type "EFI_PHYSICAL_ADDRESS" (64 bits, unsigned)
+
+To avoid overflow, cast either "Pages" or "EFI_PAGE_SIZE" to type
+"EFI_PHYSICAL_ADDRESS".
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4300
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Core/Pei/Memory/MemoryServices.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Core/Pei/Memory/MemoryServices.c b/MdeModulePkg/Core/Pei/Memory/MemoryServices.c
+index 3b2e15699fc3..301f4c80309e 100644
+--- a/MdeModulePkg/Core/Pei/Memory/MemoryServices.c
++++ b/MdeModulePkg/Core/Pei/Memory/MemoryServices.c
+@@ -697,7 +697,7 @@ PeiAllocatePages (
+     //
+     // Update the PHIT to reflect the memory usage
+     //
+-    *(FreeMemoryTop) -= Pages * EFI_PAGE_SIZE;
++    *(FreeMemoryTop) -= ((EFI_PHYSICAL_ADDRESS)Pages * EFI_PAGE_SIZE);
+ 
+     //
+     // Update the value for the caller
+-- 
+2.36.1.windows.1
+

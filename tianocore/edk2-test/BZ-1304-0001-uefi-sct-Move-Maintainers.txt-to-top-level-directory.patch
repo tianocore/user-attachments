@@ -1,0 +1,29 @@
+From 633bbbe311c488ee35a17707aa8832fd874e3225 Mon Sep 17 00:00:00 2001
+From: Abhi Singh <Abhi.Singh@arm.com>
+Date: Thu, 26 Jan 2023 16:09:16 -0600
+Subject: [PATCH v1 1/1] uefi-sct: Move Maintainers.txt to top level directory
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=4327
+
+Maintainers.txt has been moved from under uefi-sct/ to
+the top level directory. This is consistent with other
+TianoCore repos in which Maintainers.txt is in the top
+level directory. Now under edk2-test/
+
+Cc: G Edhaya Chandran <Edhaya.Chandran@arm.com>
+Cc: Barton Gao <gaojie@byosoft.com.cn>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@amd.com>
+Cc: Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>
+
+Signed-off-by: Abhi Singh <Abhi.Singh@arm.com>
+---
+ uefi-sct/Maintainers.txt => Maintainers.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+diff --git a/uefi-sct/Maintainers.txt b/Maintainers.txt
+similarity index 100%
+rename from uefi-sct/Maintainers.txt
+rename to Maintainers.txt
+-- 
+2.25.1
+

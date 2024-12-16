@@ -1,0 +1,1082 @@
+From 3866cb4e6e72391c6c9cf37c8802d9160a91ce54 Mon Sep 17 00:00:00 2001
+From: Guo Mang <mang.guo@intel.com>
+Date: Wed, 28 Mar 2018 11:38:55 +0800
+Subject: [Patch][edk2-platforms/devel-MinnowBoardMax-UDK2017] Capsule update
+
+1.Add PEI and NvRam part in Capsule update, enable GCC capsule update.
+3.Change GCC video resolution to align with VS build
+3.Code cleanup
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+
+Signed-off-by: Guo Mang <mang.guo@intel.com>
+---
+ .../SystemFirmwareUpdateConfig.ini                 | 23 +++----
+ .../SystemFirmwareUpdateConfigGcc.ini              | 70 ++++++++++++++++++++++
+ Vlv2TbltDevicePkg/PlatformCapsule.dsc              | 44 ++++++++++++++
+ Vlv2TbltDevicePkg/PlatformCapsule.fdf              | 63 +++++++++++++++++++
+ Vlv2TbltDevicePkg/PlatformCapsuleGcc.dsc           | 44 ++++++++++++++
+ Vlv2TbltDevicePkg/PlatformCapsuleGcc.fdf           | 63 +++++++++++++++++++
+ Vlv2TbltDevicePkg/PlatformPkg.fdf                  | 60 +++----------------
+ Vlv2TbltDevicePkg/PlatformPkgConfig.dsc            |  3 +-
+ Vlv2TbltDevicePkg/PlatformPkgGcc.fdf               | 62 +++----------------
+ Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc            | 61 ++++++++++---------
+ Vlv2TbltDevicePkg/PlatformPkgIA32.dsc              | 59 +++++++++---------
+ Vlv2TbltDevicePkg/PlatformPkgX64.dsc               | 58 +++++++++---------
+ Vlv2TbltDevicePkg/bld_vlv.bat                      |  7 ++-
+ Vlv2TbltDevicePkg/bld_vlv.sh                       |  3 +
+ 14 files changed, 411 insertions(+), 209 deletions(-)
+ create mode 100644 Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfigGcc.ini
+ create mode 100644 Vlv2TbltDevicePkg/PlatformCapsule.dsc
+ create mode 100644 Vlv2TbltDevicePkg/PlatformCapsule.fdf
+ create mode 100644 Vlv2TbltDevicePkg/PlatformCapsuleGcc.dsc
+ create mode 100644 Vlv2TbltDevicePkg/PlatformCapsuleGcc.fdf
+
+diff --git a/Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfig.ini b/Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfig.ini
+index c30eff1..bc405bf 100644
+--- a/Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfig.ini
++++ b/Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfig.ini
+@@ -1,6 +1,6 @@
+ ## @file
+ #
+-#  Copyright (c) 2017, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2017 - 2018, Intel Corporation. All rights reserved.<BR>
+ #  This program and the accompanying materials
+ #  are licensed and made available under the terms and conditions of the BSD License
+ #  which accompanies this distribution.  The full text of the license may be found at
+@@ -12,15 +12,18 @@
+ ##
+ 
+ [Head]
+-NumOfUpdate = 1
+-NumOfRecovery = 1
+-Update0 = Vlv2FvMain
+-Recovery0 = Vlv2FvMain
++NumOfUpdate = 5
++NumOfRecovery = 0
++Update0 = Vlv2FvBinary
++Update1 = Vlv2FvMain
++Update2 = Vlv2FvRecovery2
++Update3 = Vlv2FvRecovery
++Update4 = Vlv2FvNvRam
+ 
+ [Vlv2FvMicrocode]
+ FirmwareType = 0            # SystemFirmware
+ AddressType = 0             # 0 - relative address, 1 - absolute address.
+-BaseAddress = 0x00000000    # Base address offset on flash
++BaseAddress = 0x00400000    # Base address offset on flash
+ Length      = 0x00040000    # Length
+ ImageOffset = 0x00000000    # Image offset of this SystemFirmware image
+ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
+@@ -28,7 +31,7 @@ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFile
+ [Vlv2FvNvRam]
+ FirmwareType = 1            # NvRam
+ AddressType = 0             # 0 - relative address, 1 - absolute address.
+-BaseAddress = 0x00040000    # Base address offset on flash
++BaseAddress = 0x00440000    # Base address offset on flash
+ Length      = 0x00080000    # Length
+ ImageOffset = 0x00040000    # Image offset of this SystemFirmware image
+ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
+@@ -36,7 +39,7 @@ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFile
+ [Vlv2FvBinary]
+ FirmwareType = 0            # SystemFirmware
+ AddressType = 0             # 0 - relative address, 1 - absolute address.
+-BaseAddress = 0x000C0000    # Base address offset on flash
++BaseAddress = 0x004C0000    # Base address offset on flash
+ Length      = 0x00050000    # Length
+ ImageOffset = 0x000C0000    # Image offset of this SystemFirmware image
+ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
+@@ -52,7 +55,7 @@ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFile
+ [Vlv2FvRecovery2]
+ FirmwareType = 0            # SystemFirmware
+ AddressType = 0             # 0 - relative address, 1 - absolute address.
+-BaseAddress = 0x00320000    # Base address offset on flash
++BaseAddress = 0x00720000    # Base address offset on flash
+ Length      = 0x00070000    # Length
+ ImageOffset = 0x00320000    # Image offset of this SystemFirmware image
+ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
+@@ -60,7 +63,7 @@ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFile
+ [Vlv2FvRecovery]
+ FirmwareType = 0            # SystemFirmware
+ AddressType = 0             # 0 - relative address, 1 - absolute address.
+-BaseAddress = 0x00390000    # Base address offset on flash
++BaseAddress = 0x00790000    # Base address offset on flash
+ Length      = 0x00070000    # Length
+ ImageOffset = 0x00390000    # Image offset of this SystemFirmware image
+ FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
+diff --git a/Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfigGcc.ini b/Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfigGcc.ini
+new file mode 100644
+index 0000000..438a5a9
+--- /dev/null
++++ b/Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfigGcc.ini
+@@ -0,0 +1,70 @@
++## @file
++#
++#  Copyright (c) 2017 - 2018, Intel Corporation. All rights reserved.<BR>
++#  This program and the accompanying materials
++#  are licensed and made available under the terms and conditions of the BSD License
++#  which accompanies this distribution.  The full text of the license may be found at
++#  http://opensource.org/licenses/bsd-license.php
++#
++#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++##
++
++[Head]
++NumOfUpdate = 5
++NumOfRecovery = 0
++Update0 = Vlv2FvBinary
++Update1 = Vlv2FvMain
++Update2 = Vlv2FvRecovery2
++Update3 = Vlv2FvRecovery
++Update4 = Vlv2FvNvRam
++
++[Vlv2FvMicrocode]
++FirmwareType = 0            # SystemFirmware
++AddressType = 0             # 0 - relative address, 1 - absolute address.
++BaseAddress = 0x00400000    # Base address offset on flash
++Length      = 0x00040000    # Length
++ImageOffset = 0x00000000    # Image offset of this SystemFirmware image
++FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
++
++[Vlv2FvNvRam]
++FirmwareType = 1            # NvRam
++AddressType = 0             # 0 - relative address, 1 - absolute address.
++BaseAddress = 0x00440000    # Base address offset on flash
++Length      = 0x00080000    # Length
++ImageOffset = 0x00040000    # Image offset of this SystemFirmware image
++FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
++
++[Vlv2FvBinary]
++FirmwareType = 0            # SystemFirmware
++AddressType = 0             # 0 - relative address, 1 - absolute address.
++BaseAddress = 0x004C0000    # Base address offset on flash
++Length      = 0x00050000    # Length
++ImageOffset = 0x000C0000    # Image offset of this SystemFirmware image
++FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
++
++[Vlv2FvMain]
++FirmwareType = 0            # SystemFirmware
++AddressType = 0             # 0 - relative address, 1 - absolute address.
++BaseAddress = 0x00510000    # Base address offset on flash
++Length      = 0x00215000    # Length
++ImageOffset = 0x00110000    # Image offset of this SystemFirmware image
++FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
++
++[Vlv2FvRecovery2]
++FirmwareType = 0            # SystemFirmware
++AddressType = 0             # 0 - relative address, 1 - absolute address.
++BaseAddress = 0x00725000    # Base address offset on flash
++Length      = 0x0006B000    # Length
++ImageOffset = 0x00325000    # Image offset of this SystemFirmware image
++FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
++
++[Vlv2FvRecovery]
++FirmwareType = 0            # SystemFirmware
++AddressType = 0             # 0 - relative address, 1 - absolute address.
++BaseAddress = 0x00790000    # Base address offset on flash
++Length      = 0x00070000    # Length
++ImageOffset = 0x00390000    # Image offset of this SystemFirmware image
++FileGuid    = 14D83A59-A810-4556-8192-1C0A593C065C  # PcdEdkiiSystemFirmwareFileGuid
++
+diff --git a/Vlv2TbltDevicePkg/PlatformCapsule.dsc b/Vlv2TbltDevicePkg/PlatformCapsule.dsc
+new file mode 100644
+index 0000000..eeb529e
+--- /dev/null
++++ b/Vlv2TbltDevicePkg/PlatformCapsule.dsc
+@@ -0,0 +1,44 @@
++#/** @file
++# Platform capsule description.
++#
++# Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
++#
++# This program and the accompanying materials are licensed and made available under
++# the terms and conditions of the BSD License that accompanies this distribution.
++# The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php.
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++#
++#**/
++
++[Defines]
++  PLATFORM_NAME                  = Vlv2TbltDevicePkg
++  PLATFORM_GUID                  = EE87F258-6ECC-4415-B1D8-23771BEE26E7
++  PLATFORM_VERSION               = 0.1
++  FLASH_DEFINITION               = Vlv2TbltDevicePkg/PlatformCapsule.fdf
++  OUTPUT_DIRECTORY               = Build/Vlv2TbltDevicePkg
++  SUPPORTED_ARCHITECTURES        = IA32|X64
++  BUILD_TARGETS                  = DEBUG|RELEASE
++  SKUID_IDENTIFIER               = DEFAULT
++
++###################################################################################################
++#
++# Components Section - list of the modules and components that will be processed by compilation
++#                      tools and the EDK II tools to generate PE32/PE32+/Coff image files.
++#
++# Note: The EDK II DSC file is not used to specify how compiled binary images get placed
++#       into firmware volume images. This section is just a list of modules to compile from
++#       source into UEFI-compliant binaries.
++#       It is the FDF file that contains information on combining binary files into firmware
++#       volume images, whose concept is beyond UEFI and is described in PI specification.
++#       Binary modules do not need to be listed in this section, as they should be
++#       specified in the FDF file. For example: Shell binary, FAT binary (Fat.efi),
++#       Logo (Logo.bmp), and etc.
++#       There may also be modules listed in this section that are not required in the FDF file,
++#       When a module listed here is excluded from FDF file, then UEFI-compliant binary will be
++#       generated for it, but the binary will not be put into any firmware volume.
++#
++###################################################################################################
+diff --git a/Vlv2TbltDevicePkg/PlatformCapsule.fdf b/Vlv2TbltDevicePkg/PlatformCapsule.fdf
+new file mode 100644
+index 0000000..e126286
+--- /dev/null
++++ b/Vlv2TbltDevicePkg/PlatformCapsule.fdf
+@@ -0,0 +1,63 @@
++## @file
++# FDF file of Platform capsule.
++#
++# Copyright (c) 2018 Intel Corporation.
++#
++# This program and the accompanying materials
++# are licensed and made available under the terms and conditions of the BSD License
++# which accompanies this distribution.  The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++##
++
++[FV.SystemFirmwareUpdateCargo]
++FvAlignment        = 16
++ERASE_POLARITY     = 1
++MEMORY_MAPPED      = TRUE
++STICKY_WRITE       = TRUE
++LOCK_CAP           = TRUE
++LOCK_STATUS        = TRUE
++WRITE_DISABLED_CAP = TRUE
++WRITE_ENABLED_CAP  = TRUE
++WRITE_STATUS       = TRUE
++WRITE_LOCK_CAP     = TRUE
++WRITE_LOCK_STATUS  = TRUE
++READ_DISABLED_CAP  = TRUE
++READ_ENABLED_CAP   = TRUE
++READ_STATUS        = TRUE
++READ_LOCK_CAP      = TRUE
++READ_LOCK_STATUS   = TRUE
++
++FILE RAW = 14D83A59-A810-4556-8192-1C0A593C065C { # PcdEdkiiSystemFirmwareFileGuid
++    $(WORKSPACE)/$(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/FV/Vlv.ROM
++  }
++
++FILE RAW = ce57b167-b0e4-41e8-a897-5f4feb781d40 { # gEdkiiSystemFmpCapsuleDriverFvFileGuid
++    $(WORKSPACE)/$(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/FV/CAPSULEDISPATCHFV.Fv
++  }
++
++FILE RAW = 812136D3-4D3A-433A-9418-29BB9BF78F6E { # gEdkiiSystemFmpCapsuleConfigFileGuid
++    Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfig.ini
++  }
++
++[FmpPayload.FmpPayloadSystemFirmwareRsa2048]
++IMAGE_HEADER_INIT_VERSION = 0x02
++IMAGE_TYPE_ID             = 4096267b-da0a-42eb-b5eb-fef31d207cb4 # PcdSystemFmpCapsuleImageTypeIdGuid
++IMAGE_INDEX               = 0x1
++HARDWARE_INSTANCE         = 0x0
++MONOTONIC_COUNT           = 0x2
++CERTIFICATE_GUID          = A7717414-C616-4977-9420-844712A735BF # RSA2048SHA256
++
++FILE DATA = $(WORKSPACE)/$(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/FV/SYSTEMFIRMWAREUPDATECARGO.Fv
++
++[Capsule.Vlv2]
++CAPSULE_GUID                = 6dcbd5ed-e82d-4c44-bda1-7194199ad92a # gEfiFmpCapsuleGuid
++CAPSULE_FLAGS               = PersistAcrossReset,InitiateReset
++CAPSULE_HEADER_SIZE         = 0x20
++CAPSULE_HEADER_INIT_VERSION = 0x1
++
++FMP_PAYLOAD = FmpPayloadSystemFirmwareRsa2048
++
+diff --git a/Vlv2TbltDevicePkg/PlatformCapsuleGcc.dsc b/Vlv2TbltDevicePkg/PlatformCapsuleGcc.dsc
+new file mode 100644
+index 0000000..d5d72f4
+--- /dev/null
++++ b/Vlv2TbltDevicePkg/PlatformCapsuleGcc.dsc
+@@ -0,0 +1,44 @@
++#/** @file
++# Platform capsule description.
++#
++# Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
++#
++# This program and the accompanying materials are licensed and made available under
++# the terms and conditions of the BSD License that accompanies this distribution.
++# The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php.
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++#
++#**/
++
++[Defines]
++  PLATFORM_NAME                  = Vlv2TbltDevicePkg
++  PLATFORM_GUID                  = EE87F258-6ECC-4415-B1D8-23771BEE26E7
++  PLATFORM_VERSION               = 0.1
++  FLASH_DEFINITION               = Vlv2TbltDevicePkg/PlatformCapsuleGcc.fdf
++  OUTPUT_DIRECTORY               = Build/Vlv2TbltDevicePkg
++  SUPPORTED_ARCHITECTURES        = IA32|X64
++  BUILD_TARGETS                  = DEBUG|RELEASE
++  SKUID_IDENTIFIER               = DEFAULT
++
++###################################################################################################
++#
++# Components Section - list of the modules and components that will be processed by compilation
++#                      tools and the EDK II tools to generate PE32/PE32+/Coff image files.
++#
++# Note: The EDK II DSC file is not used to specify how compiled binary images get placed
++#       into firmware volume images. This section is just a list of modules to compile from
++#       source into UEFI-compliant binaries.
++#       It is the FDF file that contains information on combining binary files into firmware
++#       volume images, whose concept is beyond UEFI and is described in PI specification.
++#       Binary modules do not need to be listed in this section, as they should be
++#       specified in the FDF file. For example: Shell binary, FAT binary (Fat.efi),
++#       Logo (Logo.bmp), and etc.
++#       There may also be modules listed in this section that are not required in the FDF file,
++#       When a module listed here is excluded from FDF file, then UEFI-compliant binary will be
++#       generated for it, but the binary will not be put into any firmware volume.
++#
++###################################################################################################
+diff --git a/Vlv2TbltDevicePkg/PlatformCapsuleGcc.fdf b/Vlv2TbltDevicePkg/PlatformCapsuleGcc.fdf
+new file mode 100644
+index 0000000..9813301
+--- /dev/null
++++ b/Vlv2TbltDevicePkg/PlatformCapsuleGcc.fdf
+@@ -0,0 +1,63 @@
++## @file
++# FDF file of Platform capsule.
++#
++# Copyright (c) 2018 Intel Corporation.
++#
++# This program and the accompanying materials
++# are licensed and made available under the terms and conditions of the BSD License
++# which accompanies this distribution.  The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++##
++
++[FV.SystemFirmwareUpdateCargo]
++FvAlignment        = 16
++ERASE_POLARITY     = 1
++MEMORY_MAPPED      = TRUE
++STICKY_WRITE       = TRUE
++LOCK_CAP           = TRUE
++LOCK_STATUS        = TRUE
++WRITE_DISABLED_CAP = TRUE
++WRITE_ENABLED_CAP  = TRUE
++WRITE_STATUS       = TRUE
++WRITE_LOCK_CAP     = TRUE
++WRITE_LOCK_STATUS  = TRUE
++READ_DISABLED_CAP  = TRUE
++READ_ENABLED_CAP   = TRUE
++READ_STATUS        = TRUE
++READ_LOCK_CAP      = TRUE
++READ_LOCK_STATUS   = TRUE
++
++FILE RAW = 14D83A59-A810-4556-8192-1C0A593C065C { # PcdEdkiiSystemFirmwareFileGuid
++    $(WORKSPACE)/$(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/FV/VLV.fd
++  }
++
++FILE RAW = ce57b167-b0e4-41e8-a897-5f4feb781d40 { # gEdkiiSystemFmpCapsuleDriverFvFileGuid
++    $(WORKSPACE)/$(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/FV/CAPSULEDISPATCHFV.Fv
++  }
++
++FILE RAW = 812136D3-4D3A-433A-9418-29BB9BF78F6E { # gEdkiiSystemFmpCapsuleConfigFileGuid
++    Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfigGcc.ini
++  }
++
++[FmpPayload.FmpPayloadSystemFirmwareRsa2048]
++IMAGE_HEADER_INIT_VERSION = 0x02
++IMAGE_TYPE_ID             = 4096267b-da0a-42eb-b5eb-fef31d207cb4 # PcdSystemFmpCapsuleImageTypeIdGuid
++IMAGE_INDEX               = 0x1
++HARDWARE_INSTANCE         = 0x0
++MONOTONIC_COUNT           = 0x2
++CERTIFICATE_GUID          = A7717414-C616-4977-9420-844712A735BF # RSA2048SHA256
++
++FILE DATA = $(WORKSPACE)/$(OUTPUT_DIRECTORY)/$(TARGET)_$(TOOL_CHAIN_TAG)/FV/SYSTEMFIRMWAREUPDATECARGO.Fv
++
++[Capsule.Vlv2]
++CAPSULE_GUID                = 6dcbd5ed-e82d-4c44-bda1-7194199ad92a # gEfiFmpCapsuleGuid
++CAPSULE_FLAGS               = PersistAcrossReset,InitiateReset
++CAPSULE_HEADER_SIZE         = 0x20
++CAPSULE_HEADER_INIT_VERSION = 0x1
++
++FMP_PAYLOAD = FmpPayloadSystemFirmwareRsa2048
++
+diff --git a/Vlv2TbltDevicePkg/PlatformPkg.fdf b/Vlv2TbltDevicePkg/PlatformPkg.fdf
+index ed5f4e1..1942cf5 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkg.fdf
++++ b/Vlv2TbltDevicePkg/PlatformPkg.fdf
+@@ -1,7 +1,7 @@
+ #/** @file
+ # FDF file of Platform.
+ #
+-# Copyright (c) 2008  - 2017, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2008  - 2018, Intel Corporation. All rights reserved.<BR>
+ #                                                                                  
+ # This program and the accompanying materials are licensed and made available under
+ # the terms and conditions of the BSD License that accompanies this distribution.  
+@@ -375,7 +375,7 @@ INF RuleOverride = BINARY $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET
+ INF RuleOverride = BINARY $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET)/IA32/MemoryInit.inf
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+   # FMP image decriptor
+ INF RuleOverride = FMP_IMAGE_DESC Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareDescriptor/SystemFirmwareDescriptor.inf
+ !endif
+@@ -746,10 +746,14 @@ FILE FREEFORM = 878AC2CC-5343-46F2-B563-51F89DAF56BA {
+   !endif
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+ INF  MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
++!endif
++!if $(CAPSULE_ENABLE)
+ INF  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf
++!endif
+ 
++!if $(CAPSULE_ENABLE)
+ FILE FREEFORM = PCD(gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiRsa2048Sha256TestPublicKeyFileGuid) {
+      SECTION RAW = BaseTools/Source/Python/Rsa2048Sha256Sign/TestSigningPublicKey.bin
+      SECTION UI = "Rsa2048Sha256TestSigningPublicKey"
+@@ -817,7 +821,7 @@ READ_LOCK_CAP      = TRUE
+ READ_LOCK_STATUS   = TRUE
+ 
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+ [FV.CapsuleDispatchFv]
+ FvAlignment        = 16
+ ERASE_POLARITY     = 1
+@@ -838,53 +842,7 @@ READ_LOCK_STATUS   = TRUE
+ 
+ INF  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf
+ 
+-[FV.SystemFirmwareUpdateCargo]
+-FvAlignment        = 16
+-ERASE_POLARITY     = 1
+-MEMORY_MAPPED      = TRUE
+-STICKY_WRITE       = TRUE
+-LOCK_CAP           = TRUE
+-LOCK_STATUS        = TRUE
+-WRITE_DISABLED_CAP = TRUE
+-WRITE_ENABLED_CAP  = TRUE
+-WRITE_STATUS       = TRUE
+-WRITE_LOCK_CAP     = TRUE
+-WRITE_LOCK_STATUS  = TRUE
+-READ_DISABLED_CAP  = TRUE
+-READ_ENABLED_CAP   = TRUE
+-READ_STATUS        = TRUE
+-READ_LOCK_CAP      = TRUE
+-READ_LOCK_STATUS   = TRUE
+-
+-FILE RAW = 14D83A59-A810-4556-8192-1C0A593C065C { # PcdEdkiiSystemFirmwareFileGuid
+-    FD = Vlv
+-  }
+-
+-FILE RAW = ce57b167-b0e4-41e8-a897-5f4feb781d40 { # gEdkiiSystemFmpCapsuleDriverFvFileGuid
+-    FV = CapsuleDispatchFv
+-  }
+-
+-FILE RAW = 812136D3-4D3A-433A-9418-29BB9BF78F6E { # gEdkiiSystemFmpCapsuleConfigFileGuid
+-    Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfig.ini
+-  }
+-
+-[FmpPayload.FmpPayloadSystemFirmwareRsa2048]
+-IMAGE_HEADER_INIT_VERSION = 0x02
+-IMAGE_TYPE_ID             = 4096267b-da0a-42eb-b5eb-fef31d207cb4 # PcdSystemFmpCapsuleImageTypeIdGuid
+-IMAGE_INDEX               = 0x1
+-HARDWARE_INSTANCE         = 0x0
+-MONOTONIC_COUNT           = 0x2
+-CERTIFICATE_GUID          = A7717414-C616-4977-9420-844712A735BF # RSA2048SHA256
+-
+-FV = SystemFirmwareUpdateCargo
+-
+-[Capsule.FVMAIN]
+-CAPSULE_GUID                = 6dcbd5ed-e82d-4c44-bda1-7194199ad92a # gEfiFmpCapsuleGuid
+-CAPSULE_FLAGS               = PersistAcrossReset,InitiateReset
+-CAPSULE_HEADER_SIZE         = 0x20
+-CAPSULE_HEADER_INIT_VERSION = 0x1
+ 
+-FMP_PAYLOAD = FmpPayloadSystemFirmwareRsa2048
+ !endif
+ 
+ ################################################################################
+@@ -1121,7 +1079,7 @@ FMP_PAYLOAD = FmpPayloadSystemFirmwareRsa2048
+   FILE PEIM = $(NAMED_GUID) {
+      RAW BIN                  |.acpi
+      PEI_DEPEX PEI_DEPEX Optional        $(INF_OUTPUT)/$(MODULE_NAME).depex
+-     PE32      PE32                      $(INF_OUTPUT)/$(MODULE_NAME).efi
++     PE32      PE32    Align=4K          $(INF_OUTPUT)/$(MODULE_NAME).efi
+      UI       STRING="$(MODULE_NAME)" Optional
+      VERSION  STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+   }
+diff --git a/Vlv2TbltDevicePkg/PlatformPkgConfig.dsc b/Vlv2TbltDevicePkg/PlatformPkgConfig.dsc
+index b6df2a0..0a8da1f 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkgConfig.dsc
++++ b/Vlv2TbltDevicePkg/PlatformPkgConfig.dsc
+@@ -1,7 +1,7 @@
+ #/** @file
+ # platform configuration file.
+ #
+-# Copyright (c) 2012  - 2017, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2012  - 2018, Intel Corporation. All rights reserved.<BR>
+ #                                                                                  
+ # This program and the accompanying materials are licensed and made available under
+ # the terms and conditions of the BSD License that accompanies this distribution.  
+@@ -93,4 +93,3 @@ DEFINE ESRT_ENABLE       = TRUE
+ #
+  DEFINE SOURCE_DEBUG_ENABLE     = FALSE
+ 
+-DEFINE CAPSULE_GENERATE_ENABLE = TRUE
+diff --git a/Vlv2TbltDevicePkg/PlatformPkgGcc.fdf b/Vlv2TbltDevicePkg/PlatformPkgGcc.fdf
+index 78103d3..7478d3c 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkgGcc.fdf
++++ b/Vlv2TbltDevicePkg/PlatformPkgGcc.fdf
+@@ -1,7 +1,7 @@
+ #/** @file
+ # FDF file of Platform.
+ #
+-# Copyright (c) 2008  - 2017, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2008  - 2018, Intel Corporation. All rights reserved.<BR>
+ #                                                                                  
+ # This program and the accompanying materials are licensed and made available under
+ # the terms and conditions of the BSD License that accompanies this distribution.  
+@@ -328,7 +328,7 @@ INF RuleOverride = BINARY $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET
+ INF RuleOverride = BINARY $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET)/IA32/MemoryInit.inf
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+   # FMP image decriptor
+ INF RuleOverride = FMP_IMAGE_DESC Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareDescriptor/SystemFirmwareDescriptor.inf
+ !endif
+@@ -699,10 +699,14 @@ FILE FREEFORM = 878AC2CC-5343-46F2-B563-51F89DAF56BA {
+   !endif
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+ INF  MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
++!endif
++!if $(CAPSULE_ENABLE)
+ INF  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf
++!endif
+ 
++!if $(CAPSULE_ENABLE)
+ FILE FREEFORM = PCD(gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiRsa2048Sha256TestPublicKeyFileGuid) {
+      SECTION RAW = BaseTools/Source/Python/Rsa2048Sha256Sign/TestSigningPublicKey.bin
+      SECTION UI = "Rsa2048Sha256TestSigningPublicKey"
+@@ -772,7 +776,7 @@ READ_LOCK_CAP      = TRUE
+ READ_LOCK_STATUS   = TRUE
+ 
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+ [FV.CapsuleDispatchFv]
+ FvAlignment        = 16
+ ERASE_POLARITY     = 1
+@@ -793,53 +797,7 @@ READ_LOCK_STATUS   = TRUE
+ 
+ INF  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf
+ 
+-[FV.SystemFirmwareUpdateCargo]
+-FvAlignment        = 16
+-ERASE_POLARITY     = 1
+-MEMORY_MAPPED      = TRUE
+-STICKY_WRITE       = TRUE
+-LOCK_CAP           = TRUE
+-LOCK_STATUS        = TRUE
+-WRITE_DISABLED_CAP = TRUE
+-WRITE_ENABLED_CAP  = TRUE
+-WRITE_STATUS       = TRUE
+-WRITE_LOCK_CAP     = TRUE
+-WRITE_LOCK_STATUS  = TRUE
+-READ_DISABLED_CAP  = TRUE
+-READ_ENABLED_CAP   = TRUE
+-READ_STATUS        = TRUE
+-READ_LOCK_CAP      = TRUE
+-READ_LOCK_STATUS   = TRUE
+-
+-FILE RAW = 14D83A59-A810-4556-8192-1C0A593C065C { # PcdEdkiiSystemFirmwareFileGuid
+-    FD = Vlv
+-  }
+-
+-FILE RAW = ce57b167-b0e4-41e8-a897-5f4feb781d40 { # gEdkiiSystemFmpCapsuleDriverFvFileGuid
+-    FV = CapsuleDispatchFv
+-  }
+ 
+-FILE RAW = 812136D3-4D3A-433A-9418-29BB9BF78F6E { # gEdkiiSystemFmpCapsuleConfigFileGuid
+-    Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareUpdateConfig/SystemFirmwareUpdateConfig.ini
+-  }
+-
+-[FmpPayload.FmpPayloadSystemFirmwareRsa2048]
+-IMAGE_HEADER_INIT_VERSION = 0x02
+-IMAGE_TYPE_ID             = 4096267b-da0a-42eb-b5eb-fef31d207cb4 # PcdSystemFmpCapsuleImageTypeIdGuid
+-IMAGE_INDEX               = 0x1
+-HARDWARE_INSTANCE         = 0x0
+-MONOTONIC_COUNT           = 0x2
+-CERTIFICATE_GUID          = A7717414-C616-4977-9420-844712A735BF # RSA2048SHA256
+-
+-FV = SystemFirmwareUpdateCargo
+-
+-[Capsule.FVMAIN]
+-CAPSULE_GUID                = 6dcbd5ed-e82d-4c44-bda1-7194199ad92a # gEfiFmpCapsuleGuid
+-CAPSULE_FLAGS               = PersistAcrossReset,InitiateReset
+-CAPSULE_HEADER_SIZE         = 0x20
+-CAPSULE_HEADER_INIT_VERSION = 0x1
+-
+-FMP_PAYLOAD = FmpPayloadSystemFirmwareRsa2048
+ !endif
+ 
+ ################################################################################
+@@ -1077,12 +1035,10 @@ FMP_PAYLOAD = FmpPayloadSystemFirmwareRsa2048
+   }
+ 
+ [Rule.Common.PEIM.FMP_IMAGE_DESC]
+-
+   FILE PEIM = $(NAMED_GUID) {
+      RAW BIN                  |.acpi
+-
+      PEI_DEPEX PEI_DEPEX Optional        $(INF_OUTPUT)/$(MODULE_NAME).depex
+-     PE32      PE32                      $(INF_OUTPUT)/$(MODULE_NAME).efi
++     PE32      PE32    Align=4K          $(INF_OUTPUT)/$(MODULE_NAME).efi
+      UI       STRING="$(MODULE_NAME)" Optional
+      VERSION  STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+   }
+diff --git a/Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc b/Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc
+index 8779e04..5379824 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc
++++ b/Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc
+@@ -1,7 +1,7 @@
+ #/** @file
+ # Platform description.
+ #
+-# Copyright (c) 2012  - 2017, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2012  - 2018, Intel Corporation. All rights reserved.<BR>
+ #                                                                                  
+ # This program and the accompanying materials are licensed and made available under
+ # the terms and conditions of the BSD License that accompanies this distribution.  
+@@ -186,18 +186,15 @@
+   OemHookStatusCodeLib|MdeModulePkg/Library/OemHookStatusCodeLibNull/OemHookStatusCodeLibNull.inf
+ 
+ !if $(CAPSULE_ENABLE) == TRUE
+- CapsuleLib|IntelFrameworkModulePkg/Library/DxeCapsuleLib/DxeCapsuleLib.inf
++  CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeCapsuleLib.inf
+ !else
+   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
+-  CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeCapsuleLib.inf
+   EdkiiSystemCapsuleLib|SignedCapsulePkg/Library/EdkiiSystemCapsuleLib/EdkiiSystemCapsuleLib.inf
+   FmpAuthenticationLib|MdeModulePkg/Library/FmpAuthenticationLibNull/FmpAuthenticationLibNull.inf
+   IniParsingLib|SignedCapsulePkg/Library/IniParsingLib/IniParsingLib.inf
+   PlatformFlashAccessLib|Vlv2TbltDevicePkg/Feature/Capsule/Library/PlatformFlashAccessLib/PlatformFlashAccessLib.inf
+-!endif
+ 
+   UefiBootManagerLib|MdeModulePkg/Library/UefiBootManagerLib/UefiBootManagerLib.inf
+ 
+@@ -470,7 +467,7 @@
+   DebugAgentLib|SourceLevelDebugPkg/Library/DebugAgent/DxeDebugAgentLib.inf
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE) == TRUE
+   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeRuntimeCapsuleLib.inf
+ !endif
+ 
+@@ -870,10 +867,10 @@ gEfiMdeModulePkgTokenSpaceGuid.PcdSystemRebootAfterCapsuleProcessFlag|0x0001
+ 
+   ## This PCD defines the video horizontal resolution.
+   #  This PCD could be set to 0 then video resolution could be at highest resolution.
+-  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|0
++  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|800
+   ## This PCD defines the video vertical resolution.
+   #  This PCD could be set to 0 then video resolution could be at highest resolution.
+-  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|0
++  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|600
+ 
+   ## This PCD defines the Console output column and the default value is 25 according to UEFI spec.
+   #  This PCD could be set to 0 then console output could be at max column and max row.
+@@ -920,7 +917,7 @@ gEfiMdeModulePkgTokenSpaceGuid.PcdSystemRebootAfterCapsuleProcessFlag|0x0001
+   gEfiVLVTokenSpaceGuid.PcdCpuLockBoxSize|0
+   gEfiSecurityPkgTokenSpaceGuid.PcdUserPhysicalPresence|TRUE
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareImageDescriptor|{0x0}|VOID*|0x100
+   gEfiMdeModulePkgTokenSpaceGuid.PcdSystemFmpCapsuleImageTypeIdGuid|{0x7b, 0x26, 0x96, 0x40, 0x0a, 0xda, 0xeb, 0x42, 0xb5, 0xeb, 0xfe, 0xf3, 0x1d, 0x20, 0x7c, 0xb4}
+   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareFileGuid|{0x59, 0x3A, 0xD8, 0x14, 0x10, 0xA8, 0x56, 0x45, 0x81, 0x92, 0x1C, 0x0A, 0x59, 0x3C, 0x06, 0x5C}
+@@ -929,7 +926,7 @@ gEfiMdeModulePkgTokenSpaceGuid.PcdSystemRebootAfterCapsuleProcessFlag|0x0001
+   
+ [Components.IA32]
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+   # FMP image decriptor
+   Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareDescriptor/SystemFirmwareDescriptor.inf {
+     <LibraryClasses>
+@@ -1239,27 +1236,6 @@ $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET)/IA32/fTPMInitPeim.inf
+     <LibraryClasses>
+       FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
+   }
+-
+-!if $(CAPSULE_GENERATE_ENABLE)
+-  MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
+-
+-  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf {
+-    <LibraryClasses>
+-      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
+-      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+-  }
+-
+-  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf {
+-    <LibraryClasses>
+-      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
+-      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+-  }
+-
+-  MdeModulePkg/Application/CapsuleApp/CapsuleApp.inf {
+-    <LibraryClasses>
+-      PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
+-  }
+-!endif
+   
+ 
+   
+@@ -1605,6 +1581,29 @@ MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteSmmDxe.inf
+   Vlv2TbltDevicePkg/Application/FirmwareUpdate/FirmwareUpdate.inf
+   Vlv2TbltDevicePkg/Application/SsdtUpdate/SsdtUpdate.inf
+ 
++  !if $(CAPSULE_ENABLE)
++    MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
++    MdeModulePkg/Application/CapsuleApp/CapsuleApp.inf {
++      <LibraryClasses>
++        PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
++    }
++  !endif
++
++  !if $(CAPSULE_ENABLE)
++  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf {
++    <LibraryClasses>
++      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
++      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
++  }
++
++  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf {
++    <LibraryClasses>
++      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
++      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
++  }
++
++!endif
++
+ [BuildOptions]
+ #
+ # Define Build Options both for EDK and EDKII drivers.
+diff --git a/Vlv2TbltDevicePkg/PlatformPkgIA32.dsc b/Vlv2TbltDevicePkg/PlatformPkgIA32.dsc
+index 978e7f4..cc6f27e 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkgIA32.dsc
++++ b/Vlv2TbltDevicePkg/PlatformPkgIA32.dsc
+@@ -1,7 +1,7 @@
+ #/** @file
+ # Platform description.
+ #
+-# Copyright (c) 2012  - 2017, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2012  - 2018, Intel Corporation. All rights reserved.<BR>
+ #                                                                                  
+ # This program and the accompanying materials are licensed and made available under
+ # the terms and conditions of the BSD License that accompanies this distribution.  
+@@ -186,18 +186,15 @@
+   OemHookStatusCodeLib|MdeModulePkg/Library/OemHookStatusCodeLibNull/OemHookStatusCodeLibNull.inf
+ 
+ !if $(CAPSULE_ENABLE) == TRUE
+- CapsuleLib|IntelFrameworkModulePkg/Library/DxeCapsuleLib/DxeCapsuleLib.inf
++  CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeCapsuleLib.inf
+ !else
+   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
+-  CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeCapsuleLib.inf
+   EdkiiSystemCapsuleLib|SignedCapsulePkg/Library/EdkiiSystemCapsuleLib/EdkiiSystemCapsuleLib.inf
+   FmpAuthenticationLib|MdeModulePkg/Library/FmpAuthenticationLibNull/FmpAuthenticationLibNull.inf
+   IniParsingLib|SignedCapsulePkg/Library/IniParsingLib/IniParsingLib.inf
+   PlatformFlashAccessLib|Vlv2TbltDevicePkg/Feature/Capsule/Library/PlatformFlashAccessLib/PlatformFlashAccessLib.inf
+-!endif
+ 
+   UefiBootManagerLib|MdeModulePkg/Library/UefiBootManagerLib/UefiBootManagerLib.inf
+ 
+@@ -470,7 +467,7 @@
+   DebugAgentLib|SourceLevelDebugPkg/Library/DebugAgent/DxeDebugAgentLib.inf
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE) == TRUE
+   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeRuntimeCapsuleLib.inf
+ !endif
+ [LibraryClasses.common.UEFI_DRIVER]
+@@ -921,7 +918,7 @@ gEfiMdeModulePkgTokenSpaceGuid.PcdSystemRebootAfterCapsuleProcessFlag|0x0001
+   gEfiVLVTokenSpaceGuid.PcdCpuLockBoxSize|0
+   gEfiSecurityPkgTokenSpaceGuid.PcdUserPhysicalPresence|TRUE
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareImageDescriptor|{0x0}|VOID*|0x100
+   gEfiMdeModulePkgTokenSpaceGuid.PcdSystemFmpCapsuleImageTypeIdGuid|{0x7b, 0x26, 0x96, 0x40, 0x0a, 0xda, 0xeb, 0x42, 0xb5, 0xeb, 0xfe, 0xf3, 0x1d, 0x20, 0x7c, 0xb4}
+   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareFileGuid|{0x59, 0x3A, 0xD8, 0x14, 0x10, 0xA8, 0x56, 0x45, 0x81, 0x92, 0x1C, 0x0A, 0x59, 0x3C, 0x06, 0x5C}
+@@ -930,7 +927,7 @@ gEfiMdeModulePkgTokenSpaceGuid.PcdSystemRebootAfterCapsuleProcessFlag|0x0001
+   
+ [Components.IA32]
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+   # FMP image decriptor
+   Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareDescriptor/SystemFirmwareDescriptor.inf {
+     <LibraryClasses>
+@@ -1235,29 +1232,6 @@ $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET)/IA32/fTPMInitPeim.inf
+     <LibraryClasses>
+       FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
+   }
+-
+-!if $(CAPSULE_GENERATE_ENABLE)
+-  MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
+-
+-  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf {
+-    <LibraryClasses>
+-      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
+-      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+-  }
+-
+-  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf {
+-    <LibraryClasses>
+-
+-      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
+-      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+-  }
+-
+-  MdeModulePkg/Application/CapsuleApp/CapsuleApp.inf {
+-    <LibraryClasses>
+-      PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
+-  }
+-!endif
+-  
+   
+   MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
+   PcAtChipsetPkg/PcatRealTimeClockRuntimeDxe/PcatRealTimeClockRuntimeDxe.inf
+@@ -1608,6 +1582,29 @@ MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteSmmDxe.inf
+   Vlv2TbltDevicePkg/Application/FirmwareUpdate/FirmwareUpdate.inf
+   Vlv2TbltDevicePkg/Application/SsdtUpdate/SsdtUpdate.inf
+ 
++  !if $(CAPSULE_ENABLE)
++    MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
++    MdeModulePkg/Application/CapsuleApp/CapsuleApp.inf {
++      <LibraryClasses>
++        PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
++    }
++  !endif
++
++  !if $(CAPSULE_ENABLE)
++  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf {
++    <LibraryClasses>
++      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
++      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
++  }
++
++  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf {
++    <LibraryClasses>
++      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
++      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
++  }
++
++!endif
++
+ [BuildOptions]
+ #
+ # Define Build Options both for EDK and EDKII drivers.
+diff --git a/Vlv2TbltDevicePkg/PlatformPkgX64.dsc b/Vlv2TbltDevicePkg/PlatformPkgX64.dsc
+index da1ba4b..50f168f 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkgX64.dsc
++++ b/Vlv2TbltDevicePkg/PlatformPkgX64.dsc
+@@ -1,7 +1,7 @@
+ #/** @file
+ # Platform description.
+ #
+-# Copyright (c) 2012  - 2017, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2012  - 2018, Intel Corporation. All rights reserved.<BR>
+ #                                                                                  
+ # This program and the accompanying materials are licensed and made available under
+ # the terms and conditions of the BSD License that accompanies this distribution.  
+@@ -186,18 +186,15 @@
+   OemHookStatusCodeLib|MdeModulePkg/Library/OemHookStatusCodeLibNull/OemHookStatusCodeLibNull.inf
+ 
+ !if $(CAPSULE_ENABLE) == TRUE
+- CapsuleLib|IntelFrameworkModulePkg/Library/DxeCapsuleLib/DxeCapsuleLib.inf
++  CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeCapsuleLib.inf
+ !else
+   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
+-  CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeCapsuleLib.inf
+   EdkiiSystemCapsuleLib|SignedCapsulePkg/Library/EdkiiSystemCapsuleLib/EdkiiSystemCapsuleLib.inf
+   FmpAuthenticationLib|MdeModulePkg/Library/FmpAuthenticationLibNull/FmpAuthenticationLibNull.inf
+   IniParsingLib|SignedCapsulePkg/Library/IniParsingLib/IniParsingLib.inf
+   PlatformFlashAccessLib|Vlv2TbltDevicePkg/Feature/Capsule/Library/PlatformFlashAccessLib/PlatformFlashAccessLib.inf
+-!endif
+ 
+   UefiBootManagerLib|MdeModulePkg/Library/UefiBootManagerLib/UefiBootManagerLib.inf
+ 
+@@ -470,7 +467,7 @@
+   DebugAgentLib|SourceLevelDebugPkg/Library/DebugAgent/DxeDebugAgentLib.inf
+ !endif
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE) == TRUE
+   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibFmp/DxeRuntimeCapsuleLib.inf
+ !endif
+ 
+@@ -922,7 +919,7 @@ gEfiMdeModulePkgTokenSpaceGuid.PcdSystemRebootAfterCapsuleProcessFlag|0x0001
+   gEfiVLVTokenSpaceGuid.PcdCpuLockBoxSize|0
+   gEfiSecurityPkgTokenSpaceGuid.PcdUserPhysicalPresence|TRUE
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareImageDescriptor|{0x0}|VOID*|0x100
+   gEfiMdeModulePkgTokenSpaceGuid.PcdSystemFmpCapsuleImageTypeIdGuid|{0x7b, 0x26, 0x96, 0x40, 0x0a, 0xda, 0xeb, 0x42, 0xb5, 0xeb, 0xfe, 0xf3, 0x1d, 0x20, 0x7c, 0xb4}
+   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareFileGuid|{0x59, 0x3A, 0xD8, 0x14, 0x10, 0xA8, 0x56, 0x45, 0x81, 0x92, 0x1C, 0x0A, 0x59, 0x3C, 0x06, 0x5C}
+@@ -931,7 +928,7 @@ gEfiMdeModulePkgTokenSpaceGuid.PcdSystemRebootAfterCapsuleProcessFlag|0x0001
+   
+ [Components.IA32]
+ 
+-!if $(CAPSULE_GENERATE_ENABLE)
++!if $(CAPSULE_ENABLE)
+   # FMP image decriptor
+   Vlv2TbltDevicePkg/Feature/Capsule/SystemFirmwareDescriptor/SystemFirmwareDescriptor.inf {
+     <LibraryClasses>
+@@ -1237,28 +1234,6 @@ $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET)/IA32/fTPMInitPeim.inf
+     <LibraryClasses>
+       FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
+   }
+-
+-!if $(CAPSULE_GENERATE_ENABLE)
+-  MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
+-
+-  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf {
+-    <LibraryClasses>
+-      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
+-      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+-  }
+-
+-  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf {
+-    <LibraryClasses>
+-      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
+-      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+-  }
+-
+-  MdeModulePkg/Application/CapsuleApp/CapsuleApp.inf {
+-    <LibraryClasses>
+-      PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
+-  }
+-!endif
+-  
+   
+   MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
+   PcAtChipsetPkg/PcatRealTimeClockRuntimeDxe/PcatRealTimeClockRuntimeDxe.inf
+@@ -1610,6 +1585,29 @@ MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteSmmDxe.inf
+   Vlv2TbltDevicePkg/Application/FirmwareUpdate/FirmwareUpdate.inf
+   Vlv2TbltDevicePkg/Application/SsdtUpdate/SsdtUpdate.inf
+ 
++  !if $(CAPSULE_ENABLE)
++    MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
++    MdeModulePkg/Application/CapsuleApp/CapsuleApp.inf {
++      <LibraryClasses>
++        PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
++    }
++  !endif
++
++  !if $(CAPSULE_ENABLE)
++  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf {
++    <LibraryClasses>
++      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
++      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
++  }
++
++  SignedCapsulePkg/Universal/SystemFirmwareUpdate/SystemFirmwareUpdateDxe.inf {
++    <LibraryClasses>
++      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibRsa2048Sha256/FmpAuthenticationLibRsa2048Sha256.inf
++      DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
++  }
++
++!endif
++
+ [BuildOptions]
+ #
+ # Define Build Options both for EDK and EDKII drivers.
+diff --git a/Vlv2TbltDevicePkg/bld_vlv.bat b/Vlv2TbltDevicePkg/bld_vlv.bat
+index d3fac09..1488b0c 100644
+--- a/Vlv2TbltDevicePkg/bld_vlv.bat
++++ b/Vlv2TbltDevicePkg/bld_vlv.bat
+@@ -1,7 +1,7 @@
+ @REM @file
+ @REM   Windows batch file to build BIOS ROM
+ @REM
+-@REM Copyright (c) 2006 - 2017, Intel Corporation. All rights reserved.<BR>
++@REM Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
+ @REM This program and the accompanying materials
+ @REM are licensed and made available under the terms and conditions of the BSD License
+ @REM which accompanies this distribution.  The full text of the license may be found at
+@@ -248,6 +248,7 @@ del /f/q ver_strings >nul
+ 
+ set BIOS_Name=%BOARD_ID%_%Arch%_%BUILD_TYPE%_%VERSION_MAJOR%_%VERSION_MINOR%.ROM
+ copy /y/b %WORKSPACE%\%BUILD_PATH%\FV\Vlv%Arch%.fd  %PLATFORM_PATH%\%BIOS_Name% >nul
++copy /y/b %WORKSPACE%\%BUILD_PATH%\FV\Vlv%Arch%.fd  %WORKSPACE%\%BUILD_PATH%\FV\Vlv.ROM >nul
+ 
+ echo.
+ echo Build location:     %BUILD_PATH%
+@@ -255,6 +256,10 @@ echo BIOS ROM Created:   %BIOS_Name%
+ echo.
+ echo -------------------- The EDKII BIOS build has successfully completed. --------------------
+ echo.
++@REM build capsule here
++::if "%openssl_path%" == "" goto Exit
++echo > %WORKSPACE%\%BUILD_PATH%\FV\SYSTEMFIRMWAREUPDATECARGO.Fv
++build -p %PLATFORM_PACKAGE%\PlatformCapsule.dsc
+ goto Exit
+ 
+ :Usage
+diff --git a/Vlv2TbltDevicePkg/bld_vlv.sh b/Vlv2TbltDevicePkg/bld_vlv.sh
+index 74b489e..4dc8c9a 100755
+--- a/Vlv2TbltDevicePkg/bld_vlv.sh
++++ b/Vlv2TbltDevicePkg/bld_vlv.sh
+@@ -242,6 +242,9 @@ BOARD_ID=$(grep '^BOARD_ID' Conf/BiosId.env | cut -d ' ' -f 3 | cut -c 1-7)
+ BIOS_Name="$BOARD_ID"_"$Arch"_"$BUILD_TYPE"_"$VERSION_MAJOR"_"$VERSION_MINOR".ROM
+ BIOS_ID="$BOARD_ID"_"$Arch"_"$BUILD_TYPE"_"$VERSION_MAJOR"_"$VERSION_MINOR"_GCC.bin
+ cp -f $WORKSPACE/$BUILD_PATH/FV/VLV.fd  $WORKSPACE/$BIOS_Name
++
++echo > $WORKSPACE/$BUILD_PATH/FV/SYSTEMFIRMWAREUPDATECARGO.Fv
++build -p $PLATFORM_PACKAGE/PlatformCapsuleGcc.dsc
+ SEC_VERSION=1.0.2.1060v5
+ cat $IFWI_HEADER_FILE $SILICON_PATH/Vlv2MiscBinariesPkg/SEC/$SEC_VERSION/VLV_SEC_REGION.bin $SILICON_PATH/Vlv2MiscBinariesPkg/SEC/$SEC_VERSION/Vacant.bin $WORKSPACE/$BIOS_Name > $PLATFORM_PACKAGE/Stitch/$BIOS_ID
+ 
+-- 
+2.10.1.windows.1
+

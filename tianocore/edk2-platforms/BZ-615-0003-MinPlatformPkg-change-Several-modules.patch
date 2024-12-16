@@ -1,0 +1,93 @@
+From 215dcc79206cf73c567171654827432cfeabf030 Mon Sep 17 00:00:00 2001
+From: Yanming Zhu <zhuyanming@byosoft.com.cn>
+Date: Wed, 16 Dec 2020 13:58:15 +0800
+Subject: [PATCH 3/3] MinPlatformPkg:change Several modules.
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3034
+
+The duplicated FILE_GUIDS in several files have
+been changed to make their GUids unique
+
+Cc:Chasel Chiu <chasel.chiu@intel.com>
+Cc:Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc:Liming Gao <gaoliming@byosoft.com.cn>
+Cc:Eric Dong <eric.dong@intel.com>
+
+Signed-off-by: Yanming Zhu <zhuyanming@byosoft.com.cn>
+Reviewed-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ .../Acpi/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf            | 2 +-
+ .../MultiBoardAcpiSupportLib/SmmMultiBoardAcpiSupportLib.inf    | 2 +-
+ .../PlatformInit/Library/ReportCpuHobLib/ReportCpuHobLib.inf    | 2 +-
+ .../Test/Library/TestPointCheckLib/SmmTestPointCheckLib.inf     | 2 +-
+ .../Test/Library/TestPointLib/DxeTestPointLib.inf               | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/Platform/Intel/MinPlatformPkg/Acpi/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf b/Platform/Intel/MinPlatformPkg/Acpi/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf
+index 1ddca75e..0b43ab60 100644
+--- a/Platform/Intel/MinPlatformPkg/Acpi/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf
++++ b/Platform/Intel/MinPlatformPkg/Acpi/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf
+@@ -11,7 +11,7 @@
+ [Defines]
+ INF_VERSION = 0x00010017
+ BASE_NAME = DxeAslUpdateLib
+-FILE_GUID = 8621697D-4E3A-4bf2-ADB0-3E2FF06559CA
++FILE_GUID = 1BC79513-CDD5-4993-A161-618015C6C66F
+ VERSION_STRING = 1.0
+ MODULE_TYPE = BASE
+ LIBRARY_CLASS = AslUpdateLib
+diff --git a/Platform/Intel/MinPlatformPkg/Acpi/Library/MultiBoardAcpiSupportLib/SmmMultiBoardAcpiSupportLib.inf b/Platform/Intel/MinPlatformPkg/Acpi/Library/MultiBoardAcpiSupportLib/SmmMultiBoardAcpiSupportLib.inf
+index 5415446b..75bdf459 100644
+--- a/Platform/Intel/MinPlatformPkg/Acpi/Library/MultiBoardAcpiSupportLib/SmmMultiBoardAcpiSupportLib.inf
++++ b/Platform/Intel/MinPlatformPkg/Acpi/Library/MultiBoardAcpiSupportLib/SmmMultiBoardAcpiSupportLib.inf
+@@ -10,7 +10,7 @@
+ [Defines]
+   INF_VERSION                    = 0x00010005
+   BASE_NAME                      = SmmMultiBoardAcpiSupportLib
+-  FILE_GUID                      = E0238683-D3FD-4D97-8874-37C6157E2906
++  FILE_GUID                      = DEA4470C-706B-42C5-93E1-5F0694182A6B
+   MODULE_TYPE                    = BASE
+   VERSION_STRING                 = 1.0
+   LIBRARY_CLASS                  = MultiBoardAcpiSupportLib
+diff --git a/Platform/Intel/MinPlatformPkg/PlatformInit/Library/ReportCpuHobLib/ReportCpuHobLib.inf b/Platform/Intel/MinPlatformPkg/PlatformInit/Library/ReportCpuHobLib/ReportCpuHobLib.inf
+index df1d780e..28b17d39 100644
+--- a/Platform/Intel/MinPlatformPkg/PlatformInit/Library/ReportCpuHobLib/ReportCpuHobLib.inf
++++ b/Platform/Intel/MinPlatformPkg/PlatformInit/Library/ReportCpuHobLib/ReportCpuHobLib.inf
+@@ -10,7 +10,7 @@
+ [Defines]
+   INF_VERSION                    = 0x00010005
+   BASE_NAME                      = ReportCpuHobLib
+-  FILE_GUID                      = F19AA754-CE24-448D-B755-1F939B00C25D
++  FILE_GUID                      = 704FC922-D192-42D0-9B10-1BAECC1EDE73
+   VERSION_STRING                 = 1.0
+   MODULE_TYPE                    = PEIM
+   LIBRARY_CLASS                  = ReportCpuHobLib
+diff --git a/Platform/Intel/MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.inf b/Platform/Intel/MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.inf
+index cfb9c7b8..8454a4e5 100644
+--- a/Platform/Intel/MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.inf
++++ b/Platform/Intel/MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.inf
+@@ -10,7 +10,7 @@
+ [Defines]
+   INF_VERSION                    = 0x00010005
+   BASE_NAME                      = SmmTestPointCheckLib
+-  FILE_GUID                      = 74A1F91F-AD11-49C5-96B8-A579F4AA65F1
++  FILE_GUID                      = C1F70E6E-F9A6-46B9-B0F4-9FD0591265BF
+   MODULE_TYPE                    = DXE_SMM_DRIVER
+   VERSION_STRING                 = 1.0
+   LIBRARY_CLASS                  = TestPointCheckLib
+diff --git a/Platform/Intel/MinPlatformPkg/Test/Library/TestPointLib/DxeTestPointLib.inf b/Platform/Intel/MinPlatformPkg/Test/Library/TestPointLib/DxeTestPointLib.inf
+index 17e5b756..7e53b439 100644
+--- a/Platform/Intel/MinPlatformPkg/Test/Library/TestPointLib/DxeTestPointLib.inf
++++ b/Platform/Intel/MinPlatformPkg/Test/Library/TestPointLib/DxeTestPointLib.inf
+@@ -10,7 +10,7 @@
+ [Defines]
+   INF_VERSION                    = 0x00010005
+   BASE_NAME                      = DxeTestPointLib
+-  FILE_GUID                      = 9FDFABCE-7931-462F-8EDF-8C43AD58169C
++  FILE_GUID                      = 7963837C-17B8-4954-9E26-3D290D54D295
+   MODULE_TYPE                    = DXE_DRIVER
+   VERSION_STRING                 = 1.0
+   LIBRARY_CLASS                  = TestPointLib
+-- 
+2.28.0.windows.1
+

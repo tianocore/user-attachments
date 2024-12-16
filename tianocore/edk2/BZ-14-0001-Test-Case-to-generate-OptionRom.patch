@@ -1,0 +1,47 @@
+From 5d6d58653ad6bc6eb7db98da7938f150b3c305ff Mon Sep 17 00:00:00 2001
+From: Liming Gao <liming.gao@intel.com>
+Date: Fri, 14 Oct 2016 17:04:25 +0800
+Subject: [Patch] Test Case to generate OptionRom
+
+The command to build:
+build -p OptionRomPkg\OptionRomPkg.dsc -a IA32 -a X64
+---
+ OptionRomPkg/OptionRomPkg.dsc |  2 ++
+ OptionRomPkg/OptionRomPkg.fdf | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
+ create mode 100644 OptionRomPkg/OptionRomPkg.fdf
+
+diff --git a/OptionRomPkg/OptionRomPkg.dsc b/OptionRomPkg/OptionRomPkg.dsc
+index 3365556..59d6b01 100644
+--- a/OptionRomPkg/OptionRomPkg.dsc
++++ b/OptionRomPkg/OptionRomPkg.dsc
+@@ -33,6 +33,8 @@
+   SUPPORTED_ARCHITECTURES        = IA32|IPF|X64|EBC|ARM|AARCH64
+   BUILD_TARGETS                  = DEBUG|RELEASE
+   SKUID_IDENTIFIER               = DEFAULT
++  FLASH_DEFINITION               = OptionRomPkg/OptionRomPkg.fdf
++  
+ 
+ ################################################################################
+ #
+diff --git a/OptionRomPkg/OptionRomPkg.fdf b/OptionRomPkg/OptionRomPkg.fdf
+new file mode 100644
+index 0000000..b3ece7d
+--- /dev/null
++++ b/OptionRomPkg/OptionRomPkg.fdf
+@@ -0,0 +1,12 @@
++
++[Rule.Common.UEFI_DRIVER]
++  FILE DRIVER = $(NAMED_GUID) {
++    DXE_DEPEX    DXE_DEPEX Optional      $(INF_OUTPUT)/$(MODULE_NAME).depex
++    PE32     PE32                    $(INF_OUTPUT)/$(MODULE_NAME).efi
++    UI       STRING="$(MODULE_NAME)" Optional
++    VERSION  STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
++  }
++
++[OptionRom.Test]
++INF USE=IA32 OptionRomPkg/CirrusLogic5430Dxe/CirrusLogic5430Dxe.inf
++INF USE=X64 OptionRomPkg/CirrusLogic5430Dxe/CirrusLogic5430Dxe.inf
+-- 
+2.8.0.windows.1
+

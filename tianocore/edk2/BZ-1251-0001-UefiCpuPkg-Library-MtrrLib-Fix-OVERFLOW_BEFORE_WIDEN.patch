@@ -1,0 +1,68 @@
+From 7bd8f6a8b08b1d1e71facc459873b191d34ea4f0 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:59:52 +0530
+Subject: [PATCH 1/2] UefiCpuPkg/Library/MtrrLib: Fix OVERFLOW_BEFORE_WIDEN
+ Coverity issues
+
+As per Coverity report,
+
+    "8U * mMtrrLibFixedMtrrTable[MsrIndex].Length"
+    and
+    "mMtrrLibFixedMtrrTable[MsrIndex].Length * (8U - LeftByteShift)"
+
+are potentially overflowing expressions with type "unsigned int"
+(32 bits, unsigned) evaluated using 32-bit arithmetic, and then used
+in a context that expects an expression of type "UINT64" (64 bits,
+unsigned). To avoid overflow, cast
+"mMtrrLibFixedMtrrTable[MsrIndex].Length" to type "UINT64".
+
+Similarly, "mMtrrLibFixedMtrrTable[Index].Length * 8U" is a potentially
+overflowing expression with type "unsigned int" (32 bits, unsigned)
+evaluated using 32-bit arithmetic, and then used in a context that
+expects an expression of type "PHYSICAL_ADDRESS" (64 bits, unsigned).
+To avoid overflow, cast "mMtrrLibFixedMtrrTable[Index].Length" to type
+"PHYSICAL_ADDRESS".
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4258
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ UefiCpuPkg/Library/MtrrLib/MtrrLib.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/UefiCpuPkg/Library/MtrrLib/MtrrLib.c b/UefiCpuPkg/Library/MtrrLib/MtrrLib.c
+index e5c862c83d61..011ce8dcef5e 100644
+--- a/UefiCpuPkg/Library/MtrrLib/MtrrLib.c
++++ b/UefiCpuPkg/Library/MtrrLib/MtrrLib.c
+@@ -496,7 +496,7 @@ MtrrLibProgramFixedMtrr (
+         (*Base <
+          (
+           mMtrrLibFixedMtrrTable[MsrIndex].BaseAddress +
+-          (8 * mMtrrLibFixedMtrrTable[MsrIndex].Length)
++          (8 * (UINT64)mMtrrLibFixedMtrrTable[MsrIndex].Length)
+          )
+         )
+         )
+@@ -523,7 +523,7 @@ MtrrLibProgramFixedMtrr (
+   //
+   // Find the end offset in fixed MTRR and calculate byte offset of right shift
+   //
+-  SubLength = mMtrrLibFixedMtrrTable[MsrIndex].Length * (8 - LeftByteShift);
++  SubLength = (UINT64)mMtrrLibFixedMtrrTable[MsrIndex].Length * (8 - LeftByteShift);
+   if (*Length >= SubLength) {
+     RightByteShift = 0;
+   } else {
+@@ -859,7 +859,7 @@ MtrrGetMemoryAttributeByAddressWorker (
+       for (Index = 0; Index < MTRR_NUMBER_OF_FIXED_MTRR; Index++) {
+         if ((Address >= mMtrrLibFixedMtrrTable[Index].BaseAddress) &&
+             (Address < mMtrrLibFixedMtrrTable[Index].BaseAddress +
+-             (mMtrrLibFixedMtrrTable[Index].Length * 8)))
++             ((PHYSICAL_ADDRESS)mMtrrLibFixedMtrrTable[Index].Length * 8)))
+         {
+           SubIndex =
+             ((UINTN)Address - mMtrrLibFixedMtrrTable[Index].BaseAddress) /
+-- 
+2.36.1.windows.1
+

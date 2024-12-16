@@ -1,0 +1,356 @@
+From f46cd3fd3772c77b6f43641111139f24916ad28f Mon Sep 17 00:00:00 2001
+From: Bret Barkelew <brbarkel@microsoft.com>
+Date: Sat, 21 Oct 2017 17:23:21 +0000
+Subject: [TCBZ2814] Merged PR 943777: Break out the
+ PromptForUserConfirmation() function from Tcg2 PPI.
+
+Break out the PromptForUserConfirmation() function into a lib so it can be abstracted at the platform level.
+
+Related work items: #14049790
+
+diff --git a/SecurityPkg/Include/Library/Tcg2PhysicalPresencePromptLib.h b/SecurityPkg/Include/Library/Tcg2PhysicalPresencePromptLib.h
+new file mode 100644
+index 0000000000..1d56b45ba6
+--- /dev/null
++++ b/SecurityPkg/Include/Library/Tcg2PhysicalPresencePromptLib.h
+@@ -0,0 +1,49 @@
++/** @file -- Tcg2PhysicalPresencePromptLib.h
++This library abstracts the action of prompting the user so that it may be overridden in a platform-specific way.
++Rather than just printing to the screen.
++
++Copyright (c) Microsoft Corporation. All rights reserved.
++SPDX-License-Identifier: BSD-2-Clause-Patent
++
++**/
++
++// MS_CHANGE: Entire file created.
++
++#ifndef _TCG2_PHYSICAL_PRESENCE_PROMPT_LIB_H_
++#define _TCG2_PHYSICAL_PRESENCE_PROMPT_LIB_H_
++
++/**
++  Simple function to inform any callers of whether the lib is ready to present a prompt.
++  Since the prompt itself only returns TRUE or FALSE, make sure all other technical requirements
++  are out of the way.
++
++  @retval     EFI_SUCCESS       Prompt is ready.
++  @retval     EFI_NOT_READY     Prompt does not have sufficient resources at this time.
++  @retval     EFI_DEVICE_ERROR  Library failed to prepare resources.
++
++**/
++EFI_STATUS
++EFIAPI
++IsPromptReady (
++  VOID
++  );
++
++
++/**
++  This function will take in a prompt string to present to the user in a
++  OK/Cancel dialog box and return TRUE if the user actively pressed OK. Returns
++  FALSE on Cancel or any errors.
++
++  @param[in]  PromptString  The string that should occupy the body of the prompt.
++
++  @retval     TRUE    User confirmed action.
++  @retval     FALSE   User rejected action or a failure occurred.
++
++**/
++BOOLEAN
++EFIAPI
++PromptForUserConfirmation (
++  IN  CHAR16    *PromptString
++  );
++
++#endif // _TCG2_PHYSICAL_PRESENCE_PROMPT_LIB_H_
+diff --git a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
+index d97d65ee22..1c4c235f41 100644
+--- a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
++++ b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
+@@ -30,21 +30,13 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ #include <Guid/Tcg2PhysicalPresenceData.h>
+ #include <Library/Tpm2CommandLib.h>
+ #include <Library/Tcg2PhysicalPresenceLib.h>
++#include <Library/Tcg2PhysicalPresencePromptLib.h>    // MS_CHANGE
+ #include <Library/Tcg2PpVendorLib.h>
+ 
+ #define CONFIRM_BUFFER_SIZE         4096
+ 
+ EFI_HII_HANDLE mTcg2PpStringPackHandle;
+ 
+-// MS_CHANGE_70401
+-// MSChange [BEGIN] - We now hand the full string off to a helper function to display the user confirmation dialog.
+-BOOLEAN
+-PromptForUserConfirmation (
+-  IN  CHAR16    *PromptString
+-  );
+-// MSChange [END]
+-
+-
+ /**
+   Get string by string id from HII Interface.
+ 
+@@ -260,6 +252,8 @@ Tcg2ExecutePhysicalPresence (
+ }
+ 
+ 
++// MS_CHANGE [BEGIN] - Move this code out of the business for processing requests.
++#if (0)
+ /**
+   Read the specified key for user confirmation.
+ 
+@@ -301,6 +295,8 @@ Tcg2ReadUserKey (
+ 
+   return FALSE;
+ }
++#endif
++// MS_CHANGE [END]
+ 
+ /**
+   Fill Buffer With BootHashAlg.
+@@ -384,7 +380,7 @@ Tcg2UserConfirm (
+   EFI_TCG2_BOOT_SERVICE_CAPABILITY  ProtocolCapability;
+   UINT32                            CurrentPCRBanks;
+   EFI_STATUS                        Status;
+-
++  
+   TmpStr2     = NULL;
+   CautionKey  = FALSE;
+   NoPpiInfo   = FALSE;
+@@ -497,7 +493,7 @@ Tcg2UserConfirm (
+       FreePool (TmpStr1);
+ 
+       break;
+-      
++
+     case TCG2_PHYSICAL_PRESENCE_ENABLE_BLOCK_SID:
+       TmpStr2 = Tcg2PhysicalPresenceGetStringById (STRING_TOKEN (TCG_STORAGE_ENABLE_BLOCK_SID));
+ 
+@@ -624,7 +620,7 @@ Tcg2HaveValidTpmRequest  (
+ {
+   EFI_TCG2_PROTOCOL                 *Tcg2Protocol;
+   EFI_STATUS                        Status;
+-  BOOLEAN  IsRequestValid;
++  BOOLEAN                           IsRequestValid;
+ 
+   *RequestConfirmed = FALSE;
+ 
+diff --git a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
+index e1c7c20d52..546d632d52 100644
+--- a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
++++ b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
+@@ -50,6 +50,7 @@
+   HobLib
+   Tpm2CommandLib
+   Tcg2PpVendorLib
++  Tcg2PhysicalPresencePromptLib       ## MS_CHANGE
+ 
+ [Protocols]
+   gEfiTcg2ProtocolGuid                 ## SOMETIMES_CONSUMES
+diff --git a/SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.c b/SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.c
+new file mode 100644
+index 0000000000..73bdbdf587
+--- /dev/null
++++ b/SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.c
+@@ -0,0 +1,92 @@
++/** @file -- Tcg2PhysicalPresencePromptLibConsole.c
++This instance of the Tcg2PhysicalPresencePromptLib uses the console and basic key input
++to prompt the user.
++
++Copyright (c) Microsoft Corporation. All rights reserved.
++SPDX-License-Identifier: BSD-2-Clause-Patent
++
++**/
++
++// MS_CHANGE: Entire file created.
++
++#include <Library/BaseLib.h>
++#include <Library/UefiLib.h>
++#include <Library/UefiBootServicesTableLib.h>
++
++
++/**
++  Read the specified key for user confirmation.
++
++  @param[in]  CautionKey  If true,  F12 is used as confirm key;
++                          If false, F10 is used as confirm key.
++
++  @retval     TRUE        User confirmed the changes by input.
++  @retval     FALSE       User discarded the changes.
++**/
++BOOLEAN
++Tcg2ReadUserKey (
++  IN     BOOLEAN                    CautionKey
++  )
++{
++  EFI_STATUS                        Status;
++  EFI_INPUT_KEY                     Key;
++  UINT16                            InputKey;
++      
++  InputKey = 0; 
++  do {
++    Status = gBS->CheckEvent (gST->ConIn->WaitForKey);
++    if (!EFI_ERROR (Status)) {
++      Status = gST->ConIn->ReadKeyStroke (gST->ConIn, &Key);
++      if (Key.ScanCode == SCAN_ESC) {
++        InputKey = Key.ScanCode;
++      }
++      if ((Key.ScanCode == SCAN_F10) && !CautionKey) {
++        InputKey = Key.ScanCode;
++      }
++      if ((Key.ScanCode == SCAN_F12) && CautionKey) {
++        InputKey = Key.ScanCode;
++      }
++    }      
++  } while (InputKey == 0);
++
++  if (InputKey != SCAN_ESC) {
++    return TRUE;
++  }
++  
++  return FALSE;
++}
++
++
++/**
++  This function will take in a prompt string to present to the user in a
++  OK/Cancel dialog box and return TRUE if the user actively pressed OK. Returns
++  FALSE on Cancel or any errors.
++
++  @param[in]  PromptString  The string that should occupy the body of the prompt.
++
++  @retval     TRUE    User confirmed action.
++  @retval     FALSE   User rejected action or a failure occurred.
++
++**/
++BOOLEAN
++EFIAPI
++PromptForUserConfirmation (
++  IN  CHAR16    *PromptString
++  )
++{
++  UINT16                            Index;
++  CHAR16                            DstStr[81];
++
++  DstStr[80] = L'\0';
++  for (Index = 0; Index < StrLen (PromptString); Index += 80) {
++    StrnCpyS (DstStr, sizeof (DstStr) / sizeof (CHAR16), PromptString + Index, sizeof (DstStr) / sizeof (CHAR16) - 1);
++    Print (DstStr);
++  }
++
++  // if (Tcg2ReadUserKey (CautionKey)) {
++  if (Tcg2ReadUserKey (FALSE)) {
++    return TRUE;
++  }
++
++  return FALSE;
++} // PromptForUserConfirmation()
+diff --git a/SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf b/SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
+new file mode 100644
+index 0000000000..aa4fec87ff
+--- /dev/null
++++ b/SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf
+@@ -0,0 +1,39 @@
++## @file Tcg2PhysicalPresencePromptLibConsole.inf
++# This instance of the Tcg2PhysicalPresencePromptLib uses the console and basic key input
++# to prompt the user.
++#
++##
++# Copyright (c) Microsoft Corporation. All rights reserved.
++# SPDX-License-Identifier: BSD-2-Clause-Patent
++##
++
++# MS_CHANGE: Entire file created.
++
++[Defines]
++  INF_VERSION         = 0x00010017
++  BASE_NAME           = Tcg2PhysicalPresencePromptLibConsole
++  FILE_GUID           = 54A17646-E8E3-4BED-A7D8-D9E5E7684E85
++  VERSION_STRING      = 1.0
++  MODULE_TYPE         = DXE_DRIVER
++  LIBRARY_CLASS       = Tcg2PhysicalPresencePromptLib|DXE_DRIVER
++
++#
++# The following information is for reference only and not required by the build tools.
++#
++#  VALID_ARCHITECTURES           = IA32 X64
++#
++
++
++[Sources]
++  Tcg2PhysicalPresencePromptLibConsole.c
++
++
++[Packages]
++  MdePkg/MdePkg.dec
++  MdeModulePkg/MdeModulePkg.dec
++
++
++[LibraryClasses]
++  BaseLib
++  UefiLib
++  UefiBootServicesTableLib
+diff --git a/SecurityPkg/SecurityPkg.dec b/SecurityPkg/SecurityPkg.dec
+index 8aad97bd12..9c3e3c59ea 100644
+--- a/SecurityPkg/SecurityPkg.dec
++++ b/SecurityPkg/SecurityPkg.dec
+@@ -102,6 +102,11 @@
+   ##  for measurements that may have been made prior to driver initialization
+   #
+   Tcg2PreUefiEventLogLib|Include/Library/Tcg2PreUefiEventLogLib.h
++
++  ##  @libraryclass  This library provides platform abstractions for prompting
++  #   a user with Physical Presence requests
++  #
++  Tcg2PhysicalPresencePromptLib|Include/Library/Tcg2PhysicalPresencePromptLib.h
+ ## MU_CHANGE END
+ 
+ [Guids]
+diff --git a/SecurityPkg/SecurityPkg.dsc b/SecurityPkg/SecurityPkg.dsc
+index 6420a4a6fa..ffc68e8263 100644
+--- a/SecurityPkg/SecurityPkg.dsc
++++ b/SecurityPkg/SecurityPkg.dsc
+@@ -53,7 +53,7 @@
+   TpmMeasurementLib|SecurityPkg/Library/DxeTpmMeasurementLib/DxeTpmMeasurementLib.inf
+   Tpm12CommandLib|SecurityPkg/Library/Tpm12CommandLib/Tpm12CommandLib.inf
+   Tpm2CommandLib|SecurityPkg/Library/Tpm2CommandLib/Tpm2CommandLib.inf
+-  Tcg2PhysicalPresenceLib|SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf   ## MS_CHANGE_TEMP - Workaround for build errors.
++  Tcg2PhysicalPresenceLib|SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
+   TcgPpVendorLib|SecurityPkg/Library/TcgPpVendorLibNull/TcgPpVendorLibNull.inf
+   Tcg2PpVendorLib|SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
+   Tpm2DebugLib|SecurityPkg/Library/Tpm2DebugLib/Tpm2DebugLibNull.inf             ## MS_CHANGE
+@@ -131,6 +131,7 @@
+   Tpm12DeviceLib|SecurityPkg/Library/Tpm12DeviceLibTcg/Tpm12DeviceLibTcg.inf
+   Tpm2DeviceLib|SecurityPkg/Library/Tpm2DeviceLibTcg2/Tpm2DeviceLibTcg2.inf
+   FileExplorerLib|MdeModulePkg/Library/FileExplorerLib/FileExplorerLib.inf
++  Tcg2PhysicalPresencePromptLib|SecurityPkg/Library/Tcg2PhysicalPresencePromptLib/Tcg2PhysicalPresencePromptLibConsole.inf   ## MS_CHANGE
+ 
+ [LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.DXE_SAL_DRIVER,]
+   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
+@@ -327,10 +328,10 @@
+       PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
+   }
+   # MS_CHANGE - We don't use this.
+-  #SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDxe.inf {
+-  #  <LibraryClasses>
+-  #    Tpm2DeviceLib|SecurityPkg/Library/Tpm2DeviceLibTcg2/Tpm2DeviceLibTcg2.inf
+-  #}
++  SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDxe.inf {
++    <LibraryClasses>
++      Tpm2DeviceLib|SecurityPkg/Library/Tpm2DeviceLibTcg2/Tpm2DeviceLibTcg2.inf
++  }
+ 
+   #
+   # Hash2
+@@ -357,9 +358,8 @@
+   #
+   # Opal Password solution
+   #
+-  ## MS_CHANGE_TEMP - Workaround for build errors.
+-  ## SecurityPkg/Tcg/Opal/OpalPassword/OpalPasswordDxe.inf
+-  SecurityPkg/Tcg/Opal/OpalPassword/OpalPasswordPei.inf
++  SecurityPkg/Tcg/Opal/OpalPasswordDxe/OpalPasswordDxe.inf
++  SecurityPkg/Tcg/Opal/OpalPasswordSmm/OpalPasswordSmm.inf
+ 
+   #
+   # HDD Password solution

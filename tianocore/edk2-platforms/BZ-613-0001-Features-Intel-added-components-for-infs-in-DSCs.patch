@@ -1,0 +1,77 @@
+From 81ad822db43236bcfcfc0e7d36b1c0a5c6ec73fb Mon Sep 17 00:00:00 2001
+From: zengzhi <zengzhi@byosoft.com.cn>
+Date: Wed, 16 Dec 2020 15:36:36 +0800
+Subject: [PATCH] Features/Intel/:added components for infs in DSCs.
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3037
+
+Add componnents in Several package DSCs.and added some inf.
+
+Cc: Sai Chaganty <rangasai.v.chaganty@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Signed-off-by: zengzhi <zengzhi@byosoft.com.cn>
+---
+ .../Debugging/BeepDebugFeaturePkg/BeepDebugFeaturePkg.dsc      | 3 +++
+ .../PostCodeDebugFeaturePkg/PostCodeDebugFeaturePkg.dsc        | 2 ++
+ .../OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dsc      | 2 ++
+ .../OutOfBandManagement/SpcrFeaturePkg/SpcrFeaturePkg.dsc      | 2 ++
+ .../UserInterface/UserAuthFeaturePkg/UserAuthFeaturePkg.dsc    | 3 +++
+ 5 files changed, 12 insertions(+)
+
+diff --git a/Features/Intel/Debugging/BeepDebugFeaturePkg/BeepDebugFeaturePkg.dsc b/Features/Intel/Debugging/BeepDebugFeaturePkg/BeepDebugFeaturePkg.dsc
+index 47254f99..db1c97b6 100644
+--- a/Features/Intel/Debugging/BeepDebugFeaturePkg/BeepDebugFeaturePkg.dsc
++++ b/Features/Intel/Debugging/BeepDebugFeaturePkg/BeepDebugFeaturePkg.dsc
+@@ -28,3 +28,6 @@
+ # This package always builds the feature.
+ #
+ !include Include/BeepDebugFeature.dsc
++[Components]
++BeepDebugFeaturePkg/Library/BeepLib/BeepLibNull.inf
++BeepDebugFeaturePkg/Library/BeepMapLib/BeepMapLib.inf
+diff --git a/Features/Intel/Debugging/PostCodeDebugFeaturePkg/PostCodeDebugFeaturePkg.dsc b/Features/Intel/Debugging/PostCodeDebugFeaturePkg/PostCodeDebugFeaturePkg.dsc
+index 4f0bec4a..c5b0e633 100644
+--- a/Features/Intel/Debugging/PostCodeDebugFeaturePkg/PostCodeDebugFeaturePkg.dsc
++++ b/Features/Intel/Debugging/PostCodeDebugFeaturePkg/PostCodeDebugFeaturePkg.dsc
+@@ -28,3 +28,5 @@
+ # This package always builds the feature.
+ #
+ !include Include/PostCodeDebugFeature.dsc
++[Components]
++PostCodeDebugFeaturePkg/Library/PostCodeMapLib/PostCodeMapLib.inf
+diff --git a/Features/Intel/OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dsc b/Features/Intel/OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dsc
+index 6a3eed08..e1ce615a 100644
+--- a/Features/Intel/OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dsc
++++ b/Features/Intel/OutOfBandManagement/IpmiFeaturePkg/IpmiFeaturePkg.dsc
+@@ -29,3 +29,5 @@
+ # This package always builds the feature.
+ #
+ !include Include/IpmiFeature.dsc
++[Components]
++IpmiFeaturePkg/Library/IpmiCommandLib/IpmiCommandLib.inf
+diff --git a/Features/Intel/OutOfBandManagement/SpcrFeaturePkg/SpcrFeaturePkg.dsc b/Features/Intel/OutOfBandManagement/SpcrFeaturePkg/SpcrFeaturePkg.dsc
+index 82d2d3ac..1df4b50f 100644
+--- a/Features/Intel/OutOfBandManagement/SpcrFeaturePkg/SpcrFeaturePkg.dsc
++++ b/Features/Intel/OutOfBandManagement/SpcrFeaturePkg/SpcrFeaturePkg.dsc
+@@ -28,3 +28,5 @@
+ # This package always builds the feature.
+ #
+ !include Include/SpcrFeature.dsc
++[Components]
++SpcrFeaturePkg/Library/SpcrDeviceLibNull/SpcrDeviceLibNull.inf
+diff --git a/Features/Intel/UserInterface/UserAuthFeaturePkg/UserAuthFeaturePkg.dsc b/Features/Intel/UserInterface/UserAuthFeaturePkg/UserAuthFeaturePkg.dsc
+index 74eb9213..dbc62f0a 100644
+--- a/Features/Intel/UserInterface/UserAuthFeaturePkg/UserAuthFeaturePkg.dsc
++++ b/Features/Intel/UserInterface/UserAuthFeaturePkg/UserAuthFeaturePkg.dsc
+@@ -28,3 +28,6 @@
+ # This package always builds the feature.
+ #
+ !include Include/UserAuthFeature.dsc
++[Components]
++UserAuthFeaturePkg/Library/PlatformPasswordLibNull/PlatformPasswordLibNull.inf
++UserAuthFeaturePkg/Library/UserPasswordLib/UserPasswordLib.inf
+-- 
+2.26.2.windows.1
+

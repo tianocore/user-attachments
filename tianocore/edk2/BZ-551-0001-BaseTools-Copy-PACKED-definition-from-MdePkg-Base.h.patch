@@ -1,0 +1,40 @@
+From 2361398e44f2c231a711f34613a0e6b7146dbfe9 Mon Sep 17 00:00:00 2001
+From: Liming Gao <gaoliming@byosoft.com.cn>
+Date: Thu, 10 Sep 2020 09:19:40 +0800
+Subject: [PATCH 1/1] BaseTools: Copy PACKED definition from MdePkg Base.h
+
+BZ: https://bugzilla.tianocore.org/show_bug.cgi?id=2938
+
+MdePkg Acpi10.h definition depends on PACKED.
+When structure PCD refers to Acpi10.h, build will fail,
+because PACKED definition is missing in BaseTools BaseTypes.h.
+
+Signed-off-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ BaseTools/Source/C/Include/Common/BaseTypes.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/BaseTools/Source/C/Include/Common/BaseTypes.h b/BaseTools/Source/C/Include/Common/BaseTypes.h
+index 31d0662085a8..150980b4c0bf 100644
+--- a/BaseTools/Source/C/Include/Common/BaseTypes.h
++++ b/BaseTools/Source/C/Include/Common/BaseTypes.h
+@@ -57,6 +57,16 @@
+ #define NULL  ((VOID *) 0)
+ #endif
+ 
++#ifdef __CC_ARM
++  //
++  // Older RVCT ARM compilers don't fully support #pragma pack and require __packed
++  // as a prefix for the structure.
++  //
++  #define PACKED  __packed
++#else
++  #define PACKED
++#endif
++
+ //
+ //  Support for variable length argument lists using the ANSI standard.
+ //
+-- 
+2.27.0.windows.1
+

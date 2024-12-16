@@ -1,0 +1,48 @@
+From 0755c8d88468e645dfc771e2f78cd2fce4dbb814 Mon Sep 17 00:00:00 2001
+From: Liming Gao <gaoliming@byosoft.com.cn>
+Date: Wed, 9 Sep 2020 10:50:50 +0800
+Subject: [PATCH 1/1] BaseTools: Move C tool flags before the common flags
+
+BZ: https://bugzilla.tianocore.org/show_bug.cgi?id=2938
+
+C tool may add the additional INC include path. They should have
+high priority than the common INC include path.
+This fix is to resolve the structure PCD issue to refer to the same
+header file defined in BaseTools and MdePkg. The one in MdePkg should
+be used.
+
+Signed-off-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ BaseTools/Source/C/Makefiles/ms.common            | 2 +-
+ BaseTools/Source/Python/Workspace/DscBuildData.py | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/BaseTools/Source/C/Makefiles/ms.common b/BaseTools/Source/C/Makefiles/ms.common
+index f5f77fdc0bc5..b2dbcf376c04 100644
+--- a/BaseTools/Source/C/Makefiles/ms.common
++++ b/BaseTools/Source/C/Makefiles/ms.common
+@@ -55,7 +55,7 @@ AR = lib.exe
+ LD = link.exe
+ LINKER = $(LD)
+ 
+-INC = -I . -I $(SOURCE_PATH)\Include -I $(ARCH_INCLUDE) -I $(SOURCE_PATH)\Common $(INC)
++INC = $(INC) -I . -I $(SOURCE_PATH)\Include -I $(ARCH_INCLUDE) -I $(SOURCE_PATH)\Common
+ 
+ CFLAGS = $(CFLAGS) /nologo /Zi /c /O2 /MT /W4 /WX /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE
+ CPPFLAGS = $(CPPFLAGS) /EHsc /nologo /Zi /c /O2 /MT /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE
+diff --git a/BaseTools/Source/Python/Workspace/DscBuildData.py b/BaseTools/Source/Python/Workspace/DscBuildData.py
+index 1afbd3eefc6c..eba65625337a 100644
+--- a/BaseTools/Source/Python/Workspace/DscBuildData.py
++++ b/BaseTools/Source/Python/Workspace/DscBuildData.py
+@@ -2639,7 +2639,7 @@ class DscBuildData(PlatformBuildClassObject):
+         else:
+             MakeApp = MakeApp + PcdGccMakefile
+             MakeApp = MakeApp + 'APPFILE = %s/%s\n' % (self.OutputPath, PcdValueInitName) + 'APPNAME = %s\n' % (PcdValueInitName) + 'OBJECTS = %s/%s.o %s.o\n' % (self.OutputPath, PcdValueInitName, os.path.join(self.OutputPath, PcdValueCommonName)) + \
+-                      'include $(MAKEROOT)/Makefiles/app.makefile\n' + 'INCLUDE +='
++                      'include $(MAKEROOT)/Makefiles/app.makefile\n' + 'TOOL_INCLUDE +='
+ 
+         IncSearchList = []
+         PlatformInc = OrderedDict()
+-- 
+2.27.0.windows.1
+

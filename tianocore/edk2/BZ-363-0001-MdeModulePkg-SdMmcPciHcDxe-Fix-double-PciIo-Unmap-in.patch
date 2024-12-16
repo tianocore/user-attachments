@@ -1,0 +1,61 @@
+From 3472eb1f701b07a0594798f652b6e04e2ddb4dd5 Mon Sep 17 00:00:00 2001
+From: Hao A Wu <hao.a.wu@intel.com>
+Date: Wed, 26 Jun 2019 15:23:29 +0800
+Subject: [PATCH v1] MdeModulePkg/SdMmcPciHcDxe: Fix double PciIo Unmap in TRB
+ creation
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=1989
+
+The commit will avoid unmapping the same resource in error handling logic
+for function BuildAdmaDescTable() and SdMmcCreateTrb().
+
+For the error handling in BuildAdmaDescTable():
+The error is directly related with the corresponding Map() operation
+(mapped address beyond 4G, which is not supported in ADMA), so the Unmap()
+operation is done in the error handling logic, and then setting
+'Trb->AdmaMap' to NULL to avoid double Unmap.
+
+For the error handling in SdMmcCreateTrb():
+The error is not directly related with the corresponding Map() operation,
+so the commit will update the code to left SdMmcFreeTrb() for the Unmap
+operation to avoid double Unmap.
+
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Signed-off-by: Hao A Wu <hao.a.wu@intel.com>
+---
+ MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/SdMmcPciHci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/SdMmcPciHci.c b/MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/SdMmcPciHci.c
+index b9d04e0f17..dd10d6bb5e 100644
+--- a/MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/SdMmcPciHci.c
++++ b/MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/SdMmcPciHci.c
+@@ -1530,10 +1530,12 @@ BuildAdmaDescTable (
+     //
+     PciIo->Unmap (
+       PciIo,
+       Trb->AdmaMap
+     );
++    Trb->AdmaMap = NULL;
++
+     PciIo->FreeBuffer (
+       PciIo,
+       EFI_SIZE_TO_PAGES (TableSize),
+       AdmaDesc
+     );
+@@ -1738,11 +1740,10 @@ SdMmcCreateTrb (
+       if (Private->ControllerVersion[Slot] >= SD_MMC_HC_CTRL_VER_410) {
+         Trb->AdmaLengthMode = SdMmcAdmaLen26b;
+       }
+       Status = BuildAdmaDescTable (Trb, Private->ControllerVersion[Slot]);
+       if (EFI_ERROR (Status)) {
+-        PciIo->Unmap (PciIo, Trb->DataMap);
+         goto Error;
+       }
+     } else if (Private->Capability[Slot].Sdma != 0) {
+       Trb->Mode = SdMmcSdmaMode;
+     } else {
+-- 
+2.12.0.windows.1
+

@@ -1,0 +1,49 @@
+From d07026fbc7cdf089fed5ea3f58eca9074749f6d8 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 12:25:07 +0530
+Subject: [PATCH 1/2] UefiCpuPkg/Library/MpInitLib: Fix OVERFLOW_BEFORE_WIDEN
+ Coverity issues
+
+As per Coverity report,
+
+    "ApStackSize * MaxLogicalProcessorNumber"
+    and
+    "MonitorFilterSize * MaxLogicalProcessorNumber"
+
+are potentially overflowing expressions with type "unsigned int" (32
+bits, unsigned) evaluated using 32-bit arithmetic, and then used in a
+context that expects an expression of type "UINTN" (64 bits, unsigned).
+
+To avoid overflow, cast "MaxLogicalProcessorNumber" to type "UINTN".
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4261
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ UefiCpuPkg/Library/MpInitLib/MpLib.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/UefiCpuPkg/Library/MpInitLib/MpLib.c b/UefiCpuPkg/Library/MpInitLib/MpLib.c
+index e5dc852ed95f..8d7e4e35b565 100644
+--- a/UefiCpuPkg/Library/MpInitLib/MpLib.c
++++ b/UefiCpuPkg/Library/MpInitLib/MpLib.c
+@@ -1845,12 +1845,12 @@ MpInitLibInitialize (
+   //
+   SaveVolatileRegisters (&VolatileRegisters);
+ 
+-  BufferSize = ApStackSize * MaxLogicalProcessorNumber;
++  BufferSize = (UINTN)ApStackSize * MaxLogicalProcessorNumber;
+   //
+   // Allocate extra ApStackSize to let AP stack align on ApStackSize bounday
+   //
+   BufferSize += ApStackSize;
+-  BufferSize += MonitorFilterSize * MaxLogicalProcessorNumber;
++  BufferSize += (UINTN)MonitorFilterSize * MaxLogicalProcessorNumber;
+   BufferSize += ApResetVectorSizeBelow1Mb;
+   BufferSize  = ALIGN_VALUE (BufferSize, 8);
+   BufferSize += VolatileRegisters.Idtr.Limit + 1;
+-- 
+2.36.1.windows.1
+

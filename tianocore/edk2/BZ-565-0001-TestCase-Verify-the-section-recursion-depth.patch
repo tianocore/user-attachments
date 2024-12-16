@@ -1,0 +1,123 @@
+From 278a5360d91d0b628f030f372093e3e4c01ffbf8 Mon Sep 17 00:00:00 2001
+From: Liming Gao <gaoliming@byosoft.com.cn>
+Date: Tue, 29 Sep 2020 10:18:39 +0800
+Subject: [PATCH 1/1] TestCase: Verify the section recursion depth
+
+Signed-off-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ OvmfPkg/OvmfPkgIa32X64.dsc                    |  3 +++
+ OvmfPkg/OvmfPkgIa32X64.fdf                    | 23 +++++++++++++++++++
+ .../Application/HelloWorld/HelloWorld.inf     |  1 +
+ .../Application/HelloWorld/HelloWorld.c       | 16 +++++++++++--
+ 4 files changed, 41 insertions(+), 2 deletions(-)
+
+diff --git a/OvmfPkg/OvmfPkgIa32X64.dsc b/OvmfPkg/OvmfPkgIa32X64.dsc
+index 7456a154168d..4fab7395b605 100644
+--- a/OvmfPkg/OvmfPkgIa32X64.dsc
++++ b/OvmfPkg/OvmfPkgIa32X64.dsc
+@@ -718,6 +718,7 @@ [Components.X64]
+   MdeModulePkg/Core/Dxe/DxeMain.inf {
+     <LibraryClasses>
+       NULL|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
++      NULL|MdeModulePkg/Library/DxeCrc32GuidedSectionExtractLib/DxeCrc32GuidedSectionExtractLib.inf
+       DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
+   }
+ 
+@@ -1022,3 +1023,5 @@ [Components.X64]
+       Tpm12DeviceLib|SecurityPkg/Library/Tpm12DeviceLibDTpm/Tpm12DeviceLibDTpm.inf
+   }
+ !endif
++  
++MdeModulePkg/Application/HelloWorld/HelloWorld.inf
+\ No newline at end of file
+diff --git a/OvmfPkg/OvmfPkgIa32X64.fdf b/OvmfPkg/OvmfPkgIa32X64.fdf
+index 83ff6aef2e8c..08cae1c05c5f 100644
+--- a/OvmfPkg/OvmfPkgIa32X64.fdf
++++ b/OvmfPkg/OvmfPkgIa32X64.fdf
+@@ -300,6 +300,29 @@ [FV.DXEFV]
+ 
+ INF MdeModulePkg/Logo/LogoDxe.inf
+ 
++# this guid is same to helloworld application FILE_GUID
++FILE FREEFORM = 6987936E-ED34-44db-AE97-1FA5E4ED2116 {
++  SECTION GUIDED {
++    SECTION GUIDED {
++      SECTION GUIDED {
++        SECTION GUIDED {
++          SECTION GUIDED {
++            SECTION GUIDED {
++              SECTION GUIDED {
++                SECTION GUIDED {
++                  SECTION GUIDED {
++                    SECTION RAW = MdeModulePkg/Logo/Logo.bmp
++                  }
++                }
++              }
++            }
++          }
++        }
++      }
++    }
++  }
++}
++
+ #
+ # Network modules
+ #
+diff --git a/MdeModulePkg/Application/HelloWorld/HelloWorld.inf b/MdeModulePkg/Application/HelloWorld/HelloWorld.inf
+index 4520a370e531..024838efee22 100644
+--- a/MdeModulePkg/Application/HelloWorld/HelloWorld.inf
++++ b/MdeModulePkg/Application/HelloWorld/HelloWorld.inf
+@@ -45,6 +45,7 @@ [LibraryClasses]
+   UefiApplicationEntryPoint
+   UefiLib
+   PcdLib
++  DxeServicesLib
+ 
+ [FeaturePcd]
+   gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintEnable   ## CONSUMES
+diff --git a/MdeModulePkg/Application/HelloWorld/HelloWorld.c b/MdeModulePkg/Application/HelloWorld/HelloWorld.c
+index e45a3746e7c4..8ae08056d3d2 100644
+--- a/MdeModulePkg/Application/HelloWorld/HelloWorld.c
++++ b/MdeModulePkg/Application/HelloWorld/HelloWorld.c
+@@ -7,10 +7,11 @@
+ 
+ **/
+ 
+-#include <Uefi.h>
++#include <PiDxe.h>
+ #include <Library/PcdLib.h>
+ #include <Library/UefiLib.h>
+ #include <Library/UefiApplicationEntryPoint.h>
++#include <Library/DxeServicesLib.h>
+ 
+ //
+ // String token ID of help message text.
+@@ -41,6 +42,9 @@ UefiMain (
+   )
+ {
+   UINT32 Index;
++  VOID   *Data;
++  UINTN  Size;
++  EFI_STATUS Status;
+ 
+   Index = 0;
+ 
+@@ -56,5 +60,13 @@ UefiMain (
+     }
+   }
+ 
+-  return EFI_SUCCESS;
++  Status = GetSectionFromAnyFv (
++    &gEfiCallerIdGuid, 
++    EFI_SECTION_RAW,
++    0, 
++    &Data,
++    &Size
++  );
++
++  return Status;
+ }
+-- 
+2.27.0.windows.1
+

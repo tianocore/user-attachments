@@ -1,0 +1,55 @@
+From 883e3ca6fa51ad98ae09d4ef416cb6d04a467742 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:23:30 +0530
+Subject: [PATCH 1/1] SecurityPkg/.../SecureBootVariableProvisionLib: Fix
+ DEADCODE Coverity issue
+
+Full pathname - SecurityPkg/Library/SecureBootVariableProvisionLib
+
+The variable "EfiSig" remains set to NULL throughout. So its non-NULL
+check can never succeed.
+
+Hence, remove the redundant/deadcode check/statements.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Min Xu <min.m.xu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4278
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../SecureBootVariableProvisionLib.c                         | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.c b/SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.c
+index bed1fe86205d..bd17dd5ba291 100644
+--- a/SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.c
++++ b/SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.c
+@@ -46,7 +46,6 @@ SecureBootFetchData (
+   OUT EFI_SIGNATURE_LIST  **SigListOut
+   )
+ {
+-  EFI_SIGNATURE_LIST            *EfiSig;
+   EFI_STATUS                    Status;
+   VOID                          *Buffer;
+   VOID                          *RsaPubKey;
+@@ -57,7 +56,6 @@ SecureBootFetchData (
+   SECURE_BOOT_CERTIFICATE_INFO  *NewCertInfo;
+ 
+   KeyIndex      = 0;
+-  EfiSig        = NULL;
+   *SigListOut   = NULL;
+   *SigListsSize = 0;
+   CertInfo      = AllocatePool (sizeof (SECURE_BOOT_CERTIFICATE_INFO));
+@@ -82,9 +80,6 @@ SecureBootFetchData (
+       RsaPubKey = NULL;
+       if (RsaGetPublicKeyFromX509 (Buffer, Size, &RsaPubKey) == FALSE) {
+         DEBUG ((DEBUG_ERROR, "%a: Invalid key format: %d\n", __FUNCTION__, KeyIndex));
+-        if (EfiSig != NULL) {
+-          FreePool (EfiSig);
+-        }
+ 
+         FreePool (Buffer);
+         Status = EFI_INVALID_PARAMETER;
+-- 
+2.36.1.windows.1
+

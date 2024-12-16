@@ -1,0 +1,66 @@
+
+===============================================================================
+Intel (R) Flash Image Tool. Version: 3.1.55.2270
+Copyright (c) 2013 - 2018, Intel Corporation. All rights reserved.
+8/20/2018 - 2:41:01 pm
+===============================================================================
+
+Using vsccommn.bin with timestamp 20:58:37 05/01/2018 GMT
+
+Command Line: R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\FIT\WINDOWS\fit.exe 
+
+Log file written to fit.log
+
+Loading D:\LeafHill-UDK2017\edk2-platforms\Platform\BroxtonPlatformPkg\Common\Tools\Stitch\AVSHARPD.X64.0069.R03.1808201602.bin
+
+Decomposed SKU Value: "Intel(R) Apollo Lake - APL".
+
+Decomposed PCH Strap Length: 0x13
+
+Writing map file R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\FIT\WINDOWS\AVSHARPD.X64.0069.R03.1808201602\AVSHARPD.X64.0069.R03.map
+Isolated memory range setting "Imr09" is disabled in the CSE FW image.
+Isolated memory range setting "Imr11" is disabled in the CSE FW image.
+Isolated memory range setting "Imr14" is disabled in the CSE FW image.
+Isolated memory range setting "Imr15" is disabled in the CSE FW image.
+Isolated memory range setting "Imr18" is disabled in the CSE FW image.
+Isolated memory range setting "Imr19" is disabled in the CSE FW image.
+Isolated memory range setting "Imr09" is disabled in the CSE FW image.
+Isolated memory range setting "Imr11" is disabled in the CSE FW image.
+Isolated memory range setting "Imr14" is disabled in the CSE FW image.
+Isolated memory range setting "Imr15" is disabled in the CSE FW image.
+Isolated memory range setting "Imr18" is disabled in the CSE FW image.
+Isolated memory range setting "Imr19" is disabled in the CSE FW image.
+Saving XML ...
+
+XML file written to R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\FIT\WINDOWS\Default.xml
+Executing pre-build actions
+Executing pre-build actions
+Building objects
+Processing attribute: GpioProfile
+Executing post-build actions
+
+GPIO Profile 'Profile 0' saved to file:
+R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\FIT\WINDOWS\Int\gpio_Profile_0.bin
+
+Committing ME configuration.
+
+Building SMIP data.
+Executing pre-build actions
+Building objects
+Processing attribute: SmipData
+Executing post-build actions
+
+Full Flash Image written to R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\FIT\WINDOWS\SmipSubPartitionRaw.bin
+(Exit code: 0)
+
+Command:
+R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\MEU\meu.exe  -resign all -f  "R:/HW_DEV/Project/BLADE_Runner/Embedded SW Design Documents/Apollo Lake Bios Documents/Apollo Lake Intel(R) TXE 3.1.55.2269 QSR/Tools/FIT/WINDOWS/SmipSubPartitionRaw.bin" -cfg  "R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\MEU\meu_config.xml" -o  "R:/HW_DEV/Project/BLADE_Runner/Embedded SW Design Documents/Apollo Lake Bios Documents/Apollo Lake Intel(R) TXE 3.1.55.2269 QSR/Tools/FIT/WINDOWS/SmipSubPartitionSigned.bin" -st  "OpenSSL" -stp  "R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\MEU\openssl\openssl-1.0.0e-x64_86-win64\openssl.exe" -key  "R:\HW_DEV\Project\BLADE_Runner\Embedded SW Design Documents\Apollo Lake Bios Documents\Apollo Lake Intel(R) TXE 3.1.55.2269 QSR\Tools\FIT\WINDOWS\private.pem"
+
+
+Error 11: [SMIP Controller] An error ocurred while running the Manifest Extension Utility to sign the SMIP data. 
+Error 6: [SMIP Controller] Failed to sign SMIP data. 
+Error 37: [Ifwi Actions] Failed to build SMIP data. 
+Error 19: [Ifwi Actions] Failed to prepare OEM SMIP data. 
+Error 12: [Ifwi Actions] Failed to prepare one or more IFWI components. 
+Error 15: Failed to build. 
+Failed to build!

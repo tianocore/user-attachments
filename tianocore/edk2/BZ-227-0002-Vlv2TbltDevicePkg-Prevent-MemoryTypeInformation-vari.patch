@@ -1,0 +1,561 @@
+From 2fe282c66582821a1d20349b9e85a0b901a01768 Mon Sep 17 00:00:00 2001
+From: Star Zeng <star.zeng@intel.com>
+Date: Thu, 18 Oct 2018 22:16:01 +0800
+Subject: [PATCH 2/2] Vlv2TbltDevicePkg: Prevent MemoryTypeInformation variable
+ to be corrupted
+
+Since MemoryTypeInformationVar is updatable by BDS, then it is
+updatable by hacker. The corrupted MemoryTypeInformation variable
+may mess the code logic in platform PEIM and MRC, then system may
+malfunction. So the sanity check is required.
+
+The patch adds MemoryTypeInfoVarCheckLib to prevent MemoryTypeInformation
+variable to be corrupted by defining and checking maximum threshold.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Star Zeng <star.zeng@intel.com>
+---
+ .../MemoryTypeInfoVarCheckLib.c                    | 261 +++++++++++++++++++++
+ .../MemoryTypeInfoVarCheckLib.inf                  |  46 ++++
+ Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc            |  39 +--
+ Vlv2TbltDevicePkg/PlatformPkgIA32.dsc              |  19 +-
+ Vlv2TbltDevicePkg/PlatformPkgX64.dsc               |   1 +
+ 5 files changed, 338 insertions(+), 28 deletions(-)
+ create mode 100644 Vlv2TbltDevicePkg/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.c
+ create mode 100644 Vlv2TbltDevicePkg/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.inf
+
+diff --git a/Vlv2TbltDevicePkg/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.c b/Vlv2TbltDevicePkg/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.c
+new file mode 100644
+index 000000000000..3cbe7345c875
+--- /dev/null
++++ b/Vlv2TbltDevicePkg/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.c
+@@ -0,0 +1,261 @@
++/** @file
++  Implementation functions and structures for MemoryTypeInformation VarCheck library.
++
++Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
++This program and the accompanying materials
++are licensed and made available under the terms and conditions of the BSD License
++which accompanies this distribution.  The full text of the license may be found at
++http://opensource.org/licenses/bsd-license.php
++
++THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++
++#include <Library/VarCheckLib.h>
++#include <Library/BaseLib.h>
++#include <Library/BaseMemoryLib.h>
++#include <Library/DebugLib.h>
++
++#include <Guid/MemoryTypeInformation.h>
++
++//
++// NOTE:
++//   These macros could be replaced by PCDs.
++//   Their values may need be customized based on platform.
++//
++#define MAX_THRESHOLD_RESERVED_MEMORY_TYPE  0x200 // 0x200000
++#define MAX_THRESHOLD_RUNTIME_SERVICES_CODE 0x100 // 0x100000
++#define MAX_THRESHOLD_RUNTIME_SERVICES_DATA 0x100 // 0x200000
++#define MAX_THRESHOLD_ACPI_RECLAIM_MEMORY   0x80  // 0x80000
++#define MAX_THRESHOLD_ACPI_MEMORY_NVS       0x100 // 0x100000
++
++//
++// NOTE:
++//   This array's entry count and the entries's Type should be same
++//   with the default MemoryTypeInformation defined in platform PEIM.
++//
++EFI_MEMORY_TYPE_INFORMATION mMemoryTypeInfoMaxThreshold[] = {
++  {
++    EfiReservedMemoryType,
++    MAX_THRESHOLD_RESERVED_MEMORY_TYPE
++  },
++  {
++    EfiRuntimeServicesCode,
++    MAX_THRESHOLD_RUNTIME_SERVICES_CODE
++  },
++  {
++    EfiRuntimeServicesData,
++    MAX_THRESHOLD_RUNTIME_SERVICES_DATA
++  },
++  {
++    EfiACPIReclaimMemory,
++    MAX_THRESHOLD_ACPI_RECLAIM_MEMORY
++  },
++  {
++    EfiACPIMemoryNVS,
++    MAX_THRESHOLD_ACPI_MEMORY_NVS
++  },
++  {
++    EfiMaxMemoryType,
++    0
++  }
++};
++
++VAR_CHECK_VARIABLE_PROPERTY mMemoryTypeInfoVariableProperty = {
++  VAR_CHECK_VARIABLE_PROPERTY_REVISION,
++  0,
++  EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
++  sizeof (EFI_MEMORY_TYPE_INFORMATION),
++  sizeof (EFI_MEMORY_TYPE_INFORMATION) * (EfiMaxMemoryType + 1)
++};
++
++/**
++  SetVariable check handler for MemoryTypeInformation variable.
++
++  @param[in] VariableName       Name of Variable to set.
++  @param[in] VendorGuid         Variable vendor GUID.
++  @param[in] Attributes         Attribute value of the variable.
++  @param[in] DataSize           Size of Data to set.
++  @param[in] Data               Data pointer.
++
++  @retval EFI_SUCCESS           The SetVariable check result was success.
++  @retval EFI_INVALID_PARAMETER An invalid combination of attribute bits, name, GUID,
++                                DataSize and Data value was supplied.
++
++**/
++EFI_STATUS
++EFIAPI
++MemoryTypeInfoVarCheckHandler (
++  IN CHAR16     *VariableName,
++  IN EFI_GUID   *VendorGuid,
++  IN UINT32     Attributes,
++  IN UINTN      DataSize,
++  IN VOID       *Data
++  )
++{
++  EFI_MEMORY_TYPE_INFORMATION   *MemoryTypeInfo;
++  UINTN                         Count;
++  UINTN                         Index;
++  UINTN                         Index2;
++
++  if ((StrCmp (VariableName, EFI_MEMORY_TYPE_INFORMATION_VARIABLE_NAME) != 0) ||
++      !CompareGuid (VendorGuid, &gEfiMemoryTypeInformationGuid)) {
++    //
++    // It is not MemoryTypeInformation variable.
++    //
++    return EFI_SUCCESS;
++  }
++
++  if ((((Attributes & EFI_VARIABLE_APPEND_WRITE) == 0) && (DataSize == 0)) ||
++      (Attributes == 0)) {
++    //
++    // Do not check variable deletion.
++    //
++    return EFI_SUCCESS;
++  }
++
++  //
++  // Check DataSize.
++  //
++  if (DataSize != sizeof (mMemoryTypeInfoMaxThreshold)) {
++    DEBUG ((
++      DEBUG_ERROR,
++      "ERROR: %a() - DataSize = 0x%x Expected = 0x%x\n",
++      __FUNCTION__,
++      DataSize,
++      sizeof (mMemoryTypeInfoMaxThreshold)
++      ));
++    return EFI_SECURITY_VIOLATION;
++  }
++
++  //
++  // Get entry Count.
++  //
++  Count = DataSize / sizeof (EFI_MEMORY_TYPE_INFORMATION);
++
++  MemoryTypeInfo = (EFI_MEMORY_TYPE_INFORMATION *) Data;
++
++  //
++  // Check last entry's Type.
++  //
++  if (MemoryTypeInfo[Count - 1].Type != EfiMaxMemoryType) {
++    DEBUG ((
++      DEBUG_ERROR,
++      "ERROR: %a() - Last(0x%x) entry's Type(0x%x) != EfiMaxMemoryType\n",
++      __FUNCTION__,
++      Count - 1,
++      MemoryTypeInfo[Count - 1].Type
++      ));
++    return EFI_SECURITY_VIOLATION;
++  }
++
++  if (Count >= 2) {
++    for (Index = 0; Index < Count - 1; Index++) {
++      //
++      // Check the Type.
++      //
++      if (MemoryTypeInfo[Index].Type > EfiMaxMemoryType) {
++        //
++        // The Type is invalid.
++        //
++        DEBUG ((
++          DEBUG_ERROR,
++          "ERROR: %a() - 0x%x entry's Type(0x%x) is invalid\n",
++          __FUNCTION__,
++          Index,
++          MemoryTypeInfo[Index].Type
++          ));
++        return EFI_SECURITY_VIOLATION;
++      }
++      for (Index2 = Index + 1; Index2 < Count; Index2++) {
++        if (MemoryTypeInfo[Index].Type == MemoryTypeInfo[Index2].Type) {
++          //
++          // Two entries have same Type.
++          //
++          DEBUG ((
++            DEBUG_ERROR,
++            "ERROR: %a() - 0x%x entry and 0x%x entry have same Type(0x%x)\n",
++            __FUNCTION__,
++            Index,
++            Index2,
++            MemoryTypeInfo[Index].Type
++            ));
++          return EFI_SECURITY_VIOLATION;
++        }
++      }
++
++      //
++      // Check the NumberOfPages.
++      //
++      for (Index2 = 0; mMemoryTypeInfoMaxThreshold[Index2].Type != EfiMaxMemoryType; Index2++) {
++        if (MemoryTypeInfo[Index].Type == mMemoryTypeInfoMaxThreshold[Index2].Type) {
++          if (MemoryTypeInfo[Index].NumberOfPages > mMemoryTypeInfoMaxThreshold[Index2].NumberOfPages) {
++            //
++            // The NumberOfPages exceeds the maximum threshold.
++            //
++            DEBUG ((
++              DEBUG_ERROR,
++              "ERROR: %a() - 0x%x entry's NumberOfPages(0x%x) with Type(0x%x) exceeds the maximum threshold(0x%x)\n",
++              __FUNCTION__,
++              Index,
++              MemoryTypeInfo[Index].NumberOfPages,
++              MemoryTypeInfo[Index].Type,
++              mMemoryTypeInfoMaxThreshold[Index2].NumberOfPages
++              ));
++            return EFI_SECURITY_VIOLATION;
++          }
++          break;
++        }
++      }
++      if (mMemoryTypeInfoMaxThreshold[Index2].Type == EfiMaxMemoryType) {
++        //
++        // No maximum threshold defined for this entry's Type.
++        //
++        DEBUG ((
++          DEBUG_ERROR,
++          "ERROR: %a() - No maximum threshold defined for this(0x%x) entry's Type(0x%x)\n",
++          __FUNCTION__,
++          Index,
++          MemoryTypeInfo[Index].Type
++          ));
++        return EFI_SECURITY_VIOLATION;
++      }
++    }
++  }
++
++  return EFI_SUCCESS;
++}
++
++/**
++  Constructor function of MemoryTypeInfoVarCheckLib to set property and
++  register SetVariable check handler for MemoryTypeInformation variable.
++
++  @param[in] ImageHandle    The firmware allocated handle for the EFI image.
++  @param[in] SystemTable    A pointer to the EFI System Table.
++
++  @retval EFI_SUCCESS       The constructor executed correctly.
++
++**/
++EFI_STATUS
++EFIAPI
++MemoryTypeInfoVarCheckLibConstructor (
++  IN EFI_HANDLE             ImageHandle,
++  IN EFI_SYSTEM_TABLE       *SystemTable
++  )
++{
++  EFI_STATUS    Status;
++
++  Status = VarCheckLibVariablePropertySet (
++             EFI_MEMORY_TYPE_INFORMATION_VARIABLE_NAME,
++             &gEfiMemoryTypeInformationGuid,
++             &mMemoryTypeInfoVariableProperty
++             );
++  ASSERT_EFI_ERROR (Status);
++  Status = VarCheckLibRegisterSetVariableCheckHandler (
++             MemoryTypeInfoVarCheckHandler
++             );
++  ASSERT_EFI_ERROR (Status);
++
++  return Status;
++}
+diff --git a/Vlv2TbltDevicePkg/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.inf b/Vlv2TbltDevicePkg/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.inf
+new file mode 100644
+index 000000000000..d3530f78d521
+--- /dev/null
++++ b/Vlv2TbltDevicePkg/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.inf
+@@ -0,0 +1,46 @@
++## @file
++#  NULL class library to register var check handler and variable property set for MemoryTypeInformation variable.
++#
++#  Copyright (c) 2018, Intel Corporation. All rights reserved.<BR>
++#
++#  This program and the accompanying materials
++#  are licensed and made available under the terms and conditions
++#  of the BSD License which accompanies this distribution.  The
++#  full text of the license may be found at
++#  http://opensource.org/licenses/bsd-license.php
++#
++#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++##
++
++[Defines]
++  INF_VERSION                    = 0x00010005
++  BASE_NAME                      = MemoryTypeInfoVarCheckLib
++  FILE_GUID                      = C69D75E8-E39F-4F79-9D74-50B8C759D09B
++  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
++  VERSION_STRING                 = 1.0
++  LIBRARY_CLASS                  = NULL|DXE_RUNTIME_DRIVER DXE_SMM_DRIVER
++  CONSTRUCTOR                    = MemoryTypeInfoVarCheckLibConstructor
++
++#
++# The following information is for reference only and not required by the build tools.
++#
++#  VALID_ARCHITECTURES           = IA32 X64
++#
++
++[Sources]
++  MemoryTypeInfoVarCheckLib.c
++
++[Packages]
++  MdePkg/MdePkg.dec
++  MdeModulePkg/MdeModulePkg.dec
++
++[LibraryClasses]
++  BaseLib
++  BaseMemoryLib
++  DebugLib
++  VarCheckLib
++
++[Guids]
++  gEfiMemoryTypeInformationGuid  ## CONSUMES ## Variable:L"MemoryTypeInformation"
+diff --git a/Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc b/Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc
+index 1daf7137ee0c..430ab1258b7d 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc
++++ b/Vlv2TbltDevicePkg/PlatformPkgGccX64.dsc
+@@ -1,7 +1,7 @@
+ #/** @file
+ # Platform description.
+ #
+-# Copyright (c) 2012  - 2018, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2012  - 2018, Intel Corporation. All rights reserved.<BR>
+ #                                                                                  
+ # This program and the accompanying materials are licensed and made available under
+ # the terms and conditions of the BSD License that accompanies this distribution.  
+@@ -357,15 +357,15 @@ [LibraryClasses.IA32.PEIM, LibraryClasses.IA32.PEI_CORE, LibraryClasses.IA32.SEC
+ 
+   LockBoxLib|MdeModulePkg/Library/SmmLockBoxLib/SmmLockBoxPeiLib.inf
+   HashLib|SecurityPkg/Library/HashLibBaseCryptoRouter/HashLibBaseCryptoRouterPei.inf
+-!if $(SOURCE_DEBUG_ENABLE) == TRUE
+-  PeCoffExtraActionLib|SourceLevelDebugPkg/Library/PeCoffExtraActionLibDebug/PeCoffExtraActionLibDebug.inf
+-  DebugCommunicationLib|SourceLevelDebugPkg/Library/DebugCommunicationLibSerialPort/DebugCommunicationLibSerialPort.inf
+-  SerialPortLib|MdeModulePkg/Library/BaseSerialPortLib16550/BaseSerialPortLib16550.inf
+-  DebugAgentLib|SourceLevelDebugPkg/Library/DebugAgent/SecPeiDebugAgentLib.inf 
+-!else
++!if $(SOURCE_DEBUG_ENABLE) == TRUE
++  PeCoffExtraActionLib|SourceLevelDebugPkg/Library/PeCoffExtraActionLibDebug/PeCoffExtraActionLibDebug.inf
++  DebugCommunicationLib|SourceLevelDebugPkg/Library/DebugCommunicationLibSerialPort/DebugCommunicationLibSerialPort.inf
++  SerialPortLib|MdeModulePkg/Library/BaseSerialPortLib16550/BaseSerialPortLib16550.inf
++  DebugAgentLib|SourceLevelDebugPkg/Library/DebugAgent/SecPeiDebugAgentLib.inf 
++!else
+   PeCoffExtraActionLib|MdePkg/Library/BasePeCoffExtraActionLibNull/BasePeCoffExtraActionLibNull.inf
+   DebugAgentLib|MdeModulePkg/Library/DebugAgentLibNull/DebugAgentLibNull.inf
+-!endif
++!endif
+ 
+  !if $(MINNOW2_FSP_BUILD) == TRUE
+  PlatformFspLib|Vlv2TbltDevicePkg/Library/PlatformFspLib/PlatformFspLib.inf
+@@ -909,8 +909,8 @@ [PcdsDynamicDefault.common.DEFAULT]
+   gEfiSecurityPkgTokenSpaceGuid.PcdTpmScrtmPolicy|1
+ !endif
+ 
+-  gPlatformModuleTokenSpaceGuid.PcdRtcPowerFailure|FALSE
+-
++  gPlatformModuleTokenSpaceGuid.PcdRtcPowerFailure|FALSE
++
+ [PcdsDynamicExDefault.common.DEFAULT]
+   gEfiVLVTokenSpaceGuid.PcdTCSmbaIoBaseAddress|0x1040
+   gEfiVLVTokenSpaceGuid.PcdEmmcManufacturerId|0
+@@ -1014,8 +1014,8 @@ [Components.IA32]
+       <PcdsFixedAtBuild>
+         gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2E
+   !endif
+-   <LibraryClasses>
+-      PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
++   <LibraryClasses>
++      PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
+   }
+ !endif
+ 
+@@ -1095,7 +1095,7 @@ [Components.IA32]
+       gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000046
+     <LibraryClasses>
+       DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
+-      NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
+   }
+@@ -1157,7 +1157,7 @@ [Components.X64]
+     !endif
+        <BuildOptions>
+         ICC:*_*_*_CC_FLAGS = -D MDEPKG_NDEBUG
+-        GCC:RELEASE_*_*_CC_FLAGS = -D MDEPKG_NDEBUG
++        GCC:RELEASE_*_*_CC_FLAGS = -D MDEPKG_NDEBUG
+   }
+   MdeModulePkg/Universal/PCD/Dxe/Pcd.inf {
+     <LibraryClasses>
+@@ -1255,6 +1255,7 @@ [Components.X64]
+   MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmm.inf {
+     <LibraryClasses>
+       NULL|MdeModulePkg/Library/VarCheckUefiLib/VarCheckUefiLib.inf
++      NULL|$(PLATFORM_PACKAGE)/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.inf
+       SerialPortLib|$(PLATFORM_PACKAGE)/Library/SerialPortLib/SerialPortLib.inf
+   }
+   $(PLATFORM_PACKAGE)/FvbRuntimeDxe/FvbSmm.inf
+@@ -1369,7 +1370,7 @@ [Components.X64]
+     <LibraryClasses>
+       NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+-      PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
++      PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
+       Tpm2DeviceLib|Vlv2TbltDevicePkg/Library/Tpm2DeviceLibSeCDxe/Tpm2DeviceLibSeC.inf
+   }
+   $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET)/$(DXE_ARCHITECTURE)/FtpmSmm.inf
+@@ -1410,7 +1411,7 @@ [Components.X64]
+   $(PLATFORM_PACKAGE)/PlatformInfoDxe/PlatformInfoDxe.inf
+   $(PLATFORM_PACKAGE)/PlatformCpuInfoDxe/PlatformCpuInfoDxe.inf
+   $(PLATFORM_PACKAGE)/PlatformDxe/PlatformDxe.inf
+-  $(PLATFORM_PACKAGE)/PlatformRtcRuntimeDxe/PlatformRtcRuntimeDxe.inf
++  $(PLATFORM_PACKAGE)/PlatformRtcRuntimeDxe/PlatformRtcRuntimeDxe.inf
+ 
+   $(PLATFORM_PACKAGE)/PciPlatform/PciPlatform.inf
+   $(PLATFORM_PACKAGE)/SaveMemoryConfig/SaveMemoryConfig.inf
+@@ -1427,8 +1428,8 @@ [Components.X64]
+   # SMM
+   #
+   MdeModulePkg/Core/PiSmmCore/PiSmmIpl.inf
+-  MdeModulePkg/Core/PiSmmCore/PiSmmCore.inf
+-  UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.inf {
++  MdeModulePkg/Core/PiSmmCore/PiSmmCore.inf
++  UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.inf {
+    <PcdsFixedAtBuild>
+      gUefiCpuPkgTokenSpaceGuid.PcdCpuSmmStackSize|0x4000
+   }
+@@ -1496,7 +1497,7 @@ [Components.X64]
+     <LibraryClasses>
+       TimerLib|$(PLATFORM_PACKAGE)/Library/IntelPchAcpiTimerLib/IntelPchAcpiTimerLib.inf
+   }
+-  MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
++  MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
+ !endif
+ 
+ #
+diff --git a/Vlv2TbltDevicePkg/PlatformPkgIA32.dsc b/Vlv2TbltDevicePkg/PlatformPkgIA32.dsc
+index 0d34a1c50b46..8454f055f99f 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkgIA32.dsc
++++ b/Vlv2TbltDevicePkg/PlatformPkgIA32.dsc
+@@ -1,7 +1,7 @@
+ #/** @file
+ # Platform description.
+ #
+-# Copyright (c) 2012  - 2018, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2012  - 2018, Intel Corporation. All rights reserved.<BR>
+ #                                                                                  
+ # This program and the accompanying materials are licensed and made available under
+ # the terms and conditions of the BSD License that accompanies this distribution.  
+@@ -922,8 +922,8 @@ [PcdsDynamicDefault.common.DEFAULT]
+   gEfiSecurityPkgTokenSpaceGuid.PcdTpmScrtmPolicy|1
+ !endif
+ 
+-  gPlatformModuleTokenSpaceGuid.PcdRtcPowerFailure|FALSE
+-
++  gPlatformModuleTokenSpaceGuid.PcdRtcPowerFailure|FALSE
++
+ [PcdsDynamicExDefault.common.DEFAULT]
+   gEfiVLVTokenSpaceGuid.PcdTCSmbaIoBaseAddress|0x1040
+   gEfiVLVTokenSpaceGuid.PcdEmmcManufacturerId|0
+@@ -1022,8 +1022,8 @@ [Components.IA32]
+       <PcdsFixedAtBuild>
+         gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2E
+   !endif
+-   <LibraryClasses>
+-      PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
++   <LibraryClasses>
++      PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
+   }
+ !endif
+ 
+@@ -1102,7 +1102,7 @@ [Components.IA32]
+       gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000046
+     <LibraryClasses>
+       DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
+-      NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
++      NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+       PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
+   }
+@@ -1263,6 +1263,7 @@ [Components.IA32]
+    MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmm.inf {
+     <LibraryClasses>
+       NULL|MdeModulePkg/Library/VarCheckUefiLib/VarCheckUefiLib.inf
++      NULL|$(PLATFORM_PACKAGE)/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.inf
+       SerialPortLib|$(PLATFORM_PACKAGE)/Library/SerialPortLib/SerialPortLib.inf
+   }
+   $(PLATFORM_PACKAGE)/FvbRuntimeDxe/FvbSmm.inf
+@@ -1381,7 +1382,7 @@ [Components.IA32]
+     <LibraryClasses>
+       NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
+       NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+-      PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
++      PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
+       Tpm2DeviceLib|Vlv2TbltDevicePkg/Library/Tpm2DeviceLibSeCDxe/Tpm2DeviceLibSeC.inf
+   }
+   $(PLATFORM_BINARY_PACKAGE)/$(DXE_ARCHITECTURE)$(TARGET)/$(DXE_ARCHITECTURE)/FtpmSmm.inf
+@@ -1422,7 +1423,7 @@ [Components.IA32]
+   $(PLATFORM_PACKAGE)/PlatformInfoDxe/PlatformInfoDxe.inf
+   $(PLATFORM_PACKAGE)/PlatformCpuInfoDxe/PlatformCpuInfoDxe.inf
+   $(PLATFORM_PACKAGE)/PlatformDxe/PlatformDxe.inf
+-  $(PLATFORM_PACKAGE)/PlatformRtcRuntimeDxe/PlatformRtcRuntimeDxe.inf
++  $(PLATFORM_PACKAGE)/PlatformRtcRuntimeDxe/PlatformRtcRuntimeDxe.inf
+ 
+   $(PLATFORM_PACKAGE)/PciPlatform/PciPlatform.inf
+   $(PLATFORM_PACKAGE)/SaveMemoryConfig/SaveMemoryConfig.inf
+@@ -1508,7 +1509,7 @@ [Components.IA32]
+     <LibraryClasses>
+       TimerLib|$(PLATFORM_PACKAGE)/Library/IntelPchAcpiTimerLib/IntelPchAcpiTimerLib.inf
+   }
+-  MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
++  MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
+ !endif
+ 
+ #
+diff --git a/Vlv2TbltDevicePkg/PlatformPkgX64.dsc b/Vlv2TbltDevicePkg/PlatformPkgX64.dsc
+index e805871ec387..c7caed2093a5 100644
+--- a/Vlv2TbltDevicePkg/PlatformPkgX64.dsc
++++ b/Vlv2TbltDevicePkg/PlatformPkgX64.dsc
+@@ -1262,6 +1262,7 @@ [Components.X64]
+   MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmm.inf {
+     <LibraryClasses>
+       NULL|MdeModulePkg/Library/VarCheckUefiLib/VarCheckUefiLib.inf
++      NULL|$(PLATFORM_PACKAGE)/Library/MemoryTypeInfoVarCheckLib/MemoryTypeInfoVarCheckLib.inf
+       SerialPortLib|$(PLATFORM_PACKAGE)/Library/SerialPortLib/SerialPortLib.inf
+   }
+   $(PLATFORM_PACKAGE)/FvbRuntimeDxe/FvbSmm.inf
+-- 
+2.7.0.windows.1
+

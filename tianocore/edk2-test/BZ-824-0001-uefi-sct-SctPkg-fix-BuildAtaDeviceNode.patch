@@ -1,0 +1,52 @@
+From 4a18fdbc9f8005f478f5c6992945b04b7561ddce Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Wed, 31 Mar 2021 17:35:08 +0200
+Subject: [PATCH edk2-test v2 1/1] uefi-sct/SctPkg: fix BuildAtaDeviceNode()
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3290
+
+When BuildAtaDeviceNode() is called with L"Ata(0,0,0)" it creates a node
+Ata(1,1,0). This leads to test to an assertion failed test result
+
+    ../DevicePathToTextBBTestFunction.c:332:
+    Convert result: Ata(0,0,0) - Expected: Ata(Primary,Master,0)
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+v2:
+        correct parentheses
+---
+ .../BlackBoxTest/DevicePathToTextBBTestMain.c             | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestMain.c
+index 46b97a2d2648..183434ee1c78 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestMain.c
+@@ -1162,9 +1162,9 @@ BuildAtaDeviceNode (
+ 
+   Status = GetNextRequiredParam(&TextDeviceNode, L"Controller", &ParamIdentifierStr, &ParamIdentifierVal);
+   if ((!EFI_ERROR(Status)) && (ParamIdentifierVal != NULL)) {
+-  	if ((SctStrCmp (ParamIdentifierVal, L"Primary") == 0) || (SctStrCmp(ParamIdentifierVal, L"0"))) {
++    if ((SctStrCmp (ParamIdentifierVal, L"Primary") == 0) || (SctStrCmp(ParamIdentifierVal, L"0") == 0)) {
+       Atapi->PrimarySecondary = 0;
+-    } else if ((SctStrCmp (ParamIdentifierVal, L"Secondary") == 0) || (SctStrCmp(ParamIdentifierVal, L"1"))) {
++    } else if ((SctStrCmp (ParamIdentifierVal, L"Secondary") == 0) || (SctStrCmp(ParamIdentifierVal, L"1") == 0)) {
+       Atapi->PrimarySecondary = 1;
+     } else {
+       goto InValidText;
+@@ -1175,9 +1175,9 @@ BuildAtaDeviceNode (
+ 
+   Status = GetNextRequiredParam(&TextDeviceNode, L"Drive", &ParamIdentifierStr, &ParamIdentifierVal);
+   if ((!EFI_ERROR(Status)) && (ParamIdentifierVal != NULL)) {
+-  	if ((SctStrCmp (ParamIdentifierVal, L"Master") == 0) || (SctStrCmp(ParamIdentifierVal, L"0"))) {
++    if ((SctStrCmp (ParamIdentifierVal, L"Master") == 0) || (SctStrCmp(ParamIdentifierVal, L"0") == 0)) {
+       Atapi->SlaveMaster = 0;
+-    } else if ((SctStrCmp (ParamIdentifierVal, L"Slave") == 0) || (SctStrCmp(ParamIdentifierVal, L"1"))) {
++    } else if ((SctStrCmp (ParamIdentifierVal, L"Slave") == 0) || (SctStrCmp(ParamIdentifierVal, L"1") == 0)) {
+       Atapi->SlaveMaster = 1;
+     } else {
+       goto InValidText;
+-- 
+2.30.2
+

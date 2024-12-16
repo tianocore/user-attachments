@@ -1,0 +1,187 @@
+From d039011228fe15cdbe43abd70644c7dd8390de61 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:29:41 +0530
+Subject: [PATCH 1/3] MdeModulePkg/Universal/HiiDatabaseDxe: Fix SIGN_EXTENSION
+ Coverity issues
+
+As per Coverity reports, for macro BITMAP_LEN_1_BIT(a, b),
+
+The parameter "b" with type "UINT16" (16 bits, unsigned) is promoted
+in the operation "(a + 7) / 8 * b" to type "int" (32 bits, signed),
+then sign-extended to type "unsigned long long" (64 bits, unsigned).
+If "(a + 7) / 8 * b" is greater than 0x7FFFFFFF, the upper bits of the
+result will all be 1.
+
+Similarly for macro BITMAP_LEN_4_BIT (a, b),
+
+The parameter "b" with type "UINT16" (16 bits, unsigned) is promoted
+in the operation "(a + 1) / 2 * b" to type "int" (32 bits, signed),
+then sign-extended to type "unsigned long long" (64 bits, unsigned).
+If "(a + 1) / 2 * b" is greater than 0x7FFFFFFF, the upper bits of the
+result will all be 1.
+
+Similarly, in call
+   AllocateZeroPool (a * b * sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL)),
+the parameter "a"  with type "UINT16" (16 bits, unsigned) is promoted
+in the operation "a * b" to type "int" (32 bits, signed), then sign-
+extended to type "unsigned long long" (64 bits, unsigned). If "a * b"
+is greater than 0x7FFFFFFF, the upper bits of the result will all be 1.
+
+To avoid any SIGN_EXTENSION, typecast the intermediate result / output
+after the operation with UINTN / UINT32 as is appropriate.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4288
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/HiiDatabaseDxe/Font.c  | 14 +++++++-------
+ MdeModulePkg/Universal/HiiDatabaseDxe/Image.c | 16 ++++++++--------
+ 2 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/Font.c b/MdeModulePkg/Universal/HiiDatabaseDxe/Font.c
+index 399f90feb783..6a3ac1406f95 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/Font.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/Font.c
+@@ -413,7 +413,7 @@ GlyphToBlt (
+   // first bitmap byte.
+   //
+   for (Ypos = 0; Ypos < Cell->Height && (((UINT32)Ypos + YposOffset) < RowHeight); Ypos++) {
+-    OffsetY = BITMAP_LEN_1_BIT (Cell->Width, Ypos);
++    OffsetY = (UINTN)BITMAP_LEN_1_BIT (Cell->Width, Ypos);
+ 
+     //
+     // All bits in these bytes are meaningful.
+@@ -788,7 +788,7 @@ FindGlyphBlock (
+           }
+         }
+ 
+-        BufferLen = BITMAP_LEN_1_BIT (LocalCell.Width, LocalCell.Height);
++        BufferLen = (UINTN)BITMAP_LEN_1_BIT (LocalCell.Width, LocalCell.Height);
+         if (CharCurrent == CharValue) {
+           return WriteOutputParam (
+                    (UINT8 *)((UINTN)BlockPtr + sizeof (EFI_HII_GIBT_GLYPH_BLOCK) - sizeof (UINT8)),
+@@ -821,7 +821,7 @@ FindGlyphBlock (
+           }
+         }
+ 
+-        BufferLen = BITMAP_LEN_1_BIT (Glyphs.Cell.Width, Glyphs.Cell.Height);
++        BufferLen = (UINTN)BITMAP_LEN_1_BIT (Glyphs.Cell.Width, Glyphs.Cell.Height);
+         for (Index = 0; Index < Glyphs.Count; Index++) {
+           if (CharCurrent + Index == CharValue) {
+             return WriteOutputParam (
+@@ -856,7 +856,7 @@ FindGlyphBlock (
+           }
+         }
+ 
+-        BufferLen = BITMAP_LEN_1_BIT (DefaultCell.Width, DefaultCell.Height);
++        BufferLen = (UINTN)BITMAP_LEN_1_BIT (DefaultCell.Width, DefaultCell.Height);
+ 
+         if (CharCurrent == CharValue) {
+           return WriteOutputParam (
+@@ -890,7 +890,7 @@ FindGlyphBlock (
+           }
+         }
+ 
+-        BufferLen = BITMAP_LEN_1_BIT (DefaultCell.Width, DefaultCell.Height);
++        BufferLen = (UINTN)BITMAP_LEN_1_BIT (DefaultCell.Width, DefaultCell.Height);
+         BlockPtr += sizeof (EFI_HII_GIBT_GLYPHS_DEFAULT_BLOCK) - sizeof (UINT8);
+         for (Index = 0; Index < Length16; Index++) {
+           if (CharCurrent + Index == CharValue) {
+@@ -1724,7 +1724,7 @@ HiiStringToImage (
+ 
+     Image->Width        = 800;
+     Image->Height       = 600;
+-    Image->Image.Bitmap = AllocateZeroPool (Image->Width * Image->Height *sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL));
++    Image->Image.Bitmap = AllocateZeroPool (((UINT32)(Image->Width * Image->Height)) * sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL));
+     if (Image->Image.Bitmap == NULL) {
+       FreePool (Image);
+       return EFI_OUT_OF_RESOURCES;
+@@ -2724,7 +2724,7 @@ HiiGetGlyph (
+   Image->Height = Cell.Height;
+ 
+   if (Image->Width * Image->Height > 0) {
+-    Image->Image.Bitmap = AllocateZeroPool (Image->Width * Image->Height * sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL));
++    Image->Image.Bitmap = AllocateZeroPool (((UINT32)(Image->Width * Image->Height)) * sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL));
+     if (Image->Image.Bitmap == NULL) {
+       FreePool (Image);
+       Status = EFI_OUT_OF_RESOURCES;
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/Image.c b/MdeModulePkg/Universal/HiiDatabaseDxe/Image.c
+index b5b962596968..ca9b5a5d8e75 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/Image.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/Image.c
+@@ -80,7 +80,7 @@ GetImageIdOrAddress (
+       case EFI_HII_IIBT_IMAGE_1BIT:
+       case EFI_HII_IIBT_IMAGE_1BIT_TRANS:
+         Length = sizeof (EFI_HII_IIBT_IMAGE_1BIT_BLOCK) - sizeof (UINT8) +
+-                 BITMAP_LEN_1_BIT (
++                 (UINTN)BITMAP_LEN_1_BIT (
+                    ReadUnaligned16 (&((EFI_HII_IIBT_IMAGE_1BIT_BLOCK *)CurrentImageBlock)->Bitmap.Width),
+                    ReadUnaligned16 (&((EFI_HII_IIBT_IMAGE_1BIT_BLOCK *)CurrentImageBlock)->Bitmap.Height)
+                    );
+@@ -90,7 +90,7 @@ GetImageIdOrAddress (
+       case EFI_HII_IIBT_IMAGE_4BIT:
+       case EFI_HII_IIBT_IMAGE_4BIT_TRANS:
+         Length = sizeof (EFI_HII_IIBT_IMAGE_4BIT_BLOCK) - sizeof (UINT8) +
+-                 BITMAP_LEN_4_BIT (
++                 (UINTN)BITMAP_LEN_4_BIT (
+                    ReadUnaligned16 (&((EFI_HII_IIBT_IMAGE_4BIT_BLOCK *)CurrentImageBlock)->Bitmap.Width),
+                    ReadUnaligned16 (&((EFI_HII_IIBT_IMAGE_4BIT_BLOCK *)CurrentImageBlock)->Bitmap.Height)
+                    );
+@@ -279,7 +279,7 @@ Output1bitPixel (
+   // Convert the pixel from one bit to corresponding color.
+   //
+   for (Ypos = 0; Ypos < Image->Height; Ypos++) {
+-    OffsetY = BITMAP_LEN_1_BIT (Image->Width, Ypos);
++    OffsetY = (UINTN)BITMAP_LEN_1_BIT (Image->Width, Ypos);
+     //
+     // All bits in these bytes are meaningful
+     //
+@@ -368,7 +368,7 @@ Output4bitPixel (
+   // Convert the pixel from 4 bit to corresponding color.
+   //
+   for (Ypos = 0; Ypos < Image->Height; Ypos++) {
+-    OffsetY = BITMAP_LEN_4_BIT (Image->Width, Ypos);
++    OffsetY = (UINTN)BITMAP_LEN_4_BIT (Image->Width, Ypos);
+     //
+     // All bits in these bytes are meaningful
+     //
+@@ -1133,7 +1133,7 @@ HiiSetImage (
+     case EFI_HII_IIBT_IMAGE_1BIT:
+     case EFI_HII_IIBT_IMAGE_1BIT_TRANS:
+       OldBlockSize = sizeof (EFI_HII_IIBT_IMAGE_1BIT_BLOCK) - sizeof (UINT8) +
+-                     BITMAP_LEN_1_BIT (
++                     (UINTN)BITMAP_LEN_1_BIT (
+                        ReadUnaligned16 (&((EFI_HII_IIBT_IMAGE_1BIT_BLOCK *)CurrentImageBlock)->Bitmap.Width),
+                        ReadUnaligned16 (&((EFI_HII_IIBT_IMAGE_1BIT_BLOCK *)CurrentImageBlock)->Bitmap.Height)
+                        );
+@@ -1141,7 +1141,7 @@ HiiSetImage (
+     case EFI_HII_IIBT_IMAGE_4BIT:
+     case EFI_HII_IIBT_IMAGE_4BIT_TRANS:
+       OldBlockSize = sizeof (EFI_HII_IIBT_IMAGE_4BIT_BLOCK) - sizeof (UINT8) +
+-                     BITMAP_LEN_4_BIT (
++                     (UINT32)BITMAP_LEN_4_BIT (
+                        ReadUnaligned16 (&((EFI_HII_IIBT_IMAGE_4BIT_BLOCK *)CurrentImageBlock)->Bitmap.Width),
+                        ReadUnaligned16 (&((EFI_HII_IIBT_IMAGE_4BIT_BLOCK *)CurrentImageBlock)->Bitmap.Height)
+                        );
+@@ -1373,7 +1373,7 @@ HiiDrawImage (
+     // Prepare the buffer for the temporary image.
+     // Make sure the buffer size doesn't overflow UINTN.
+     //
+-    BufferLen = Width * Height;
++    BufferLen = (UINTN)(Width * Height);
+     if (BufferLen > MAX_UINTN / sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL)) {
+       return EFI_OUT_OF_RESOURCES;
+     }
+@@ -1454,7 +1454,7 @@ HiiDrawImage (
+     //
+     // Make sure the output image size doesn't overflow UINTN.
+     //
+-    BufferLen = Width * Height;
++    BufferLen = (UINTN)(Width * Height);
+     if (BufferLen > MAX_UINTN / sizeof (EFI_GRAPHICS_OUTPUT_BLT_PIXEL)) {
+       return EFI_OUT_OF_RESOURCES;
+     }
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,47 @@
+From c8753c4d8f3467e09ac998fa1a79f0ddf7fa9421 Mon Sep 17 00:00:00 2001
+From: Star Zeng <star.zeng@intel.com>
+Date: Fri, 5 Jan 2018 13:05:29 +0800
+Subject: [PATCH 1/2] MdeModulePkg PeiCore: Ensure FfsFileHeader 8 bytes
+ aligned
+
+To follow PI spec, ensure FfsFileHeader 8 bytes aligned.
+
+Current code only handles (FwVolHeader->ExtHeaderOffset != 0) path,
+update code to also handle (FwVolHeader->ExtHeaderOffset == 0) path.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Star Zeng <star.zeng@intel.com>
+---
+ MdeModulePkg/Core/Pei/FwVol/FwVol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MdeModulePkg/Core/Pei/FwVol/FwVol.c b/MdeModulePkg/Core/Pei/FwVol/FwVol.c
+index 8009546acdb1..655ce87e468f 100644
+--- a/MdeModulePkg/Core/Pei/FwVol/FwVol.c
++++ b/MdeModulePkg/Core/Pei/FwVol/FwVol.c
+@@ -2,7 +2,7 @@
+   Pei Core Firmware File System service routines.
+   
+ Copyright (c) 2015 HP Development Company, L.P.
+-Copyright (c) 2006 - 2017, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials                          
+ are licensed and made available under the terms and conditions of the BSD License         
+ which accompanies this distribution.  The full text of the license may be found at        
+@@ -316,10 +316,10 @@ FindFileEx (
+       //
+       FwVolExtHeader = (EFI_FIRMWARE_VOLUME_EXT_HEADER *) ((UINT8 *) FwVolHeader + FwVolHeader->ExtHeaderOffset);
+       FfsFileHeader = (EFI_FFS_FILE_HEADER *) ((UINT8 *) FwVolExtHeader + FwVolExtHeader->ExtHeaderSize);
+-      FfsFileHeader = (EFI_FFS_FILE_HEADER *) ALIGN_POINTER (FfsFileHeader, 8);
+     } else {
+       FfsFileHeader = (EFI_FFS_FILE_HEADER *)((UINT8 *) FwVolHeader + FwVolHeader->HeaderLength);
+     }
++    FfsFileHeader = (EFI_FFS_FILE_HEADER *) ALIGN_POINTER (FfsFileHeader, 8);
+   } else {
+     if (IS_FFS_FILE2 (*FileHeader)) {
+       if (!IsFfs3Fv) {
+-- 
+2.7.0.windows.1
+

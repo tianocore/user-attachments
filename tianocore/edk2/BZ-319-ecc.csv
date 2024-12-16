@@ -1,0 +1,17 @@
+No, Error Code, Error Message, File, LineNo, Other Error Message
+60,5001,Return type of a function should exist and in the first line,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,60,[GetArg] Return Type should appear at the start of line 
+61,5001,Return type of a function should exist and in the first line,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,86,[ShowVersion] Return Type should appear at the start of line 
+62,5001,Return type of a function should exist and in the first line,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,97,[ShowHelp] Return Type should appear at the start of line 
+63,5001,Return type of a function should exist and in the first line,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,121,[DumpHex] Return Type should appear at the start of line 
+64,5001,Return type of a function should exist and in the first line,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,196,[InternalStrnCatGrow] Return Type should appear at the start of line 
+65,5001,Return type of a function should exist and in the first line,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,276,[GetPcdTypeString] Return Type should appear at the start of line 
+66,5001,Return type of a function should exist and in the first line,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,329,[DumpPcdInfo] Return Type should appear at the start of line 
+67,5001,Return type of a function should exist and in the first line,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,429,[ProcessPcd] Return Type should appear at the start of line 
+68,5002,Any optional functional modifiers should exist and next to the return type,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,60,
+69,5002,Any optional functional modifiers should exist and next to the return type,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,86,
+70,5002,Any optional functional modifiers should exist and next to the return type,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,97,
+71,5002,Any optional functional modifiers should exist and next to the return type,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,121,
+72,5002,Any optional functional modifiers should exist and next to the return type,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,196,
+73,5002,Any optional functional modifiers should exist and next to the return type,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,276,
+74,5002,Any optional functional modifiers should exist and next to the return type,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,329,
+75,5002,Any optional functional modifiers should exist and next to the return type,C:\ECC\Edk2R9\MdeModulePkg\Application\DumpDynPcd\DumpDynPcd.c,429,

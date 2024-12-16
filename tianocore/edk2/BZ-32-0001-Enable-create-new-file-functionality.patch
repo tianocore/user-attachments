@@ -1,0 +1,310 @@
+From 3abd46619813cd5f9dade7922fbb92c8f079ea2c Mon Sep 17 00:00:00 2001
+From: Eric Dong <eric.dong@intel.com>
+Date: Thu, 29 Dec 2016 11:30:27 +0800
+Subject: [Patch] Enable create new file functionality.
+
+Signed-off-by: Eric Dong <eric.dong@intel.com>
+---
+ .../Library/FileExplorerLib/FileExplorer.c         | 106 ++++++++++++++++++++-
+ .../Library/FileExplorerLib/FileExplorer.h         |   4 +
+ .../Library/FileExplorerLib/FileExplorerString.uni |  14 +++
+ .../Library/FileExplorerLib/FileExplorerVfr.vfr    |  37 ++++++-
+ MdeModulePkg/Library/FileExplorerLib/FormGuid.h    |   8 ++
+ 5 files changed, 163 insertions(+), 6 deletions(-)
+
+diff --git a/MdeModulePkg/Library/FileExplorerLib/FileExplorer.c b/MdeModulePkg/Library/FileExplorerLib/FileExplorer.c
+index 41a22aa..853efc7 100644
+--- a/MdeModulePkg/Library/FileExplorerLib/FileExplorer.c
++++ b/MdeModulePkg/Library/FileExplorerLib/FileExplorer.c
+@@ -72,6 +72,18 @@ VOID                *mLibStartOpCodeHandle = NULL;
+ VOID                *mLibEndOpCodeHandle = NULL;
+ EFI_IFR_GUID_LABEL  *mLibStartLabel = NULL;
+ EFI_IFR_GUID_LABEL  *mLibEndLabel = NULL;
++CHAR16  mFileExplorerStorageName[]     = L"FileExplorerNVData";
++
++/**
++  Create a new file in current directory.
++
++  FileName     Point to the directory.
++
++**/
++EFI_STATUS
++LibCreateNewFile (
++  IN CHAR16    *FileName
++  );
+ 
+ /**
+   This function allows a caller to extract the current configuration for one
+@@ -172,11 +184,14 @@ LibCallback (
+   OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
+   )
+ {
+-  EFI_STATUS    Status;
+-  BOOLEAN       NeedExit;
++  EFI_STATUS                    Status;
++  BOOLEAN                       NeedExit;
++  FILE_EXPLORER_CONFIGURATION   *CurrentNvData;
+ 
+   NeedExit = TRUE;
+-  
++  CurrentNvData = AllocateZeroPool (sizeof (FILE_EXPLORER_CONFIGURATION));
++  ASSERT (CurrentNvData != NULL);
++
+   if (Action != EFI_BROWSER_ACTION_CHANGING && Action != EFI_BROWSER_ACTION_CHANGED) {
+     //
+     // Do nothing for other UEFI Action. Only do call back when data is changed.
+@@ -184,6 +199,8 @@ LibCallback (
+     return EFI_UNSUPPORTED;
+   }
+ 
++  HiiGetBrowserData (&FileExplorerGuid, mFileExplorerStorageName, sizeof (FILE_EXPLORER_CONFIGURATION), (UINT8 *) CurrentNvData);
++
+   if (Action == EFI_BROWSER_ACTION_CHANGED) {
+     if ((Value == NULL) || (ActionRequest == NULL)) {
+       return EFI_INVALID_PARAMETER;
+@@ -203,19 +220,31 @@ LibCallback (
+         *ActionRequest = EFI_BROWSER_ACTION_REQUEST_EXIT;
+       }
+     }
++    if (QuestionId == KEY_VALUE_CREATE_AND_EXIT) {
++      LibCreateNewFile (CurrentNvData->CreateNewFile);
++      *ActionRequest = EFI_BROWSER_ACTION_REQUEST_EXIT;
++    }
++    if (QuestionId == KEY_VALUE_NO_CREATE_AND_EXIT) {
++      ZeroMem (CurrentNvData->CreateNewFile, sizeof (CurrentNvData->CreateNewFile));
++      *ActionRequest = EFI_BROWSER_ACTION_REQUEST_FORM_DISCARD_EXIT;
++    }
+   } else if (Action == EFI_BROWSER_ACTION_CHANGING) {
+     if (Value == NULL) {
+       return EFI_INVALID_PARAMETER;
+     }
+-    
+     if (QuestionId >= FILE_OPTION_OFFSET) {
++      LibGetDevicePath(QuestionId);
+       Status = LibUpdateFileExplorer (QuestionId);
+       if (EFI_ERROR (Status)) {
+         return Status;
+       }
+     }
+   }
+-
++  //
++  // Pass changed uncommitted data back to Form Browser
++  //
++  HiiSetBrowserData (&FileExplorerGuid, mFileExplorerStorageName, sizeof (FILE_EXPLORER_CONFIGURATION), (UINT8 *) CurrentNvData, NULL);
++  FreePool (CurrentNvData);
+   return EFI_SUCCESS;
+ }
+ 
+@@ -1039,6 +1068,48 @@ Done:
+ }
+ 
+ /**
++  Create a new file in current directory.
++
++  FileName     Point to the directory.
++
++**/
++EFI_STATUS
++LibCreateNewFile (
++  IN CHAR16    *FileName
++  )
++{
++  EFI_FILE_HANDLE      FileHandle;
++  EFI_FILE_HANDLE      NewHandle;
++  EFI_HANDLE           DeviceHandle;
++  EFI_STATUS           Status;
++  CHAR16               *ParentName;
++  CHAR16               *FullFileName;
++
++  NewHandle = NULL;
++
++  LibGetFileHandleFromDevicePath(gFileExplorerPrivate.RetDevicePath, &FileHandle, &ParentName, &DeviceHandle);
++  FullFileName = LibAppendFileName (ParentName, FileName);
++  Status = FileHandle->Open(
++                        FileHandle,
++                        &NewHandle,
++                        FullFileName,
++                        EFI_FILE_MODE_READ | EFI_FILE_MODE_WRITE| EFI_FILE_MODE_CREATE,
++                        0
++                        );
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
++
++  //
++  // Return the DevicePath of the new created file.
++  //
++  gFileExplorerPrivate.RetDevicePath = FileDevicePath (DeviceHandle, FullFileName);
++
++  return EFI_SUCCESS;
++
++}
++
++/**
+   Find files under current directory.
+   
+   All files and sub-directories in current directory
+@@ -1230,9 +1301,11 @@ LibUpdateFileExplorePage (
+   MENU_ENTRY      *NewMenuEntry;
+   FILE_CONTEXT    *NewFileContext;
+   MENU_OPTION     *MenuOption;
++  BOOLEAN         CreateNewFile;
+ 
+   NewMenuEntry    = NULL;
+   NewFileContext  = NULL;
++  CreateNewFile   = FALSE;
+ 
+   LibRefreshUpdateData ();
+   MenuOption = gFileExplorerPrivate.FsOptionMenu;
+@@ -1242,6 +1315,17 @@ LibUpdateFileExplorePage (
+     NewFileContext  = (FILE_CONTEXT *) NewMenuEntry->VariableContext;
+ 
+     if (!NewFileContext->IsDir) {
++      if (!NewFileContext->IsRoot && !CreateNewFile) {
++        HiiCreateGotoOpCode (
++        mLibStartOpCodeHandle,
++        FORM_ADD_NEW_FILE_ID,
++        STRING_TOKEN (STR_NEW_FILE),
++        STRING_TOKEN (STR_NEW_FILE_HELP),
++        EFI_IFR_FLAG_CALLBACK,
++        (UINT16) (gNewFileId++)
++        );
++        CreateNewFile = TRUE;
++      }
+       //
+       // Create Text opcode for directory, also create Text opcode for file in FileExplorerStateBootFromFile.
+       //
+@@ -1268,6 +1352,18 @@ LibUpdateFileExplorePage (
+     }
+   }
+ 
++  if (!NewFileContext->IsRoot && !CreateNewFile) {
++     HiiCreateGotoOpCode (
++        mLibStartOpCodeHandle,
++        FORM_ADD_NEW_FILE_ID,
++        STRING_TOKEN (STR_NEW_FILE),
++        STRING_TOKEN (STR_NEW_FILE_HELP),
++        EFI_IFR_FLAG_CALLBACK,
++        (UINT16) (gNewFileId++)
++        );
++        CreateNewFile = TRUE;
++  }
++
+   HiiUpdateForm (
+     gFileExplorerPrivate.FeHiiHandle,
+     &FileExplorerGuid,
+diff --git a/MdeModulePkg/Library/FileExplorerLib/FileExplorer.h b/MdeModulePkg/Library/FileExplorerLib/FileExplorer.h
+index fab2052..801aea5 100644
+--- a/MdeModulePkg/Library/FileExplorerLib/FileExplorer.h
++++ b/MdeModulePkg/Library/FileExplorerLib/FileExplorer.h
+@@ -114,6 +114,10 @@ extern UINT8    FileExplorerVfrBin[];
+ #define MAX_CHAR                480
+ #define FILE_OPTION_OFFSET      0x8000
+ #define FILE_OPTION_MASK        0x7FFF
++#define ADD_NEW_FILE_BEGIN      0x6000
++#define ADD_NEW_FILE_END        0x6FFF
++
++UINTN  gNewFileId  = 0x6000;
+ 
+ 
+ /**
+diff --git a/MdeModulePkg/Library/FileExplorerLib/FileExplorerString.uni b/MdeModulePkg/Library/FileExplorerLib/FileExplorerString.uni
+index 2e28c27..7459f0b 100644
+--- a/MdeModulePkg/Library/FileExplorerLib/FileExplorerString.uni
++++ b/MdeModulePkg/Library/FileExplorerLib/FileExplorerString.uni
+@@ -29,3 +29,17 @@
+                                        #language fr-FR  " "
+ #string STR_FILE_EXPLORER_TITLE        #language en-US  "File Explorer"
+                                        #language fr-FR  "File Explorer"
++#string STR_NEW_FILE                   #language en-US  "[NEW FILE]"
++                                       #language fr-FR  "[NEW FILE]"
++#string STR_NEW_FILE_HELP              #language en-US  "This menu used to create a new file in current directory, jump to next page to name the new file"
++                                       #language fr-FR  "This menu used to create a new file in current directory, jump to next page to name the new file"
++#string STR_ADD_NEW_FILE_TITLE         #language en-US  "Create a new file"
++                                       #language fr-FR  "Create a new file"
++#string STR_NEW_FILE_NAME_PROMPT       #language en-US  "File Name"
++                                       #language fr-FR  "File Name"
++#string STR_NEW_FILE_NAME_HELP         #language en-US  "Please input a name for the new file"
++                                       #language fr-FR  "Please input a name for the new file"
++#string STR_CREATE_AND_EXIT            #language en-US  "Create File and Exit"
++                                       #language fr-FR  "Create File and Exit"
++#string STR_NO_CREATE_AND_EXIT         #language en-US  "Discard Create and Exit"
++                                       #language fr-FR  "Discard Create and Exit"
+\ No newline at end of file
+diff --git a/MdeModulePkg/Library/FileExplorerLib/FileExplorerVfr.vfr b/MdeModulePkg/Library/FileExplorerLib/FileExplorerVfr.vfr
+index ef7c99c..6695815 100644
+--- a/MdeModulePkg/Library/FileExplorerLib/FileExplorerVfr.vfr
++++ b/MdeModulePkg/Library/FileExplorerLib/FileExplorerVfr.vfr
+@@ -21,6 +21,13 @@ formset
+   help = STRING_TOKEN(STR_NULL_STRING),
+   classguid = EFI_FILE_EXPLORE_FORMSET_GUID,
+ 
++  //
++  // Define a Buffer Storage (EFI_IFR_VARSTORE)
++  //
++  varstore FILE_EXPLORER_CONFIGURATION,        // This is the data structure type
++    name  = FileExplorerNVData,                // Define referenced name in vfr
++    guid  = EFI_FILE_EXPLORE_FORMSET_GUID;     // GUID of this buffer storage
++
+   form formid = FORM_FILE_EXPLORER_ID,
+        title = STRING_TOKEN(STR_FILE_EXPLORER_TITLE);
+ 
+@@ -28,4 +35,32 @@ formset
+        label LABEL_END;
+   endform;
+ 
+-endformset;
+\ No newline at end of file
++  form formid = FORM_ADD_NEW_FILE_ID,
++       title = STRING_TOKEN(STR_ADD_NEW_FILE_TITLE);
++
++       string
++           varid    = FileExplorerNVData.CreateNewFile,
++           prompt   = STRING_TOKEN(STR_NEW_FILE_NAME_PROMPT),
++           help     = STRING_TOKEN(STR_NEW_FILE_NAME_HELP),
++           flags    = INTERACTIVE,
++           key      = NEW_FILE_NAME_ID,
++           minsize  = 2,
++           maxsize  = 20,
++      endstring;
++
++      subtitle text = STRING_TOKEN(STR_NULL_STRING);
++
++       text
++         help   = STRING_TOKEN(STR_CREATE_AND_EXIT),
++         text   = STRING_TOKEN(STR_CREATE_AND_EXIT),
++         flags  = INTERACTIVE,
++         key    = KEY_VALUE_CREATE_AND_EXIT;
++
++       text
++         help   = STRING_TOKEN(STR_NO_CREATE_AND_EXIT),
++         text   = STRING_TOKEN(STR_NO_CREATE_AND_EXIT),
++         flags  = INTERACTIVE,
++         key    = KEY_VALUE_NO_CREATE_AND_EXIT;
++  endform;
++
++endformset;
+diff --git a/MdeModulePkg/Library/FileExplorerLib/FormGuid.h b/MdeModulePkg/Library/FileExplorerLib/FormGuid.h
+index d0a43a9..7070e1a 100644
+--- a/MdeModulePkg/Library/FileExplorerLib/FormGuid.h
++++ b/MdeModulePkg/Library/FileExplorerLib/FormGuid.h
+@@ -22,7 +22,15 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+   0xfe561596, 0xe6bf, 0x41a6, {0x83, 0x76, 0xc7, 0x2b, 0x71, 0x98, 0x74, 0xd0} \
+   }
+ 
++typedef struct {
++  CHAR16  CreateNewFile[40];
++} FILE_EXPLORER_CONFIGURATION;
++
+ #define FORM_FILE_EXPLORER_ID                0x1000
++#define FORM_ADD_NEW_FILE_ID                 0x2000
++#define NEW_FILE_NAME_ID                     0x3000
++#define KEY_VALUE_CREATE_AND_EXIT            0x3001
++#define KEY_VALUE_NO_CREATE_AND_EXIT         0x3002
+ #define LABEL_END                            0xffff
+ 
+ #endif
+-- 
+2.6.4.windows.1
+

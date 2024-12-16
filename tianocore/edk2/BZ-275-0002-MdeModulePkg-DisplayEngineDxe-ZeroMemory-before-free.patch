@@ -1,0 +1,67 @@
+From a3c08273dde1c86917b9ae6ab4066686bdd26d6b Mon Sep 17 00:00:00 2001
+From: Dandan Bi <dandan.bi@intel.com>
+Date: Thu, 14 Mar 2019 16:53:28 +0800
+Subject: [patch 2/2] MdeModulePkg/DisplayEngineDxe: ZeroMemory before free
+
+Signed-off-by: Dandan Bi <dandan.bi@intel.com>
+---
+ MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c b/MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c
+index 709dabc7f5..bfbd6a52bc 100644
+--- a/MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c
++++ b/MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c
+@@ -827,10 +827,11 @@ PasswordProcess (
+     //
+     // Old password exist, ask user for the old password
+     //
+     Status = ReadString (MenuOption, gPromptForPassword, StringPtr);
+     if (EFI_ERROR (Status)) {
++      ZeroMem (StringPtr, (Maximum + 1) * sizeof (CHAR16));
+       FreePool (StringPtr);
+       return Status;
+     }
+ 
+     //
+@@ -844,11 +845,11 @@ PasswordProcess (
+         //
+         PasswordInvalid ();
+       } else {
+         Status = EFI_SUCCESS;
+       }
+-
++      ZeroMem (StringPtr, (Maximum + 1) * sizeof (CHAR16));
+       FreePool (StringPtr);
+       return Status;
+     }
+   }
+ 
+@@ -860,10 +861,11 @@ PasswordProcess (
+   if (EFI_ERROR (Status)) {
+     //
+     // Reset state machine for password
+     //
+     Question->PasswordCheck (gFormData, Question, NULL);
++    ZeroMem (StringPtr, (Maximum + 1) * sizeof (CHAR16));
+     FreePool (StringPtr);
+     return Status;
+   }
+ 
+   //
+@@ -875,10 +877,12 @@ PasswordProcess (
+   if (EFI_ERROR (Status)) {
+     //
+     // Reset state machine for password
+     //
+     Question->PasswordCheck (gFormData, Question, NULL);
++    ZeroMem (StringPtr, (Maximum + 1) * sizeof (CHAR16));
++    ZeroMem (TempString, (Maximum + 1) * sizeof (CHAR16));
+     FreePool (StringPtr);
+     FreePool (TempString);
+     return Status;
+   }
+ 
+-- 
+2.18.0.windows.1
+

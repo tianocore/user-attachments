@@ -1,0 +1,58 @@
+From c46d122cac81ec3768b63b1e5ce2b138ff1c4878 Mon Sep 17 00:00:00 2001
+From: Michael Kubacki <mikuback@microsoft.com>
+Date: Sun, 8 Mar 2020 19:50:16 -0700
+Subject: [PATCH v1 1/1] OvmfPkg/X86QemuLoadImageLib: Fix compiler warning
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2582
+
+The local variable CommandLineSize in QemuLoadKernelImage () is declared
+a UINTN type variable. It is initialized with a UINT32 value and later
+another UINT32 variable (KernelLoadedImage->LoadOptionsSize) is set to
+the value of CommandLineSize.
+
+The local variable is now declared UINT32 to prevent a compiler
+warning (on VS2019) and avoid an explicit cast on assignment to
+KernelLoadedImage->LoadOptionsSize.
+
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: Laszlo Ersek <lersek@redhat.com>
+Cc: Jordan Justen <jordan.l.justen@intel.com>
+Fixes: 7c47d89003a6f8f7f6f0ce8ca7d3e87c630d14cc
+Signed-off-by: Michael Kubacki <michael.kubacki@microsoft.com>
+---
+ OvmfPkg/Library/X86QemuLoadImageLib/X86QemuLoadImageLib.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/OvmfPkg/Library/X86QemuLoadImageLib/X86QemuLoadImageLib.c b/OvmfPkg/Library/X86QemuLoadImageLib/X86QemuLoadImageLib.c
+index 1868c9fcafdf..d046259ec796 100644
+--- a/OvmfPkg/Library/X86QemuLoadImageLib/X86QemuLoadImageLib.c
++++ b/OvmfPkg/Library/X86QemuLoadImageLib/X86QemuLoadImageLib.c
+@@ -4,6 +4,7 @@
+ 
+   Copyright (c) 2006 - 2015, Intel Corporation. All rights reserved.<BR>
+   Copyright (c) 2020, ARM Ltd. All rights reserved.<BR>
++  Copyright (c) Microsoft Corporation.<BR>
+ 
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ **/
+@@ -287,7 +288,7 @@ QemuLoadKernelImage (
+   EFI_STATUS                Status;
+   EFI_HANDLE                KernelImageHandle;
+   EFI_LOADED_IMAGE_PROTOCOL *KernelLoadedImage;
+-  UINTN                     CommandLineSize;
++  UINT32                    CommandLineSize;
+   CHAR8                     *CommandLine;
+   UINTN                     InitrdSize;
+ 
+@@ -357,7 +358,7 @@ QemuLoadKernelImage (
+   ASSERT_EFI_ERROR (Status);
+ 
+   QemuFwCfgSelectItem (QemuFwCfgItemCommandLineSize);
+-  CommandLineSize = (UINTN)QemuFwCfgRead32 ();
++  CommandLineSize = QemuFwCfgRead32 ();
+ 
+   if (CommandLineSize == 0) {
+     KernelLoadedImage->LoadOptionsSize = 0;
+-- 
+2.16.3.windows.1
+

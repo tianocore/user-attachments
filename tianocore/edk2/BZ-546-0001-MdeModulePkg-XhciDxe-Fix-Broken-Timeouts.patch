@@ -1,0 +1,140 @@
+From 930827fab60d6d1adcbaf09b17129d5f164fbf7a Mon Sep 17 00:00:00 2001
+Message-Id: <930827fab60d6d1adcbaf09b17129d5f164fbf7a.1598306643.git.patrick.henz@hpe.com>
+In-Reply-To: <cover.1598306643.git.patrick.henz@hpe.com>
+References: <cover.1598306643.git.patrick.henz@hpe.com>
+From: henz <patrick.henz@hpe.com>
+Date: Mon, 24 Aug 2020 14:58:44 -0500
+Subject: [PATCH 1/1] MdeModulePkg/XhciDxe: Fix Broken Timeouts
+
+Timeouts in the XhciDxe driver are taking longer than
+expected due to the timeout loops not accounting for
+code execution time. As en example, 5 second timeouts
+have been observed to take around 36 seconds to complete.
+Use SetTimer and Create/CheckEvent from Boot Services to
+determine when timeout occurred.
+
+Signed-off-by: Patrick Henz <patrick.henz@hpe.com>
+---
+ MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c   | 28 ++++++++++++++++---
+ MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c | 34 +++++++++++++++++-------
+ 2 files changed, 49 insertions(+), 13 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c b/MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c
+index 42b773ab31..5f7507f0a5 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c
+@@ -442,17 +442,37 @@ XhcWaitOpRegBit (
+   IN UINT32               Timeout
+   )
+ {
+-  UINT32                  Index;
+-  UINT64                  Loop;
++  EFI_STATUS Status;
++  EFI_EVENT  TimeoutEvent;
+ 
+-  Loop   = Timeout * XHC_1_MILLISECOND;
++  if (Timeout == 0) {
++    return EFI_TIMEOUT;
++  }
++
++  Status = gBS->CreateEvent (
++                  EVT_TIMER,
++                  TPL_CALLBACK,
++                  NULL,
++                  NULL,
++                  &TimeoutEvent
++                  );
+ 
+-  for (Index = 0; Index < Loop; Index++) {
++  if (!EFI_ERROR (Status)) {
++    Status = gBS->SetTimer (TimeoutEvent,
++                            TimerRelative,
++                            EFI_TIMER_PERIOD_MILLISECONDS(Timeout));
++  }
++
++  do {
+     if (XHC_REG_BIT_IS_SET (Xhc, Offset, Bit) == WaitToSet) {
+       return EFI_SUCCESS;
+     }
+ 
+     gBS->Stall (XHC_1_MICROSECOND);
++  } while (!EFI_ERROR(Status) && EFI_ERROR(gBS->CheckEvent (TimeoutEvent)));
++
++  if (TimeoutEvent != NULL) {
++    gBS->CloseEvent (TimeoutEvent);
+   }
+ 
+   return EFI_TIMEOUT;
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c b/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
+index ab8957c546..cf271f0493 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/XhciSched.c
+@@ -1273,11 +1273,11 @@ XhcExecTransfer (
+   )
+ {
+   EFI_STATUS              Status;
+-  UINTN                   Index;
+-  UINT64                  Loop;
+   UINT8                   SlotId;
+   UINT8                   Dci;
+   BOOLEAN                 Finished;
++  EFI_EVENT               TimeoutEvent;
++  EFI_STATUS              TimerStatus;
+ 
+   if (CmdTransfer) {
+     SlotId = 0;
+@@ -1292,28 +1292,44 @@ XhcExecTransfer (
+   }
+ 
+   Status = EFI_SUCCESS;
+-  Loop   = Timeout * XHC_1_MILLISECOND;
+-  if (Timeout == 0) {
+-    Loop = 0xFFFFFFFF;
+-  }
++
++  TimerStatus = gBS->CreateEvent (
++                       EVT_TIMER,
++                       TPL_CALLBACK,
++                       NULL,
++                       NULL,
++                       &TimeoutEvent
++                       );
+ 
+   XhcRingDoorBell (Xhc, SlotId, Dci);
+ 
+-  for (Index = 0; Index < Loop; Index++) {
++  if (!EFI_ERROR (TimerStatus)) {
++    TimerStatus = gBS->SetTimer (TimeoutEvent,
++                                 TimerRelative,
++                                 (0 == Timeout)?
++                                 (EFI_TIMER_PERIOD_MICROSECONDS(0xFFFFFFFF)):
++                                 (EFI_TIMER_PERIOD_MILLISECONDS(Timeout)));
++  }
++
++  do {
+     Finished = XhcCheckUrbResult (Xhc, Urb);
+     if (Finished) {
+       break;
+     }
+     gBS->Stall (XHC_1_MICROSECOND);
+-  }
++  } while (!EFI_ERROR(TimerStatus) && EFI_ERROR(gBS->CheckEvent (TimeoutEvent)));
+ 
+-  if (Index == Loop) {
++  if (!Finished) {
+     Urb->Result = EFI_USB_ERR_TIMEOUT;
+     Status      = EFI_TIMEOUT;
+   } else if (Urb->Result != EFI_USB_NOERROR) {
+     Status      = EFI_DEVICE_ERROR;
+   }
+ 
++  if (TimeoutEvent != NULL) {
++    gBS->CloseEvent (TimeoutEvent);
++  }
++
+   return Status;
+ }
+ 
+-- 
+2.27.0
+

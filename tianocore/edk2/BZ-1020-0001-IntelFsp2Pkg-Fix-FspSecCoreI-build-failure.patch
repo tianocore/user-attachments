@@ -1,0 +1,65 @@
+From 68dd30b19c0b62f16dda33ed67dd4a599d44c2ff Mon Sep 17 00:00:00 2001
+From: Chasel Chiu <chasel.chiu@intel.com>
+Date: Wed, 7 Sep 2022 08:46:06 -0700
+Subject: [PATCH] IntelFsp2Pkg: Fix FspSecCoreI build failure.
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4049
+
+Link error occurred in certain compiling environment when building
+FspSecCoreI: unresolved external symbol _TempRamInitApi.
+
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+Signed-off-by: Chasel Chiu <chasel.chiu@intel.com>
+---
+ IntelFsp2Pkg/FspSecCore/Ia32/FspApiEntryI.nasm | 11 +++++++++++
+ IntelFsp2Pkg/FspSecCore/X64/FspApiEntryI.nasm  | 11 +++++++++++
+ 2 files changed, 22 insertions(+)
+
+diff --git a/IntelFsp2Pkg/FspSecCore/Ia32/FspApiEntryI.nasm b/IntelFsp2Pkg/FspSecCore/Ia32/FspApiEntryI.nasm
+index e9365d6832..e392ebed58 100644
+--- a/IntelFsp2Pkg/FspSecCore/Ia32/FspApiEntryI.nasm
++++ b/IntelFsp2Pkg/FspSecCore/Ia32/FspApiEntryI.nasm
+@@ -22,6 +22,17 @@ global ASM_PFX(FspApiCommonContinue)
+ ASM_PFX(FspApiCommonContinue):
+   jmp $
+ 
++;----------------------------------------------------------------------------
++; TempRamInit API
++;
++; Empty function for WHOLEARCHIVE build option
++;
++;----------------------------------------------------------------------------
++global ASM_PFX(TempRamInitApi)
++ASM_PFX(TempRamInitApi):
++  jmp $
++  ret
++
+ ;----------------------------------------------------------------------------
+ ; FspSmmInit API
+ ;
+diff --git a/IntelFsp2Pkg/FspSecCore/X64/FspApiEntryI.nasm b/IntelFsp2Pkg/FspSecCore/X64/FspApiEntryI.nasm
+index e74bf0a26b..5c9ffbd569 100644
+--- a/IntelFsp2Pkg/FspSecCore/X64/FspApiEntryI.nasm
++++ b/IntelFsp2Pkg/FspSecCore/X64/FspApiEntryI.nasm
+@@ -22,6 +22,17 @@ global ASM_PFX(FspApiCommonContinue)
+ ASM_PFX(FspApiCommonContinue):
+   jmp $
+ 
++;----------------------------------------------------------------------------
++; TempRamInit API
++;
++; Empty function for WHOLEARCHIVE build option
++;
++;----------------------------------------------------------------------------
++global ASM_PFX(TempRamInitApi)
++ASM_PFX(TempRamInitApi):
++  jmp $
++  ret
++
+ ;----------------------------------------------------------------------------
+ ; FspSmmInit API
+ ;
+-- 
+2.35.0.windows.1
+

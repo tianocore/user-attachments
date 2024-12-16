@@ -1,0 +1,310 @@
+From 62e1e88ae41ac971f0b26ad9e76c94d069828176 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:53:57 +0530
+Subject: [PATCH 1/2] MdeModulePkg/Universal/SetupBrowserDxe: Fix FORWARD_NULL
+ Coverity issues
+
+As per Coverity reports, at various code points in RELEASE mode, the
+code dereference some variable/field which will lead to CRASH if that
+variable/field value is NULL.
+
+Hence, for safety add NULL pointer check at relevant points.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4254
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../Universal/SetupBrowserDxe/Expression.c    |  9 ++
+ .../Universal/SetupBrowserDxe/IfrParse.c      | 89 ++++++++++++++++++-
+ .../Universal/SetupBrowserDxe/Presentation.c  |  4 +
+ 3 files changed, 101 insertions(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/SetupBrowserDxe/Expression.c b/MdeModulePkg/Universal/SetupBrowserDxe/Expression.c
+index d21930b31a07..4693827a3e0a 100644
+--- a/MdeModulePkg/Universal/SetupBrowserDxe/Expression.c
++++ b/MdeModulePkg/Universal/SetupBrowserDxe/Expression.c
+@@ -2492,6 +2492,15 @@ GetQuestionValueFromForm (
+ 
+   ASSERT (Form != NULL);
+ 
++  //
++  // Check if (Form == NULL)
++  // which implies break; didn't happen in while loop above
++  //
++  if (Form == NULL) {
++    GetTheVal = FALSE;
++    goto Done;
++  }
++
+   //
+   // Get the question value.
+   //
+diff --git a/MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c b/MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c
+index ed8f9965bec5..52f331b8f161 100644
+--- a/MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c
++++ b/MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c
+@@ -307,6 +307,10 @@ FindStorageInList (
+       }
+ 
+       ASSERT (StorageName != NULL);
++      if (StorageName == NULL) {
++        return NULL;
++      }
++
+       if (StrCmp (BrowserStorage->Name, StorageName) == 0) {
+         if ((StorageType == EFI_HII_VARSTORE_EFI_VARIABLE) || (StorageType == EFI_HII_VARSTORE_EFI_VARIABLE_BUFFER)) {
+           return BrowserStorage;
+@@ -414,6 +418,9 @@ CreateStorage (
+ 
+   if (StorageType != EFI_HII_VARSTORE_NAME_VALUE) {
+     ASSERT (StorageName != NULL);
++    if (StorageName == NULL) {
++      return NULL;
++    }
+ 
+     UnicodeString = AllocateZeroPool (AsciiStrSize (StorageName) * 2);
+     ASSERT (UnicodeString != NULL);
+@@ -573,11 +580,19 @@ InitializeRequestElement (
+   FORM_BROWSER_CONFIG_REQUEST  *ConfigInfo;
+   UINTN                        MaxLen;
+ 
++  if (FormSet == NULL) {
++    return EFI_INVALID_PARAMETER;
++  }
++
+   Storage = Question->Storage;
+   if (Storage == NULL) {
+     return EFI_INVALID_PARAMETER;
+   }
+ 
++  if (Form == NULL) {
++    return EFI_INVALID_PARAMETER;
++  }
++
+   if (Storage->Type == EFI_HII_VARSTORE_EFI_VARIABLE) {
+     //
+     // <ConfigRequest> is unnecessary for EFI variable storage,
+@@ -1374,6 +1389,10 @@ ParseOpCodes (
+ 
+         case EFI_IFR_THIS_OP:
+           ASSERT (ParentStatement != NULL);
++          if (ParentStatement == NULL) {
++            return EFI_OUT_OF_RESOURCES;
++          }
++
+           ExpressionOpCode->QuestionId = ParentStatement->QuestionId;
+           break;
+ 
+@@ -1559,6 +1578,10 @@ ParseOpCodes (
+       }
+ 
+       ASSERT (CurrentExpression != NULL);
++      if (CurrentExpression == NULL) {
++        return EFI_OUT_OF_RESOURCES;
++      }
++
+       InsertTailList (&CurrentExpression->OpCodeListHead, &ExpressionOpCode->Link);
+       if (Operand == EFI_IFR_MAP_OP) {
+         //
+@@ -2114,6 +2137,10 @@ ParseOpCodes (
+       // Default
+       //
+       case EFI_IFR_DEFAULT_OP:
++        if (ParentStatement == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         //
+         // EFI_IFR_DEFAULT appear in scope of a Question,
+         // It creates a default value for the current question.
+@@ -2150,6 +2177,10 @@ ParseOpCodes (
+       //
+       case EFI_IFR_ONE_OF_OPTION_OP:
+         ASSERT (ParentStatement != NULL);
++        if (ParentStatement == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         if ((ParentStatement->Operand == EFI_IFR_ORDERED_LIST_OP) && ((((EFI_IFR_ONE_OF_OPTION *)OpCodeData)->Flags & (EFI_IFR_OPTION_DEFAULT | EFI_IFR_OPTION_DEFAULT_MFG)) != 0)) {
+           //
+           // It's keep the default value for ordered list opcode.
+@@ -2256,6 +2287,10 @@ ParseOpCodes (
+       //
+       case EFI_IFR_NO_SUBMIT_IF_OP:
+       case EFI_IFR_INCONSISTENT_IF_OP:
++        if (ParentStatement == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         //
+         // Create an Expression node
+         //
+@@ -2281,6 +2316,10 @@ ParseOpCodes (
+         break;
+ 
+       case EFI_IFR_WARNING_IF_OP:
++        if (ParentStatement == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         //
+         // Create an Expression node
+         //
+@@ -2332,6 +2371,10 @@ ParseOpCodes (
+         break;
+ 
+       case EFI_IFR_GRAY_OUT_IF_OP:
++        if (CurrentForm == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         //
+         // Questions will appear in scope of this OpCode
+         //
+@@ -2385,6 +2428,10 @@ ParseOpCodes (
+       // Expression
+       //
+       case EFI_IFR_VALUE_OP:
++        if (CurrentForm == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         CurrentExpression       = CreateExpression (CurrentForm, OpCodeData);
+         CurrentExpression->Type = EFI_HII_EXPRESSION_VALUE;
+         InsertTailList (&CurrentForm->ExpressionListHead, &CurrentExpression->Link);
+@@ -2404,6 +2451,10 @@ ParseOpCodes (
+           // file is wrongly generated by tools such as VFR Compiler. There may be a bug in VFR Compiler.
+           //
+           ASSERT (ParentStatement != NULL);
++          if (ParentStatement == NULL) {
++            return EFI_OUT_OF_RESOURCES;
++          }
++
+           ParentStatement->ValueExpression = CurrentExpression;
+         }
+ 
+@@ -2418,6 +2469,10 @@ ParseOpCodes (
+         break;
+ 
+       case EFI_IFR_RULE_OP:
++        if (CurrentForm == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         CurrentExpression       = CreateExpression (CurrentForm, OpCodeData);
+         CurrentExpression->Type = EFI_HII_EXPRESSION_RULE;
+ 
+@@ -2435,6 +2490,10 @@ ParseOpCodes (
+         break;
+ 
+       case EFI_IFR_READ_OP:
++        if (CurrentForm == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         CurrentExpression       = CreateExpression (CurrentForm, OpCodeData);
+         CurrentExpression->Type = EFI_HII_EXPRESSION_READ;
+         InsertTailList (&CurrentForm->ExpressionListHead, &CurrentExpression->Link);
+@@ -2445,6 +2504,10 @@ ParseOpCodes (
+         // file is wrongly generated by tools such as VFR Compiler. There may be a bug in VFR Compiler.
+         //
+         ASSERT (ParentStatement != NULL);
++        if (ParentStatement == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         ParentStatement->ReadExpression = CurrentExpression;
+ 
+         //
+@@ -2458,6 +2521,10 @@ ParseOpCodes (
+         break;
+ 
+       case EFI_IFR_WRITE_OP:
++        if (CurrentForm == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         CurrentExpression       = CreateExpression (CurrentForm, OpCodeData);
+         CurrentExpression->Type = EFI_HII_EXPRESSION_WRITE;
+         InsertTailList (&CurrentForm->ExpressionListHead, &CurrentExpression->Link);
+@@ -2468,6 +2535,10 @@ ParseOpCodes (
+         // file is wrongly generated by tools such as VFR Compiler. There may be a bug in VFR Compiler.
+         //
+         ASSERT (ParentStatement != NULL);
++        if (ParentStatement == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         ParentStatement->WriteExpression = CurrentExpression;
+ 
+         //
+@@ -2526,6 +2597,10 @@ ParseOpCodes (
+       //
+       case EFI_IFR_REFRESH_OP:
+         ASSERT (ParentStatement != NULL);
++        if (ParentStatement == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         ParentStatement->RefreshInterval = ((EFI_IFR_REFRESH *)OpCodeData)->RefreshInterval;
+         break;
+ 
+@@ -2559,6 +2634,10 @@ ParseOpCodes (
+       //
+       case EFI_IFR_MODAL_TAG_OP:
+         ASSERT (CurrentForm != NULL);
++        if (CurrentForm == NULL) {
++          return EFI_OUT_OF_RESOURCES;
++        }
++
+         CurrentForm->ModalForm = TRUE;
+         break;
+ 
+@@ -2575,11 +2654,19 @@ ParseOpCodes (
+           case EFI_IFR_FORM_OP:
+           case EFI_IFR_FORM_MAP_OP:
+             ASSERT (CurrentForm != NULL);
++            if (CurrentForm == NULL) {
++              return EFI_OUT_OF_RESOURCES;
++            }
++
+             CurrentForm->Locked = TRUE;
+             break;
+ 
+           default:
+             ASSERT (ParentStatement != NULL);
++            if (ParentStatement == NULL) {
++              return EFI_OUT_OF_RESOURCES;
++            }
++
+             ParentStatement->Locked = TRUE;
+         }
+ 
+@@ -2734,7 +2821,7 @@ ParseOpCodes (
+         break;
+     }
+ 
+-    if (IsStatementOpCode (Operand)) {
++    if (IsStatementOpCode (Operand) && (CurrentStatement != NULL)) {
+       CurrentStatement->ParentStatement = ParentStatement;
+       if (Scope != 0) {
+         //
+diff --git a/MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c b/MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c
+index babef214974e..ea4480414e60 100644
+--- a/MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c
++++ b/MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c
+@@ -1608,6 +1608,10 @@ ProcessUserInput (
+     gCurrentSelection->Statement = NULL;
+   } else {
+     ASSERT (Statement != NULL);
++    if (Statement == NULL) {
++      return Status;
++    }
++
+     gCurrentSelection->Statement = Statement;
+     switch (Statement->Operand) {
+       case EFI_IFR_REF_OP:
+-- 
+2.36.1.windows.1
+

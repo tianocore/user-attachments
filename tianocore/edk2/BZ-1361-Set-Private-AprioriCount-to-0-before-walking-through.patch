@@ -1,0 +1,25 @@
+From b730ff8128196b4bbe40a507a0ce1e2ff150509e Mon Sep 17 00:00:00 2001
+From: "wendy.liao" <wendy.liao@insyde.com>
+Date: Wed, 3 May 2023 11:04:12 +0800
+Subject: [PATCH] Set Private->AprioriCount to 0 before walking through the
+ next FV
+
+---
+ MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c b/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
+index d8284f9f4f..5f32ebb560 100644
+--- a/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
++++ b/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
+@@ -1630,6 +1630,7 @@ PeiDispatcher (
+       Private->CurrentFileHandle    = NULL;
+       Private->CurrentPeimCount     = 0;
+       Private->CurrentFvFileHandles = NULL;
++      Private->AprioriCount         = 0;
+     }
+ 
+     //
+-- 
+2.29.2.windows.2
+

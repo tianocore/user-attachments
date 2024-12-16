@@ -1,0 +1,16 @@
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdeModulePkg/Logo/LogoDxe/OUTPUT/LogoDxe.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdeModulePkg/Logo/LogoDxe/OUTPUT/LogoDxehii.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/BaseMemoryLibOptDxe/BaseMemoryLibOptDxe/OUTPUT/BaseMemoryLibOptDxe.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/DxePcdLib/DxePcdLib/OUTPUT/DxePcdLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/BaseLib/BaseLib/OUTPUT/BaseLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/BaseIoLibIntrinsic/BaseIoLibIntrinsicArmVirt/OUTPUT/BaseIoLibIntrinsicArmVirt.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/ArmVirtPkg/Library/ArmVirtDxeHobLib/ArmVirtDxeHobLib/OUTPUT/ArmVirtDxeHobLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/ArmPlatformPkg/Library/PL011UartLib/PL011UartLib/OUTPUT/PL011UartLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib/OUTPUT/BaseDebugPrintErrorLevelLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/BasePrintLib/BasePrintLib/OUTPUT/BasePrintLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/ArmVirtPkg/Library/FdtPL011SerialPortLib/FdtPL011SerialPortLib/OUTPUT/FdtPL011SerialPortLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort/OUTPUT/BaseDebugLibSerialPort.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib/OUTPUT/UefiBootServicesTableLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint/OUTPUT/UefiDriverEntryPoint.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib/OUTPUT/BaseStackCheckLib.lib
+/home/dannf/git/edk2.debug/Build/ArmVirtQemu-ARM/DEBUG_GCC49/ARM/ArmPkg/Library/CompilerIntrinsicsLib/CompilerIntrinsicsLib/OUTPUT/CompilerIntrinsicsLib.lib

@@ -1,0 +1,50 @@
+From 91fee9b929654e7ecbc9388adc24642211f8b96b Mon Sep 17 00:00:00 2001
+Message-Id: <91fee9b929654e7ecbc9388adc24642211f8b96b.1603954985.git.zhuyanming@byosoft.com.cn>
+In-Reply-To: <cover.1603954985.git.zhuyanming@byosoft.com.cn>
+References: <cover.1603954985.git.zhuyanming@byosoft.com.cn>
+From: Yanming Zhu <zhuyanming@byosoft.com.cn>
+Date: Thu, 29 Oct 2020 14:56:39 +0800
+Subject: [PATCH 3/3] EmulatorPkg/Cpu.c:Add PROCESSOR_CHARACTERISTIC_FLAGS
+ struct information
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=2952
+
+Add PROCESSOR_CHARACTERISTIC_FLAGS struct information in
+SMBIOS_TABLE_TYPE4 mCpuSmbiosType4 parameter
+
+Cc: Jordan Justen <jordan.l.justen@intel.com>
+Cc: Andrew Fish <afish@apple.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Reviewed-by: Liming Gao <liming.gao@intel.com>
+Signed-off-by: Yanming Zhu <zhuyanming@byosoft.com.cn>
+---
+ EmulatorPkg/CpuRuntimeDxe/Cpu.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/EmulatorPkg/CpuRuntimeDxe/Cpu.c b/EmulatorPkg/CpuRuntimeDxe/Cpu.c
+index 00e93016af..8067ea7087 100644
+--- a/EmulatorPkg/CpuRuntimeDxe/Cpu.c
++++ b/EmulatorPkg/CpuRuntimeDxe/Cpu.c
+@@ -90,6 +90,19 @@ SMBIOS_TABLE_TYPE4 mCpuSmbiosType4 = {
+       0, //  ProcessorReserved3 :1;
+       0, //  ProcessorTm        :1;
+       0, //  ProcessorReserved4 :2;
++    },
++    {
++       // PROCESSOR_CHARACTERISTIC_FLAGS
++      0, //  ProcessorReserved1             :1;
++      0, //  ProcessorUnknown               :1;
++      0, //  Processor64BitCapble           :1;
++      0, //  ProcessorMultiCore             :1;
++      0, //  ProcessorHardwareThread        :1;
++      0, //  ProcessorExecuteProtection     :1;
++      0, //  ProcessorEnhancedVirtulization :1;
++      0, //  ProcessorPowerPerformanceCtrl  :1;
++      0, //  Processor128bitCapble          :1;
++      0, //  ProcessorReserved2             :7;
+     }
+   },
+   3,                    // ProcessorVersion String;
+-- 
+2.28.0.windows.1
+

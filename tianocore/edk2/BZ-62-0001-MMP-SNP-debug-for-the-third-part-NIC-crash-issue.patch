@@ -1,0 +1,80 @@
+From 7069157637c470ed216eb92175068ea7f504159e Mon Sep 17 00:00:00 2001
+From: Jiaxin Wu <jiaxin.wu@intel.com>
+Date: Wed, 10 May 2017 23:27:32 +0800
+Subject: [Patch] MMP/SNP debug for the third part NIC crash issue.
+
+---
+ MdeModulePkg/Universal/Network/MnpDxe/MnpConfig.c  | 1 +
+ MdeModulePkg/Universal/Network/MnpDxe/MnpIo.c      | 1 +
+ MdeModulePkg/Universal/Network/SnpDxe/Get_status.c | 3 +++
+ 3 files changed, 5 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/Network/MnpDxe/MnpConfig.c b/MdeModulePkg/Universal/Network/MnpDxe/MnpConfig.c
+index d1a4cb5..540f821 100644
+--- a/MdeModulePkg/Universal/Network/MnpDxe/MnpConfig.c
++++ b/MdeModulePkg/Universal/Network/MnpDxe/MnpConfig.c
+@@ -403,10 +403,11 @@ MnpRecycleTxBuf (
+     if (EFI_ERROR (Status)) {
+       return Status;
+     }
+ 
+     if (TxBuf != NULL) {
++      DEBUG ((EFI_D_ERROR, "\nJiaxin--MnpRecycleTxBuf: TxBuf address %p.\n", TxBuf));
+       MnpFreeTxBuf (MnpDeviceData, TxBuf);
+     }
+   } while (TxBuf != NULL);
+ 
+   return EFI_SUCCESS;
+diff --git a/MdeModulePkg/Universal/Network/MnpDxe/MnpIo.c b/MdeModulePkg/Universal/Network/MnpDxe/MnpIo.c
+index ba0f36e..b86ea27 100644
+--- a/MdeModulePkg/Universal/Network/MnpDxe/MnpIo.c
++++ b/MdeModulePkg/Universal/Network/MnpDxe/MnpIo.c
+@@ -265,10 +265,11 @@ MnpSyncSendPacket (
+                   Packet,
+                   TxData->SourceAddress,
+                   TxData->DestinationAddress,
+                   &ProtocolType
+                   );
++  DEBUG ((EFI_D_ERROR, "\nJiaxin--MnpSyncSendPacket: Snp->Transmit Status: %r.\n", Status));
+   if (Status == EFI_NOT_READY) {
+     Status = MnpRecycleTxBuf (MnpDeviceData);
+     if (EFI_ERROR (Status)) {
+       Token->Status = EFI_DEVICE_ERROR;
+       goto SIGNAL_TOKEN;
+diff --git a/MdeModulePkg/Universal/Network/SnpDxe/Get_status.c b/MdeModulePkg/Universal/Network/SnpDxe/Get_status.c
+index 4c3bdae..c560990 100644
+--- a/MdeModulePkg/Universal/Network/SnpDxe/Get_status.c
++++ b/MdeModulePkg/Universal/Network/SnpDxe/Get_status.c
+@@ -116,15 +116,17 @@ PxeGetStatus (
+     }
+ 
+   }
+ 
+   if (GetTransmittedBuf) {
++    DEBUG ((EFI_D_ERROR, "\nJiaxin--PxeGetStatus: Snp->Cdb.StatFlags %xh.\n", Snp->Cdb.StatFlags));
+     if ((Snp->Cdb.StatFlags & PXE_STATFLAGS_GET_STATUS_NO_TXBUFS_WRITTEN) == 0) {
+       //
+       // UNDI has written some transmitted buffer addresses into the DB. Store them into Snp->RecycledTxBuf.
+       //
+       for (Index = 0; Index < MAX_XMIT_BUFFERS; Index++) {
++        DEBUG ((EFI_D_ERROR, "\nJiaxin--PxeGetStatus: Db->TxBuffer[%d] %p.\n", Index, Db->TxBuffer[Index]));
+         if (Db->TxBuffer[Index] != 0) {
+           if (Snp->RecycledTxBufCount == Snp->MaxRecycledTxBuf) {
+             //
+             // Snp->RecycledTxBuf is full, reallocate a new one.
+             //
+@@ -251,10 +253,11 @@ SnpUndi32GetStatus (
+     if (Snp->RecycledTxBufCount == 0) {
+       *TxBuf = NULL;
+     } else {
+       Snp->RecycledTxBufCount--;
+       *TxBuf = (VOID *) (UINTN) Snp->RecycledTxBuf[Snp->RecycledTxBufCount];
++       DEBUG ((EFI_D_ERROR, "\nJiaxin--SnpUndi32GetStatus: TxBuf address %p.\n", *TxBuf));
+     }
+   }
+ 
+ ON_EXIT:
+   gBS->RestoreTPL (OldTpl);
+-- 
+1.9.5.msysgit.1
+

@@ -1,0 +1,45 @@
+From e513ad48dd25047a4f155e8cf700c6de959f895d Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:27:00 +0530
+Subject: [PATCH 1/2] SecurityPkg/Tcg/Tcg2Config: Fix REVERSE_INULL Coverity
+ issue
+
+The function Tcg2ConfigDriverEntryPoint at the point of creating a
+private data structure makes a call to AllocateCopyPool and stores
+the return value in PrivateData. Thereafter it does a check
+
+    ASSERT (PrivateData != NULL);
+
+but this is applicable only in DEBUG mode. In Release mode, the code
+continues further and will dereference "PrivateData" which will lead
+to CRASH if PrivateData is NULL.
+
+Hence, for safety add PrivateData NULL pointer check and return from
+there saying EFI_OUT_OF_RESOURCES when PrivateData is NULL.
+
+Cc: Qi Zhang <qi1.zhang@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4281
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c b/SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c
+index edf5f0fc77ca..f023b3ccb839 100644
+--- a/SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c
++++ b/SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c
+@@ -283,6 +283,10 @@ Tcg2ConfigDriverEntryPoint (
+   //
+   PrivateData = AllocateCopyPool (sizeof (TCG2_CONFIG_PRIVATE_DATA), &mTcg2ConfigPrivateDateTemplate);
+   ASSERT (PrivateData != NULL);
++  if (PrivateData == NULL) {
++    return EFI_OUT_OF_RESOURCES;
++  }
++
+   mTcg2ConfigPrivateDate = PrivateData;
+   //
+   // Install private GUID.
+-- 
+2.36.1.windows.1
+

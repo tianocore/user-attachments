@@ -1,0 +1,41 @@
+From ba485768db8dd5bc3c4604a31f9eedd9c87b7655 Mon Sep 17 00:00:00 2001
+Message-Id: <ba485768db8dd5bc3c4604a31f9eedd9c87b7655.1603954112.git.zhuyanming@byosoft.com.cn>
+In-Reply-To: <cover.1603954112.git.zhuyanming@byosoft.com.cn>
+References: <cover.1603954112.git.zhuyanming@byosoft.com.cn>
+From: Yanming Zhu <zhuyanming@byosoft.com.cn>
+Date: Thu, 29 Oct 2020 14:42:09 +0800
+Subject: [PATCH 2/2] MdePkg/SmBios.h:SMBIOS3.3.0 add Character in
+ PROCESSOR_ID_DATA .
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=2952
+
+In PROCESSOR_ID_DATA struct add a PROCESSOR_CHARACTERISTIC_FLAGS character
+
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+Reviewed-by: Liming Gao <liming.gao@intel.com>
+Signed-off-by: Yanming Zhu <zhuyanming@byosoft.com.cn>
+---
+ MdePkg/Include/IndustryStandard/SmBios.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/MdePkg/Include/IndustryStandard/SmBios.h b/MdePkg/Include/IndustryStandard/SmBios.h
+index ea23685851..7314b2a292 100644
+--- a/MdePkg/Include/IndustryStandard/SmBios.h
++++ b/MdePkg/Include/IndustryStandard/SmBios.h
+@@ -875,8 +875,9 @@ typedef struct {
+ } PROCESSOR_CHARACTERISTIC_FLAGS;
+ 
+ typedef struct {
+-  PROCESSOR_SIGNATURE     Signature;
+-  PROCESSOR_FEATURE_FLAGS FeatureFlags;
++  PROCESSOR_SIGNATURE            Signature;
++  PROCESSOR_FEATURE_FLAGS        FeatureFlags;
++  PROCESSOR_CHARACTERISTIC_FLAGS CharacteristicFlags;
+ } PROCESSOR_ID_DATA;
+ 
+ ///
+-- 
+2.28.0.windows.1
+

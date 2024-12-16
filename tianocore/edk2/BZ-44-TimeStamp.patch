@@ -1,0 +1,17 @@
+14ee6c26d14dab84cb85def3be44ac0a2d32de2a
+ MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c b/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
+index f5b6a5f93ea6..c121d2ab60a5 100644
+--- a/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
++++ b/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
+@@ -2508,6 +2508,8 @@ UpdateVariable (
+         if (Variable->CurrPtr != NULL) {
+           if (VariableCompareTimeStampInternal (&(((AUTHENTICATED_VARIABLE_HEADER *) CacheVariable->CurrPtr)->TimeStamp), TimeStamp)) {
+             CopyMem (&AuthVariable->TimeStamp, TimeStamp, sizeof (EFI_TIME));
++          } else {
++            CopyMem (&AuthVariable->TimeStamp, &(((AUTHENTICATED_VARIABLE_HEADER *) CacheVariable->CurrPtr)->TimeStamp), sizeof (EFI_TIME));
+           }
+         }
+       }

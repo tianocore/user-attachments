@@ -1,0 +1,25 @@
+From 54faa7ac90ec6202912c4a10d79f17a1210586dc Mon Sep 17 00:00:00 2001
+From: BrentHoltsclaw <brent.holtsclaw@intel.com>
+Date: Thu, 16 May 2019 18:21:58 -0700
+Subject: [PATCH] fix IScsiOnR2TRcvd Integer Overflow
+
+---
+ NetworkPkg/IScsiDxe/IScsiProto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/NetworkPkg/IScsiDxe/IScsiProto.c b/NetworkPkg/IScsiDxe/IScsiProto.c
+index 1602a26132..5ec6b47672 100644
+--- a/NetworkPkg/IScsiDxe/IScsiProto.c
++++ b/NetworkPkg/IScsiDxe/IScsiProto.c
+@@ -2724,7 +2724,7 @@ IScsiOnR2TRcvd (
+   XferContext->Offset             = R2THdr->BufferOffset;
+   XferContext->DesiredLength      = R2THdr->DesiredDataTransferLength;
+ 
+-  if (((XferContext->Offset + XferContext->DesiredLength) > Packet->OutTransferLength) ||
++  if ( (Packet->OutTransferLength < XferContext->DesiredLength) || ((XferContext->Offset > Packet->OutTransferLength - XferContext->DesiredLength) ||
+       (XferContext->DesiredLength > Tcb->Conn->Session->MaxBurstLength)
+       ) {
+     return EFI_PROTOCOL_ERROR;
+-- 
+2.20.1.windows.1
+

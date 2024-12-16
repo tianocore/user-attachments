@@ -1,0 +1,40 @@
+From b5db0941b441201fd6e954e5035def1315a6c261 Mon Sep 17 00:00:00 2001
+Message-Id: <b5db0941b441201fd6e954e5035def1315a6c261.1715592959.git.mohitx.kumar@intel.com>
+From: Mohit Kumar <mohitx.kumar@intel.com>
+Date: Mon, 13 May 2024 14:44:47 +0530
+Subject: [PATCH] Edk2/MdeModulePkg: Handling error mRscHandlerProtocol failure
+ for REL build
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=4743
+
+There is no Error handling in FirmwarePerformanceCommonEntryPoint()
+for gMmst->MmLocateProtocol for RELEASE build
+and then code will execute at NULL + Register offset.
+Note that the GUID is within the Depex list so for this to fail,
+the management mode module installing this protocol would have to fail.
+
+Signed-off-by: Mohit Kumar <mohitx.kumar@intel.com>
+Reviewed-by: Siddharth Pg <siddharth.pg@intel.com>
+---
+ .../FirmwarePerformanceCommon.c                              | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableSmm/FirmwarePerformanceCommon.c b/MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableSmm/FirmwarePerformanceCommon.c
+index 9046896c55..660c5b52cf 100644
+--- a/MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableSmm/FirmwarePerformanceCommon.c
++++ b/MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableSmm/FirmwarePerformanceCommon.c
+@@ -152,7 +152,10 @@ FirmwarePerformanceCommonEntryPoint (
+                     NULL,
+                     (VOID **)&mRscHandlerProtocol
+                     );
+-  ASSERT_EFI_ERROR (Status);
++  if (EFI_ERROR (Status)) {
++    ASSERT_EFI_ERROR (Status);
++    return Status;
++  }
+ 
+   //
+   // Register report status code listener for BootRecords and S3 Suspend Start and End.
+-- 
+2.27.0.windows.1
+

@@ -1,0 +1,36 @@
+From b02895367351167b5d1627934111b7f379259805 Mon Sep 17 00:00:00 2001
+From: Yanming Zhu <zhuyanming@byosoft.com.cn>
+Date: Wed, 16 Dec 2020 16:44:21 +0800
+Subject: [PATCH 3/3] MinPlatformPkg: Add a Lib for MinPlatformPkg.
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3036
+
+MinDsdt is missing a LibraryClasses dependency for
+MemoryAllocationLib,so I add it for this.
+
+Cc:Chasel Chiu <chasel.chiu@intel.com>
+Cc:Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc:Liming Gao <gaoliming@byosoft.com.cn>
+Cc:Eric Dong <eric.dong@intel.com>
+
+Signed-off-by: Yanming Zhu <zhuyanming@byosoft.com.cn>
+Reviewed-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ Platform/Intel/MinPlatformPkg/Acpi/MinDsdt/MinDsdt.inf | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Platform/Intel/MinPlatformPkg/Acpi/MinDsdt/MinDsdt.inf b/Platform/Intel/MinPlatformPkg/Acpi/MinDsdt/MinDsdt.inf
+index 1066f13c..3437bc48 100644
+--- a/Platform/Intel/MinPlatformPkg/Acpi/MinDsdt/MinDsdt.inf
++++ b/Platform/Intel/MinPlatformPkg/Acpi/MinDsdt/MinDsdt.inf
+@@ -31,6 +31,7 @@
+   UefiBootServicesTableLib
+   UefiRuntimeServicesTableLib
+   BaseMemoryLib
++  MemoryAllocationLib
+ 
+ [Protocols]
+   gEfiAcpiTableProtocolGuid                     ## CONSUMES
+-- 
+2.28.0.windows.1
+

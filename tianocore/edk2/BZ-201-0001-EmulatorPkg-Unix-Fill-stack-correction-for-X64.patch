@@ -1,0 +1,39 @@
+From 52972eb125ee364a105a746ad9ffd392c9f30435 Mon Sep 17 00:00:00 2001
+Message-Id: <52972eb125ee364a105a746ad9ffd392c9f30435.1533608746.git.steven.arnold@dektech.com.au>
+From: Steven Arnold <steven.arnold@dektech.com.au>
+Date: Tue, 7 Aug 2018 11:49:48 +1000
+Subject: [PATCH] EmulatorPkg/Unix: Fill stack correction for X64
+
+The PEI Core dispatcher expects an empty stack to be filled
+with the 32-bit word 0x5AA55AA5.
+---
+ EmulatorPkg/Unix/Host/Host.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/EmulatorPkg/Unix/Host/Host.c b/EmulatorPkg/Unix/Host/Host.c
+index f84b22f..f93c1c4 100644
+--- a/EmulatorPkg/Unix/Host/Host.c
++++ b/EmulatorPkg/Unix/Host/Host.c
+@@ -114,7 +114,7 @@ main (
+   VOID                  *SecFile;
+   CHAR16                *MemorySizeStr;
+   CHAR16                *FirmwareVolumesStr;
+-  UINTN                 *StackPointer;
++  UINT32                *StackPointer;
+   FILE                  *GdbTempFile;
+ 
+   //
+@@ -213,8 +213,8 @@ main (
+     (unsigned long)InitialStackMemory
+     );
+ 
+-  for (StackPointer = (UINTN*) (UINTN) InitialStackMemory;
+-     StackPointer < (UINTN*)(UINTN)((UINTN) InitialStackMemory + (UINT64) InitialStackMemorySize);
++  for (StackPointer = (UINT32*) (UINTN) InitialStackMemory;
++     StackPointer < (UINT32*)(UINTN)((UINTN) InitialStackMemory + (UINT64) InitialStackMemorySize);
+      StackPointer ++) {
+     *StackPointer = 0x5AA55AA5;
+   }
+-- 
+2.7.4
+

@@ -1,0 +1,1248 @@
+From 5393ff32eeb88a63142a1b882e9679169c6eb635 Mon Sep 17 00:00:00 2001
+From: "Abhi.Singh" <Abhi.Singh@arm.com>
+Date: Thu, 17 Aug 2023 10:21:58 -0500
+Subject: [PATCH v1 1/1] uefi-sct/SctPkg: TCG MemoryOverwriteRequest
+
+SCT Platform Reset Check Test
+
+SCT spec: https://bugzilla.tianocore.org/show_bug.cgi?id=4374
+
+Test: https://bugzilla.tianocore.org/show_bug.cgi?id=4419
+
+-Implement initial test infrastructure for all test cases
+ including updates to: CommonGenFramework.sh, UEFI_SCT.dsc,
+ and Category.ini.
+-Add Guid.c and Guid.h files to cover the assertions defined in
+ the SCT spec
+-Add TCGMemoryOverwriteRequestBBTestMain.h to enable any required
+ macros that define states for MOR/MORLOCK
+-Add Platform Reset Check Test
+ -check if the platform creates the MOR & MORLOCK
+  EFI variables as defined in the TCG Spec
+ -sets MOR bit 0 and validate if the platform
+  clears the MOR bit 0 upon reset.
+
+Signed-off-by: Abhi Singh <Abhi.Singh@arm.com>
+Change-Id: I774d5893e5aff47690dadf90c36c7b9e7e7ee584
+---
+ uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc                                                                                                  |   1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTest.inf       |  53 +++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/Guid.h                                    | 276 +++++++++++++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestMain.h     | 138 +++++++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/Guid.c                                    | 129 ++++++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestFunction.c | 418 ++++++++++++++++++++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestMain.c     | 115 ++++++
+ uefi-sct/SctPkg/CommonGenFramework.sh                                                                                              |   1 +
+ uefi-sct/SctPkg/Config/Data/Category.ini                                                                                           |   7 +
+ 9 files changed, 1138 insertions(+)
+
+diff --git a/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc b/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
+index 155490fa39d3..536d5f2ed37a 100644
+--- a/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
++++ b/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
+@@ -235,6 +235,7 @@ [Components]
+ SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTest.inf
+ SctPkg/TestCase/UEFI/EFI/RuntimeServices/TimeServices/BlackBoxTest/TimeServicesBBTest.inf
+ SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTest.inf
++SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTest.inf
+ 
+ SctPkg/TestCase/UEFI/EFI/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTest.inf
+ SctPkg/TestCase/UEFI/EFI/Protocol/Bis/BlackBoxTest/BisBBTest.inf
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTest.inf b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTest.inf
+new file mode 100644
+index 000000000000..35d82043e2e7
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTest.inf
+@@ -0,0 +1,53 @@
++## @file
++#
++#  Copyright 2006 - 2015 Unified EFI, Inc.<BR>
++#  Copyright (c) 2013, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++#
++#  This program and the accompanying materials
++#  are licensed and made available under the terms and conditions of the BSD License
++#  which accompanies this distribution.  The full text of the license may be found at
++#  http://opensource.org/licenses/bsd-license.php
++#
++#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++##
++#/*++
++#
++# Module Name:
++#
++#   TCGMemoryOverwriteRequestBBTest.inf
++#
++# Abstract:
++#
++#   Component description file for TCG MemoryOverwriteRequest UEFI variables Test.
++#
++#--*/
++
++[defines]
++  INF_VERSION          = 0x00010005
++  BASE_NAME            = TCGMemoryOverwriteRequestBBTest
++  FILE_GUID            = ACA989CD-4AEE-45A3-B80F-E9A523BB7164
++  MODULE_TYPE          = UEFI_DRIVER
++  VERSION_STRING       = 1.0
++  ENTRY_POINT          = InitializeTestTCGMemoryOverwriteRequest
++
++[sources.common]
++  TCGMemoryOverwriteRequestBBTestMain.c
++  TCGMemoryOverwriteRequestBBTestMain.h
++  TCGMemoryOverwriteRequestBBTestFunction.c
++  Guid.c
++
++[Packages]
++  MdePkg/MdePkg.dec
++  SctPkg/SctPkg.dec
++  SctPkg/UEFI/UEFI.dec
++
++[LibraryClasses]
++  UefiDriverEntryPoint
++  SctLib
++  EfiTestLib
++
++[Protocols]
++  gEfiTestRecoveryLibraryGuid
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/Guid.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/Guid.h
+new file mode 100644
+index 000000000000..324254b25b08
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/Guid.h
+@@ -0,0 +1,276 @@
++/** @file
++
++  Copyright 2006 - 2016 Unified EFI, Inc.<BR>
++  Copyright (c) 2013, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  guid.h
++
++Abstract:
++
++  GUIDs auto-generated for EFI test assertion.
++
++--*/
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_001_GUID \
++{ 0xd1c31d5f, 0x944f, 0x434c, {0x88, 0x26, 0xa6, 0xfb, 0x00, 0xd4, 0xbb, 0x97 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_002_GUID \
++{ 0xa6c191b1, 0x9bfb, 0x4231, {0xb9, 0x2d, 0x4e, 0xa2, 0x21, 0xf6, 0x4b, 0x5d }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_003_GUID \
++{ 0x34d41a18, 0x8ffe, 0x456b, {0xa4, 0x82, 0x97, 0xb9, 0x9c, 0x50, 0x7d, 0x9e }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_004_GUID \
++{ 0x002519c6, 0x859f, 0x4d25, {0xb1, 0x36, 0xb2, 0xef, 0x61, 0xe5, 0xd9, 0x6f }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_005_GUID \
++{ 0x13e97668, 0xe905, 0x452d, {0xa0, 0x72, 0x03, 0xde, 0xbf, 0x53, 0xdf, 0xa2 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_006_GUID \
++{ 0x94811e97, 0x7513, 0x4099, {0xae, 0xb8, 0x5a, 0x7e, 0x7d, 0x50, 0xb4, 0x99 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_007_GUID \
++{ 0x15378290, 0x17dd, 0x4cbf, {0x8e, 0x8f, 0xc2, 0x4b, 0xc9, 0x09, 0xb4, 0x14 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_008_GUID \
++{ 0x5f0b42ef, 0x3cec, 0x46ad, {0xbc, 0x5b, 0xc3, 0x7a, 0x1d, 0x45, 0x41, 0x29 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_009_GUID \
++{ 0x9665c8d9, 0x267c, 0x4393, {0xa4, 0x72, 0x10, 0x54, 0x43, 0x56, 0x20, 0x21 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_010_GUID \
++{ 0xce655812, 0xcc40, 0x42b0, {0x80, 0xd1, 0xa7, 0x26, 0xdb, 0x14, 0x9e, 0xa8 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_011_GUID \
++{ 0xd34348ad, 0x5d46, 0x4961, {0x91, 0x3e, 0xb1, 0xf2, 0xc5, 0xe7, 0x0f, 0x7d }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_012_GUID \
++{ 0x838311e0, 0x419a, 0x4c92, {0x90, 0x60, 0xbf, 0x94, 0x59, 0xd3, 0xc3, 0x59 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_013_GUID \
++{ 0x12998a9c, 0xc863, 0x4572, {0x80, 0x6c, 0xb6, 0x40, 0x97, 0x91, 0x89, 0x7f }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_014_GUID \
++{ 0xebd4ba26, 0x44c3, 0x464a, {0x88, 0xe3, 0x3b, 0x44, 0x94, 0x88, 0xbb, 0xb8 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_015_GUID \
++{ 0x00920c8e, 0x241d, 0x4da0, {0x8b, 0x59, 0xc3, 0xad, 0xe0, 0xd6, 0x4e, 0xc9 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_016_GUID \
++{ 0x169a43cc, 0x23fa, 0x4887, {0x8b, 0x4f, 0x11, 0xb2, 0xa0, 0x88, 0x4f, 0x63 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_017_GUID \
++{ 0x7c11d0ab, 0x7a84, 0x482b, {0xb7, 0x5a, 0xd7, 0x72, 0x6c, 0x3e, 0xae, 0x0e }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_018_GUID \
++{ 0xbbaa52b6, 0x5576, 0x4acd, {0xb9, 0x5f, 0x86, 0x22, 0x5e, 0xfc, 0xb0, 0x31 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_019_GUID \
++{ 0x60b227e0, 0x9f5c, 0x412c, {0x88, 0x79, 0xd3, 0x59, 0xfc, 0xd0, 0xdd, 0x3f }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_020_GUID \
++{ 0x2eba284a, 0xf701, 0x4c19, {0xbe, 0x5c, 0x39, 0x27, 0xb0, 0x68, 0x4f, 0xd7 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_021_GUID \
++{ 0x9a1b44ae, 0x08ce, 0x474c, {0xa5, 0x8e, 0xa6, 0xe2, 0xcf, 0xaf, 0x91, 0x2c }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_022_GUID \
++{ 0x490d7b39, 0xcad4, 0x4e8c, {0xb1, 0x5d, 0x63, 0xd2, 0x0c, 0xb3, 0xe9, 0x45 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_023_GUID \
++{ 0x397394ae, 0xce01, 0x4350, {0xa2, 0x0c, 0xe1, 0xb3, 0xe8, 0x74, 0xdc, 0x01 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_024_GUID \
++{ 0x9cf27a60, 0x94b5, 0x4e2e, {0xb3, 0x2b, 0x51, 0x0f, 0x24, 0x7a, 0x80, 0xd7 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_025_GUID \
++{ 0x766dc008, 0x2a88, 0x4eed, {0x91, 0x95, 0x46, 0x92, 0xdc, 0xcc, 0x1d, 0xf6 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_026_GUID \
++{ 0x5f66c8e5, 0x1bf8, 0x4af4, {0x86, 0x45, 0xf4, 0x93, 0xa0, 0xee, 0x26, 0x88 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_027_GUID \
++{ 0x1064f6ce, 0xb307, 0x4981, {0xac, 0x8f, 0xe5, 0xca, 0x20, 0x6c, 0x1b, 0x8b }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_028_GUID \
++{ 0x40f2c4e9, 0xe937, 0x426e, {0x98, 0xc5, 0x62, 0xca, 0x23, 0x68, 0x52, 0xd0 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_029_GUID \
++{ 0x6d5dcb4d, 0xe008, 0x41cc, {0x98, 0x32, 0xdf, 0xa8, 0x38, 0xb1, 0xb6, 0x02 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_030_GUID \
++{ 0x29b81ee0, 0x368d, 0x447c, {0x9e, 0xd0, 0xa5, 0xfe, 0xd7, 0x02, 0x65, 0x7b }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_031_GUID \
++{ 0xe88b22ce, 0x3de6, 0x49b0, {0xb2, 0x46, 0x9e, 0x35, 0x98, 0x2b, 0x9b, 0x1c }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_032_GUID \
++{ 0xc8894201, 0x7a3a, 0x47d4, {0xa8, 0x8d, 0xdf, 0x4b, 0x03, 0xff, 0xde, 0x4f }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_033_GUID \
++{ 0x38a813ac, 0x8eb9, 0x46ce, {0xa8, 0x6b, 0x40, 0x8c, 0x07, 0x5f, 0xc7, 0xed }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_034_GUID \
++{ 0x919b8392, 0xcb78, 0x49ff, {0xa3, 0x18, 0x49, 0x78, 0x76, 0xe0, 0xf8, 0xf8 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_035_GUID \
++{ 0x219abaf2, 0x04a9, 0x407c, {0xb5, 0xde, 0xa0, 0x03, 0x6e, 0x65, 0xb0, 0xb9 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_036_GUID \
++{ 0x9a51640a, 0xff14, 0x402b, {0xb0, 0x57, 0xa0, 0xc4, 0xf7, 0x20, 0x8e, 0x44 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_037_GUID \
++{ 0x8ccd0dbb, 0x9b0a, 0x4bfb, {0xa0, 0x7e, 0xc6, 0x06, 0x8b, 0x91, 0x0d, 0xfb }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_038_GUID \
++{ 0xde6f4e17, 0xe375, 0x4dcb, {0x8f, 0x07, 0x77, 0x7e, 0x62, 0x49, 0xea, 0x2c }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_039_GUID \
++{ 0x4ab6927b, 0x5ee4, 0x4748, {0xa4, 0x9d, 0x2d, 0xf3, 0x70, 0x01, 0x41, 0xd5 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_040_GUID \
++{ 0x33142ecf, 0x0f92, 0x4625, {0xb7, 0xf6, 0x7f, 0x15, 0x25, 0x74, 0xd3, 0x03 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_041_GUID \
++{ 0xf73c04df, 0x2e42, 0x4174, {0x82, 0x18, 0x0f, 0x25, 0x46, 0x4a, 0x55, 0xe9 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_042_GUID \
++{ 0xd4eacf82, 0x55d1, 0x4ba1, {0xbe, 0x89, 0x6a, 0x2e, 0x44, 0x0f, 0xc7, 0xc0 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_043_GUID \
++{ 0xfd88fe63, 0x5ed4, 0x482a, {0x98, 0x44, 0x23, 0x90, 0xf9, 0x09, 0x1c, 0x20 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_044_GUID \
++{ 0x176f16cb, 0xf3a4, 0x4f12, {0x8f, 0x96, 0x4a, 0xc1, 0x8b, 0xdd, 0x6e, 0x3c }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_045_GUID \
++{ 0xf0d5e7b3, 0xdc0f, 0x4a18, {0xb9, 0x78, 0x09, 0x3b, 0x15, 0x55, 0x66, 0xbf }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_046_GUID \
++{ 0x9bf14c4b, 0x2950, 0x4c4e, {0x8b, 0xa3, 0x06, 0x46, 0xf1, 0x27, 0x8c, 0x05 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_047_GUID \
++{ 0xb0468dee, 0xb1d0, 0x4795, {0x9f, 0xbf, 0xbe, 0x3f, 0x40, 0x2f, 0x3d, 0x6f }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_048_GUID \
++{ 0x1f7dd903, 0xcd58, 0x4d6f, {0x80, 0xd6, 0x4f, 0x6d, 0xcb, 0x4a, 0xd6, 0xc9 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_049_GUID \
++{ 0x439179c2, 0x744d, 0x43bc, {0xb0, 0x67, 0x7b, 0x65, 0x60, 0x62, 0x6f, 0x5e }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_050_GUID \
++{ 0x9f68794f, 0x6b2f, 0x41b4, {0xa9, 0xba, 0x96, 0x28, 0xe2, 0x6e, 0xca, 0xae }}
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid001;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid002;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid003;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid004;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid005;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid006;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid007;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid008;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid009;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid010;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid011;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid012;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid013;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid014;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid015;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid016;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid017;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid018;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid019;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid020;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid021;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid022;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid023;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid024;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid025;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid026;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid027;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid028;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid029;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid030;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid031;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid032;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid033;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid034;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid035;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid036;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid037;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid038;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid039;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid040;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid041;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid042;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid043;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid044;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid045;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid046;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid047;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid048;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid049;
++
++extern EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid050;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestMain.h
+new file mode 100644
+index 000000000000..599d16f3bb44
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestMain.h
+@@ -0,0 +1,138 @@
++/** @file
++
++  Copyright 2006 - 2017 Unified EFI, Inc.<BR>
++  Copyright (c) 2010 - 2017, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  TCGMemoryOverwriteRequestTest.h
++
++Abstract:
++
++  Test Driver of TCG MOR and MORLOCK EFI variables that are defined inside
++  TCG Platform Reset Attack Mitigation v1.10 Section 4 (UEFI Interface)
++
++--*/
++
++#ifndef _TCG_MOR_BB_TEST_MAIN
++#define _TCG_MOR_BB_TEST_MAIN
++
++#include "Efi.h"
++#include "Guid.h"
++#include <Library/EfiTestLib.h>
++#include <Guid/MemoryOverwriteControl.h>
++#include <IndustryStandard/MemoryOverwriteRequestControlLock.h>
++#include <SctLib.h>
++
++typedef struct _RESET_DATA {
++  UINTN           Step;
++  UINTN           CheckpointStep;
++} RESET_DATA;
++
++#include EFI_TEST_PROTOCOL_DEFINITION(TestRecoveryLibrary)
++
++#define TCG_MOR_TEST_REVISION             0x00010000
++
++#define MOR_BIT_LOW                       0x0
++#define MOR_BIT_HIGH                      0x1
++
++#define MOR_LOCK_DATA_UNLOCKED            0x0
++#define MOR_LOCK_DATA_LOCKED_WITHOUT_KEY  0x1
++#define MOR_LOCK_DATA_LOCKED_WITH_KEY     0x2
++
++#define MOR_LOCK_NO_KEY_SIZE      1
++#define MOR_LOCK_WITH_KEY_SIZE    8
++
++#define MOR_LOCK_TEST_KEY                 0x11111111
++#define MOR_LOCK_INVALID_TEST_KEY         0x22222222
++
++
++//
++// TEST GUID for TCG Platform Reset Attack Mitigation MemoryOverwriteRequest (MOR) Test
++//
++#define EFI_TCG_MOR_TEST_GUID \
++  { 0x265e661d, 0xd51e, 0x454b, {0xbb, 0xc9, 0x66, 0x5f, 0x46, 0xec, 0x0a, 0x04 }}
++
++EFI_STATUS
++EFIAPI
++InitializeTestTCGMemoryOverwriteRequest (
++  IN EFI_HANDLE           ImageHandle,
++  IN EFI_SYSTEM_TABLE     *SystemTable
++  );
++
++EFI_STATUS
++EFIAPI
++UnloadTCGMemoryOverwriteRequestTest (
++  IN EFI_HANDLE       ImageHandle
++  );
++
++EFI_STATUS
++BBTestTCGMemoryOverwriteRequestFunctionTest (
++  IN EFI_BB_TEST_PROTOCOL             *This,
++  IN VOID                             *ClientInterface,
++  IN EFI_TEST_LEVEL                   TestLevel,
++  IN EFI_HANDLE                       SupportHandle
++  );
++
++EFI_STATUS
++TCGMemoryOverwriteRequestPlatformResetCheck (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib,
++  IN RESET_DATA                               *ResetData
++  );
++
++EFI_STATUS
++TCGMemoryOverwriteRequestControlSetVariable (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib,
++  IN RESET_DATA                               *ResetData
++  );
++
++EFI_STATUS
++TCGMemoryOverwriteRequestControlLockSetVariable (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib,
++  IN RESET_DATA                               *ResetData
++  );
++
++EFI_STATUS
++TCGMemoryOverwriteRequestControlLockUnlockedState (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib,
++  IN RESET_DATA                               *ResetData
++);
++
++EFI_STATUS
++TCGMemoryOverwriteRequestControlLockLockedNoKeyState (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib,
++  IN RESET_DATA                               *ResetData
++  );
++
++EFI_STATUS
++TCGMemoryOverwriteRequestControlLockLockedWithKeyState (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib,
++  IN RESET_DATA                               *ResetData
++  );
++
++// ****************************************************************************
++//   Entry GUIDs for Test
++// ****************************************************************************
++
++#define EFI_TCG_MOR_TEST_ENTRY_GUID0101 \
++  { 0x2104436a, 0x77c8, 0x4514, {0xb7, 0xd7, 0xaa, 0x8a, 0x6b, 0xd1, 0x8d, 0xa4 }}
++
++#endif
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/Guid.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/Guid.c
+new file mode 100644
+index 000000000000..ecd7b9bf1462
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/Guid.c
+@@ -0,0 +1,129 @@
++/** @file
++
++  Copyright 2006 - 2013 Unified EFI, Inc.<BR>
++  Copyright (c) 2013, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  guid.c
++
++Abstract:
++
++  GUIDs auto-generated for EFI test assertion.
++
++--*/
++
++#include "Efi.h"
++#include "Guid.h"
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid001 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_001_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid002 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_002_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid003 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_003_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid004 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_004_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid005 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_005_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid006 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_006_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid007 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_007_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid008 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_008_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid009 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_009_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid010 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_010_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid011 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_011_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid012 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_012_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid013 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_013_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid014 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_014_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid015 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_015_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid016 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_016_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid017 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_017_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid018 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_018_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid019 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_019_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid020 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_020_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid021 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_021_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid022 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_022_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid023 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_023_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid024 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_024_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid025 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_025_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid026 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_026_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid027 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_027_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid028 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_028_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid029 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_029_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid030 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_030_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid031 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_031_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid032 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_032_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid033 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_033_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid034 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_034_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid035 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_035_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid036 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_036_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid037 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_037_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid038 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_038_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid039 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_039_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid040 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_040_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid041 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_041_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid042 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_042_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid043 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_043_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid044 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_044_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid045 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_045_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid046 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_046_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid047 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_047_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid048 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_048_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid049 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_049_GUID;
++
++EFI_GUID gTCGMemoryOverwriteRequestTestFunctionAssertionGuid050 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_050_GUID;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestFunction.c
+new file mode 100644
+index 000000000000..20313446a554
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestFunction.c
+@@ -0,0 +1,418 @@
++/** @file
++
++  Copyright 2006 - 2016 Unified EFI, Inc.<BR>
++  Copyright (c) 2010 - 2016, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  TCGMemoryOverwriteRequestBBTestFunction.c
++
++Abstract:
++
++  Function Test Cases for the TCG MOR and MORLOCK EFI variables that are defined
++  in TCG Platform Reset Attack Mitigation v1.10 Section 4 (UEFI Interface)
++
++--*/
++
++#include "SctLib.h"
++#include "TCGMemoryOverwriteRequestBBTestMain.h"
++
++#define RECOVER_BUFFER_SIZE         2048
++
++#define TCG_MOR_VARIABLE_ATTRIBUTES  (EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_RUNTIME_ACCESS)
++
++#define CONTROL_PLATFORM_RESET_TEST 1
++
++#define CONTROL_SET_VARIABLE_TEST   2
++
++#define LOCK_SET_VARIABLE_TEST      3
++
++#define LOCK_UNLOCKED_STATE_TEST    4
++
++#define LOCK_NO_KEY_STATE_TEST      5
++
++#define LOCK_WITH_KEY_STATE_TEST    6
++
++
++/**
++ *  Entry point for TCG Platform Reset Attack Mitigation MemoryOverwrite EFI Variables Function Test.
++ *  @param This             A pointer to the EFI_BB_TEST_PROTOCOL instance.
++ *  @param ClientInterface  A pointer to the interface to be tested.
++ *  @param TestLevel        Test "thoroughness" control.
++ *  @param SupportHandle    A handle containing support protocols.
++ *  @return EFI_SUCCESS     Test cases ran Successfully, may still contain errors in assertions.
++ *  @return Other value     Something failed.
++ */
++EFI_STATUS
++BBTestTCGMemoryOverwriteRequestFunctionTest (
++  IN EFI_BB_TEST_PROTOCOL              *This,
++  IN VOID                              *ClientInterface,
++  IN EFI_TEST_LEVEL                    TestLevel,
++  IN EFI_HANDLE                        SupportHandle
++  )
++{
++  EFI_STANDARD_TEST_LIBRARY_PROTOCOL   *StandardLib;
++  EFI_TEST_RECOVERY_LIBRARY_PROTOCOL   *RecoveryLib;
++  EFI_STATUS                           Status;
++  RESET_DATA                           *ResetData;
++  UINT8                                Buffer[RECOVER_BUFFER_SIZE];
++  UINTN                                Size;
++
++  ResetData = (RESET_DATA *)Buffer;
++
++  //
++  // Get the Standard Library Interface
++  //
++  Status = gtBS->HandleProtocol (
++                  SupportHandle,
++                  &gEfiStandardTestLibraryGuid,
++                  (VOID **) &StandardLib
++                  );
++  if (EFI_ERROR(Status)) {
++    return Status;
++  }
++
++  //
++  // Get the Recovery Library Interface
++  //
++  Status = gtBS->HandleProtocol (
++                  SupportHandle,
++                  &gEfiTestRecoveryLibraryGuid,
++                  (VOID **) &RecoveryLib
++                  );
++  if (EFI_ERROR(Status)) {
++    StandardLib->RecordAssertion (
++                  StandardLib,
++                  EFI_TEST_ASSERTION_FAILED,
++                  gTestGenericFailureGuid,
++                  L"BS.HandleProtocol - Handle recovery library",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++    return Status;
++  }
++
++  //
++  // Read reset record
++  //
++  Status = RecoveryLib->ReadResetRecord (
++                  RecoveryLib,
++                  &Size,
++                  Buffer
++                  );
++
++  //
++  // Check Reset Record's checkpoint for which test to run, all tests must run so they are all included in the same function
++  //
++  if (EFI_ERROR(Status) || (Size < sizeof(RESET_DATA)) || (ResetData->CheckpointStep == CONTROL_PLATFORM_RESET_TEST)) {
++    if (EFI_ERROR(Status) || Size < sizeof(RESET_DATA)) { // if true, ResetData has not been intialized by the tests yet, set Step = 0 to start the first step of the tests
++      ResetData->Step = 0;
++    }
++    //
++    // Test Checkpoint CONTROL_PLATFORM_RESET_TEST
++    //
++    Status = TCGMemoryOverwriteRequestPlatformResetCheck (StandardLib, RecoveryLib, ResetData);
++    //
++    // Status is returned in the event that the MOR/MORLOCK variables do not exist in occordance to spec,
++    // or the WriteResetRecord returns EFI_ERROR, test ends prematurely
++    //
++    if(EFI_ERROR(Status)) {
++      return Status;
++    }
++  }
++  //
++  // After all Checkpoints have run
++  //
++  return EFI_SUCCESS;
++}
++
++
++/**
++ *  MOR & MORLock EFI variables are correctly created by platform
++ *  Initially setting MOR bit 0 is then cleared upon platform reset
++ *  @param StandardLib    A pointer to EFI_STANDARD_TEST_LIBRARY_PROTOCOL
++ *                        instance.
++ *  @param RecoveryLib    A pointer to EFI_TEST_RECOVERY_LIBRARY_PROTOCOL
++ *                        instance.
++ *  @return EFI_SUCCESS   Successfully.
++ *  @return Other value   Something failed.
++ */
++EFI_STATUS
++TCGMemoryOverwriteRequestPlatformResetCheck (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib,
++  IN RESET_DATA                               *ResetData
++  )
++{
++  EFI_STATUS                           Status;
++  EFI_TEST_ASSERTION                   Result;
++  UINTN                                DataSize;
++  UINT8                                MemoryOverwriteRequestControlData;
++  UINT8                                MemoryOverwriteRequestControlLockData;
++  UINT32                               Attributes;
++
++  //
++  // Check Step to see which part of test remains to be executed
++  //
++  if (ResetData->Step == 0) {
++    goto INITIAL_RESET;
++  } else if (ResetData->Step == 1) {
++    goto MOR_VARIABLE_CHECK;
++  } else if (ResetData->Step == 2) {
++    goto MOR_BIT_CLEAR_ON_RESET;
++  }
++
++INITIAL_RESET:
++  //
++  // Perform initial plaform reset
++  //
++  ResetData->Step = 1;
++  ResetData->CheckpointStep = CONTROL_PLATFORM_RESET_TEST;
++
++  Status = RecoveryLib->WriteResetRecord (
++                  RecoveryLib,
++                  sizeof (RESET_DATA),
++                  (UINT8*)ResetData
++                  );
++  if (EFI_ERROR(Status)) {
++    StandardLib->RecordAssertion (
++                  StandardLib,
++                  EFI_TEST_ASSERTION_FAILED,
++                  gTestGenericFailureGuid,
++                  L"TestRecoveryLib - WriteResetRecord",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++    return Status;
++  }
++  SctPrint (L"System will cold reset after 1 second...");
++  gtBS->Stall (1000000);
++  gtRT->ResetSystem (
++                  EfiResetCold,
++                  EFI_SUCCESS,
++                  0,
++                  NULL
++                  );
++
++MOR_VARIABLE_CHECK:
++  //
++  // Post system reset, Check if the MOR EFI var is correctly created by platform
++  //
++
++  // Write reset record before the second reset (MOR_BIT_CLEAR_ON_RESET)
++  ResetData->Step = 2;
++  ResetData->CheckpointStep = CONTROL_PLATFORM_RESET_TEST;
++
++  Status = RecoveryLib->WriteResetRecord (
++                  RecoveryLib,
++                  sizeof (RESET_DATA),
++                  (UINT8*)ResetData
++                  );
++  if (EFI_ERROR(Status)) {
++    StandardLib->RecordAssertion (
++                  StandardLib,
++                  EFI_TEST_ASSERTION_FAILED,
++                  gTestGenericFailureGuid,
++                  L"TestRecoveryLib - WriteResetRecord",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++    return Status;
++  }
++
++  //
++  // GetVariable and check if the DataSize and Attributes are as expected
++  //
++  DataSize = sizeof(MemoryOverwriteRequestControlData);
++  Attributes = TCG_MOR_VARIABLE_ATTRIBUTES;
++
++  Status = gtRT->GetVariable (
++                  L"MemoryOverwriteRequestControl",     // VariableName
++                  &gEfiMemoryOverwriteControlDataGuid,  // VendorGuid
++                  &Attributes,                          // Attributes
++                  &DataSize,                            // DataSize
++                  &MemoryOverwriteRequestControlData    // Data
++                  );
++  if (EFI_ERROR (Status) || (DataSize != 1) || (Attributes != TCG_MOR_VARIABLE_ATTRIBUTES)) {
++    Result = EFI_TEST_ASSERTION_FAILED;
++  } else {
++    Result = EFI_TEST_ASSERTION_PASSED;
++  }
++
++  StandardLib->RecordAssertion (
++                  StandardLib,
++                  Result,
++                  gTCGMemoryOverwriteRequestTestFunctionAssertionGuid001,
++                  L"MemoryOverwriteRequestControl - Validate that the MOR Variable is created by the platform in accordance with TCG Spec",
++                  L"%a:%d:Status - %r, DataSize - %d, Attributes - %x",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status,
++                  (UINTN)DataSize,
++                  Attributes
++                  );
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
++
++  //
++  // Set MemoryOverwriteRequestControlData bit 0 and verify the platform clears bit 0 upon system reset
++  // MOR bit 0 indicates to platform firmware that system memory must be wiped during platform initialization
++  //
++  DataSize = sizeof(MemoryOverwriteRequestControlData);
++  Attributes = TCG_MOR_VARIABLE_ATTRIBUTES;
++  MemoryOverwriteRequestControlData |= MOR_BIT_HIGH << MOR_CLEAR_MEMORY_BIT_OFFSET;
++
++  Status = gtRT->SetVariable (
++                  L"MemoryOverwriteRequestControl",     // VariableName
++                  &gEfiMemoryOverwriteControlDataGuid,  // VendorGuid
++                  Attributes,                           // Attributes
++                  DataSize,                             // DataSize
++                  &MemoryOverwriteRequestControlData    // Data
++                  );
++  if (Status == EFI_SUCCESS) {
++    Result = EFI_TEST_ASSERTION_PASSED;
++  }else {
++    Result = EFI_TEST_ASSERTION_FAILED;
++  }
++
++  StandardLib->RecordAssertion (
++                  StandardLib,
++                  Result,
++                  gTCGMemoryOverwriteRequestTestFunctionAssertionGuid002,
++                  L"MemoryOverwriteRequestControl - SetVariable() with MOR bit 0 set high returns EFI_SUCCESS",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
++
++  // Cold reset system again for step 2
++  SctPrint (L"System will cold reset after 1 second and test will be resumed after reboot.");
++  gtBS->Stall (1000000);
++  gtRT->ResetSystem (
++                  EfiResetCold,
++                  EFI_SUCCESS,
++                  0,
++                  NULL
++                  );
++
++MOR_BIT_CLEAR_ON_RESET:
++  //
++  // Clear Step count and increment checkpoint for next test
++  //
++
++  ResetData->Step = 0;
++  ResetData->CheckpointStep = CONTROL_SET_VARIABLE_TEST;
++
++  Status = RecoveryLib->WriteResetRecord (
++                  RecoveryLib,
++                  sizeof (RESET_DATA),
++                  (UINT8*)ResetData
++                  );
++  if (EFI_ERROR(Status)) {
++    StandardLib->RecordAssertion (
++                  StandardLib,
++                  EFI_TEST_ASSERTION_FAILED,
++                  gTestGenericFailureGuid,
++                  L"TestRecoveryLib - WriteResetRecord",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++    return Status;
++  }
++
++  //
++  // Check if the platform has cleared the set MOR bit 0 on reset
++  //
++  DataSize = sizeof(MemoryOverwriteRequestControlData);
++  Attributes = TCG_MOR_VARIABLE_ATTRIBUTES;
++
++  Status = gtRT->GetVariable (
++                  L"MemoryOverwriteRequestControl",     // VariableName
++                  &gEfiMemoryOverwriteControlDataGuid,  // VendorGuid
++                  &Attributes,                          // Attributes
++                  &DataSize,                            // DataSize
++                  &MemoryOverwriteRequestControlData    // Data
++                  );
++  if (EFI_ERROR (Status) || (MOR_CLEAR_MEMORY_VALUE (MemoryOverwriteRequestControlData) != MOR_BIT_LOW)) {
++    Result = EFI_TEST_ASSERTION_FAILED;
++  } else {
++    Result = EFI_TEST_ASSERTION_PASSED;
++  }
++
++  StandardLib->RecordAssertion (
++                  StandardLib,
++                  Result,
++                  gTCGMemoryOverwriteRequestTestFunctionAssertionGuid003,
++                  L"MemoryOverwriteRequestControl - Validate that MOR bit 0 is cleared after a cold reset when the bit 0 is initially set",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
++
++  //
++  // Verify MemoryOverwriteRequestControlLock is created as defined in TCG spec
++  //
++  DataSize = sizeof(MemoryOverwriteRequestControlLockData);
++  Attributes = TCG_MOR_VARIABLE_ATTRIBUTES;
++
++  Status = gtRT->GetVariable (
++                  L"MemoryOverwriteRequestControlLock",        // VariableName
++                  &gEfiMemoryOverwriteRequestControlLockGuid,  // VendorGuid
++                  &Attributes,                                 // Attributes
++                  &DataSize,                                   // DataSize
++                  &MemoryOverwriteRequestControlLockData       // Data
++                  );
++  if (EFI_ERROR (Status) || (MemoryOverwriteRequestControlLockData != MOR_LOCK_DATA_UNLOCKED) ||
++      (DataSize != 1) || (Attributes != TCG_MOR_VARIABLE_ATTRIBUTES)) {
++    Result = EFI_TEST_ASSERTION_FAILED;
++  } else {
++    Result = EFI_TEST_ASSERTION_PASSED;
++  }
++
++  StandardLib->RecordAssertion (
++                  StandardLib,
++                  Result,
++                  gTCGMemoryOverwriteRequestTestFunctionAssertionGuid004,
++                  L"MemoryOverwriteRequestControlLock - Validate that MORLOCK is created by the platform in accordance with TCG Spec",
++                  L"%a:%d:Status - %r, DataSize - %d, Attributes - %x",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status,
++                  (UINTN)DataSize,
++                  Attributes
++                  );
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
++
++  return EFI_SUCCESS;
++}
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestMain.c
+new file mode 100644
+index 000000000000..db01df9db5e2
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMemoryOverwriteRequest/BlackBoxTest/TCGMemoryOverwriteRequestBBTestMain.c
+@@ -0,0 +1,115 @@
++/** @file
++
++  Copyright 2006 - 2016 Unified EFI, Inc.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++    TCG2MORTestMain.c
++
++Abstract:
++
++    for EFI Driver TCG MemoryOverwriteRequest Test
++
++--*/
++#include "SctLib.h"
++#include "TCGMemoryOverwriteRequestBBTestMain.h"
++
++EFI_GUID gEfiMemoryOverwriteControlDataGuid = MEMORY_ONLY_RESET_CONTROL_GUID;
++
++EFI_GUID gEfiMemoryOverwriteRequestControlLockGuid = MEMORY_OVERWRITE_REQUEST_CONTROL_LOCK_GUID;
++
++EFI_BB_TEST_PROTOCOL_FIELD gEfiTCGMemoryOverwriteRequestTestProtocolField = {
++  TCG_MOR_TEST_REVISION,
++  EFI_TCG_MOR_TEST_GUID,
++  L"TCG MemoryOverwriteRequest Test",
++  L"TCG MemoryOverwriteRequest Functionality Test"
++};
++
++EFI_GUID gSupportProtocolGuid1[2] = {
++  EFI_STANDARD_TEST_LIBRARY_GUID,
++  EFI_NULL_GUID
++};
++
++EFI_BB_TEST_ENTRY_FIELD gLoadTCGMemoryOverwriteRequestEntryField[] = {
++
++  {
++    EFI_TCG_MOR_TEST_ENTRY_GUID0101,
++    L"Test MOR and MORLOCK",
++    L"Test for MOR and MORLOCK EFI variables in accordance with TCG spec",
++    EFI_TEST_LEVEL_DEFAULT,
++    gSupportProtocolGuid1,
++    EFI_TEST_CASE_AUTO,
++    BBTestTCGMemoryOverwriteRequestFunctionTest
++  },
++
++  EFI_NULL_GUID
++};
++
++EFI_BB_TEST_PROTOCOL *gTCGMemoryOverwriteRequestTestProt;
++
++
++EFI_STATUS
++EFIAPI
++UnloadTCGMemoryOverwriteRequestTest (
++  IN EFI_HANDLE       ImageHandle
++  );
++
++/**
++ *  Creates/installs the BlackBox Interface and eminating Entry Point node list.
++ *  @param  ImageHandle The test driver image handle
++ *  @param  SystemTable Pointer to System Table
++ *  @return EFI_SUCCESS Indicates the interface was installed
++ *  @return EFI_OUT_OF_RESOURCES Indicates space for the new handle could not be allocated
++ *  @return EFI_INVALID_PARAMETER: One of the parameters has an invalid value.
++ */
++EFI_STATUS
++EFIAPI
++InitializeTestTCGMemoryOverwriteRequest (
++  IN EFI_HANDLE           ImageHandle,
++  IN EFI_SYSTEM_TABLE     *SystemTable
++  )
++{
++  //
++  // initialize test utility lib
++  //
++  EfiInitializeTestLib (ImageHandle, SystemTable);
++  SctInitializeLib (ImageHandle, SystemTable);
++
++  return EfiInitAndInstallBBTestInterface (
++           &ImageHandle,
++           &gEfiTCGMemoryOverwriteRequestTestProtocolField,
++           gLoadTCGMemoryOverwriteRequestEntryField,
++           UnloadTCGMemoryOverwriteRequestTest,
++           &gTCGMemoryOverwriteRequestTestProt
++           );
++}
++
++
++/**
++ *  Unloads the BlackBox Interface and the Entry Point list.
++ *  @param ImageHandle    The image handle.
++ *  @return EFI_SUCCESS   The interface was uninstalled successfully.
++ */
++EFI_STATUS
++EFIAPI
++UnloadTCGMemoryOverwriteRequestTest (
++  IN EFI_HANDLE       ImageHandle
++  )
++{
++  return EfiUninstallAndFreeBBTestInterface (
++           ImageHandle,
++           gTCGMemoryOverwriteRequestTestProt
++           );
++}
+diff --git a/uefi-sct/SctPkg/CommonGenFramework.sh b/uefi-sct/SctPkg/CommonGenFramework.sh
+index fb9043b56bca..886e7eb7596b 100755
+--- a/uefi-sct/SctPkg/CommonGenFramework.sh
++++ b/uefi-sct/SctPkg/CommonGenFramework.sh
+@@ -226,6 +226,7 @@ then
+     if [ -e $ProcessorType/RiscVBootProtocolBBTest.efi ]; then
+       cp $ProcessorType/RiscVBootProtocolBBTest.efi              $Framework/Test/ > NUL
+     fi
++    cp $ProcessorType/TCGMemoryOverwriteRequestBBTest.efi      $Framework/Test/ > NUL
+ 
+     # *********************************************
+     # Copy ENTS binary
+diff --git a/uefi-sct/SctPkg/Config/Data/Category.ini b/uefi-sct/SctPkg/Config/Data/Category.ini
+index b34d35db9ac8..bf02ccea9218 100644
+--- a/uefi-sct/SctPkg/Config/Data/Category.ini
++++ b/uefi-sct/SctPkg/Config/Data/Category.ini
+@@ -165,6 +165,13 @@ InterfaceGuid = AFF115FB-387B-4C18-8C41-6AFC7F03BB90
+ Name          = RuntimeServicesTest\MiscRuntimeServicesTest
+ Description   =
+ 
++[Category Data]
++Revision      = 0x00010000
++CategoryGuid  = 265E661D-D51E-454B-BBC9-665F46EC0A04
++InterfaceGuid = AFF115FB-387B-4C18-8C41-6AFC7F03BB90
++Name          = RuntimeServicesTest\TCGMemoryOverwriteRequestTest
++Description   = Test TCG Platform Reset Attack Mitigation EFI variables
++
+ [Category Data]
+ Revision      = 0x00010000
+ CategoryGuid  = 5B1B31A1-9562-11D2-8E3F-00A0C969723B
+-- 
+2.34.1
+

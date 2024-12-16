@@ -1,0 +1,39 @@
+From b9e092da4137f745337cb7773779522d2c07b881 Mon Sep 17 00:00:00 2001
+From: kuqin <kuqin@microsoft.com>
+Date: Thu, 19 Mar 2020 15:36:56 -0700
+Subject: [PATCH] SavedState is not sticky, copied pointer update will not
+ change source pointer
+
+---
+ UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.c b/UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.c
+index fd15991ea4..57cefdfe83 100644
+--- a/UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.c
++++ b/UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.c
+@@ -209,7 +209,8 @@ InitUnitTestFramework (
+   EFI_STATUS                  Status;
+   UNIT_TEST_FRAMEWORK_HANDLE  NewFrameworkHandle;
+   UNIT_TEST_FRAMEWORK         *NewFramework;
+-  UNIT_TEST_SAVE_HEADER       *SavedState;
++  // MU_CHANGE: SavedState is not sticky, copied pointer update will not change source pointer
++  // UNIT_TEST_SAVE_HEADER       *SavedState;
+ 
+   Status       = EFI_SUCCESS;
+   NewFramework = NULL;
+@@ -264,8 +265,9 @@ InitUnitTestFramework (
+   // If there is a persisted context, load it now.
+   //
+   if (DoesCacheExist (NewFrameworkHandle)) {
+-    SavedState = (UNIT_TEST_SAVE_HEADER *)NewFramework->SavedState;
+-    Status = LoadUnitTestCache (NewFrameworkHandle, &SavedState);
++    // MU_CHANGE: SavedState is not sticky, copied pointer update will not change source pointer
++    // SavedState = (UNIT_TEST_SAVE_HEADER *)NewFramework->SavedState;
++    Status = LoadUnitTestCache (NewFrameworkHandle,  (UNIT_TEST_SAVE_HEADER**)(&NewFramework->SavedState));
+     if (EFI_ERROR (Status)) {
+       //
+       // Don't actually report it as an error, but emit a warning.
+-- 
+2.24.1.windows.2
+

@@ -1,0 +1,36 @@
+From 5dad1342b2408ae7f4c6a824c941c9c767bdb90a Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 12:25:55 +0530
+Subject: [PATCH 2/2] UefiCpuPkg/Library/MpInitLib: Fix UNUSED_VALUE Coverity
+ issue
+
+The return value after call to function gBS->SignalEvent is stored in
+Status, but it is not made of any use and later Status gets overriden.
+
+Assuming this is deliberate, remove the return value storage in Status.
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4261
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ UefiCpuPkg/Library/MpInitLib/DxeMpLib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/UefiCpuPkg/Library/MpInitLib/DxeMpLib.c b/UefiCpuPkg/Library/MpInitLib/DxeMpLib.c
+index a84e9e33bafa..7154ce4e5f60 100644
+--- a/UefiCpuPkg/Library/MpInitLib/DxeMpLib.c
++++ b/UefiCpuPkg/Library/MpInitLib/DxeMpLib.c
+@@ -253,7 +253,7 @@ CheckAndUpdateApsStatus (
+     // If all APs finish for StartupAllAPs(), signal the WaitEvent for it.
+     //
+     if (Status != EFI_NOT_READY) {
+-      Status               = gBS->SignalEvent (CpuMpData->WaitEvent);
++      gBS->SignalEvent (CpuMpData->WaitEvent);
+       CpuMpData->WaitEvent = NULL;
+     }
+   }
+-- 
+2.36.1.windows.1
+

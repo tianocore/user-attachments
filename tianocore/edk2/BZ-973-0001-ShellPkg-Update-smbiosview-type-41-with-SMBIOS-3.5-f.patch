@@ -1,0 +1,55 @@
+From 09ec3fc0f59eae4eec5682cd19dbd8cb552e61ac Mon Sep 17 00:00:00 2001
+Message-Id: <09ec3fc0f59eae4eec5682cd19dbd8cb552e61ac.1649435086.git.bo-changx.ke@intel.com>
+From: Bo Chang Ke <bo-changx.ke@intel.com>
+Date: Sat, 9 Apr 2022 00:21:15 +0800
+Subject: [PATCH] ShellPkg: Update smbiosview type 41 with SMBIOS 3.5 fields
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3900
+
+update smbiosview type 41 related fileds.
+
+Signed-off-by: Bo Chang Ke <bo-changx.ke@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+---
+ .../SmbiosView/QueryTable.c                   | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.c
+index c4a6acb167..7ec6d2b5f1 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.c
+@@ -1766,6 +1766,30 @@ TABLE_ITEM  OnboardDeviceTypesTable[] = {
+     0x0A,
+     L"  Sas Controller"
+   },
++  {
++    0x0B,
++    L"  Wireless LAN"
++  },
++  {
++    0x0C,
++    L"  Bluetooth"
++  },
++  {
++    0x0D,
++    L"  WWAN"
++  },
++  {
++    0x0E,
++    L"  embedded Multi-Media Controller"
++  },
++  {
++    0x0F,
++    L"  NVMe Controller"
++  },
++  {
++    0x10,
++    L"  UFS Controller"
++  }
+ };
+ 
+ TABLE_ITEM  SELTypesTable[] = {
+-- 
+2.32.0.windows.1
+

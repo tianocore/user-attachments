@@ -1,0 +1,35 @@
+From 9816f860d9b3f6a78044f602b82f80cc3b939ba7 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 10:43:53 +0530
+Subject: [PATCH 1/1] MdeModulePkg/Bus/Ata/AhciPei: Fix DEADCODE Coverity issue
+
+The code can reach line 69 only through the else path above at line 57.
+The else path already has the same NULL check at line 59 and hence the
+duplicate code lines are totally redundant which can be deleted.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4201
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c b/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c
+index 42e4203a2298..6013af858d56 100644
+--- a/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c
++++ b/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c
+@@ -66,10 +66,6 @@ AhciS3GetEumeratePorts (
+     }
+   }
+ 
+-  if (S3InitDevices == NULL) {
+-    return 0;
+-  }
+-
+   //
+   // Only enumerate the ports that exist in the device list.
+   //
+-- 
+2.36.1.windows.1
+

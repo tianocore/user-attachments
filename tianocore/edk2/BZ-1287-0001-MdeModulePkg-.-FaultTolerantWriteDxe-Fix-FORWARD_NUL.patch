@@ -1,0 +1,54 @@
+From b8a13e893a62cea1e6f032adc88de8c7a42ec23f Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:56:00 +0530
+Subject: [PATCH 1/1] MdeModulePkg/.../FaultTolerantWriteDxe: Fix FORWARD_NULL
+ Coverity issue
+
+Full pathname - MdeModulePkg/Universal/FaultTolerantWriteDxe
+
+The function InitFtwProtocol makes a call to FtwReclaimWorkSpace.
+Although "FtwReclaimWorkSpace" does overwrite
+"FtwDevice->FtwLastWriteHeader" on some paths, it also contains at
+least one feasible path which does not overwrite it.
+
+ASSERT_EFI_ERROR (Status); after the call catches it but it is valid
+only in DEBUG mode. In RELEASE mode, the flow continues further to
+dereference "FtwDevice->FtwLastWriteHeader" unconditionally which can
+lead to CRASH if it is NULL.
+
+To safeguard, add a check wrt FtwReclaimWorkSpace return value.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4293
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/FaultTolerantWriteDxe/FtwMisc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/FaultTolerantWriteDxe/FtwMisc.c b/MdeModulePkg/Universal/FaultTolerantWriteDxe/FtwMisc.c
+index f1335870e797..7e54f7f344ca 100644
+--- a/MdeModulePkg/Universal/FaultTolerantWriteDxe/FtwMisc.c
++++ b/MdeModulePkg/Universal/FaultTolerantWriteDxe/FtwMisc.c
+@@ -1224,6 +1224,7 @@ FindFvbForFtw (
+ 
+   @retval EFI_SUCCESS           Initialize the FTW protocol successfully.
+   @retval EFI_NOT_FOUND         No proper FVB protocol was found.
++  @retval EFI_NOT_READY         Failed to initialize.
+ 
+ **/
+ EFI_STATUS
+@@ -1351,6 +1352,10 @@ InitFtwProtocol (
+     }
+   }
+ 
++  if (FtwDevice->FtwLastWriteHeader == NULL) {
++    return EFI_NOT_READY;
++  }
++
+   //
+   // If the FtwDevice->FtwLastWriteRecord is 1st record of write header &&
+   // (! SpareComplete) THEN call Abort().
+-- 
+2.36.1.windows.1
+

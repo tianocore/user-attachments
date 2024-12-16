@@ -1,0 +1,109 @@
+diff --git a/BaseTools/Source/Python/AutoGen/AutoGen.py b/BaseTools/Source/Python/AutoGen/AutoGen.py
+index 31721a6f9f..1be8ac006a 100644
+--- a/BaseTools/Source/Python/AutoGen/AutoGen.py
++++ b/BaseTools/Source/Python/AutoGen/AutoGen.py
+@@ -2578,6 +2578,7 @@ class ModuleAutoGen(AutoGen):
+         self.AutoGenDepSet = set()
+         self.ReferenceModules = []
+         self.ConstPcd                  = {}
++        self.CacheRestored             = False
+
+
+     def __repr__(self):
+@@ -3897,15 +3898,21 @@ class ModuleAutoGen(AutoGen):
+             self.CopyModuleToCache()
+
+     def CopyModuleToCache(self):
+-        FileDir = path.join(GlobalData.gBinCacheDest, self.PlatformInfo.Name, self.BuildTarget + "_" + self.ToolChain, self.Arch, self.SourceDir, self.MetaFile.BaseName)
++        FileDir = path.join(GlobalData.gBinCacheDest, self.PlatformInfo.Platform.OutputDirectory, self.BuildTarget + "_" + self.ToolChain, self.Arch, self.SourceDir, self.MetaFile.BaseName)
+         CreateDirectory (FileDir)
+         HashFile = path.join(self.BuildDir, self.Name + '.hash')
+         if os.path.exists(HashFile):
+-            shutil.copy2(HashFile, FileDir)
++            shutil.copy(HashFile, FileDir)
+         if not self.IsLibrary:
+             ModuleFile = path.join(self.OutputDir, self.Name + '.inf')
+             if os.path.exists(ModuleFile):
+-                shutil.copy2(ModuleFile, FileDir)
++                shutil.copy(ModuleFile, FileDir)
++        else:
++            OutputDir = self.OutputDir.replace('\\', '/').strip('/')
++            DebugDir = self.DebugDir.replace('\\', '/').strip('/')
++            for Item in self.CodaTargetList:
++                File = Item.Target.Path.replace('\\', '/').strip('/').replace(DebugDir, '').replace(OutputDir, '').strip('/')
++                self.OutputFile.add(File)
+         if not self.OutputFile:
+             Ma = self.BuildDatabase[self.MetaFile, self.Arch, self.BuildTarget, self.ToolChain]
+             self.OutputFile = Ma.Binaries
+@@ -3919,7 +3926,7 @@ class ModuleAutoGen(AutoGen):
+                     destination_file = os.path.join(FileDir, sub_dir)
+                     destination_dir = os.path.dirname(destination_file)
+                     CreateDirectory(destination_dir)
+-                    shutil.copy2(File, destination_dir)
++                    shutil.copy(File, destination_dir)
+
+     def AttemptModuleCacheCopy(self):
+         # If library or Module is binary do not skip by hash
+@@ -3929,7 +3936,7 @@ class ModuleAutoGen(AutoGen):
+         for f_ext in self.SourceFileList:
+             if '.inc' in str(f_ext):
+                 return False
+-        FileDir = path.join(GlobalData.gBinCacheSource, self.PlatformInfo.Name, self.BuildTarget + "_" + self.ToolChain, self.Arch, self.SourceDir, self.MetaFile.BaseName)
++        FileDir = path.join(GlobalData.gBinCacheSource, self.PlatformInfo.Platform.OutputDirectory, self.BuildTarget + "_" + self.ToolChain, self.Arch, self.SourceDir, self.MetaFile.BaseName)
+         HashFile = path.join(FileDir, self.Name + '.hash')
+         if os.path.exists(HashFile):
+             f = open(HashFile, 'r')
+@@ -3940,14 +3947,15 @@ class ModuleAutoGen(AutoGen):
+                     for root, dir, files in os.walk(FileDir):
+                         for f in files:
+                             if self.Name + '.hash' in f:
+-                                shutil.copy2(HashFile, self.BuildDir)
++                                shutil.copy(HashFile, self.BuildDir)
+                             else:
+                                 File = path.join(root, f)
+                                 sub_dir = os.path.relpath(File, FileDir)
+                                 destination_file = os.path.join(self.OutputDir, sub_dir)
+                                 destination_dir = os.path.dirname(destination_file)
+                                 CreateDirectory(destination_dir)
+-                                shutil.copy2(File, destination_dir)
++                                shutil.copy(File, destination_dir)
++                    self.CacheRestored = True
+                     if self.Name == "PcdPeim" or self.Name == "PcdDxe":
+                         CreatePcdDatabaseCode(self, TemplateString(), TemplateString())
+                     return True
+@@ -3986,7 +3994,9 @@ class ModuleAutoGen(AutoGen):
+         self.GenFfsList = GenFfsList
+         if not self.IsLibrary and CreateLibraryMakeFile:
+             for LibraryAutoGen in self.LibraryAutoGenList:
+-                LibraryAutoGen.CreateMakeFile()
++                # Only create makefile for libraries which have not been restored
++                if not LibraryAutoGen.CacheRestored:
++                    LibraryAutoGen.CreateMakeFile()
+
+         if self.CanSkip():
+             return
+@@ -4029,7 +4039,9 @@ class ModuleAutoGen(AutoGen):
+
+         if not self.IsLibrary and CreateLibraryCodeFile:
+             for LibraryAutoGen in self.LibraryAutoGenList:
+-                LibraryAutoGen.CreateCodeFile()
++                # Only create autogen code for libraries which have not been restored
++                if not LibraryAutoGen.CacheRestored:
++                    LibraryAutoGen.CreateCodeFile()
+
+         if self.CanSkip():
+             return
+diff --git a/BaseTools/Source/Python/build/build.py b/BaseTools/Source/Python/build/build.py
+index 7271570d29..21004c4e77 100644
+--- a/BaseTools/Source/Python/build/build.py
++++ b/BaseTools/Source/Python/build/build.py
+@@ -341,7 +341,8 @@ class ModuleMakeUnit(BuildUnit):
+     #   @param  Target      The build target name, one of gSupportedTarget
+     #
+     def __init__(self, Obj, Target):
+-        Dependency = [ModuleMakeUnit(La, Target) for La in Obj.LibraryAutoGenList]
++        # Skip the dependency modules which are already restored from cache
++        Dependency = [ModuleMakeUnit(La, Target) for La in Obj.LibraryAutoGenList if not La.CacheRestored]
+         BuildUnit.__init__(self, Obj, Obj.BuildCommand, Target, Dependency, Obj.MakeFileDir)
+         if Target in [None, "", "all"]:
+             self.Target = "tbuild"

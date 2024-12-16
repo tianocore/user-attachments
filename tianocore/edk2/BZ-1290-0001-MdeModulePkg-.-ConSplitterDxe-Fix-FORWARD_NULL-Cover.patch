@@ -1,0 +1,46 @@
+From 117c3a309f61a91595618ffaa1944004c7dc6258 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:00:34 +0530
+Subject: [PATCH 1/2] MdeModulePkg/.../ConSplitterDxe: Fix FORWARD_NULL
+ Coverity issue
+
+Full pathname - MdeModulePkg/Universal/Console/ConSplitterDxe
+
+The function ConSplitterTextOutDeleteDevice makes a call to the
+function ConSplitterAddOutputMode and the return value is stored
+in Status, but the return Status is not checked.
+
+EFI_OUT_OF_RESOURCES is one of return value from the function
+ConSplitterAddOutputModeand and hence if that gets returned,
+then Private->TextOutModeMap remains set to NULL and later
+ConSplitterSyncOutputMode gets called which deferences
+Private->TextOutModeMap unconditionally. When it remains NULL,
+then dereferencing it would lead to CRASH.
+
+Hence, check the Status and if not EFI_SUCCESS, then return.
+
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4296
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c b/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
+index 8b5e62e3a883..0a50dfccf431 100644
+--- a/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
++++ b/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
+@@ -3437,6 +3437,9 @@ ConSplitterTextOutDeleteDevice (
+   // Add the first TextOut to the QueryData array and ModeMap table
+   //
+   Status = ConSplitterAddOutputMode (Private, TextOutList->TextOut);
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
+ 
+   //
+   // Now add one by one
+-- 
+2.36.1.windows.1
+

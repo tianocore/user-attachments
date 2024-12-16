@@ -1,0 +1,44 @@
+From e4b964e85b937e3205c2a97f71b5e620c3d0fa3e Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 10:54:24 +0530
+Subject: [PATCH 2/2] MdeModulePkg/Bus/Pci/PciHostBridgeDxe: Fix MISSING_BREAK
+ Coverity issue
+
+The function SubmitResources has a switch-case code in which the
+case ACPI_ADDRESS_SPACE_TYPE_MEM: which falls through to
+case ACPI_ADDRESS_SPACE_TYPE_IO: if there is no scenario of
+return EFI_INVALID_PARAMETER;
+
+While this may be intentional, it is not evident to any general code
+reader as well as any static analyzer tool. Just adding
+
+    // No break; here as this is an intentional fallthrough.
+
+as comment in between makes any reader as well as Coverity happy.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4212
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c b/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
+index 7ebadb960b7d..83f1ad450fec 100644
+--- a/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
++++ b/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
+@@ -1531,6 +1531,10 @@ SubmitResources (
+               return EFI_INVALID_PARAMETER;
+             }
+ 
++            //
++            // No break; here as this is an intentional fall through.
++            //
++
+           case ACPI_ADDRESS_SPACE_TYPE_IO:
+             //
+             // Check aligment, it should be of the form 2^n-1
+-- 
+2.36.1.windows.1
+

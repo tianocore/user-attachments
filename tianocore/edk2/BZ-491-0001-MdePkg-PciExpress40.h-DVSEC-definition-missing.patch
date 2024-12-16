@@ -1,0 +1,73 @@
+From e6da2aa2c77fe0f11af24ddb8040645c05a7d3be Mon Sep 17 00:00:00 2001
+From: Ashraf Javeed <ashraf.javeed@intel.com>
+Date: Tue, 17 Mar 2020 13:33:20 +0530
+Subject: [PATCH V2] =?UTF-8?q?=EF=BB=BFMdePkg-PciExpress40.h:=20DVSEC=20de?=
+ =?UTF-8?q?finition=20missing?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+BZ: https://bugzilla.tianocore.org/show_bug.cgi?id=2598
+
+All registers definition of DVSEC are defined as per the PCI Express Base
+Specification 4.0 chapter 7.9.6.
+
+Signed-off-by: Ashraf Javeed <ashraf.javeed@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+
+V2: fixed the comment section description for DVSEC definitions
+---
+ MdePkg/Include/IndustryStandard/PciExpress40.h | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/MdePkg/Include/IndustryStandard/PciExpress40.h b/MdePkg/Include/IndustryStandard/PciExpress40.h
+index 9d9b272546..0564d72861 100644
+--- a/MdePkg/Include/IndustryStandard/PciExpress40.h
++++ b/MdePkg/Include/IndustryStandard/PciExpress40.h
+@@ -4,6 +4,7 @@ Support for the PCI Express 4.0 standard.
+ This header file may not define all structures.  Please extend as required.
+ 
+ Copyright (c) 2018, American Megatrends, Inc. All rights reserved.<BR>
++Copyright (c) 2020, Intel Corporation. All rights reserved.<BR>
+ SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -78,6 +79,33 @@ typedef struct {
+ } PCI_EXPRESS_EXTENDED_CAPABILITIES_PHYSICAL_LAYER_16_0;
+ ///@}
+ 
++/// The Designated Vendor Specific Capability definitions
++/// Based on section 7.9.6 of PCI Express Base Specification 4.0.
++///@{
++typedef union {
++  struct {
++    UINT32 DvsecVendorId                                        : 16; //bit 0..15
++    UINT32 DvsecRevision                                        : 4;  //bit 16..19
++    UINT32 DvsecLength                                          : 12; //bit 20..31
++  }Bits;
++  UINT32                                                        Uint32;
++}PCI_EXPRESS_DESIGNATED_VENDOR_SPECIFIC_HEADER_1;
++
++typedef union {
++  struct {
++    UINT16 DvsecId                                              : 16; //bit 0..15
++  }Bits;
++  UINT16                                                        Uint16;
++}PCI_EXPRESS_DESIGNATED_VENDOR_SPECIFIC_HEADER_2;
++
++typedef struct {
++  PCI_EXPRESS_EXTENDED_CAPABILITIES_HEADER                      Header;
++  PCI_EXPRESS_DESIGNATED_VENDOR_SPECIFIC_HEADER_1               DesignatedVendorSpecificHeader1;
++  PCI_EXPRESS_DESIGNATED_VENDOR_SPECIFIC_HEADER_2               DesignatedVendorSpecificHeader2;
++  UINT8                                                         DesignatedVendorSpecific[1];
++}PCI_EXPRESS_EXTENDED_CAPABILITIES_DESIGNATED_VENDOR_SPECIFIC;
++///@}
++
+ #pragma pack()
+ 
+ #endif
+-- 
+2.21.0.windows.1
+

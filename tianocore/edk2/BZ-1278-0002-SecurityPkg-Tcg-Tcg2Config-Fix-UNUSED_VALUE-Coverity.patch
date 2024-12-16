@@ -1,0 +1,47 @@
+From e107100a5b394fd5773dd91625074dde79fe90f8 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:27:41 +0530
+Subject: [PATCH 2/2] SecurityPkg/Tcg/Tcg2Config: Fix UNUSED_VALUE Coverity
+ issue
+
+The value set in Tcg2Configuration.TpmDevice to TPM_DEVICE_DEFAULT
+is not made of any use thereafter, it remains as UNUSED and later it
+gets overriden.
+
+Seemingly, the storage in "Tcg2Configuration.TpmDevice" can be removed.
+
+Cc: Qi Zhang <qi1.zhang@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4281
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c b/SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c
+index f023b3ccb839..283a12adff24 100644
+--- a/SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c
++++ b/SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDriver.c
+@@ -317,19 +317,6 @@ Tcg2ConfigDriverEntryPoint (
+                     &DataSize,
+                     &Tcg2Configuration
+                     );
+-  if (EFI_ERROR (Status)) {
+-    //
+-    // Variable not ready, set default value
+-    //
+-    Tcg2Configuration.TpmDevice = TPM_DEVICE_DEFAULT;
+-  }
+-
+-  //
+-  // Validation
+-  //
+-  if ((Tcg2Configuration.TpmDevice > TPM_DEVICE_MAX) || (Tcg2Configuration.TpmDevice < TPM_DEVICE_MIN)) {
+-    Tcg2Configuration.TpmDevice = TPM_DEVICE_DEFAULT;
+-  }
+ 
+   //
+   // Set value for Tcg2CurrentActivePCRBanks
+-- 
+2.36.1.windows.1
+

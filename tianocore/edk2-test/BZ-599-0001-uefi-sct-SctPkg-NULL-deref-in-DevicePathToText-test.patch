@@ -1,0 +1,50 @@
+From f3da1e5ae86f168383dbfcaa871ef5f37d44abe4 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Thu, 29 Oct 2020 20:38:56 +0100
+Subject: [PATCH 1/1] uefi-sct/SctPkg: NULL deref in DevicePathToText test
+
+Ref: https://bugzilla.tianocore.org/show_bug.cgi?id=3029
+
+Function DevicePathToTextConvertDeviceNodeToTextCoverageTest() tests if
+DeviceNodeToText() correctly converts a Relative Offset Range node. After
+calling SctConvertTextToDeviceNode() it tries to set the field Reserved
+of the returned device node to 0.
+
+If the tested firmware does not return the expected text
+SctConvertTextToDeviceNode() may return NULL or a device node that is
+shorter than expected. In both cases it is not possible to access the
+field Reserved.
+
+So we must check both that the returned node is not NULL and that it has
+the exepected size.
+
+Due to the missing check a NULL dereference was observed when running the
+SCT on U-Boot.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../BlackBoxTest/DevicePathToTextBBTestCoverage.c         | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestCoverage.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestCoverage.c
+index ee91bdfb..784d4748 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestCoverage.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestCoverage.c
+@@ -1198,8 +1198,12 @@ DevicePathToTextConvertDeviceNodeToTextCoverageTest (
+   ((MEDIA_OFFSET_DEVICE_PATH *)pDeviceNode1)->EndingOffset = 0x1234;
+   Text = DevicePathToText->ConvertDeviceNodeToText (pDeviceNode1, FALSE, FALSE);
+   pDeviceNode2 = SctConvertTextToDeviceNode(Text);
+-  ((MEDIA_OFFSET_DEVICE_PATH *)pDeviceNode2)->Reserved = 0;
+-
++  SctPrint(L"pDeviceNode2 = %p\n", pDeviceNode2);
++  if (pDeviceNode2 &&
++      ((MEDIA_OFFSET_DEVICE_PATH *)pDeviceNode2)->Header.Length ==
++      sizeof(MEDIA_OFFSET_DEVICE_PATH)) {
++    ((MEDIA_OFFSET_DEVICE_PATH *)pDeviceNode2)->Reserved = 0;
++  }
+   if ((pDeviceNode2 != NULL) && (SctCompareMem (pDeviceNode2, pDeviceNode1, SctDevicePathNodeLength(pDeviceNode1)) == 0)) {
+     AssertionType = EFI_TEST_ASSERTION_PASSED;
+   } else {
+-- 
+2.28.0
+

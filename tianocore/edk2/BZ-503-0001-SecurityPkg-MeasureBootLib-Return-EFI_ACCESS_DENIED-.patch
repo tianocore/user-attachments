@@ -1,0 +1,86 @@
+From 0a9cbc105bff098eb5780246e8094252b2f5586f Mon Sep 17 00:00:00 2001
+From: Guomin Jiang <guomin.jiang@intel.com>
+Date: Fri, 27 Mar 2020 16:18:29 +0800
+Subject: [PATCH] SecurityPkg/MeasureBootLib: Return EFI_ACCESS_DENIED after
+ image check fail
+
+If check the File at the begin of function, it will only allow the File is
+present and forbid image from buffer.
+It is possible that image come from the memory buffer, so make it can run
+and check the File after it.
+It is improvement for 4b026f0d5af36faf3a3629a3ad49c51b5b3be12f.
+
+Change-Id: I00a2a9db09faadfcce70d861d8ecbe1c27435d31
+Signed-off-by: Guomin Jiang <guomin.jiang@intel.com>
+---
+ .../Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c  | 14 +++++++-------
+ .../Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c    | 14 +++++++-------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
+index f0e95e5ec0..fdb4758cbe 100644
+--- a/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
++++ b/SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.c
+@@ -435,13 +435,6 @@ DxeTpm2MeasureBootHandler (
+   EFI_PHYSICAL_ADDRESS                FvAddress;
+   UINT32                              Index;
+ 
+-  //
+-  // Check for invalid parameters.
+-  //
+-  if (File == NULL) {
+-    return EFI_ACCESS_DENIED;
+-  }
+-
+   Status = gBS->LocateProtocol (&gEfiTcg2ProtocolGuid, NULL, (VOID **) &Tcg2Protocol);
+   if (EFI_ERROR (Status)) {
+     //
+@@ -615,6 +608,13 @@ DxeTpm2MeasureBootHandler (
+   //
+   Status = PeCoffLoaderGetImageInfo (&ImageContext);
+   if (EFI_ERROR (Status)) {
++    //
++    // Check for invalid parameters.
++    //
++    if (File == NULL) {
++      Status = EFI_ACCESS_DENIED;
++    }
++
+     //
+     // The information can't be got from the invalid PeImage
+     //
+diff --git a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
+index d499371e7a..20f7d94d6b 100644
+--- a/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
++++ b/SecurityPkg/Library/DxeTpmMeasureBootLib/DxeTpmMeasureBootLib.c
+@@ -732,13 +732,6 @@ DxeTpmMeasureBootHandler (
+   EFI_PHYSICAL_ADDRESS                FvAddress;
+   UINT32                              Index;
+ 
+-  //
+-  // Check for invalid parameters.
+-  //
+-  if (File == NULL) {
+-    return EFI_ACCESS_DENIED;
+-  }
+-
+   Status = gBS->LocateProtocol (&gEfiTcgProtocolGuid, NULL, (VOID **) &TcgProtocol);
+   if (EFI_ERROR (Status)) {
+     //
+@@ -912,6 +905,13 @@ DxeTpmMeasureBootHandler (
+   //
+   Status = PeCoffLoaderGetImageInfo (&ImageContext);
+   if (EFI_ERROR (Status)) {
++    //
++    // Check for invalid parameters.
++    //
++    if (File == NULL) {
++      return EFI_ACCESS_DENIED;
++    }
++
+     //
+     // The information can't be got from the invalid PeImage
+     //
+-- 
+2.16.2.windows.1
+

@@ -1,0 +1,86 @@
+From 3549b2c887911f0f2af9e0f50c9d488a0a19ba33 Mon Sep 17 00:00:00 2001
+From: Xiaoqiang Zhang <xiaoqiang.zhang@intel.com>
+Date: Thu, 25 Jul 2024 10:03:18 +0800
+Subject: [PATCH v2] MdeModulePkg/Core: CoreValidateHandle optimization
+
+REF : https://bugzilla.tianocore.org/show_bug.cgi?id=4817
+
+Before entering BIOS setup, CoreValidateHandle function executed
+over 600,000 times during BDS phase on latest 8S server platform.
+For current EFI handle database, InsertTailList function is used
+to insert each EFI handle into the handle database. The handle
+number on latest 8S server platform is over 2000 and the EFI
+handles which are inserted into handle database earlier will be
+used frequently. So using ForwardLink instead of Backlink to go
+through the handle database in CoreValidateHandle function will
+be faster.
+Add Validated flag to indicate whether the input EFI handle is
+already validated to avoid the same input handle parameter being
+validated many times.
+After verification on latest 8S server platform, BDS boot time
+can save 21s+ with this patch.
+
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Signed-off-by: Xiaoqiang Zhang <xiaoqiang.zhang@intel.com>
+---
+ MdeModulePkg/Core/Dxe/Hand/Handle.c | 16 +++++++++++-----
+ MdeModulePkg/Core/Dxe/Hand/Handle.h |  1 +
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/MdeModulePkg/Core/Dxe/Hand/Handle.c b/MdeModulePkg/Core/Dxe/Hand/Handle.c
+index 24e4fbf5f3..25bba61181 100644
+--- a/MdeModulePkg/Core/Dxe/Hand/Handle.c
++++ b/MdeModulePkg/Core/Dxe/Hand/Handle.c
+@@ -62,17 +62,22 @@ CoreValidateHandle (
+   IHANDLE     *Handle;
+   LIST_ENTRY  *Link;
+ 
+-  if (UserHandle == NULL) {
++  if ((UserHandle == NULL) || (((IHANDLE *)UserHandle)->Signature != EFI_HANDLE_SIGNATURE)) {
+     return EFI_INVALID_PARAMETER;
+   }
+ 
+   ASSERT_LOCKED (&gProtocolDatabaseLock);
+ 
+-  for (Link = gHandleList.BackLink; Link != &gHandleList; Link = Link->BackLink) {
+-    Handle = CR (Link, IHANDLE, AllHandles, EFI_HANDLE_SIGNATURE);
+-    if (Handle == (IHANDLE *)UserHandle) {
+-      return EFI_SUCCESS;
++  if (!((IHANDLE *)UserHandle)->Validated) {
++    for (Link = gHandleList.ForwardLink; Link != &gHandleList; Link = Link->ForwardLink) {
++      Handle = CR (Link, IHANDLE, AllHandles, EFI_HANDLE_SIGNATURE);
++      if (Handle == (IHANDLE *)UserHandle) {
++        Handle->Validated = TRUE;
++        return EFI_SUCCESS;
++      }
+     }
++  } else {
++    return EFI_SUCCESS;
+   }
+ 
+   return EFI_INVALID_PARAMETER;
+@@ -463,6 +468,7 @@ CoreInstallProtocolInterfaceNotify (
+     //
+     gHandleDatabaseKey++;
+     Handle->Key = gHandleDatabaseKey;
++    Handle->Validated = FALSE;
+ 
+     //
+     // Add this handle to the list global list of all handles
+diff --git a/MdeModulePkg/Core/Dxe/Hand/Handle.h b/MdeModulePkg/Core/Dxe/Hand/Handle.h
+index 5c66e4da66..e7b09c00a1 100644
+--- a/MdeModulePkg/Core/Dxe/Hand/Handle.h
++++ b/MdeModulePkg/Core/Dxe/Hand/Handle.h
+@@ -23,6 +23,7 @@ typedef struct {
+   UINTN         LocateRequest;
+   /// The Handle Database Key value when this handle was last created or modified
+   UINT64        Key;
++  BOOLEAN       Validated;
+ } IHANDLE;
+ 
+ #define ASSERT_IS_HANDLE(a)  ASSERT((a)->Signature == EFI_HANDLE_SIGNATURE)
+-- 
+2.45.2.windows.1
+

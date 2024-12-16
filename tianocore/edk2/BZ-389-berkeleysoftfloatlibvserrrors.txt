@@ -1,0 +1,20 @@
+ "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\bin\Hostx86\arm\lib.exe
+" /NOLOGO /LTCG /OUT:d:\linaro\edk2\moi\edk2\Build\ArmVirtQemu-ARM\DEBUG_VS2017\ARM\NetworkPkg\Library\DxeTcpIoLib\DxeTc
+pIoLib\OUTPUT\DxeTcpIoLib.lib @d:\linaro\edk2\moi\edk2\Build\ArmVirtQemu-ARM\DEBUG_VS2017\ARM\NetworkPkg\Library\DxeTcpI
+oLib\DxeTcpIoLib\OUTPUT\object_files.lst
+        Trim --source-code --trim-long -o d:\linaro\edk2\moi\edk2\Build\ArmVirtQemu-ARM\DEBUG_VS2017\ARM\MdePkg\Library\
+BaseLib\BaseLib\OUTPUT\Arm\GetInterruptsState.iii d:\linaro\edk2\moi\edk2\Build\ArmVirtQemu-ARM\DEBUG_VS2017\ARM\MdePkg\
+Library\BaseLib\BaseLib\OUTPUT\Arm\GetInterruptsState.i
+d:\linaro\edk2\moi\edk2\ArmPkg\Library\ArmSoftFloatLib\berkeley-softfloat-3\source\include\opts-GCC.h(48): error C2220:
+warning treated as error - no object file generated
+d:\linaro\edk2\moi\edk2\ArmPkg\Library\ArmSoftFloatLib\berkeley-softfloat-3\source\include\opts-GCC.h(48): warning C4013
+: '__builtin_clz' undefined; assuming extern returning int
+d:\linaro\edk2\moi\edk2\ArmPkg\Library\ArmSoftFloatLib\berkeley-softfloat-3\source\include\opts-GCC.h(48): warning C4244
+: 'return': conversion from 'int' to 'uint_fast8_t', possible loss of data
+d:\linaro\edk2\moi\edk2\ArmPkg\Library\ArmSoftFloatLib\berkeley-softfloat-3\source\include\opts-GCC.h(52): warning C4244
+: 'return': conversion from 'int' to 'uint_fast8_t', possible loss of data
+d:\linaro\edk2\moi\edk2\ArmPkg\Library\ArmSoftFloatLib\berkeley-softfloat-3\source\include\opts-GCC.h(56): warning C4013
+: '__builtin_clzll' undefined; assuming extern returning int
+d:\linaro\edk2\moi\edk2\ArmPkg\Library\ArmSoftFloatLib\berkeley-softfloat-3\source\include\opts-GCC.h(56): warning C4244
+: 'return': conversion from 'int' to 'uint_fast8_t', possible loss of data
+

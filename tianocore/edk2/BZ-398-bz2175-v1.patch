@@ -1,0 +1,39 @@
+From b84a9030ebb166ba6ef170be8efc720feb51b966 Mon Sep 17 00:00:00 2001
+From: BrentHoltsclaw <brent.holtsclaw@intel.com>
+Date: Thu, 2 May 2019 13:54:42 -0700
+Subject: [PATCH 1/6] Fix potential memory corruption in Mtftp4FillOptions
+
+---
+ NetworkPkg/Mtftp4Dxe/Mtftp4Option.c                     | 2 +-
+ NetworkPkg/Mtftp6Dxe/Mtftp6Option.c                     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/Network/Mtftp4Dxe/Mtftp4Option.c b/MdeModulePkg/Universal/Network/Mtftp4Dxe/Mtftp4Option.c
+index d97f157f17..d2bd23ee82 100644
+--- a/NetworkPkg/Mtftp4Dxe/Mtftp4Option.c
++++ b/NetworkPkg/Mtftp4Dxe/Mtftp4Option.c
+@@ -170,7 +170,7 @@ Mtftp4FillOptions (
+ {
+   UINT8                     *Cur;
+   UINT8                     *Last;
+-  UINT8                     Num;
++  UINT32                     Num;
+   UINT8                     *Name;
+   UINT8                     *Value;
+ 
+diff --git a/NetworkPkg/Mtftp6Dxe/Mtftp6Option.c b/NetworkPkg/Mtftp6Dxe/Mtftp6Option.c
+index 2a83af9878..d7b3ec7e35 100644
+--- a/NetworkPkg/Mtftp6Dxe/Mtftp6Option.c
++++ b/NetworkPkg/Mtftp6Dxe/Mtftp6Option.c
+@@ -281,7 +281,7 @@ Mtftp6ParsePacketOption (
+ {
+   UINT8                        *Cur;
+   UINT8                        *Last;
+-  UINT8                        Num;
++  UINT32                        Num;
+   UINT8                        *Name;
+   UINT8                        *Value;
+ 
+-- 
+2.20.1.windows.1
+

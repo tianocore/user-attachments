@@ -1,0 +1,44 @@
+From 3419a1fbe89d52b15f1b667b00d102500179a85f Mon Sep 17 00:00:00 2001
+Message-Id: <3419a1fbe89d52b15f1b667b00d102500179a85f.1634236144.git.vineelko@microsoft.com>
+From: Vineel Kovvuri <vineelko@microsoft.com>
+Date: Mon, 11 Oct 2021 17:44:57 -0700
+Subject: [PATCH] Enable wildcard host name matching in EDK2 HTTPS/TLS
+ implementation
+
+The current UEFI implementation of HTTPS during its TLS configuration uses
+EFI_TLS_VERIFY_FLAG_NO_WILDCARDS for host name verification. As per the spec
+this flag does is "to disable the match of any wildcards in the host name". So,
+certificates which are issued with wildcards(*.dm.corp.net etc) in it will fail
+the TLS host name matching. On the other hand,
+EFI_TLS_VERIFY_FLAG_NONE(misnomer) means "no additional flags set for hostname
+validation. Wildcards are supported and they match only in the left-most label."
+this behavior/definition is coming from openssl's X509_check_host() api
+https://www.openssl.org/docs/man1.1.0/man3/X509_check_host.html
+
+Without EFI_TLS_VERIFY_FLAG_NONE any UEFI application using certificates issued
+with wildcards in them would fail to match while trying to communicate with
+HTTPS endpoint.
+
+BugZilla: https://bugzilla.tianocore.org/show_bug.cgi?id=3691
+
+Signed-off-by: Vineel Kovvuri <vineelko@microsoft.com>
+---
+ NetworkPkg/HttpDxe/HttpsSupport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/NetworkPkg/HttpDxe/HttpsSupport.c b/NetworkPkg/HttpDxe/HttpsSupport.c
+index 7e0bf85c3c..0f28ae9447 100644
+--- a/NetworkPkg/HttpDxe/HttpsSupport.c
++++ b/NetworkPkg/HttpDxe/HttpsSupport.c
+@@ -625,7 +625,7 @@ TlsConfigureSession (
+   //
+   HttpInstance->TlsConfigData.ConnectionEnd       = EfiTlsClient;
+   HttpInstance->TlsConfigData.VerifyMethod        = EFI_TLS_VERIFY_PEER;
+-  HttpInstance->TlsConfigData.VerifyHost.Flags    = EFI_TLS_VERIFY_FLAG_NO_WILDCARDS;
++  HttpInstance->TlsConfigData.VerifyHost.Flags    = EFI_TLS_VERIFY_FLAG_NONE;
+   HttpInstance->TlsConfigData.VerifyHost.HostName = HttpInstance->RemoteHost;
+   HttpInstance->TlsConfigData.SessionState        = EfiTlsSessionNotStarted;
+ 
+-- 
+2.17.1
+

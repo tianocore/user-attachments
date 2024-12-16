@@ -1,0 +1,36 @@
+From a2bb783f6f51ca0bd499d309ebb919bdc9a8cafb Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:09:23 +0530
+Subject: [PATCH 3/4] MdeModulePkg/Core/Pei: Fix UNUSED_VALUE Coverity issue
+
+The return value from PeiServicesInstallPpi is stored in Status, but
+it is not made of any use and later Status gets overriden.
+
+Assuming this is deliberate, remove the return value storage in Status.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4300
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Core/Pei/PeiMain/PeiMain.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Core/Pei/PeiMain/PeiMain.c b/MdeModulePkg/Core/Pei/PeiMain/PeiMain.c
+index bf1719d7941a..956a6e122bee 100644
+--- a/MdeModulePkg/Core/Pei/PeiMain/PeiMain.c
++++ b/MdeModulePkg/Core/Pei/PeiMain/PeiMain.c
+@@ -473,7 +473,7 @@ PeiCore (
+     // Alert any listeners that there is permanent memory available
+     //
+     PERF_INMODULE_BEGIN ("DisMem");
+-    Status = PeiServicesInstallPpi (&mMemoryDiscoveredPpi);
++    PeiServicesInstallPpi (&mMemoryDiscoveredPpi);
+ 
+     //
+     // Process the Notify list and dispatch any notifies for the Memory Discovered PPI
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,601 @@
+From f4df10755b035988712060c025f04a4243593ed9 Mon Sep 17 00:00:00 2001
+From: Zachary Clark-Williams <zachary.clark-williams@intel.com>
+Date: Wed, 12 Jan 2022 11:14:21 -0800
+Subject: [PATCH] NetworkPkg/WifiConnectionManager: Enabling support for KVM and One Click Recovery WLAN Profile Sync feature.
+
+    Adding WiFiProfileSyncProtocol, which suppots the profilesync driver operations for transfering
+    WiFi profiles from AMT to the Supplicant.
+    WiFiConnectionManager will check for the WifiProfileSyncProtocol and if found will operate On
+    the premise of a One Click Recovery, or KVM flow with a Wifi profile provided by AMT.
+
+Change-Id: I1590f1435a3278fe4f9fe8a1d74c525f944188c1
+Hsd-es-id: 22014454800
+Signed-off-by: Zachary Clark-Williams <zachary.clark-williams@intel.com>
+---
+
+diff --git a/NetworkPkg/Include/Protocol/WifiProfileSyncProtocol.h b/NetworkPkg/Include/Protocol/WifiProfileSyncProtocol.h
+new file mode 100644
+index 0000000..2242e28
+--- /dev/null
++++ b/NetworkPkg/Include/Protocol/WifiProfileSyncProtocol.h
+@@ -0,0 +1,77 @@
++/** @file
++  Intel One Click Recovery WiFi Profile Sync Profile Protocol.
++
++  Copyright (c) 2022, Intel Corporation. All rights reserved.<BR>
++  SPDX-License-Identifier: BSD-2-Clause-Patent
++**/
++#ifndef _WIFI_PROFILE_SYNC_PROTOCOL_H_
++#define _WIFI_PROFILE_SYNC_PROTOCOL_H_
++
++#include <WifiConnectionManagerDxe/WifiConnectionMgrConfig.h>
++
++//
++//  WiFi Profile Sync Protocol GUID variable.
++//
++extern EFI_GUID   gEfiWiFiProfileSyncProtocolGuid;
++
++/**
++  Used by the WiFi connection manager to get the WiFi profile that ASF shared
++  and was stored in WiFi profile protocol. Aligns the ASF WiFi profile data to
++  the WCM profile structure.
++
++  @param[in, out]  WcmProfile       WiFi Connection Manager profile structure
++
++  @return EFI_SUCCESS               Profiles returned
++  @return EFI_UNSUPPORTED           Profile protocol sharing not supported or enabled
++  @return EFI_NOT_FOUND             No profiles returned
++  @return Others                    Error Occurred
++**/
++typedef
++EFI_STATUS
++(EFIAPI *WIFI_PROFILE_GET) (
++  IN OUT  WIFI_MGR_NETWORK_PROFILE  *Profile
++  );
++
++/**
++  Sets the WiFi connection status recieved by the WiFiConnectionManager.
++  Input as EFI_80211_CONNECT_NETWORK_RESULT_CODE then converted and stored
++  as EFI_STATUS type.
++
++  @param[in] ConnectionStatus     WiFi connection attempt results
++**/
++typedef
++VOID
++(EFIAPI *WIFI_SET_CONNECT_STATE) (
++  IN EFI_80211_CONNECT_NETWORK_RESULT_CODE  ConnectionStatus
++  );
++
++/**
++  Retrieves the WiFi connection status when in either KVM OR OCR WLAN recovery.
++
++  @return EFI_SUCCESS               WiFi connection completed succesfully
++  @return Others                    Error Occurred
++**/
++typedef
++EFI_STATUS
++(EFIAPI *WIFI_GET_CONNECT_STATE) (
++  VOID
++  );
++
++//
++//  WiFi Profile Sync Protocol structure.
++//
++typedef struct {
++  UINT32                      Revision;
++  WIFI_SET_CONNECT_STATE      WifiProfileSyncSetConnectState;
++  WIFI_GET_CONNECT_STATE      WifiProfileSyncGetConnectState;
++  WIFI_PROFILE_GET            WifiProfileSyncGetProfile;
++} EFI_WIFI_PROFILE_SYNC_PROTOCOL;
++
++/**
++  Intel WiFi Profile Protocol revision number.
++
++  Revision 1:   Initial version
++**/
++#define  EFI_WIFI_PROFILE_SYNC_PROTOCOL_REVISION     1
++
++#endif
+diff --git a/NetworkPkg/NetworkPkg.dec b/NetworkPkg/NetworkPkg.dec
+index 928e84f..3f3d619 100644
+--- a/NetworkPkg/NetworkPkg.dec
++++ b/NetworkPkg/NetworkPkg.dec
+@@ -3,7 +3,7 @@
+ #
+ # This package provides network modules that conform to UEFI 2.4 specification.
+ #
+-# Copyright (c) 2009 - 2021, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2009 - 2022, Intel Corporation. All rights reserved.<BR>
+ # (C) Copyright 2015-2020 Hewlett Packard Enterprise Development LP<BR>
+ #
+ # SPDX-License-Identifier: BSD-2-Clause-Patent
+@@ -91,6 +91,9 @@
+   ## Include/Protocol/HttpCallback.h
+   gEdkiiHttpCallbackProtocolGuid  = {0x611114f1, 0xa37b, 0x4468, {0xa4, 0x36, 0x5b, 0xdd, 0xa1, 0x6a, 0xa2, 0x40}}
+ 
++  ## Include/Protocol/WiFiProfileSyncProtocol.h
++  gEfiWiFiProfileSyncProtocolGuid = {0x399a2b8a, 0xc267, 0x44aa, {0x9a, 0xb4, 0x30, 0x58, 0x8c, 0xd2, 0x2d, 0xcc}}
++
+ [PcdsFixedAtBuild]
+   ## The max attempt number will be created by iSCSI driver.
+   # @Prompt Max attempt number.
+diff --git a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionManagerDxe.inf b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionManagerDxe.inf
+index 4394b6f..7e36016 100644
+--- a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionManagerDxe.inf
++++ b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionManagerDxe.inf
+@@ -9,7 +9,7 @@
+ #  2). WPA2 Personal Network
+ #  3). EAP Networks (EAP-TLS, EAP-TTLS/MSCHAPv2 and PEAPv0/MSCHAPv2)
+ #
+-#  Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2019 - 2022, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -71,6 +71,7 @@
+   gEfiAdapterInformationProtocolGuid            ## SOMETIMES_CONSUMES
+   gEfiSupplicantProtocolGuid                    ## SOMETIMES_CONSUMES
+   gEfiEapConfigurationProtocolGuid              ## SOMETIMES_CONSUMES
++  gEfiWiFiProfileSyncProtocolGuid               ## SOMETIMES_CONSUMES
+ 
+ [Guids]
+   gWifiConfigGuid                               ## PRODUCES  ## GUID
+diff --git a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c
+index 67a01ca..1fcb9a9 100644
+--- a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c
++++ b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c
+@@ -1,7 +1,7 @@
+ /** @file
+   The driver binding protocol for the WiFi Connection Manager.
+ 
+-  Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2019 - 2022, Intel Corporation. All rights reserved.<BR>
+ 
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+@@ -167,6 +167,7 @@
+   EFI_WIRELESS_MAC_CONNECTION_II_PROTOCOL  *Wmp;
+   EFI_SUPPLICANT_PROTOCOL                  *Supplicant;
+   EFI_EAP_CONFIGURATION_PROTOCOL           *EapConfig;
++  EFI_WIFI_PROFILE_SYNC_PROTOCOL           *WiFiProfileSyncProtocol;
+ 
+   Nic = NULL;
+ 
+@@ -248,35 +249,59 @@
+   }
+ 
+   //
+-  // Create and start the timer for the status check
++  // Supporting OCR WLAN with profile sharing protocol check
+   //
+-  Status = gBS->CreateEvent (
+-                  EVT_NOTIFY_SIGNAL | EVT_TIMER,
+-                  TPL_CALLBACK,
+-                  WifiMgrOnTimerTick,
+-                  Nic,
+-                  &Nic->TickTimer
++  Status = gBS->LocateProtocol (
++                  &gEfiWiFiProfileSyncProtocolGuid,
++                  NULL,
++                  (VOID **) &WiFiProfileSyncProtocol
+                   );
+-  if (EFI_ERROR (Status)) {
+-    goto ERROR2;
++  if (!EFI_ERROR (Status)) {
++    Nic->ConnectPendingNetwork = (WIFI_MGR_NETWORK_PROFILE *) AllocateZeroPool (sizeof (WIFI_MGR_NETWORK_PROFILE));
++    if (Nic->ConnectPendingNetwork == NULL) {
++      Status = EFI_OUT_OF_RESOURCES;
++      goto ERROR1;
++    }
++    WiFiProfileSyncProtocol->WifiProfileSyncGetProfile (Nic->ConnectPendingNetwork);
++    if (Nic->ConnectPendingNetwork != NULL) {
++      Status = WifiMgrConnectToNetwork (Nic, Nic->ConnectPendingNetwork);
++      if (EFI_ERROR (Status)) {
++        WiFiProfileSyncProtocol->WifiProfileSyncSetConnectState (Status);
++      }
++    } else {
++      goto ERROR1;
++    }
++  } else {
++    //
++    // Create and start the timer for the status check
++    //
++    Status = gBS->CreateEvent (
++                    EVT_NOTIFY_SIGNAL | EVT_TIMER,
++                    TPL_CALLBACK,
++                    WifiMgrOnTimerTick,
++                    Nic,
++                    &Nic->TickTimer
++                    );
++    if (EFI_ERROR (Status)) {
++      goto ERROR2;
++    }
++
++    Status = gBS->SetTimer (Nic->TickTimer, TimerPeriodic, EFI_TIMER_PERIOD_MILLISECONDS(500));
++    if (EFI_ERROR (Status)) {
++      goto ERROR3;
++    }
++
++    Nic->ConnectState = WifiMgrDisconnected;
++    Nic->ScanState    = WifiMgrScanFinished;
++
++    OldTpl = gBS->RaiseTPL (TPL_CALLBACK);
++    InsertTailList (&mPrivate->NicList, &Nic->Link);
++    Nic->NicIndex = mPrivate->NicCount ++;
++    if (mPrivate->CurrentNic == NULL) {
++      mPrivate->CurrentNic = Nic;
++    }
++    gBS->RestoreTPL (OldTpl);
+   }
+-
+-  Status = gBS->SetTimer (Nic->TickTimer, TimerPeriodic, EFI_TIMER_PERIOD_MILLISECONDS (500));
+-  if (EFI_ERROR (Status)) {
+-    goto ERROR3;
+-  }
+-
+-  Nic->ConnectState = WifiMgrDisconnected;
+-  Nic->ScanState    = WifiMgrScanFinished;
+-
+-  OldTpl = gBS->RaiseTPL (TPL_CALLBACK);
+-  InsertTailList (&mPrivate->NicList, &Nic->Link);
+-  Nic->NicIndex = mPrivate->NicCount++;
+-  if (mPrivate->CurrentNic == NULL) {
+-    mPrivate->CurrentNic = Nic;
+-  }
+-
+-  gBS->RestoreTPL (OldTpl);
+ 
+   Status = gBS->InstallProtocolInterface (
+                   &ControllerHandle,
+@@ -385,10 +410,11 @@
+   IN EFI_HANDLE                   *ChildHandleBuffer OPTIONAL
+   )
+ {
+-  EFI_STATUS                 Status;
+-  EFI_TPL                    OldTpl;
+-  WIFI_MGR_PRIVATE_PROTOCOL  *WifiMgrIdentifier;
+-  WIFI_MGR_DEVICE_DATA       *Nic;
++  EFI_STATUS                       Status;
++  EFI_TPL                          OldTpl;
++  WIFI_MGR_PRIVATE_PROTOCOL        *WifiMgrIdentifier;
++  WIFI_MGR_DEVICE_DATA             *Nic;
++  EFI_WIFI_PROFILE_SYNC_PROTOCOL   *WiFiProfileSyncProtocol;
+ 
+   Status = gBS->OpenProtocol (
+                   ControllerHandle,
+@@ -481,7 +507,14 @@
+   //
+   OldTpl = gBS->RaiseTPL (TPL_CALLBACK);
+ 
+-  RemoveEntryList (&Nic->Link);
++  Status = gBS->LocateProtocol (
++                  &gEfiWiFiProfileSyncProtocolGuid,
++                  NULL,
++                  (VOID **) &WiFiProfileSyncProtocol
++                  );
++  if (EFI_ERROR (Status)) {
++      RemoveEntryList (&Nic->Link);
++  }
+   mPrivate->NicCount--;
+   if (mPrivate->CurrentNic == Nic) {
+     mPrivate->CurrentNic = NULL;
+diff --git a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDxe.h b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDxe.h
+index c3c70b2..26975e2 100644
+--- a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDxe.h
++++ b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDxe.h
+@@ -1,7 +1,7 @@
+ /** @file
+   The miscellaneous structure definitions for WiFi connection driver.
+ 
+-  Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2019 - 2022, Intel Corporation. All rights reserved.<BR>
+ 
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+@@ -47,6 +47,7 @@
+ #include <Protocol/SimpleNetwork.h>
+ #include <Protocol/SimpleFileSystem.h>
+ #include <Protocol/EapConfiguration.h>
++#include <Protocol/WifiProfileSyncProtocol.h>
+ 
+ //
+ // Produced Protocols
+@@ -74,6 +75,7 @@
+ #define WIFI_MGR_DXE_VERSION  0xb
+ 
+ #define OUI_IEEE_80211I  0xAC0F00
++#define MAX_WIFI_CONNETION_ATTEMPTS 3
+ 
+ typedef enum {
+   Ieee80211PairwiseCipherSuiteUseGroupCipherSuite = 0,
+diff --git a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrImpl.c b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrImpl.c
+index 7630c06..9d0ad15 100644
+--- a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrImpl.c
++++ b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrImpl.c
+@@ -1,7 +1,7 @@
+ /** @file
+   The Mac Connection2 Protocol adapter functions for WiFi Connection Manager.
+ 
+-  Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2019 - 2022, Intel Corporation. All rights reserved.<BR>
+ 
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+@@ -420,23 +420,32 @@
+   //
+   // Set password to supplicant
+   //
++  if (Profile->Password[StrLen (Profile->Password)] != '\0') {
++    Profile->Password[StrLen (Profile->Password)] = L'\0';
++  }
+   if (StrLen (Profile->Password) < PASSWORD_MIN_LEN) {
+     return EFI_NOT_FOUND;
+   }
++  if (StrLen (Profile->Password) > PASSWORD_STORAGE_SIZE) {
++    ASSERT (EFI_INVALID_PARAMETER);
++    return EFI_INVALID_PARAMETER;
++  }
+ 
+-  AsciiPassword = AllocateZeroPool ((StrLen (Profile->Password) + 1) * sizeof (UINT8));
++  AsciiPassword = AllocateZeroPool ((StrLen (Profile->Password) + 1) * sizeof (CHAR8));
+   if (AsciiPassword == NULL) {
+     return EFI_OUT_OF_RESOURCES;
+   }
+ 
+-  UnicodeStrToAsciiStrS (Profile->Password, (CHAR8 *)AsciiPassword, PASSWORD_STORAGE_SIZE);
+-  Status = Supplicant->SetData (
+-                         Supplicant,
+-                         EfiSupplicant80211PskPassword,
+-                         AsciiPassword,
+-                         (StrLen (Profile->Password) + 1) * sizeof (UINT8)
+-                         );
+-  ZeroMem (AsciiPassword, AsciiStrLen ((CHAR8 *)AsciiPassword) + 1);
++  Status = UnicodeStrToAsciiStrS (Profile->Password, (CHAR8 *) AsciiPassword, ((StrLen (Profile->Password) + 1) * sizeof (CHAR8)));
++  if (!EFI_ERROR (Status)) {
++    Status = Supplicant->SetData (
++               Supplicant,
++               EfiSupplicant80211PskPassword,
++               AsciiPassword,
++               (StrLen (Profile->Password) + 1) * sizeof (CHAR8)
++               );
++  }
++  ZeroMem (AsciiPassword, AsciiStrLen ((CHAR8 *) AsciiPassword) + 1);
+   FreePool (AsciiPassword);
+ 
+   return Status;
+@@ -465,19 +474,20 @@
+   IN    WIFI_MGR_NETWORK_PROFILE  *Profile
+   )
+ {
+-  EFI_STATUS                      Status;
+-  EFI_EAP_CONFIGURATION_PROTOCOL  *EapConfig;
+-  EFI_EAP_TYPE                    EapAuthMethod;
+-  EFI_EAP_TYPE                    EapSecondAuthMethod;
+-  EFI_EAP_TYPE                    *AuthMethodList;
+-  CHAR8                           *Identity;
+-  UINTN                           IdentitySize;
+-  CHAR16                          *Password;
+-  UINTN                           PasswordSize;
+-  UINTN                           EncryptPasswordLen;
+-  CHAR8                           *AsciiEncryptPassword;
+-  UINTN                           AuthMethodListSize;
+-  UINTN                           Index;
++  EFI_STATUS                        Status;
++  EFI_WIFI_PROFILE_SYNC_PROTOCOL    *WiFiProfileSyncProtocol;
++  EFI_EAP_CONFIGURATION_PROTOCOL    *EapConfig;
++  EFI_EAP_TYPE                      EapAuthMethod;
++  EFI_EAP_TYPE                      EapSecondAuthMethod;
++  EFI_EAP_TYPE                      *AuthMethodList;
++  CHAR8                             *Identity;
++  UINTN                             IdentitySize;
++  CHAR16                            *Password;
++  UINTN                             PasswordSize;
++  UINTN                             EncryptPasswordLen;
++  CHAR8                             *AsciiEncryptPassword;
++  UINTN                             AuthMethodListSize;
++  UINTN                             Index;
+ 
+   if ((Nic == NULL) || (Nic->EapConfig == NULL) || (Profile == NULL)) {
+     return EFI_INVALID_PARAMETER;
+@@ -566,15 +576,20 @@
+     if (Identity == NULL) {
+       return EFI_OUT_OF_RESOURCES;
+     }
+-
+-    UnicodeStrToAsciiStrS (Profile->EapIdentity, Identity, IdentitySize);
++    Status = gBS->LocateProtocol (&gEfiWiFiProfileSyncProtocolGuid, NULL, (VOID **) &WiFiProfileSyncProtocol);
++    if (!EFI_ERROR (Status)) {
++      CopyMem (Identity, &Profile->EapIdentity, IdentitySize);
++    } else {
++      UnicodeStrToAsciiStrS (Profile->EapIdentity, Identity, IdentitySize);
++    }
+     Status = EapConfig->SetData (
+                           EapConfig,
+                           EFI_EAP_TYPE_IDENTITY,
+                           EfiEapConfigIdentityString,
+-                          (VOID *)Identity,
++                          (VOID *) Identity,
+                           IdentitySize - 1
+                           );
++
+     if (EFI_ERROR (Status)) {
+       FreePool (Identity);
+       return Status;
+@@ -891,6 +906,88 @@
+ }
+ 
+ /**
++  Will reset NiC data, get profile from ProfileSync driver, and trigger another connection attempt.
++
++  @retval EFI_SUCCESS             The operation is completed.
++  @retval other                   Operation failure.
++
++**/
++EFI_STATUS
++ConnectionRetry (
++  IN   EFI_WIFI_PROFILE_SYNC_PROTOCOL       *WiFiProfileSyncProtocol
++  )
++{
++  EFI_STATUS                                Status;
++  WIFI_MGR_DEVICE_DATA                      *Nic;
++  EFI_WIRELESS_MAC_CONNECTION_II_PROTOCOL   *Wmp;
++  EFI_SUPPLICANT_PROTOCOL                   *Supplicant;
++  EFI_EAP_CONFIGURATION_PROTOCOL            *EapConfig;
++
++  Nic = NULL;
++
++  Status = gBS->LocateProtocol (
++                  &gEfiWiFi2ProtocolGuid,
++                  NULL,
++                  (VOID**) &Wmp
++                  );
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
++
++  Status = gBS->LocateProtocol (
++                  &gEfiSupplicantProtocolGuid,
++                  NULL,
++                  (VOID**) &Supplicant
++                  );
++  if (EFI_ERROR (Status)) {
++    Supplicant = NULL;
++  }
++
++  Status = gBS->LocateProtocol (
++                  &gEfiEapConfigurationProtocolGuid,
++                  NULL,
++                  (VOID**) &EapConfig
++                  );
++  if (EFI_ERROR (Status)) {
++    EapConfig = NULL;
++  }
++
++  //
++  //Initialize Nic device data
++  //
++  Nic = AllocateZeroPool (sizeof (WIFI_MGR_DEVICE_DATA));
++  if (Nic == NULL) {
++    Status = EFI_OUT_OF_RESOURCES;
++    return Status;
++  }
++
++  Nic->Signature            = WIFI_MGR_DEVICE_DATA_SIGNATURE;
++  Nic->Private              = mPrivate;
++  Nic->Wmp                  = Wmp;
++  Nic->Supplicant           = Supplicant;
++  Nic->EapConfig            = EapConfig;
++  Nic->UserSelectedProfile  = NULL;
++  Nic->OneTimeScanRequest   = FALSE;
++
++  if (Nic->Supplicant != NULL) {
++    Status = WifiMgrGetSupportedSuites (Nic);
++  }
++
++  if (!EFI_ERROR (Status)) {
++    InitializeListHead (&Nic->ProfileList);
++
++    Status = WiFiProfileSyncProtocol->WifiProfileSyncGetProfile (Nic->ConnectPendingNetwork);
++    if (!EFI_ERROR (Status) && (Nic->ConnectPendingNetwork != NULL)) {
++      Status = WifiMgrConnectToNetwork (Nic, Nic->ConnectPendingNetwork);
++      return Status;
++    }
++    DEBUG ((DEBUG_ERROR, "[WiFiConnectionManager] Failed to get WiFi profile with status %r", Status));
++  }
++  DEBUG ((DEBUG_ERROR, "[WiFiConnectionManager] Failed to get Supported suites with status %r", Status));
++  return Status;
++}
++
++/**
+   The callback function for connect operation.
+ 
+   ASSERT when errors occur in config token.
+@@ -906,12 +1003,14 @@
+   IN  VOID       *Context
+   )
+ {
+-  EFI_STATUS                 Status;
+-  WIFI_MGR_MAC_CONFIG_TOKEN  *ConfigToken;
+-  WIFI_MGR_NETWORK_PROFILE   *ConnectedProfile;
+-  UINT8                      SecurityType;
+-  UINT8                      SSIdLen;
+-  CHAR8                      *AsciiSSId;
++  EFI_STATUS                        Status;
++  WIFI_MGR_MAC_CONFIG_TOKEN         *ConfigToken;
++  WIFI_MGR_NETWORK_PROFILE          *ConnectedProfile;
++  UINT8                             SecurityType;
++  UINT8                             SSIdLen;
++  CHAR8                             *AsciiSSId;
++  EFI_WIFI_PROFILE_SYNC_PROTOCOL    *WiFiProfileSyncProtocol;
++  static UINT8                      WifiConnectionCount;
+ 
+   ASSERT (Context != NULL);
+ 
+@@ -923,6 +1022,21 @@
+   ASSERT (ConfigToken->Type == TokenTypeConnectNetworkToken);
+ 
+   ASSERT (ConfigToken->Token.ConnectNetworkToken != NULL);
++
++  Status = gBS->LocateProtocol (&gEfiWiFiProfileSyncProtocolGuid, NULL, (VOID **) &WiFiProfileSyncProtocol);
++  if (!EFI_ERROR (Status)) {
++    WiFiProfileSyncProtocol->WifiProfileSyncSetConnectState (ConfigToken->Token.ConnectNetworkToken->ResultCode);
++    if ((WifiConnectionCount < MAX_WIFI_CONNETION_ATTEMPTS) &&
++        (ConfigToken->Token.ConnectNetworkToken->ResultCode != ConnectSuccess)) {
++      WifiConnectionCount++;
++      gBS->CloseEvent (Event);
++      Status = ConnectionRetry (WiFiProfileSyncProtocol);
++      if (!EFI_ERROR (Status)) {
++        return;
++      }
++      WiFiProfileSyncProtocol->WifiProfileSyncSetConnectState (Status);
++    }
++  }
+   if (ConfigToken->Token.ConnectNetworkToken->Status != EFI_SUCCESS) {
+     if (ConfigToken->Nic->OneTimeConnectRequest) {
+       //
+diff --git a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrMisc.c b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrMisc.c
+index 4e7c241..e075f42 100644
+--- a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrMisc.c
++++ b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrMisc.c
+@@ -1,7 +1,7 @@
+ /** @file
+   The Miscellaneous Routines for WiFi Connection Manager.
+ 
+-  Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2019 - 2022, Intel Corporation. All rights reserved.<BR>
+ 
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+@@ -609,18 +609,30 @@
+ /**
+   Clean secrets from a network profile.
+ 
+-  @param[in]   Profile               The profile to be cleanned.
++  @param[in]   Profile              The profile to be cleanned.
+ 
+ **/
+ VOID
+ WifiMgrCleanProfileSecrets (
+-  IN  WIFI_MGR_NETWORK_PROFILE  *Profile
++  IN  WIFI_MGR_NETWORK_PROFILE      *Profile
+   )
+ {
++  EFI_STATUS                        Status;
++  EFI_WIFI_PROFILE_SYNC_PROTOCOL    *WiFiProfileSyncProtocol;
++
+   ZeroMem (Profile->Password, sizeof (CHAR16) * PASSWORD_STORAGE_SIZE);
+   ZeroMem (Profile->EapPassword, sizeof (CHAR16) * PASSWORD_STORAGE_SIZE);
+   ZeroMem (Profile->PrivateKeyPassword, sizeof (CHAR16) * PASSWORD_STORAGE_SIZE);
+ 
++  //
++  // When profile sync protocol is found the system is performing an HTTPS recovery boot in secure
++  // boot mode. This means that the profile sync driver will manage the CA certificate, client
++  // certificate, and key data, cleaning them at exit boot services.
++  //
++  Status = gBS->LocateProtocol (&gEfiWiFiProfileSyncProtocolGuid, NULL, (VOID **) &WiFiProfileSyncProtocol);
++  if (!EFI_ERROR (Status)) {
++    return;
++  }
+   if (Profile->CACertData != NULL) {
+     ZeroMem (Profile->CACertData, Profile->CACertSize);
+     FreePool (Profile->CACertData);

@@ -1,0 +1,65 @@
+From 95eebd9dc00757d803568b6f56d44534df726f05 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:24:22 +0530
+Subject: [PATCH 1/2] SecurityPkg/Library/Tpm2CommandLib: Fix MISSING_BREAK
+ Coverity issue
+
+The function Tpm2TestParms in the file
+    SecurityPkg/Library/Tpm2CommandLib/Tpm2Capability.c and
+the function Tpm2ReadPublic in the file
+    SecurityPkg/Library/Tpm2CommandLib/Tpm2Object.c
+has a switch-case code in which the
+case TPM_ALG_KEYEDHASH:
+falls through to
+case TPM_ALG_SYMCIPHER:
+
+While this may be intentional, it is not evident to any general code
+reader as well as any static analyzer tool. Just adding
+
+    // No break; here as this is an intentional fallthrough.
+
+as comment in between makes any reader as well as Coverity happy.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Min Xu <min.m.xu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4279
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ SecurityPkg/Library/Tpm2CommandLib/Tpm2Capability.c | 4 ++++
+ SecurityPkg/Library/Tpm2CommandLib/Tpm2Object.c     | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/SecurityPkg/Library/Tpm2CommandLib/Tpm2Capability.c b/SecurityPkg/Library/Tpm2CommandLib/Tpm2Capability.c
+index 9db301ec9a90..bfde343fa3c5 100644
+--- a/SecurityPkg/Library/Tpm2CommandLib/Tpm2Capability.c
++++ b/SecurityPkg/Library/Tpm2CommandLib/Tpm2Capability.c
+@@ -743,6 +743,10 @@ Tpm2TestParms (
+           return EFI_INVALID_PARAMETER;
+       }
+ 
++      //
++      // No break; here as this is an intentional fall through.
++      //
++
+     case TPM_ALG_SYMCIPHER:
+       WriteUnaligned16 ((UINT16 *)Buffer, SwapBytes16 (Parameters->parameters.symDetail.algorithm));
+       Buffer += sizeof (UINT16);
+diff --git a/SecurityPkg/Library/Tpm2CommandLib/Tpm2Object.c b/SecurityPkg/Library/Tpm2CommandLib/Tpm2Object.c
+index 335957d6cedc..cd09711dcab3 100644
+--- a/SecurityPkg/Library/Tpm2CommandLib/Tpm2Object.c
++++ b/SecurityPkg/Library/Tpm2CommandLib/Tpm2Object.c
+@@ -178,6 +178,10 @@ Tpm2ReadPublic (
+           return EFI_UNSUPPORTED;
+       }
+ 
++      //
++      // No break; here as this is an intentional fall through.
++      //
++
+     case TPM_ALG_SYMCIPHER:
+       OutPublic->publicArea.parameters.symDetail.algorithm = SwapBytes16 (ReadUnaligned16 ((UINT16 *)Buffer));
+       Buffer                                              += sizeof (UINT16);
+-- 
+2.36.1.windows.1
+

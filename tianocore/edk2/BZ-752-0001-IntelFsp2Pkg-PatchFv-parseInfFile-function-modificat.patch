@@ -1,0 +1,91 @@
+From 987973b2ab6a5d949109c99bc8a46ba79de0580a Mon Sep 17 00:00:00 2001
+Message-Id: <987973b2ab6a5d949109c99bc8a46ba79de0580a.1625396731.git.ashraf.ali.s@intel.com>
+From: Ashraf Ali S <ashraf.ali.s@intel.com>
+Date: Sun, 4 Jul 2021 16:20:11 +0530
+Subject: [PATCH] IntelFsp2Pkg: PatchFv parseInfFile function modification
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3476
+
+parseInfFile currently reading the EFI_BASE_ADDRESS from INF, once the
+address found still it's continues to read the complete inf file which
+is not required. once the EFI_BASE_ADDRESS read from the INF no need to
+read the INF further.
+MSFT compiler can generate the map file address 8 or 16 based on which
+architecture the INF is compiler. currently it's support for IA32,
+it can be update the X64 in future.
+modification of few typo errors in parseModMapFile, getCurr function
+required
+
+Signed-off-by: Ashraf Ali S <ashraf.ali.s@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Chasel Chiu <chasel.chiu@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+---
+ IntelFsp2Pkg/Tools/PatchFv.py | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/IntelFsp2Pkg/Tools/PatchFv.py b/IntelFsp2Pkg/Tools/PatchFv.py
+index 112de4077a..765dfed8ef 100644
+--- a/IntelFsp2Pkg/Tools/PatchFv.py
++++ b/IntelFsp2Pkg/Tools/PatchFv.py
+@@ -1,6 +1,6 @@
+ ## @ PatchFv.py
+ #
+-# Copyright (c) 2014 - 2019, Intel Corporation. All rights reserved.<BR>
++# Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+ # SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+ ##
+@@ -297,17 +297,16 @@ class Symbols:
+         #
+         fvOffset    = self.getFvOffsetInFd(infFile[0:-4] + ".Fv")
+         fdIn        = open(infFile, "r")
+-        rptLine     = fdIn.readline()
++        rptLines     = fdIn.readlines()
+         self.fdBase = 0xFFFFFFFF
+-        while (rptLine != "" ):
+-            #EFI_BASE_ADDRESS = 0xFFFDF400
+-            match = re.match("^EFI_BASE_ADDRESS\s*=\s*(0x[a-fA-F0-9]+)", rptLine)
++        for line in rptLines:
++            match = re.match("^EFI_BASE_ADDRESS\s*=\s*(0x[a-fA-F0-9]+)", line)
+             if match is not None:
+                 self.fdBase = int(match.group(1), 16) - fvOffset
+-            rptLine  = fdIn.readline()
++                break
+         fdIn.close()
+         if self.fdBase == 0xFFFFFFFF:
+-            raise Exception("Could not find EFI_BASE_ADDRESS in INF file!" % fvFile)
++            raise Exception("Could not find EFI_BASE_ADDRESS in INF file!" % infFile)
+         return 0
+ 
+     #
+@@ -402,6 +401,7 @@ class Symbols:
+     #
+     #  retval      0           Parsed MOD MAP file successfully
+     #  retval      1           There is no moduleEntryPoint in modSymbols
++    #  retval      2           There is no offset for moduleEntryPoint in modSymbols
+     #
+     def parseModMapFile(self, moduleName, mapFile):
+         #
+@@ -426,7 +426,7 @@ class Symbols:
+         else:
+             #MSFT
+             #0003:00000190       _gComBase                  00007a50     SerialPo
+-            patchMapFileMatchString =  "^\s[0-9a-fA-F]{4}:[0-9a-fA-F]{8}\s+(\w+)\s+([0-9a-fA-F]{8}\s+)"
++            patchMapFileMatchString =  "^\s[0-9a-fA-F]{4}:[0-9a-fA-F]{8}\s+(\w+)\s+([0-9a-fA-F]{8,16}\s+)"
+             matchKeyGroupIndex = 1
+             matchSymbolGroupIndex  = 2
+             prefix = ''
+@@ -498,7 +498,7 @@ class Symbols:
+     #
+     #  Get current character
+     #
+-    #  retval      elf.string[self.index]
++    #  retval      self.string[self.index]
+     #  retval      ''                       Exception
+     #
+     def getCurr(self):
+-- 
+2.26.2.windows.1
+

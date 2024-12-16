@@ -1,0 +1,21 @@
+diff --git "a/SecurityPkg\\Tcg\\Tcg2Smm\\Tpm.asl_old" "b/SecurityPkg\\Tcg\\Tcg2Smm\\Tpm.asl"
+index 7b24ae6..c1c4363 100644
+--- "a/SecurityPkg\\Tcg\\Tcg2Smm\\Tpm.asl_old"
++++ "b/SecurityPkg\\Tcg\\Tcg2Smm\\Tpm.asl"
+@@ -202,14 +202,14 @@ DefinitionBlock (
+             //
+             // ACPI spec definitions:
+             // _HE: '1' is Edge, '0' is Level
+-            // _LL: '1' is ActiveHigh, '0' is ActiveLow (inverted from TCG spec)
++            // _LL: '1' is ActiveLow, '0' is ActiveHigh
+             //
+             If (LEqual (ITRG, 1)) {
+               Or(INTE, 0x00000010, INTE)
+             } Else {
+               And(INTE, 0xFFFFFFEF, INTE)
+             }
+-            if (LEqual (ILVL, 0)) {
++            if (LEqual (ILVL, 1)) { // ActiveLow?
+               Or(INTE, 0x00000008, INTE)
+             } Else {
+               And(INTE, 0xFFFFFFF7, INTE)

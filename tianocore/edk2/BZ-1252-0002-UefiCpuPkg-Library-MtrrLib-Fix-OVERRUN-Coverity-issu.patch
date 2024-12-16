@@ -1,0 +1,47 @@
+From d3db34747cd537b01fce315b4042f7b4126dfc3f Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 12:00:40 +0530
+Subject: [PATCH 2/2] UefiCpuPkg/Library/MtrrLib: Fix OVERRUN Coverity issues
+
+The function MtrrLibProgramFixedMtrr contains
+
+  ASSERT (MsrIndex != ARRAY_SIZE (mMtrrLibFixedMtrrTable));
+
+but this check comes into play only in DEBUG mode. In Release mode,
+there is no handling if the MsrIndex value is within array limits or
+not. If for whatever reasons, the for loop doesn't break because of
+the inside if check passing, then the last value of MsrIndex will be
+equal to ARRAY_SIZE (mMtrrLibFixedMtrrTable) and this poses array
+overrun risk at some places in the code below. It is better to deploy
+a safety check on MsrIndex limit before accessing array elements.
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4258
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ UefiCpuPkg/Library/MtrrLib/MtrrLib.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/UefiCpuPkg/Library/MtrrLib/MtrrLib.c b/UefiCpuPkg/Library/MtrrLib/MtrrLib.c
+index 011ce8dcef5e..93fc01bb99f9 100644
+--- a/UefiCpuPkg/Library/MtrrLib/MtrrLib.c
++++ b/UefiCpuPkg/Library/MtrrLib/MtrrLib.c
+@@ -507,6 +507,13 @@ MtrrLibProgramFixedMtrr (
+ 
+   ASSERT (MsrIndex != ARRAY_SIZE (mMtrrLibFixedMtrrTable));
+ 
++  if (MsrIndex == ARRAY_SIZE (mMtrrLibFixedMtrrTable)) {
++    //
++    // No match found in the range.
++    //
++    return RETURN_UNSUPPORTED;
++  }
++
+   //
+   // Find the begin offset in fixed MTRR and calculate byte offset of left shift
+   //
+-- 
+2.36.1.windows.1
+

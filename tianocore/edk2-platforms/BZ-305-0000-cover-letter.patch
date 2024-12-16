@@ -1,0 +1,192 @@
+From 3248acf28dcb5900bdf3da78c88432df8938c733 Mon Sep 17 00:00:00 2001
+Message-Id: <cover.1555538295.git.prince.agyeman@intel.com>
+From: Agyeman <prince.agyeman@intel.com>
+Date: Wed, 17 Apr 2019 14:58:15 -0700
+Subject: [edk2-platforms/devel-MinPlatform] [PATCH v2 0/3] Added python build scipts to minplaform
+
+* changes since v1:
+  - Updates per Michael Kubacki's feedback
+  - JSON files to INI
+  - Removed batch build scripts
+  - Removed batch build instructions from Readme.md
+
+-------------------
+Details:
+-------------------
+What it is
+----------
+These patches add python BIOS build scripts and build configuration
+files to build platforms under Intel/Platform.
+
+
+Why
+----
+The reason behind this implementation is to use a cross platform build
+script to build minplaform BIOS.
+
+
+How it is done
+----------------
+The python files:
+-----------------
+BuildBios.py: The main build file. This script sets up the edk2 build 
+enviroment using the default Build.cfg settings and platform
+specific settings. It uses the configurations found in the Build.cfg file to
+locate the platforms that are configured to use this build script.
+The path to each of the platform settings can be found under the "PLATFORMS"
+field within the Build.cfg file. The platform specific settings are
+located in the platform's main directory.
+Example edk2-platforms/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg.
+
+The BuildBios.py script contains the four main functions:
+- preBuild: Sets up the edk2 build enviroment variables, target.txt file
+- build: Uses the configurations to Build BIOS
+- postBuild: Does post build processes like cleaning up files
+             generated during the build process
+- clean: Cleans up the build directory.
+
+There are four addtional functions that dynamically import
+functions from the board's Optional/Additional python script if
+specified in board settings file's ADDITIONAL_SCRIPTS
+These four functions are the preBuildEx, buildEx, postBuildEx, cleanEx functions
+
+
+Board additional (Optional) python build script:
+------------------------------------------------
+These are python scripts located in the board's main directory,
+An example Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildEx.py
+If added, its path must be specified in board's settings file,
+under the field ADDITIONAL_SCRIPTS.
+Example ADDITIONAL_SCRIPTS = PurleyOpenBoardPkg/BoardMtOlympus/BuildBoard.py
+If specified, the buildEx, preBuildEx, postBuildEx, cleanEx must be
+defined even if they are not use
+
+
+The config files
+-----------------
+Build.cfg:
+-----------
+This is file contains the default BIOS build configuration.
+
+The default configurations are defined under the "DEFAULT_CONFIG" section of the file.
+Each of these can be overridden by the board specific setting as defined in
+the board's build config file. All paths must be separated by forward slashes.
+All the paths in the main Build.cfg are relative to the minplaform WORKSPACE.
+Example:
+--------
+[DEFAULT_CONFIG]
+    MIN_PACKAGE_TOOLS = edk2-platforms/Platform/Intel/MinPlatformPkg/Tools
+
+The PLATFORMS field in the Build.cfg file informs BuildBios.py about the
+available platforms that can be built with the BuildBios.py.
+The path to the board specific config file must be relative to location of
+BuildBios.py, Platform/Intel. It is in the format Boardname = BoardPath
+
+Example:
+--------
+[PLATFORMS]
+    KabylakeRvp3 = KabylakeOpenBoardPkg/KabylakeRvp3/BuildConfig.cfg
+
+
+Board Specific Build Settings file:
+----------------------------------------
+This file is located in the board's main directory.
+The CONFIG field contains all the build enviroment variables.
+These values will override any the were specific under
+DEFAULT_CONFIG in the default Build.cfg file.
+Example is Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildConfig.cfg
+
+
+Building BIOS
+-------------
+
+python BuildBios.py -p BOARDNAME -t TOOLCHAIN 
+
+usage: BuildBios.py [-h] --platform {N1xxWU,KabylakeRvp3,BoardMtOlympus}
+                    [--toolchain TOOLCHAIN] [--DEBUG] [--RELEASE]
+                    [--TEST_RELEASE] [--RELEASE_PDB] [--list] [--cleanall]
+                    [--capsule] [--silent] [--performance] [--fsp]
+Build Help
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --platform {N1xxWU,KabylakeRvp3,BoardMtOlympus}, -p {N1xxWU,KabylakeRvp3,BoardMtOlympus}
+                        The platform to build
+  --toolchain TOOLCHAIN, -t TOOLCHAIN
+                        Using the Tool Chain Tagname to build the
+                        platform,overriding target.txt's TOOL_CHAIN_TAG
+                        definition
+  --DEBUG, -d           Debug flag
+  --RELEASE, -r         Release flag
+  --TEST_RELEASE, -tr   Test Release flag
+  --RELEASE_PDB, -rp    Release flag
+  --list, -l            Lists available platforms
+  --cleanall            Cleans all
+  --capsule             Capsule build enabled
+  --silent              Silent build enabled
+  --performance         Performance build enabled
+  --fsp                 FSP build enabled
+
+
+
+Contributed-under: TianoCore Contribution Agreement 0.1
+Signed-off-by: Agyeman <prince.agyeman@intel.com>
+
+Agyeman (3):
+  Platform/Intel: Added python build script.
+  ReadMe.md: Update the build instructions
+  Removing build batch files from ClevoOpenBoardPkg,
+    KabylakeOpenBoardPkg and PurleyOpenBoardPkg
+
+ Platform/Intel/Build.cfg                      |  60 ++
+ Platform/Intel/BuildBios.py                   | 990 ++++++++++++++++++
+ .../ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg  |  40 +
+ .../ClevoOpenBoardPkg/N1xxWU/GitEdk2Clevo.bat |  85 --
+ .../Intel/ClevoOpenBoardPkg/N1xxWU/bld.bat    | 165 ---
+ .../Intel/ClevoOpenBoardPkg/N1xxWU/cln.bat    |  54 -
+ .../ClevoOpenBoardPkg/N1xxWU/postbuild.bat    |  45 -
+ .../ClevoOpenBoardPkg/N1xxWU/prebuild.bat     | 220 ----
+ .../Intel/ClevoOpenBoardPkg/N1xxWU/prep.bat   |  85 --
+ .../KabylakeRvp3/BuildConfig.cfg              |  27 +
+ .../KabylakeRvp3/BuildEx.py                   |  72 ++
+ .../KabylakeRvp3/GitEdk2MinKabylake.bat       |  85 --
+ .../KabylakeOpenBoardPkg/KabylakeRvp3/bld.bat | 165 ---
+ .../KabylakeOpenBoardPkg/KabylakeRvp3/cln.bat |  54 -
+ .../KabylakeRvp3/postbuild.bat                |  45 -
+ .../KabylakeRvp3/prebuild.bat                 | 221 ----
+ .../KabylakeRvp3/prep.bat                     |  85 --
+ .../BoardMtOlympus/BuildBoard.py              | 177 ++++
+ .../BoardMtOlympus/BuildConfig.cfg            |  44 +
+ .../BoardMtOlympus/GitEdk2MinMtOlympus.bat    |  86 --
+ .../PurleyOpenBoardPkg/BoardMtOlympus/bld.bat | 144 ---
+ .../BoardMtOlympus/postbuild.bat              | 101 --
+ .../BoardMtOlympus/prebuild.bat               | 203 ----
+ ReadMe.md                                     |  54 +-
+ 24 files changed, 1442 insertions(+), 1865 deletions(-)
+ create mode 100644 Platform/Intel/Build.cfg
+ create mode 100644 Platform/Intel/BuildBios.py
+ create mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/GitEdk2Clevo.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/bld.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/cln.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/postbuild.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prebuild.bat
+ delete mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/prep.bat
+ create mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildConfig.cfg
+ create mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildEx.py
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/GitEdk2MinKabylake.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/bld.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/cln.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/postbuild.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prebuild.bat
+ delete mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/prep.bat
+ create mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildBoard.py
+ create mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildConfig.cfg
+ delete mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/GitEdk2MinMtOlympus.bat
+ delete mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/bld.bat
+ delete mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/postbuild.bat
+ delete mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/prebuild.bat
+
+-- 
+2.19.1.windows.1
+

@@ -1,0 +1,17 @@
+diff --git a/BaseTools/Source/Python/build/BuildReport.py b/BaseTools/Source/Python/build/BuildReport.py
+index 880459d367..049538c185 100644
+--- a/BaseTools/Source/Python/build/BuildReport.py
++++ b/BaseTools/Source/Python/build/BuildReport.py
+@@ -182,7 +182,11 @@ def ByteArrayForamt(Value):
+ # @IncludeFiles              The dictionary of current found include files.
+ #
+ def FindIncludeFiles(Source, IncludePathList, IncludeFiles):
+-    FileContents = open(Source).read()
++    try:
++        FileContents = open(Source).read()
++    except UnicodeDecodeError:
++        EdkLogger.warn(None, f"Fail to read Include file: {str(Source)}")
++        return
+     #
+     # Find header files with pattern #include "XXX.h" or #include <XXX.h>
+     #

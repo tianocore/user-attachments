@@ -1,0 +1,38 @@
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
+index 2f713fcee95e..6a6a7e73d343 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
+@@ -1300,6 +1300,8 @@ ProgramBar (
+   case PciBarTypeMem32:
+   case PciBarTypePMem32:
+
++    Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    Address %= Base;
+     PciIo->Pci.Write (
+                  PciIo,
+                  EfiPciIoWidthUint32,
+@@ -1308,13 +1310,15 @@ ProgramBar (
+                  &Address
+                  );
+
+-    Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    //Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
+
+     break;
+
+   case PciBarTypeMem64:
+   case PciBarTypePMem64:
+
++    Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    Address %= Base;
+     Address32 = (UINT32) (Address & 0x00000000FFFFFFFF);
+
+     PciIo->Pci.Write (
+@@ -1335,7 +1339,7 @@ ProgramBar (
+                  &Address32
+                  );
+
+-    Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    //Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
+
+     break;

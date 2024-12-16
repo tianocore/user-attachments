@@ -1,0 +1,326 @@
+diff --git a/FmpDevicePkg/FmpDevicePkg.dec b/FmpDevicePkg/FmpDevicePkg.dec
+index 8312b7cb22..2a26de2d3d 100644
+--- a/FmpDevicePkg/FmpDevicePkg.dec
++++ b/FmpDevicePkg/FmpDevicePkg.dec
+@@ -70,6 +70,11 @@
+   #  setting the value to {0}.
+   # @Prompt SHA-256 hash of PKCS7 test key.
+   gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceTestKeySha256Digest|{0x2E, 0x97, 0x89, 0x1B, 0xDB, 0xE7, 0x08, 0xAA,  0x8C, 0xB2, 0x8F, 0xAD, 0x20, 0xA9, 0x83, 0xC7,  0x84, 0x7D, 0x4F, 0xEE, 0x48, 0x25, 0xE9, 0x4D,  0x39, 0xFA, 0x34, 0x9A, 0xB8, 0xB1, 0xC4, 0x26}|VOID*|0x40000009
++  #
++  # Deferred LSV commit to support Resiliency FW update
++  #   TRUE  - Lsv is handled by platform code
++  #   FALSE - Lsv is handled by FmpDevicePkg
++  gFmpDevicePkgTokenSpaceGuid.PcdLsvPolicy|FALSE|BOOLEAN|0x4000000A
+ 
+ [PcdsFixedAtBuild, PcdsPatchableInModule]
+   ## The color of the progress bar during a firmware update.  Each firmware
+diff --git a/FmpDevicePkg/FmpDevicePkg.dsc b/FmpDevicePkg/FmpDevicePkg.dsc
+index bf283b93ea..c639c1f319 100644
+--- a/FmpDevicePkg/FmpDevicePkg.dsc
++++ b/FmpDevicePkg/FmpDevicePkg.dsc
+@@ -104,6 +104,10 @@
+       #
+       gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageIdName|L"Sample Firmware Device"
+       #
++      # Deferred SVN commit to support Resiliency FW update
++      #
++      gFmpDevicePkgTokenSpaceGuid.PcdLsvPolicy|FALSE
++      #
+       # Certificates used to authenticate capsule update image
+       #
+       !include BaseTools/Source/Python/Pkcs7Sign/TestRoot.cer.gFmpDevicePkgTokenSpaceGuid.PcdFmpDevicePkcs7CertBufferXdr.inc
+diff --git a/FmpDevicePkg/FmpDxe/FmpDxe.c b/FmpDevicePkg/FmpDxe/FmpDxe.c
+index 3ca9d3526a..9fd46aa3ab 100644
+--- a/FmpDevicePkg/FmpDxe/FmpDxe.c
++++ b/FmpDevicePkg/FmpDxe/FmpDxe.c
+@@ -250,9 +250,11 @@ GetLowestSupportedVersion (
+   //
+   // Check the lowest supported version UEFI variable for this device
+   //
+-  VariableLowestSupportedVersion = GetLowestSupportedVersionFromVariable (Private);
+-  if (VariableLowestSupportedVersion > ReturnLsv) {
+-    ReturnLsv = VariableLowestSupportedVersion;
++  if (!FeaturePcdGet (PcdLsvPolicy)) {
++    VariableLowestSupportedVersion = GetLowestSupportedVersionFromVariable (Private);
++    if (VariableLowestSupportedVersion > ReturnLsv) {
++      ReturnLsv = VariableLowestSupportedVersion;
++    }
+   }
+ 
+   //
+@@ -963,7 +965,7 @@ SetTheImage (
+   VOID                              *FmpHeader;
+   UINTN                             FmpPayloadSize;
+   UINT32                            AllHeaderSize;
+-  UINT32                            IncommingFwVersion;
++  UINT32                            IncomingFwVersion;
+   UINT32                            LastAttemptStatus;
+   UINT32                            Version;
+   UINT32                            LowestSupportedVersion;
+@@ -975,7 +977,7 @@ SetTheImage (
+   FmpHeader          = NULL;
+   FmpPayloadSize     = 0;
+   AllHeaderSize      = 0;
+-  IncommingFwVersion = 0;
++  IncomingFwVersion  = 0;
+   LastAttemptStatus  = LAST_ATTEMPT_STATUS_ERROR_UNSUCCESSFUL;
+ 
+   if (!FeaturePcdGet (PcdFmpDeviceStorageAccessEnable)) {
+@@ -996,7 +998,7 @@ SetTheImage (
+   //
+   // Set to 0 to clear any previous results.
+   //
+-  SetLastAttemptVersionInVariable (Private, IncommingFwVersion);
++  SetLastAttemptVersionInVariable (Private, IncomingFwVersion);
+ 
+   //
+   // if we have locked the device, then skip the set operation.
+@@ -1030,12 +1032,12 @@ SetTheImage (
+     Status = EFI_ABORTED;
+     goto cleanup;
+   }
+-  Status = GetFmpPayloadHeaderVersion (FmpHeader, FmpPayloadSize, &IncommingFwVersion);
++  Status = GetFmpPayloadHeaderVersion (FmpHeader, FmpPayloadSize, &IncomingFwVersion);
+   if (!EFI_ERROR (Status)) {
+     //
+     // Set to actual value
+     //
+-    SetLastAttemptVersionInVariable (Private, IncommingFwVersion);
++    SetLastAttemptVersionInVariable (Private, IncomingFwVersion);
+   }
+ 
+ 
+@@ -1153,14 +1155,31 @@ SetTheImage (
+   //
+   //Copy the requested image to the firmware using the FmpDeviceLib
+   //
+-  Status = FmpDeviceSetImage (
+-             (((UINT8 *)Image) + AllHeaderSize),
+-             ImageSize - AllHeaderSize,
+-             VendorCode,
+-             FmpDxeProgress,
+-             IncommingFwVersion,
+-             AbortReason
+-             );
++  if (FixedPcdGetBool(PcdLsvPolicy) == 0) {
++    Status = FmpDeviceSetImage (
++               (((UINT8 *)Image) + AllHeaderSize),
++               ImageSize - AllHeaderSize,
++               VendorCode,
++               FmpDxeProgress,
++               IncomingFwVersion,
++               AbortReason
++               );
++  } else {
++    Status = GetFmpPayloadHeaderLowestSupportedVersion (FmpHeader, FmpPayloadSize, &LowestSupportedVersion);
++    if (EFI_ERROR(Status)) {
++      goto cleanup;
++    }
++    Status = FmpDeviceSetImageDeferredLsvCommit (
++               (((UINT8 *)Image) + AllHeaderSize),
++               ImageSize - AllHeaderSize,
++               VendorCode,
++               FmpDxeProgress,
++               IncomingFwVersion,
++               LowestSupportedVersion, 
++               AbortReason
++               );
++  }
++
+   if (EFI_ERROR (Status)) {
+     DEBUG ((DEBUG_ERROR, "FmpDxe(%s): SetTheImage() SetImage from FmpDeviceLib failed. Status =  %r.\n", mImageIdName, Status));
+     goto cleanup;
+@@ -1185,9 +1204,11 @@ SetTheImage (
+   //
+   // Update lowest supported variable
+   //
+-  LowestSupportedVersion = DEFAULT_LOWESTSUPPORTEDVERSION;
+-  GetFmpPayloadHeaderLowestSupportedVersion (FmpHeader, FmpPayloadSize, &LowestSupportedVersion);
+-  SetLowestSupportedVersionInVariable (Private, LowestSupportedVersion);
++  if (!FeaturePcdGet (PcdLsvPolicy)) {
++    LowestSupportedVersion = DEFAULT_LOWESTSUPPORTEDVERSION;
++    GetFmpPayloadHeaderLowestSupportedVersion (FmpHeader, FmpPayloadSize, &LowestSupportedVersion);
++    SetLowestSupportedVersionInVariable (Private, LowestSupportedVersion);
++  }
+ 
+   LastAttemptStatus = LAST_ATTEMPT_STATUS_SUCCESS;
+ 
+diff --git a/FmpDevicePkg/FmpDxe/FmpDxe.inf b/FmpDevicePkg/FmpDxe/FmpDxe.inf
+index bec73aa8fb..4c0fb2148b 100644
+--- a/FmpDevicePkg/FmpDxe/FmpDxe.inf
++++ b/FmpDevicePkg/FmpDxe/FmpDxe.inf
+@@ -72,6 +72,7 @@
+   gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceTestKeySha256Digest              ## CONSUMES
+   gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageTypeIdGuid                  ## CONSUMES
+   gEfiMdeModulePkgTokenSpaceGuid.PcdTestKeyUsed                            ## SOMETIMES_PRODUCES
++  gFmpDevicePkgTokenSpaceGuid.PcdLsvPolicy                                 ## CONSUMES
+ 
+ [Depex]
+   gEfiVariableWriteArchProtocolGuid AND gEdkiiVariableLockProtocolGuid
+diff --git a/FmpDevicePkg/Include/Library/FmpDeviceLib.h b/FmpDevicePkg/Include/Library/FmpDeviceLib.h
+index 1e498c13ce..70228189ac 100644
+--- a/FmpDevicePkg/Include/Library/FmpDeviceLib.h
++++ b/FmpDevicePkg/Include/Library/FmpDeviceLib.h
+@@ -466,6 +466,73 @@ FmpDeviceSetImage (
+   OUT CHAR16                                         **AbortReason
+   );
+ 
++/**
++  Updates a firmware device with a new firmware image.  This function returns
++  EFI_UNSUPPORTED if the firmware image is not updatable.  If the firmware image
++  is updatable, the function should perform the following minimal validations
++  before proceeding to do the firmware image update.
++    - Validate that the image is a supported image for this firmware device.
++      Return EFI_ABORTED if the image is not supported.  Additional details
++      on why the image is not a supported image may be returned in AbortReason.
++    - Validate the data from VendorCode if is not NULL.  Firmware image
++      validation must be performed before VendorCode data validation.
++      VendorCode data is ignored or considered invalid if image validation
++      fails.  Return EFI_ABORTED if the VendorCode data is invalid.
++
++  VendorCode enables vendor to implement vendor-specific firmware image update
++  policy.  Null if the caller did not specify the policy or use the default
++  policy.  As an example, vendor can implement a policy to allow an option to
++  force a firmware image update when the abort reason is due to the new firmware
++  image version is older than the current firmware image version or bad image
++  checksum.  Sensitive operations such as those wiping the entire firmware image
++  and render the device to be non-functional should be encoded in the image
++  itself rather than passed with the VendorCode.  AbortReason enables vendor to
++  have the option to provide a more detailed description of the abort reason to
++  the caller.
++
++  @param[in]  Image             Points to the new firmware image.
++  @param[in]  ImageSize         Size, in bytes, of the new firmware image.
++  @param[in]  VendorCode        This enables vendor to implement vendor-specific
++                                firmware image update policy.  NULL indicates
++                                the caller did not specify the policy or use the
++                                default policy.
++  @param[in]  Progress          A function used to report the progress of
++                                updating the firmware device with the new
++                                firmware image.
++  @param[in]  CapsuleFwVersion  The version of the new firmware image from the
++                                update capsule that provided the new firmware
++                                image.
++  @param[in]  LsvUpdate         The Lowest Supported Version of the new firmware
++                                image from the update capsule that provided the 
++                                new firmware image.
++  @param[out] AbortReason       A pointer to a pointer to a Null-terminated
++                                Unicode string providing more details on an
++                                aborted operation. The buffer is allocated by
++                                this function with
++                                EFI_BOOT_SERVICES.AllocatePool().  It is the
++                                caller's responsibility to free this buffer with
++                                EFI_BOOT_SERVICES.FreePool().
++
++  @retval EFI_SUCCESS            The firmware device was successfully updated
++                                 with the new firmware image.
++  @retval EFI_ABORTED            The operation is aborted.  Additional details
++                                 are provided in AbortReason.
++  @retval EFI_INVALID_PARAMETER  The Image was NULL.
++  @retval EFI_UNSUPPORTED        The operation is not supported.
++
++**/
++EFI_STATUS
++EFIAPI
++FmpDeviceSetImageDeferredLsvCommit (
++  IN  CONST VOID                                     *Image,
++  IN  UINTN                                          ImageSize,
++  IN  CONST VOID                                     *VendorCode,       OPTIONAL
++  IN  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  Progress,          OPTIONAL
++  IN  UINT32                                         CapsuleFwVersion,
++  IN  UINT32                                         LsvUpdate,
++  OUT CHAR16                                         **AbortReason
++  );
++
+ /**
+   Lock the firmware device that contains a firmware image.  Once a firmware
+   device is locked, any attempts to modify the firmware image contents in the
+diff --git a/FmpDevicePkg/Library/FmpDeviceLibNull/FmpDeviceLib.c b/FmpDevicePkg/Library/FmpDeviceLibNull/FmpDeviceLib.c
+index fd219cb70b..651324cee3 100644
+--- a/FmpDevicePkg/Library/FmpDeviceLibNull/FmpDeviceLib.c
++++ b/FmpDevicePkg/Library/FmpDeviceLibNull/FmpDeviceLib.c
+@@ -410,6 +410,84 @@ FmpDeviceCheckImage (
+   return EFI_SUCCESS;
+ }
+ 
++/**
++  Updates the firmware image of the device.
++
++  This function updates the hardware with the new firmware image.  This function
++  returns EFI_UNSUPPORTED if the firmware image is not updatable.  If the
++  firmware image is updatable, the function should perform the following minimal
++  validations before proceeding to do the firmware image update.
++    - Validate the image is a supported image for this device.  The function
++      returns EFI_ABORTED if the image is unsupported.  The function can
++      optionally provide more detailed information on why the image is not a
++      supported image.
++    - Validate the data from VendorCode if not null.  Image validation must be
++      performed before VendorCode data validation.  VendorCode data is ignored
++      or considered invalid if image validation failed.  The function returns
++      EFI_ABORTED if the data is invalid.
++
++  VendorCode enables vendor to implement vendor-specific firmware image update
++  policy.  Null if the caller did not specify the policy or use the default
++  policy.  As an example, vendor can implement a policy to allow an option to
++  force a firmware image update when the abort reason is due to the new firmware
++  image version is older than the current firmware image version or bad image
++  checksum.  Sensitive operations such as those wiping the entire firmware image
++  and render the device to be non-functional should be encoded in the image
++  itself rather than passed with the VendorCode.  AbortReason enables vendor to
++  have the option to provide a more detailed description of the abort reason to
++  the caller.
++
++  @param[in]  Image             Points to the new image.
++  @param[in]  ImageSize         Size of the new image in bytes.
++  @param[in]  VendorCode        This enables vendor to implement vendor-specific
++                                firmware image update policy. Null indicates the
++                                caller did not specify the policy or use the
++                                default policy.
++  @param[in]  Progress          A function used by the driver to report the
++                                progress of the firmware update.
++  @param[in]  CapsuleFwVersion  FMP Payload Header version of the image.
++  @param[in]  LsvUpdate         The Lowest Supported Version of the new firmware
++                                image from the update capsule that provided the
++                                new firmware image.
++  @param[out] AbortReason       A pointer to a pointer to a null-terminated
++                                string providing more details for the aborted
++                                operation. The buffer is allocated by this
++                                function with AllocatePool(), and it is the
++                                caller's responsibility to free it with a call
++                                to FreePool().
++
++  @retval EFI_SUCCESS            The device was successfully updated with the
++                                 new image.
++  @retval EFI_ABORTED            The operation is aborted.
++  @retval EFI_INVALID_PARAMETER  The Image was NULL.
++  @retval EFI_UNSUPPORTED        The operation is not supported.
++
++**/
++EFI_STATUS
++EFIAPI
++FmpDeviceSetImageDeferredLsvCommit (
++  IN  CONST VOID                                     *Image,
++  IN  UINTN                                          ImageSize,
++  IN  CONST VOID                                     *VendorCode,
++  IN  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  Progress,
++  IN  UINT32                                         CapsuleFwVersion,
++  IN  UINT32                                         LsvUpdate,
++  OUT CHAR16                                         **AbortReason
++  )
++{
++  EFI_STATUS Status;
++
++  Status = FmpDeviceSetImage (
++             Image,
++             ImageSize,
++             VendorCode,
++             Progress,
++             CapsuleFwVersion,
++             AbortReason
++             );
++  return Status;
++}
++
+ /**
+   Updates a firmware device with a new firmware image.  This function returns
+   EFI_UNSUPPORTED if the firmware image is not updatable.  If the firmware image

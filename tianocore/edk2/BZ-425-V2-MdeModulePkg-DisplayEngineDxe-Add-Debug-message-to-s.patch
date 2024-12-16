@@ -1,0 +1,62 @@
+From c56c6eb48a89720b02cb6ef943822952517a99dc Mon Sep 17 00:00:00 2001
+From: Dandan Bi <dandan.bi@intel.com>
+Date: Fri, 1 Nov 2019 14:41:23 +0800
+Subject: [patch] MdeModulePkg/DisplayEngineDxe: Add Debug message to show
+ value for oneof and its options
+
+Signed-off-by: Dandan Bi <dandan.bi@intel.com>
+---
+ .../DisplayEngineDxe/ProcessOptions.c         | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c b/MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c
+index 7d9486112b..b75bcfd595 100644
+--- a/MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c
++++ b/MdeModulePkg/Universal/DisplayEngineDxe/ProcessOptions.c
+@@ -947,10 +947,16 @@ ProcessOptions (
+   UINT8                           *ValueArray;
+   UINT8                           ValueType;
+   EFI_IFR_ORDERED_LIST            *OrderList;
+   BOOLEAN                         ValueInvalid;
+   UINTN                           MaxLen;
++  CHAR16                          *FormTitleStr;
++  CHAR16                          *OneOfStr;
++  CHAR16                          *OneOfOptionStr;
++  UINTN                            OneofOptionNo;
++
++  OneofOptionNo = 0;
+ 
+   Status        = EFI_SUCCESS;
+ 
+   StringPtr     = NULL;
+   Character[1]  = L'\0';
+@@ -1148,10 +1154,26 @@ ProcessOptions (
+       *OptionString = AllocateZeroPool (BufferSize);
+       ASSERT (*OptionString);
+ 
+       OneOfOption = ValueToOption (Question, QuestionValue);
+       if (OneOfOption == NULL) {
++
++        FormTitleStr = GetToken (gFormData->FormTitle, gFormData->HiiHandle);
++        DEBUG ((DEBUG_ERROR, "\n[DisplayEngine]: Error: Oneof Question value mismatches with option value!!!\n"));
++        DEBUG ((DEBUG_ERROR, "[DisplayEngine]: Mismatch Formset: Formset Guid=%g \n", &gFormData->FormSetGuid));
++        DEBUG ((DEBUG_ERROR, "[DisplayEngine]: Mismatch Form   : FormId=%d,  Form title=%s\n", gFormData->FormId, FormTitleStr));
++        OneOfStr = GetToken (((EFI_IFR_ONE_OF*)MenuOption->ThisTag->OpCode)->Question.Header.Prompt, gFormData->HiiHandle);
++        DEBUG ((DEBUG_ERROR, "[DisplayEngine]: Mismatch Oneof  : %s.  Oneof Question curret value=%d. \n",OneOfStr, QuestionValue-> Value.u8));
++        Link = GetFirstNode (&Question->OptionListHead);
++        while (!IsNull (&Question->OptionListHead, Link)) {
++          Option = DISPLAY_QUESTION_OPTION_FROM_LINK (Link);
++          OneOfOptionStr = GetToken (Option->OptionOpCode->Option, gFormData->HiiHandle);
++          DEBUG ((DEBUG_ERROR, "[DisplayEngine]: Option %d: Option Name=%s. Option Value=%d.\n",OneofOptionNo,OneOfOptionStr,Option->OptionOpCode->Value.u8));
++          OneofOptionNo++;
++          Link = GetNextNode (&Question->OptionListHead, Link);
++        }
++
+         if (SkipErrorValue) {
+           //
+           // Not report error, just get the correct option string info.
+           //
+           Link = GetFirstNode (&Question->OptionListHead);
+-- 
+2.18.0.windows.1
+

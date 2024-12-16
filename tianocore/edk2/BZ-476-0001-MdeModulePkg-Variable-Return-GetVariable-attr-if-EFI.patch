@@ -1,0 +1,103 @@
+From ef75e04043e162d4bb0eeb9a8c50053c32c5a891 Mon Sep 17 00:00:00 2001
+From: Michael Kubacki <michael.kubacki@microsoft.com>
+Date: Mon, 9 Mar 2020 17:08:47 -0700
+Subject: [PATCH v1 1/1] MdeModulePkg/Variable: Return GetVariable() attr if EFI_BUFFER_TOO_SMALL
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2062
+
+The UEFI specification v2.8 Errata A Section 8.2 "GetVariable()"
+"Attributes" parameter description states:
+
+"If not NULL, a pointer to the memory location to return the
+ attributes bitmask for the variable. See 'Related Definitions.'
+ If not NULL, then Attributes is set on output both when
+ EFI_SUCCESS and when EFI_BUFFER_TOO_SMALL is returned."
+
+The attributes were previously only returned from the implementation
+in Variable.c on EFI_SUCCESS. They are now returned on EFI_SUCCESS or
+EFI_BUFFER_TOO_SMALL according to spec.
+
+Cc: Bret Barkelew <Bret.Barkelew@microsoft.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Signed-off-by: Michael Kubacki <michael.kubacki@microsoft.com>
+---
+ MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c              | 10 +++++++---
+ MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.c | 10 ++++++----
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c b/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
+index d23aea4bc712..1e71fc642c76 100644
+--- a/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
++++ b/MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c
+@@ -18,6 +18,8 @@
+ 
+ Copyright (c) 2006 - 2020, Intel Corporation. All rights reserved.<BR>
+ (C) Copyright 2015-2018 Hewlett Packard Enterprise Development LP<BR>
++Copyright (c) Microsoft Corporation.<BR>
++
+ SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -2379,9 +2381,6 @@ VariableServiceGetVariable (
+     }
+ 
+     CopyMem (Data, GetVariableDataPtr (Variable.CurrPtr, mVariableModuleGlobal->VariableGlobal.AuthFormat), VarDataSize);
+-    if (Attributes != NULL) {
+-      *Attributes = Variable.CurrPtr->Attributes;
+-    }
+ 
+     *DataSize = VarDataSize;
+     UpdateVariableInfo (VariableName, VendorGuid, Variable.Volatile, TRUE, FALSE, FALSE, FALSE, &gVariableInfo);
+@@ -2395,6 +2394,11 @@ VariableServiceGetVariable (
+   }
+ 
+ Done:
++  if (Status == EFI_SUCCESS || Status == EFI_BUFFER_TOO_SMALL) {
++    if (Attributes != NULL && Variable.CurrPtr != NULL) {
++      *Attributes = Variable.CurrPtr->Attributes;
++    }
++  }
+   ReleaseLockOnlyAtBootTime (&mVariableModuleGlobal->VariableGlobal.VariableServicesLock);
+   return Status;
+ }
+diff --git a/MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.c b/MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.c
+index 2cf0ed32ae55..ca833fb0244d 100644
+--- a/MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.c
++++ b/MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.c
+@@ -14,6 +14,7 @@
+   InitCommunicateBuffer() is really function to check the variable data size.
+ 
+ Copyright (c) 2010 - 2019, Intel Corporation. All rights reserved.<BR>
++Copyright (c) Microsoft Corporation.<BR>
+ SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -642,10 +643,6 @@ FindVariableInRuntimeCache (
+         }
+ 
+         CopyMem (Data, GetVariableDataPtr (RtPtrTrack.CurrPtr, mVariableAuthFormat), TempDataSize);
+-        if (Attributes != NULL) {
+-          *Attributes = RtPtrTrack.CurrPtr->Attributes;
+-        }
+-
+         *DataSize = TempDataSize;
+ 
+         UpdateVariableInfo (VariableName, VendorGuid, RtPtrTrack.Volatile, TRUE, FALSE, FALSE, TRUE, &mVariableInfo);
+@@ -661,6 +658,11 @@ FindVariableInRuntimeCache (
+   }
+ 
+ Done:
++  if (Status == EFI_SUCCESS || Status == EFI_BUFFER_TOO_SMALL) {
++    if (Attributes != NULL && RtPtrTrack.CurrPtr != NULL) {
++      *Attributes = RtPtrTrack.CurrPtr->Attributes;
++    }
++  }
+   mVariableRuntimeCacheReadLock = FALSE;
+ 
+   return Status;
+-- 
+2.16.3.windows.1
+

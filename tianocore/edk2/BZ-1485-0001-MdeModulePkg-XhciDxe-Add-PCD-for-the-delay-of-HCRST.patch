@@ -1,0 +1,109 @@
+From a8e996024d2bd443732d89f9a21d34661533d43b Mon Sep 17 00:00:00 2001
+Message-ID: <a8e996024d2bd443732d89f9a21d34661533d43b.1711508722.git.xianglei.cai@intel.com>
+In-Reply-To: <cover.1711508722.git.xianglei.cai@intel.com>
+References: <cover.1711508722.git.xianglei.cai@intel.com>
+From: Xianglei Cai <xianglei.cai@intel.com>
+Date: Wed, 27 Mar 2024 10:59:17 +0800
+Subject: [PATCH 1/1] MdeModulePkg/XhciDxe: Add PCD for the delay of HCRST
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=4727
+
+Recently some of XHCI host controllers require to have
+extra 1ms delay before accessing any MMIO register
+during reset. PHY transition from P3 to P0 can take
+around 1.3ms and the xHCI reset can take around 1.5ms.
+Add PCD to control the delay, the default is 2 ms.
+
+Cc: Hao A Wu     <hao.a.wu@intel.com>
+Cc: Ray Ni       <ray.ni@intel.com>
+Cc: Jian J Wang  <jian.j.wang@intel.com>
+Cc: Liming Gao   <gaoliming@byosoft.com.cn>
+Cc: Jenny Huang  <jenny.huang@intel.com>
+Cc: More Shih    <more.shih@intel.com>
+Cc: Chiu, Ian    <ian.chiu@intel.com>
+
+Signed-off-by: Xianglei Cai <xianglei.cai@intel.com>
+---
+ MdeModulePkg/Bus/Pci/XhciDxe/Xhci.h      | 1 +
+ MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf | 4 ++++
+ MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c   | 2 +-
+ MdePkg/MdePkg.dec                        | 4 ++++
+ MdePkg/MdePkg.dsc                        | 1 +
+ 5 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.h b/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.h
+index 44016758724c..c9a12095c29e 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.h
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/Xhci.h
+@@ -28,6 +28,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ #include <Library/DebugLib.h>
+ #include <Library/ReportStatusCodeLib.h>
+ #include <Library/TimerLib.h>
++#include <Library/PcdLib.h>
+ 
+ #include <IndustryStandard/Pci.h>
+ 
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf b/MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf
+index 18ef87916ae4..2ee4c22d1e32 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/XhciDxe.inf
+@@ -56,6 +56,7 @@
+   DebugLib
+   ReportStatusCodeLib
+   TimerLib
++  PcdLib
+ 
+ [Guids]
+   gEfiEventExitBootServicesGuid                 ## SOMETIMES_CONSUMES ## Event
+@@ -64,6 +65,9 @@
+   gEfiPciIoProtocolGuid                         ## TO_START
+   gEfiUsb2HcProtocolGuid                        ## BY_START
+ 
++[Pcd]
++  gEfiMdePkgTokenSpaceGuid.PcdDelayXhciHCReset      ## CONSUMES
++
+ # [Event]
+ # EVENT_TYPE_PERIODIC_TIMER       ## CONSUMES
+ #
+diff --git a/MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c b/MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c
+index 40f2f1f22766..525942a167b0 100644
+--- a/MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c
++++ b/MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c
+@@ -864,7 +864,7 @@ XhcResetHC (
+     // Otherwise there may have the timeout case happened.
+     // The below is a workaround to solve such problem.
+     //
+-    gBS->Stall (XHC_1_MILLISECOND);
++    gBS->Stall (PcdGet16 (PcdDelayXhciHCReset));
+     Status = XhcWaitOpRegBit (Xhc, XHC_USBCMD_OFFSET, XHC_USBCMD_RESET, FALSE, Timeout);
+ 
+     if (!EFI_ERROR (Status)) {
+diff --git a/MdePkg/MdePkg.dec b/MdePkg/MdePkg.dec
+index 0459418906f8..a5b3ce94072c 100644
+--- a/MdePkg/MdePkg.dec
++++ b/MdePkg/MdePkg.dec
+@@ -2510,5 +2510,9 @@
+   # @Prompt Memory encryption attribute
+   gEfiMdePkgTokenSpaceGuid.PcdConfidentialComputingGuestAttr|0|UINT64|0x0000002e
+ 
++  ## This dynamic PCD indicates time delay for XHCI registers access after it issues HCRST.
++  # @Prompt Delay access XHCI register after it issues HCRST (us)
++  gEfiMdePkgTokenSpaceGuid.PcdDelayXhciHCReset|2000|UINT16|0x00000043
++
+ [UserExtensions.TianoCore."ExtraFiles"]
+   MdePkgExtra.uni
+diff --git a/MdePkg/MdePkg.dsc b/MdePkg/MdePkg.dsc
+index 109224c527f7..23aea04fea2e 100644
+--- a/MdePkg/MdePkg.dsc
++++ b/MdePkg/MdePkg.dsc
+@@ -31,6 +31,7 @@
+   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x0f
+   gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000000
+   gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress|0xE0000000
++  gEfiMdePkgTokenSpaceGuid.PcdDelayXhciHCReset|2000
+ 
+ [LibraryClasses]
+   SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf
+-- 
+2.42.0.windows.2
+

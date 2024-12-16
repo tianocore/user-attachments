@@ -1,0 +1,40 @@
+From 97013962a5c9c4910bcd6c052c852d4a48b4ee3f Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:11:36 +0530
+Subject: [PATCH 2/2] NetworkPkg/Ip4Dxe: Fix FORWARD_NULL Coverity issue
+
+The function Ip4Groups when it handles leave the group call iterates
+through a for loop which has a check
+
+  ASSERT (IpInstance->Groups != NULL);
+
+but this is applicable only in DEBUG mode. In Release mode, this may
+lead to CRASH and hence to safeguard, add a NULL pointer check.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4269
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Ip4Dxe/Ip4Impl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/NetworkPkg/Ip4Dxe/Ip4Impl.c b/NetworkPkg/Ip4Dxe/Ip4Impl.c
+index 4786214b1277..1d9554502599 100644
+--- a/NetworkPkg/Ip4Dxe/Ip4Impl.c
++++ b/NetworkPkg/Ip4Dxe/Ip4Impl.c
+@@ -1039,6 +1039,10 @@ Ip4Groups (
+   //
+   for (Index = IpInstance->GroupCount; Index > 0; Index--) {
+     ASSERT (IpInstance->Groups != NULL);
++    if (IpInstance->Groups == NULL) {
++      break;
++    }
++
+     Group = IpInstance->Groups[Index - 1];
+     if ((GroupAddress == NULL) || EFI_IP4_EQUAL (&Group, GroupAddress)) {
+       if (EFI_ERROR (Ip4LeaveGroup (IpInstance, NTOHL (Group)))) {
+-- 
+2.36.1.windows.1
+

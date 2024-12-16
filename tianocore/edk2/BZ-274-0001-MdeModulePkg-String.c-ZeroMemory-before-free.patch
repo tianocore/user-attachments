@@ -1,0 +1,48 @@
+From b9eecd07b4038e0a8c671bec0c3e6d38108e2804 Mon Sep 17 00:00:00 2001
+From: Dandan Bi <dandan.bi@intel.com>
+Date: Fri, 22 Feb 2019 15:45:24 +0800
+Subject: [patch 1/2] MdeModulePkg/String.c: ZeroMemory before free
+
+Signed-off-by: Dandan Bi <dandan.bi@intel.com>
+---
+ MdeModulePkg/Universal/HiiDatabaseDxe/String.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/String.c b/MdeModulePkg/Universal/HiiDatabaseDxe/String.c
+index a8178bdca2..7979ff553d 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/String.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/String.c
+@@ -1009,11 +1009,13 @@ SetStringWorker (
+     CopyMem (
+       BlockPtr,
+       StringTextPtr + AsciiStrSize ((CHAR8 *)StringTextPtr),
+       TmpSize
+       );
+-
++    if (*String == 0) {
++      ZeroMem (StringPackage->StringBlock, OldBlockSize);
++    }
+     FreePool (StringPackage->StringBlock);
+     StringPackage->StringBlock = Block;
+     StringPackage->StringPkgHdr->Header.Length += (UINT32) (BlockSize - OldBlockSize);
+     break;
+ 
+@@ -1043,11 +1045,14 @@ SetStringWorker (
+       BlockPtr,
+       StringTextPtr + StringSize,
+       OldBlockSize - (StringTextPtr - StringPackage->StringBlock) - StringSize
+       );
+ 
+-    FreePool (StringPackage->StringBlock);
++    if (*String == 0) {
++      ZeroMem (StringPackage->StringBlock, OldBlockSize);
++    }
++     FreePool (StringPackage->StringBlock);
+     StringPackage->StringBlock = Block;
+     StringPackage->StringPkgHdr->Header.Length += (UINT32) (BlockSize - OldBlockSize);
+     break;
+ 
+   default:
+-- 
+2.18.0.windows.1
+

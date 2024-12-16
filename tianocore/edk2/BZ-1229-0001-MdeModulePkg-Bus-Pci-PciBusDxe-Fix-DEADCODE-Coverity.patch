@@ -1,0 +1,37 @@
+From 461adf05c66ebe3227cecb897077b89ae9df2167 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:03:18 +0530
+Subject: [PATCH 1/5] MdeModulePkg/Bus/Pci/PciBusDxe: Fix DEADCODE Coverity
+ issue
+
+The function PciHotPlugRequestNotify has two if blocks towards the end
+of function both containing return. Due to the parameter checks ensured
+at the beginning of the function, one of the two if blocks is bound to
+come in execution flow. Hence, the return EFI_SUCCESS; at line 2112 is
+redundant/deadcode.
+
+To fix it, either of line 2109 or 2112 can be deleted.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4239
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumerator.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumerator.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumerator.c
+index 3f8c6e6da7dc..5b71e152f3ea 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumerator.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumerator.c
+@@ -2106,7 +2106,6 @@ PciHotPlugRequestNotify (
+     //
+     // End for
+     //
+-    return EFI_SUCCESS;
+   }
+ 
+   return EFI_SUCCESS;
+-- 
+2.36.1.windows.1
+

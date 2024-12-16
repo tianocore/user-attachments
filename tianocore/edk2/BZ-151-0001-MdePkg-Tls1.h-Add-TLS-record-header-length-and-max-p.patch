@@ -1,0 +1,59 @@
+From da80f2a84e8588dde28f4af51bd4c315ce4731fe Mon Sep 17 00:00:00 2001
+From: Jiaxin Wu <jiaxin.wu@intel.com>
+Date: Thu, 15 Mar 2018 18:33:54 +0800
+Subject: [Patch 1/3] MdePkg/Tls1.h: Add TLS record header length and max
+ payload length.
+
+Cc: Karunakar P <karunakarp@amiindia.co.in>
+Cc: Fu Siyuan <siyuan.fu@intel.com>
+Cc: Ye Ting <ting.ye@intel.com>
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Jiaxin Wu <jiaxin.wu@intel.com>
+---
+ MdePkg/Include/IndustryStandard/Tls1.h | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/MdePkg/Include/IndustryStandard/Tls1.h b/MdePkg/Include/IndustryStandard/Tls1.h
+index 9009291ee3..cccb6db7fb 100644
+--- a/MdePkg/Include/IndustryStandard/Tls1.h
++++ b/MdePkg/Include/IndustryStandard/Tls1.h
+@@ -1,11 +1,11 @@
+ /** @file
+   Transport Layer Security  -- TLS 1.0/1.1/1.2 Standard definitions, from RFC 2246/4346/5246
+ 
+   This file contains common TLS 1.0/1.1/1.2 definitions from RFC 2246/4346/5246
+ 
+-  Copyright (c) 2016 - 2017, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2016 - 2018, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+   http://opensource.org/licenses/bsd-license.php
+ 
+@@ -85,9 +85,23 @@ typedef struct {
+   UINT8                   ContentType;
+   EFI_TLS_VERSION         Version;
+   UINT16                  Length;
+ } TLS_RECORD_HEADER;
+ 
++#define TLS_RECORD_HEADER_LENGTH   5
++
++//
++// The length (in bytes) of the TLSPlaintext records payload MUST NOT exceed 2^14.
++// Refers to section 6.2 of RFC5246. 
++//
++#define TLS_PLAINTEXT_RECORD_MAX_PAYLOAD_LENGTH   16384
++
++//
++// The length (in bytes) of the TLSCiphertext records payload MUST NOT exceed 2^14 + 2048.
++// Refers to section 6.2 of RFC5246. 
++//
++#define TLS_CIPHERTEXT_RECORD_MAX_PAYLOAD_LENGTH   18432
++
+ #pragma pack()
+ 
+ #endif
+ 
+-- 
+2.16.2.windows.1
+

@@ -1,0 +1,1510 @@
+From 255cee7b7b41d6bda52c82144ed0103eabbe06b1 Mon Sep 17 00:00:00 2001
+Message-Id: <255cee7b7b41d6bda52c82144ed0103eabbe06b1.1555538295.git.prince.agyeman@intel.com>
+In-Reply-To: <cover.1555538295.git.prince.agyeman@intel.com>
+References: <cover.1555538295.git.prince.agyeman@intel.com>
+From: Agyeman <prince.agyeman@intel.com>
+Date: Tue, 12 Feb 2019 11:20:39 -0800
+Subject: [edk2-platforms/devel-MinPlatform] [PATCH v2 1/3] Platform/Intel: Added python build script.
+
+This change allows building all the platforms in Platform/Intel with
+a single python script. This script works with python 2.7
+and python 3.7
+
+Files Added:
+
+* BuildBios.py: the main build script
+  build.cfg: contains general/default build settings
+* ClevoOpenBoardPkg/N1xxWU/buildConfig.cfg: contains N1xxWU specific
+  build settings
+* KabylakeOpenBoardPkg/KabylakeRvp3/BuildEx.py : contains KabylakeRvp3
+  custom build script
+* KabylakeOpenBoardPkg/KabylakeRvp3/buildConfig.cfg: contains
+  KabylakeRvp3 build settings
+* PurleyOpenBoardPkg/BoardMtOlympus/BuildBoard.py: contains
+  BoardMtOlympus custom build script
+* PurleyOpenBoardPkg/BoardMtOlympus/buildConfig.cfg: contains
+  BoardMtOlympus custom build settings
+
+Cc: Michael Kubacki <michael.a.kubacki@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Ankit Sinha <ankit.sinha@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Isaac W Oram <isaac.w.oram@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Cc: Bowen Zhou<bowen.zhou@intel.com>
+Cc: Shifei A Lu <shifei.a.lu@intel.com>
+
+Contributed-under: TianoCore Contribution Agreement 0.1
+Signed-off-by: Agyeman <prince.agyeman@intel.com>
+---
+ Platform/Intel/Build.cfg                      |  60 ++
+ Platform/Intel/BuildBios.py                   | 990 ++++++++++++++++++
+ .../ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg  |  40 +
+ .../KabylakeRvp3/BuildConfig.cfg              |  27 +
+ .../KabylakeRvp3/BuildEx.py                   |  72 ++
+ .../BoardMtOlympus/BuildBoard.py              | 177 ++++
+ .../BoardMtOlympus/BuildConfig.cfg            |  44 +
+ 7 files changed, 1410 insertions(+)
+ create mode 100644 Platform/Intel/Build.cfg
+ create mode 100644 Platform/Intel/BuildBios.py
+ create mode 100644 Platform/Intel/ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg
+ create mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildConfig.cfg
+ create mode 100644 Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildEx.py
+ create mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildBoard.py
+ create mode 100644 Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildConfig.cfg
+
+diff --git a/Platform/Intel/Build.cfg b/Platform/Intel/Build.cfg
+new file mode 100644
+index 0000000000..d6584f0448
+--- /dev/null
++++ b/Platform/Intel/Build.cfg
+@@ -0,0 +1,60 @@
++# @ Build.cfg
++# This is the main/default build configuration file
++#
++# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++# This program and the accompanying materials are
++# licensed and made available under the terms and
++# conditions of the BSD License that accompanies this distribution.
++# The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php.
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND,
++# EITHER EXPRESS OR IMPLIED.
++#
++
++[DEFAULT_CONFIG]
++    WORKSPACE =
++    WORKSPACE_FSP_BIN = FSP
++    EDK_TOOLS_BIN = edk2-BaseTools-win32
++    EDK_BASETOOLS = BaseTools
++    WORKSPACE_PLATFORM = edk2-platforms/Platform/Intel
++    WORKSPACE_SILICON = edk2-platforms/Silicon/Intel
++    WORKSPACE_PLATFORM_BIN = WORKSPACE_PLATFORM_BIN
++    WORKSPACE_SILICON_BIN = edk2-non-osi/Silicon/Intel
++    MIN_PACKAGE_TOOLS = edk2-platforms/Platform/Intel/MinPlatformPkg/Tools
++    PACKAGES_PATH =
++    EDK_SETUP_OPTION =
++    BASE_TOOLS_PATH = edk2/BaseTools
++    EDK_TOOLS_PATH = edk2/BaseTools
++    openssl_path =
++    PLATFORM_BOARD_PACKAGE = KabylakeOpenBoardPkg
++    BIOS_SIZE_OPTION = -DBIOS_SIZE_OPTION=SIZE_70
++    WORKSPACE_CORE = edk2
++    EFI_SOURCE = edk2
++    PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.JS;.WS;.MSC
++    PROMPT = $P$G
++    PLATFORM_PACKAGE = MinPlatformPkg
++    BOARD = KabylakeRvp3
++    PrepRELEASE = DEBUG
++    SILENT_MODE = FALSE
++    EXT_CONFIG_CLEAR =
++    CapsuleBuild = FALSE
++    EXT_BUILD_FLAGS =
++    CAPSULE_BUILD = 0
++    TARGET = DEBUG
++    TARGET_SHORT = D
++    PERFORMANCE_BUILD = FALSE
++    FSP_WRAPPER_BUILD = TRUE
++    FSP_BIN_PKG = KabylakeFspBinPkg
++    FSP_BINARY_BUILD = FALSE
++    FSP_TEST_RELEASE = FALSE
++    SECURE_BOOT_ENABLE = FALSE
++    REBUILD_MODE =
++    BUILD_ROM_ONLY =
++    NUMBER_OF_PROCESSORS = 1
++
++[PLATFORMS]
++    KabylakeRvp3 = KabylakeOpenBoardPkg/KabylakeRvp3/BuildConfig.cfg
++    N1xxWU = ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg
++    BoardMtOlympus = PurleyOpenBoardPkg/BoardMtOlympus/BuildConfig.cfg
+diff --git a/Platform/Intel/BuildBios.py b/Platform/Intel/BuildBios.py
+new file mode 100644
+index 0000000000..aa663a1c27
+--- /dev/null
++++ b/Platform/Intel/BuildBios.py
+@@ -0,0 +1,990 @@
++# @ BuildBios.py
++# Builds BIOS using configuration files and dynamically
++# imported functions from board directory
++#
++# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++#
++# This program and the accompanying materials are licensed and made
++# available under the terms and conditions of the BSD License which
++# accompanies this distribution. The full text of the license may be
++# found at http://opensource.org/licenses/bsd-license.php
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS"
++# BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER
++# EXPRESS OR IMPLIED.
++
++import os
++import re
++import sys
++import json
++import stat
++import signal
++import shutil
++import argparse
++import subprocess
++from importlib import import_module
++
++try:
++    # python 3
++    import Configparser
++except ImportError:
++    # python 2.7
++    import configparser as Configparser
++
++
++def preBuild(buildConfig, buildType="DEBUG", silent=False, toolchain=None):
++    """Sets the environment variables that shall be used for the build
++
++        :param buildConfig: The build configuration as defined in the JOSN
++            configuration files
++        :type buildConfig: Dictionary
++        :param buildType: The build target, DEBUG, RELEASE, RELEASE_PDB,
++            TEST_RELEASE
++        :type buildType: String
++        :param silent: Enables build in silent mode
++        :type silent: Boolean
++        :param toolchain: Specifies the tool chain tag to use for the build
++        :type toolchain: String
++        :returns: The updated environment variables
++        :rtype: Dictionary
++    """
++
++    # get current environment variables
++    config = os.environ.copy()
++
++    # patch the config
++    buildConfig = patchConfig(buildConfig)
++
++    # make sure all values are strings
++    config.update(buildConfig)
++
++    # make the config python 2.7 compartible
++    config = py27Fix(config)
++
++    # Set WORKSPACE environment.
++    config["WORKSPACE"] = os.path.abspath(os.path.join("..", "..", "..", ""))
++    print("Set WORKSPACE as: {}".format(config["WORKSPACE"]))
++
++    # Check whether Git has been installed and been added to system path.
++    try:
++        subprocess.Popen(["git", "--help"], stdout=subprocess.PIPE)
++    except OSError as error:
++        if error.errno == os.errno.ENOENT:
++            print("The 'git' command is not recognized.")
++            print("Please make sure that Git is installed\
++                    and has been added to system path.")
++            os.exit(1)
++
++    # Create the Conf directory under WORKSPACE
++    if not os.path.isdir(os.path.join(config["WORKSPACE"], "Conf")):
++        try:
++            # create directory
++            os.makedirs(os.path.join(config["WORKSPACE"], "Conf"))
++            # copy files to it
++            configTemplatePath = os.path.join(config["WORKSPACE"],
++                                              config["BASE_TOOLS_PATH"],
++                                              "Conf")
++            configPath = os.path.join(config["WORKSPACE"], "Conf")
++            shutil.copyfile(configTemplatePath +
++                            os.sep + "target.template",
++                            configPath + os.sep + "target.txt")
++            shutil.copyfile(configTemplatePath +
++                            os.sep + "tools_def.template",
++                            configPath + os.sep + "tools_def.txt")
++            shutil.copyfile(configTemplatePath +
++                            os.sep + "build_rule.template",
++                            configPath + os.sep + "build_rule.txt")
++        except OSError:
++            print ("Error while creating Conf")
++            exit(1)
++
++    # Set other environments.
++    # Basic Rule:
++    # Platform override Silicon override Core
++    # Source override Binary
++    config["WORKSPACE_PLATFORM"] = os.path.join(config["WORKSPACE"],
++                                                config["WORKSPACE_PLATFORM"])
++    config["WORKSPACE_SILICON"] = os.path.join(config["WORKSPACE"],
++                                               config["WORKSPACE_SILICON"])
++    config["WORKSPACE_PLATFORM_BIN"] = \
++        os.path.join(config["WORKSPACE"], config["WORKSPACE_PLATFORM_BIN"])
++    config["WORKSPACE_SILICON_BIN"] = \
++        os.path.join(config["WORKSPACE"], config["WORKSPACE_SILICON_BIN"])
++    config["WORKSPACE_FSP_BIN"] = os.path.join(config["WORKSPACE"],
++                                               config["WORKSPACE_FSP_BIN"])
++
++    # add to package path
++    pathSep = ";"
++    config["EDK_SETUP_OPTION"] = "--nt32"
++    if os.name == "posix":
++        pathSep = ":"
++        config["EDK_SETUP_OPTION"] = " "
++
++    config["PACKAGES_PATH"] = config["WORKSPACE_PLATFORM"]
++    config["PACKAGES_PATH"] += pathSep + config["WORKSPACE_SILICON"]
++    config["PACKAGES_PATH"] += pathSep + config["WORKSPACE_SILICON_BIN"]
++    config["PACKAGES_PATH"] += pathSep + \
++        os.path.join(config["WORKSPACE"], "FSP")
++    config["PACKAGES_PATH"] += pathSep + \
++        os.path.join(config["WORKSPACE"], "edk2")
++    config["PACKAGES_PATH"] += pathSep + os.path.join(config["WORKSPACE"])
++    config["EDK_TOOLS_PATH"] = os.path.join(config["WORKSPACE"],
++                                            config["EDK_TOOLS_PATH"])
++    config["BASE_TOOLS_PATH"] = config["EDK_TOOLS_PATH"]
++    config["EDK_TOOLS_BIN"] = os.path.join(config["WORKSPACE"],
++                                           config["EDK_TOOLS_BIN"])
++    config["PLATFORM_FSP_BIN_PACKAGE"] = \
++        os.path.join(config['WORKSPACE_FSP_BIN'], config['FSP_BIN_PKG'])
++    config['PROJECT_DSC'] = os.path.join(config["WORKSPACE_PLATFORM"],
++                                         config['PROJECT_DSC'])
++    config['BOARD_PKG_PCD_DSC'] = os.path.join(config["WORKSPACE_PLATFORM"],
++                                               config['BOARD_PKG_PCD_DSC'])
++    config["CONF_PATH"] = os.path.join(config["WORKSPACE"], "Conf")
++
++    # get the python path
++    if os.environ.get("PYTHON_HOME") is None:
++        config["PYTHON_HOME"] = None
++        if os.environ.get("PYTHONPATH") is not None:
++            config["PYTHON_HOME"] = os.environ.get("PYTHONPATH")
++        else:
++            print("PYTHONPATH environment variable is not found")
++            exit(1)
++
++    # if python is installed, disable the binary base tools.
++    if config.get("PYTHON_HOME") is not None:
++        if config.get("EDK_TOOLS_BIN") is not None:
++            del config["EDK_TOOLS_BIN"]
++
++    # Run edk setup and  update config
++    edk2SetupCmd = [os.path.join(config["EFI_SOURCE"], "edksetup")]
++    if os.name == "nt":
++
++        if config.get("EDK_SETUP_OPTION") and \
++           config["EDK_SETUP_OPTION"] != " ":
++            edk2SetupCmd.append(config["EDK_SETUP_OPTION"])
++
++        out, err, result, returnCode = executeScript(edk2SetupCmd,
++                                                     config,
++                                                     collectEnv=True,
++                                                     shell=True)
++        if result is not None and type(result) is dict:
++            config.update(result)
++
++    # if python is installed, nmake BaseTools source
++    # and enable BaseTools source build
++    command = ["nmake", "-f", os.path.join(config["BASE_TOOLS_PATH"],
++                                           "Makefile")]
++    if os.name == "posix":  # linux
++        command = ["make", "-C", os.path.join(config["BASE_TOOLS_PATH"])]
++
++    out, err, result, returnCode = executeScript(command, config, shell=True)
++    if returnCode is not 0:
++        buildFailed(config)
++
++    config["SILENT_MODE"] = 'TRUE' if silent else 'FALSE'
++
++    print ("==============================================")
++
++    if os.path.isfile(os.path.join(config['WORKSPACE'], "Prep.log")):
++        os.remove(os.path.join(config['WORKSPACE'], "Prep.log"))
++
++    config["PROJECT"] = os.path.join(config["PLATFORM_BOARD_PACKAGE"],
++                                     config["BOARD"])
++
++    #
++    # Setup Build
++    #
++    if toolchain is not None:
++        config["TOOL_CHAIN_TAG"] = toolchain
++    elif config.get("TOOL_CHAIN_TAG") is None:
++        if os.name == 'nt':
++            config["TOOL_CHAIN_TAG"] = "VS2015"
++        else:
++            config["TOOL_CHAIN_TAG"] = "GCC5"
++
++    # echo Show CL revision
++    config["PrepRELEASE"] = buildType
++
++    if buildType == "DEBUG":
++        config["TARGET"] = 'DEBUG'
++        config["TARGET_SHORT"] = 'D'
++    else:
++        config["TARGET"] = 'RELEASE'
++        config["TARGET_SHORT"] = 'R'
++
++    # set BUILD_DIR_PATH path
++    config["BUILD_DIR_PATH"] = os.path.join(config["WORKSPACE"],
++                                            'Build',
++                                            config["PROJECT"],
++                                            "{}_{}".format(
++                                                    config["TARGET"],
++                                                    config["TOOL_CHAIN_TAG"]))
++    # set BUILD_DIR path
++    config["BUILD_DIR"] = os.path.join('Build',
++                                       config["PROJECT"],
++                                       "{}_{}".format(
++                                                    config["TARGET"],
++                                                    config["TOOL_CHAIN_TAG"]))
++
++    config["BUILD_X64"] = os.path.join(config["BUILD_DIR_PATH"], 'X64')
++    config["BUILD_IA32"] = os.path.join(config["BUILD_DIR_PATH"], 'IA32')
++
++    if not os.path.isdir(config["BUILD_DIR_PATH"]):
++        try:
++            os.makedirs(config["BUILD_DIR_PATH"])
++        except OSError:
++            print ("Error while creating Build folder")
++
++    #
++    # Set FSP_WRAPPER_BUILD
++    #
++    if config['FSP_WRAPPER_BUILD'] == "TRUE":
++        # Create dummy Fsp_Rebased_S_padded.fd to build the BiosInfo.inf
++        # if it is wrapper build, due to the SECTION inclusion
++        with open(os.path.join(config["WORKSPACE_FSP_BIN"],
++                               config["FSP_BIN_PKG"],
++                               "Fsp_Rebased_S_padded.fd"), 'w') as fd:
++            pass  # fd.write("")
++
++    if config["FSP_BINARY_BUILD"] == "TRUE":
++        if config['FSP_WRAPPER_BUILD'] == 'FALSE':
++            # EndPreBuild TODO return ?
++            exit(0)
++
++    if not os.path.isdir(config["BUILD_X64"]):
++        try:
++            os.mkdir(config["BUILD_X64"])
++        except OSError:
++            print ("Error while creating {}".format(config["BUILD_X64"]))
++
++    # update config file with changes
++    updateTargetFile(config)
++
++    # Additional pre build scripts for this platform
++    result = preBuildEx(config)
++    if result is not None and type(result) is dict:
++        config.update(result)
++
++    # print user settings
++    print ("BIOS_SIZE_OPTION     = {}".format(config["BIOS_SIZE_OPTION"]))
++    print ("EFI_SOURCE           = {}".format(config["EFI_SOURCE"]))
++    print ("TARGET               = {}".format(config["TARGET"]))
++    print ("TARGET_ARCH          = {}".format("IA32 X64"))
++    print ("TOOL_CHAIN_TAG       = {}".format(config["TOOL_CHAIN_TAG"]))
++    print ("WORKSPACE            = {}".format(config["WORKSPACE"]))
++    print ("WORKSPACE_CORE       = {}".format(config["WORKSPACE_CORE"]))
++    print ("EXT_BUILD_FLAGS      = {}".format(config["EXT_BUILD_FLAGS"]))
++
++    return config
++
++
++def build(config):
++    """Builds the BIOS image
++
++        :param config: The environment variables to be used
++            in the build process
++        :type config: Dictionary
++        :returns: nothing
++    """
++    # #
++    # # Build FSP Binary
++    # #
++    if config.get("FSP_BINARY_BUILD") and \
++       config["FSP_BINARY_BUILD"] == 'TRUE':
++        config["FSP_BUILD_PARAMETER"] = "/d"
++        if config["TARGET"] == "RELEASE":
++            config["FSP_BUILD_PARAMETER"] = "/tr"
++        else:
++            config["FSP_BUILD_PARAMETER"] = "/r"
++
++    # @if %FSP_WRAPPER_BUILD% EQU FALSE goto :BldEnd  TODO
++
++    if config["FSP_WRAPPER_BUILD"] == "TRUE":
++        pattern = "Fsp_Rebased.*\\.fd$"
++        file_dir = os.path.join(config['WORKSPACE_FSP_BIN'],
++                                config['FSP_BIN_PKG'])
++        for item in os.listdir(file_dir):
++            if re.search(pattern, item):
++                os.remove(os.path.join(file_dir, item))
++
++        path = os.path.join(config['WORKSPACE_PLATFORM'],
++                            config['PROJECT'], config['BOARD_PKG_PCD_DSC'])
++
++        command = [os.path.join(config['PYTHON_HOME'], "python"),
++                   os.path.join(config['WORKSPACE_PLATFORM'],
++                                config['PLATFORM_PACKAGE'],
++                                'Tools', 'Fsp',
++                                'RebaseAndPatchFspBinBaseAddress.py'),
++                   os.path.join(config['WORKSPACE_PLATFORM'],
++                                config['FLASH_MAP_FDF']),
++                   os.path.join(config['WORKSPACE_FSP_BIN'],
++                                config['FSP_BIN_PKG']),
++                   "Fsp.fd",
++                   os.path.join(config['WORKSPACE_PLATFORM'],
++                                config['PROJECT'],
++                                config['BOARD_PKG_PCD_DSC']),
++                   "0x0"]
++
++        out, err, result, returnCode = executeScript(command, config)
++
++        if returnCode != 0:
++            print("!!! ERROR:RebaseAndPatchFspBinBaseAddress failed!!!")
++            exit(returnCode)
++
++        # create Fsp_Rebased.fd which is Fsp_Rebased_S.fd +
++        # Fsp_Rebased_M + Fsp_Rebased_T
++        with open(os.path.join(file_dir, "Fsp_Rebased_S.fd"), 'rb') as fsp_S, \
++                open(os.path.join(file_dir,
++                                  "Fsp_Rebased_M.fd"), 'rb') as fsp_M, \
++                open(os.path.join(file_dir,
++                                  "Fsp_Rebased_T.fd"), 'rb') as fsp_T:
++
++            fsp_rebased = fsp_S.read() + fsp_M.read() + fsp_T.read()
++            with open(os.path.join(file_dir,
++                                   "Fsp_Rebased.fd"), 'wb') as new_fsp:
++                new_fsp.write(fsp_rebased)
++
++        if not os.path.isfile(os.path.join(file_dir, "Fsp_Rebased.fd")):
++            print("!!! ERROR:failed to create fsp!!!")
++            exit(1)
++
++    # Output the build variables the user has selected.
++    print("==========================================")
++    print(" User Selected build options:")
++    print(" SILENT_MODE    = ", config["SILENT_MODE"])
++    print(" REBUILD_MODE   = ", config["REBUILD_MODE"])
++    print(" BUILD_ROM_ONLY = ", config["BUILD_ROM_ONLY"])
++    print("==========================================")
++
++    command = ["build", "-n", config["NUMBER_OF_PROCESSORS"]]
++
++    if config["REBUILD_MODE"] and config["REBUILD_MODE"] != "":
++        command.append(config["REBUILD_MODE"])
++
++    if config["EXT_BUILD_FLAGS"] and config["EXT_BUILD_FLAGS"] != "":
++        command.append(config["EXT_BUILD_FLAGS"])
++
++    if config.get("SILENT_MODE", "FALSE") == "TRUE":
++        command.append("--silent")
++        command.append("--quiet")
++
++    else:
++        command.append("--log=" + config.get("BUILD_LOG", "Build.log"))
++        command.append("--report-file=" +
++                       config.get("BUILD_REPORT", "BuildReport.log"))
++
++    if config.get("VERBOSE", "FALSE") == "TRUE":
++        command.append("--verbose")
++
++    if config.get("MAX_SOCKET") is not None:
++        command.append("-D")
++        command.append("MAX_SOCKET=" + config["MAX_SOCKET"])
++
++    out, err, result, exitCode = executeScript(command, config)
++    if exitCode != 0:
++        buildFailed(config)
++
++    # Additional build scripts for this platform
++    result = buildEx(config)
++    if result is not None and type(result) is dict:
++        config.update(result)
++
++    return config
++
++
++def postBuild(config):
++    """Post build process of BIOS image
++
++    :param config: The environment variables to be used in the build process
++    :type config: Dictionary
++    :returns: nothing
++    """
++    print("Running postbuild to complete the build process.")
++
++    # Additional build scripts for this platform
++    result = postBuildEx(config)
++    if result is not None and type(result) is dict:
++        config.update(result)
++
++    # cleanup
++    pattern = "Fsp_Rebased.*\\.fd$"
++    file_dir = os.path.join(config['WORKSPACE_FSP_BIN'],
++                            config['FSP_BIN_PKG'])
++    for item in os.listdir(file_dir):
++        if re.search(pattern, item):
++            os.remove(os.path.join(file_dir, item))
++
++    if config.get("DYNAMIC_BUILD_INIT_FILES") is not None:
++        for item in config["DYNAMIC_BUILD_INIT_FILES"].split(","):
++            try:
++                os.remove(item)  # remove __init__.py
++                os.remove(item + "c")  # remove __init__.pyc as well
++            except Exception as ex:
++                pass
++
++
++def buildFailed(config):
++    """Displays results when build fails
++
++        :param config: The environment variables used in the build process
++        :type config: Dictionary
++        :returns: nothing
++    """
++    print(" The EDKII BIOS Build has failed!")
++    # clean up
++    if config.get("DYNAMIC_BUILD_INIT_FILES") is not None:
++        for item in config["DYNAMIC_BUILD_INIT_FILES"].split(","):
++            if os.path.isfile(item):
++                try:
++                    os.remove(item)  # remove __init__.py
++                    os.remove(item + "c")  # remove __init__.pyc as well
++                except Exception as ex:
++                    pass
++    exit(1)
++
++
++def importPlatformLib(path, function):
++    """Imports custom functions for the platforms being built
++
++        :param path: the location of the custom build script to be executed
++        :type path: String
++        :param path: the function to be executed
++        :type path: String
++        :returns: nothing
++    """
++    if path.endswith(".py"):
++        path = path[:-3]
++    path = path.replace("\\\\", os.sep).replace(os.sep, ".")
++    module = import_module(path)
++    lib = getattr(module, function)
++    return lib
++
++
++def preBuildEx(config):
++    """ An extension of the prebuild process as defined platform
++        specific prebuild setup script
++
++        :param config: The environment variables used in the pre build process
++        :type config: Dictionary
++        :returns: config dictionary
++        :rtype: Dictionary
++    """
++    if config.get("ADDITIONAL_SCRIPTS"):
++        try:
++            platformFunction = importPlatformLib(config["ADDITIONAL_SCRIPTS"],
++                                                 "preBuildEx")
++            functions = {"executeScript": executeScript}
++            return platformFunction(config, functions)
++        except Exception as e:
++            print(config["ADDITIONAL_SCRIPTS"], str(e))
++            buildFailed(config)
++    return None
++
++
++def buildEx(config):
++    """ An extension of the build process as defined platform
++        specific build setup script
++
++        :param config: The environment variables used in the build process
++        :type config: Dictionary
++        :returns: config dictionary
++        :rtype: Dictionary
++    """
++    if config.get("ADDITIONAL_SCRIPTS"):
++        try:
++            platformFunction = importPlatformLib(config["ADDITIONAL_SCRIPTS"],
++                                                 "buildEx")
++            functions = {"executeScript": executeScript}
++            return platformFunction(config, functions)
++        except Exception as e:
++            print("error", config["ADDITIONAL_SCRIPTS"], str(e))
++            buildFailed(config)
++    return None
++
++
++def postBuildEx(config):
++    """ An extension of the post build process as defined platform
++        specific build setup script
++
++        :param config: The environment variables used in the post build
++            process
++        :type config: Dictionary
++        :returns: config dictionary
++        :rtype: Dictionary
++    """
++    if config.get("ADDITIONAL_SCRIPTS"):
++        try:
++            platformFunction = importPlatformLib(config["ADDITIONAL_SCRIPTS"],
++                                                 "postBuildEx")
++            functions = {"executeScript": executeScript}
++            return platformFunction(config, functions)
++        except Exception as e:
++            print(config["ADDITIONAL_SCRIPTS"], str(e))
++            buildFailed(config)
++    return None
++
++
++def cleanEx(config):
++    """ An extension of the platform cleanning
++
++        :param config: The environment variables used in the clean process
++        :type config: Dictionary
++        :returns: config dictionary
++        :rtype: Dictionary
++    """
++    if config.get("ADDITIONAL_SCRIPTS"):
++        try:
++            platformFunction = importPlatformLib(config["ADDITIONAL_SCRIPTS"],
++                                                 "cleanEx")
++            functions = {"executeScript": executeScript}
++            return platformFunction(config, functions)
++        except Exception as e:
++            print(config["ADDITIONAL_SCRIPTS"], str(e))
++            buildFailed(config)
++    return None
++
++
++def getEnvironmentVariables(stdoutStr, marker):
++    """Gets the environment variables from a process
++
++        :param stdoutStr: The stdout pipe
++        :type stdoutStr: String
++        :param marker: A begining and end mark of environment
++            variables printed to stdout
++        :type marker: String
++        :returns: The environment variables read from the process' stdout pipe
++        :rtype: Tuple
++    """
++    startEnvUpdate = False
++    environmentVars = {}
++    outPut = ""
++    for line in stdoutStr.split("\n"):
++        if startEnvUpdate and len(line.split("=")) == 2:
++            key, value = line.split("=")
++            environmentVars[key] = value
++        else:
++            outPut += "\n" + line.replace(marker, "")
++
++        if marker in line:
++            if startEnvUpdate:
++                startEnvUpdate = False
++            else:
++                startEnvUpdate = True
++    return (outPut, environmentVars)
++
++
++def executeScript(command, envVariables, collectEnv=False,
++                  enableStdPipe=False, shell=True):
++    """launches a process that executes a script/shell command passed to it
++
++        :param command: The command/script with its commandline
++            arguments to be executed
++        :type command:  List:String
++        :param envVariables: Environment variables passed to the process
++        :type envVariables: String
++        :param collectEnv: Enables the collection of evironment variables
++            when process execution is done
++        :type collectEnv: Boolean
++        :param enableStdPipe: Enables process out to be piped to
++        :type enableStdPipe: String
++        :returns: a tuple of stdout, stderr , environment variables,
++            return code
++        :rtype: Tuple: (stdout, stderr , enVar, returnCode)
++    """
++
++    print("Calling " + " ".join(command))
++
++    envMarker = '-----env-----'
++    env = {}
++    kwarg = {"env": envVariables,
++             "universal_newlines": True,
++             "shell": shell,
++             "cwd": envVariables["WORKSPACE"]}
++
++    if enableStdPipe or collectEnv:
++        kwarg["stdout"] = subprocess.PIPE
++        kwarg["stderr"] = subprocess.PIPE
++
++    # collect environment variables
++    if collectEnv:
++        # get the binary that prints environment variables based on os
++        if os.name == 'nt':
++            getVarCommand = "set"
++        else:
++            getVarCommand = "env"
++        # modify the command to print the environment variables
++        if type(command) == list:
++            command += ["&&", "echo", envMarker, "&&",
++                        getVarCommand, "&&", "echo", envMarker]
++        else:
++            command += " " + " ".join(["&&", "echo", envMarker,
++                                       "&&", getVarCommand,
++                                       "&&", "echo", envMarker])
++
++    # execute the command
++    execute = subprocess.Popen(command, **kwarg)
++    stdout, stderr = execute.communicate()
++    code = execute.returncode
++
++    # wait for process to be done
++    execute.wait()
++
++    # if collect enviroment variables
++    if collectEnv:
++        # get the new environment variables
++        stdout, env = getEnvironmentVariables(stdout, envMarker)
++    return (stdout, stderr, env, code)
++
++
++def patchConfig(config):
++    """ An extension of the platform cleanning
++
++        :param config: The environment variables used in the build process
++        :type config: Dictionary
++        :returns: config dictionary
++        :rtype: Dictionary
++    """
++    newconfig = {}
++    for key in config:
++        newconfig[str(key)] = str(config[key].replace("/", os.sep))
++    return newconfig
++
++
++def py27Fix(config):
++    """  Prepares build for python 2.7 => build
++        :param config: The environment variables used in the build process
++        :type config: Dictionary
++        :returns: config dictionary
++        :rtype: Dictionary
++    """
++    if not (sys.version_info > (3, 0)):
++        pathList = []
++        # create __init__.py in directories in this path
++        if config.get("ADDITIONAL_SCRIPTS"):
++            # get the directory
++            pathToDirectory = os.path.dirname(config.get("ADDITIONAL_SCRIPTS"))
++            path = ""
++            for directories in pathToDirectory.split(os.sep):
++                path += directories + os.sep
++                initFile = path + os.sep + "__init__.py"
++                if not os.path.isfile(initFile):
++                    open(initFile, 'w').close()
++                    pathList.append(initFile)
++            config["DYNAMIC_BUILD_INIT_FILES"] = ",".join(pathList)
++
++    return config
++
++
++def clean(buildConfig, platform=""):
++    """Cleans the build workspace
++
++        :param config: The environment variables used in the build process
++        :type config: Dictionary
++        :param platform: The platform to clean
++        :type platform: String
++        :returns: nothing
++    """
++    print(" Run build cleanall...")
++
++    # patch the config
++    buildConfig = patchConfig(buildConfig)
++
++    # get current environment variables
++    config = os.environ.copy()
++
++    # update it with the build variables
++    config.update(buildConfig)
++
++    if not config.get('WORKSPACE') and \
++       config.get('WORKSPACE') != "":
++        config["WORKSPACE"] = os.path.abspath(os.path.join("..", "..",
++                                                           "..", ""))
++
++    config["WORKSPACE_PLATFORM"] = os.path.join(config["WORKSPACE"],
++                                                config["WORKSPACE_PLATFORM"])
++    config["WORKSPACE_SILICON"] = os.path.join(config["WORKSPACE"],
++                                               config["WORKSPACE_SILICON"])
++
++    # build cleanall
++    print("Directories to clean...")
++
++    if os.path.isdir(os.path.join(config['WORKSPACE'], "Build", platform)):
++        shutil.rmtree(os.path.join(config['WORKSPACE'], "Build", platform))
++
++    if os.path.isdir(os.path.join(config['WORKSPACE'], "conf", ".cache")):
++        shutil.rmtree(os.path.join(config['WORKSPACE'], "conf", ".cache"))
++
++    print("Cleaning files...")
++
++    if os.path.isfile(os.path.join(config['WORKSPACE'], "edk2.log")):
++        print("Removing ", os.path.join(config['WORKSPACE'], "edk2.log"))
++        os.remove(os.path.join(config['WORKSPACE'], "edk2.log"))
++
++    if os.path.isfile(os.path.join(config['WORKSPACE'], "Conf",
++                                   "build_rule.txt")):
++        print("Removing ", os.path.join(config['WORKSPACE'], "Conf",
++                                        "build_rule.txt"))
++        os.remove(os.path.join(config['WORKSPACE'], "Conf",
++                               "build_rule.txt"))
++
++    if os.path.isfile(os.path.join(config['WORKSPACE'], "Conf",
++                                   "FrameworkDatabase.db")):
++        print("Removing ", os.path.join(config['WORKSPACE'], "Conf",
++                                        "FrameworkDatabase.db"))
++        os.remove(os.path.join(config['WORKSPACE'], "Conf",
++                               "FrameworkDatabase.db"))
++
++    if os.path.isfile(os.path.join(config['WORKSPACE'], "Conf",
++                                   "target.txt")):
++        print("Removing ", os.path.join(config['WORKSPACE'], "Conf",
++                                        "target.txt"))
++        os.remove(os.path.join(config['WORKSPACE'], "Conf", "target.txt"))
++
++    if os.path.isfile(os.path.join(config['WORKSPACE'], "Conf",
++                                   "tools_def.txt")):
++        print("Removing ", os.path.join(config['WORKSPACE'], "Conf",
++                                        "tools_def.txt"))
++        os.remove(os.path.join(config['WORKSPACE'], "Conf",
++                               "tools_def.txt"))
++
++    print("  All done...")
++
++    exit(0)
++
++
++def updateTargetFile(config):
++    """Updates Conf's target file that will be used in the build
++
++        :param config: The environment variables used in the build process
++        :type config: Dictionary
++        :returns: True if update was successful and False if update fails
++        :rtype: Boolean
++    """
++    contents = None
++    result = False
++    with open(os.path.join(config["CONF_PATH"], "target.txt"), 'r') as target:
++        contents = target.readlines()
++        optionsList = ['ACTIVE_PLATFORM', 'TARGET',
++                       'TARGET_ARCH', 'TOOL_CHAIN_TAG', 'BUILD_RULE_CONF']
++        modified = []
++
++        # remove these options from the config file
++        for line in contents:
++            if '#' != line.replace(" ", "")[0] and\
++             any(opt in line for opt in optionsList):
++                continue
++            modified.append(line)
++
++        # replace with config options provided
++        string = "{} = {}\n".format("ACTIVE_PLATFORM",
++                                    os.path.join(
++                                        config['WORKSPACE_PLATFORM'],
++                                        config['PLATFORM_BOARD_PACKAGE'],
++                                        config['BOARD'],
++                                        config['PROJECT_DSC']))
++        modified.append(string)
++
++        string = "{} = {}\n".format("TARGET", config['TARGET'])
++        modified.append(string)
++
++        string = "TARGET_ARCH = IA32 X64\n"
++        modified.append(string)
++
++        string = "{} = {}\n".format("TOOL_CHAIN_TAG", config['TOOL_CHAIN_TAG'])
++        modified.append(string)
++
++        string = "{} = {}\n".format("BUILD_RULE_CONF",
++                                    os.path.join("Conf", "build_rule.txt"))
++        modified.append(string)
++
++    if modified is not None:
++        with open(os.path.join(config["WORKSPACE"],
++                  "Conf", "target.txt"), 'w') as target:
++            for line in modified:
++                target.write(line)
++            result = True
++
++    return result
++
++
++def getConfig():
++    """Reads the default projects config file
++
++        :returns: The config defined in the the Build.cfg file
++        :rtype: Dictionary
++    """
++    configFile = Configparser.RawConfigParser()
++    configFile.optionxform = str
++    configFile.read('Build.cfg', encoding='utf-8')
++    configDictionary = {}
++    for section in configFile.sections():
++        dictionary = dict(configFile.items(section))
++        configDictionary[section] = dictionary
++    return configDictionary
++
++
++def getPlatformConfig(platformName, configData):
++    """ Reads the platform specifig config file
++
++        param platformName: The name of the platform to be built
++        :type platformName: String
++        param configData: The environment variables to be
++            used in the build process
++        :type configData: Dictionary
++        :returns: The config defined in the the Build.cfg file
++        :rtype: Dictionary
++    """
++    config = {}
++    platformData = configData.get("PLATFORMS")
++    try:
++        path = platformData.get(platformName)
++        configFile = Configparser.RawConfigParser()
++        configFile.optionxform = str
++        configFile.read(path)
++        for section in configFile.sections():
++            config[section] = dict(configFile.items(section))
++    except Exception as e:
++        print("getPlatformConfig: " + str(e))
++        exit(1)
++    return config
++
++
++def getCmdConfigArguments(arguments):
++    """Get commandline config arguments
++
++    param arguments: The environment variables to be used in the build process
++    :type arguments: argparse
++    :returns: The config dictionary built from the commandline arguments
++    :rtype: Dictionary
++    """
++    result = {}
++    if arguments.capsule is True:
++        result["CAPSULE_BUILD"] = "1"
++
++    if arguments.performance is True:
++        result["PERFORMANCE_BUILD"] = "TRUE"
++
++    if arguments.fsp is True:
++        result["FSP_WRAPPER_BUILD"] = "TRUE"
++
++    return result
++
++
++def getCmdArguments(buildConfig):
++    """ Get commandline inputs from user
++
++        param configData: The environment variables to be
++            used in the build process
++        :type configData: Dictionary
++        :returns: The commandline arguments input by the user
++        :rtype: argparse object
++    """
++
++    # this is an argparse action that lists the available platforms
++    class printPlatforms(argparse.Action):
++        def __call__(self, parser, namespace, values, option_string=None):
++            config = getConfig()
++            print("Platforms:")
++            for key in buildConfig.get("PLATFORMS"):
++                print("    " + key)
++            setattr(namespace, self.dest, values)
++            exit(0)
++
++    buildChoices = ['DEBUG', 'RELEASE', 'TEST_RELEASE', 'RELEASE_PDB']
++    # get the build commands
++    Parser = argparse.ArgumentParser(description="Build Help")
++    Parser.add_argument('--platform', '-p', dest="platform",
++                        help='the platform to build',
++                        choices=buildConfig.get("PLATFORMS"),
++                        required=('-l' not in sys.argv and
++                                  '--cleanall' not in sys.argv))
++
++    Parser.add_argument('--toolchain', '-t', dest="toolchain",
++                        help="using the Tool Chain Tagname to build \
++                            the platform,overriding \
++                            target.txt's TOOL_CHAIN_TAG definition")
++
++    Parser.add_argument("--DEBUG", '-d', help="debug flag",
++                        action='store_const', dest="target",
++                        const="DEBUG", default="DEBUG")
++
++    Parser.add_argument("--RELEASE", '-r', help="release flag",
++                        action='store_const',
++                        dest="target", const="RELEASE")
++
++    Parser.add_argument("--TEST_RELEASE", '-tr', help="test Release flag",
++                        action='store_const',
++                        dest="target", const="TEST_RELEASE")
++
++    Parser.add_argument("--RELEASE_PDB", '-rp', help="release flag",
++                        action='store_const', dest="target",
++                        const="RELEASE_PDB")
++
++    Parser.add_argument('--list', '-l', action=printPlatforms,
++                        help='lists available platforms', nargs=0)
++
++    Parser.add_argument('--cleanall', dest='cleanall',
++                        help='cleans all', action='store_true')
++
++    Parser.add_argument("--capsule", help="capsule build enabled",
++                        action='store_true', dest="capsule")
++
++    Parser.add_argument("--silent", help="silent build enabled",
++                        action='store_true', dest="silent")
++
++    Parser.add_argument("--performance", help="performance build enabled",
++                        action='store_true', dest="performance")
++
++    Parser.add_argument("--fsp", help="fsp build enabled",
++                        action='store_true', dest="fsp")
++
++    return Parser.parse_args()
++
++
++def keyboardInterruption(signal, frame):
++    """ Catches a keyboard interruption handler
++
++        param signal: The signal this handler is called with
++        :type configData: Signal
++        :rtype: nothing
++    """
++    print("Quiting...")
++    exit(0)
++
++
++if __name__ == "__main__":
++
++    # to quit the build
++    signal.signal(signal.SIGINT, keyboardInterruption)
++
++    # get general build configurations
++    buildConfig = getConfig()
++
++    # get commandline parameters
++    arguments = getCmdArguments(buildConfig)
++
++    if arguments.cleanall:
++        clean(buildConfig.get("DEFAULT_CONFIG"))
++
++    # get platform specific config
++    platform_config = getPlatformConfig(arguments.platform, buildConfig)
++
++    # update general build config with platform specific config
++    config = buildConfig.get("DEFAULT_CONFIG")
++    config.update(platform_config.get("CONFIG"))
++
++    # Override config with cmd arguments
++    cmdConfigArgs = getCmdConfigArguments(arguments)
++    config.update(cmdConfigArgs)
++
++    # get prebuild configurations
++    config = preBuild(config,
++                      buildType=arguments.target,
++                      toolchain=arguments.toolchain,
++                      silent=arguments.silent)
++
++    # build selected platform
++    config = build(config)
++
++    # post build
++    postBuild(config)
+diff --git a/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg b/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg
+new file mode 100644
+index 0000000000..775cf5c838
+--- /dev/null
++++ b/Platform/Intel/ClevoOpenBoardPkg/N1xxWU/BuildConfig.cfg
+@@ -0,0 +1,40 @@
++# @ BuildConfig.cfg
++# This is the main/default build configuration file
++#
++# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++# This program and the accompanying materials are
++# licensed and made available under the terms and
++# conditions of the BSD License that accompanies this distribution.
++# The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php.
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND,
++# EITHER EXPRESS OR IMPLIED.
++#
++
++[CONFIG]
++    WORKSPACE_PLATFORM_BIN = WORKSPACE_PLATFORM_BIN
++    EDK_SETUP_OPTION =
++    openssl_path =
++    PLATFORM_BOARD_PACKAGE = ClevoOpenBoardPkg
++    PROJECT = ClevoOpenBoardPkg/N1xxWU
++    BOARD = N1xxWU
++    FLASH_MAP_FDF = ClevoOpenBoardPkg/N1xxWU/Include/Fdf/FlashMapInclude.fdf
++    PROJECT_DSC = ClevoOpenBoardPkg/N1xxWU/OpenBoardPkg.dsc
++    BOARD_PKG_PCD_DSC = ClevoOpenBoardPkg/N1xxWU/OpenBoardPkgPcd.dsc
++    PrepRELEASE = DEBUG
++    SILENT_MODE = FALSE
++    EXT_CONFIG_CLEAR =
++    CapsuleBuild = FALSE
++    EXT_BUILD_FLAGS =
++    CAPSULE_BUILD = 0
++    TARGET = DEBUG
++    TARGET_SHORT = D
++    PERFORMANCE_BUILD = FALSE
++    FSP_WRAPPER_BUILD = TRUE
++    FSP_BIN_PKG = KabylakeFspBinPkg
++    FSP_PKG_NAME = KabylakeFspPkg
++    FSP_BINARY_BUILD = FALSE
++    FSP_TEST_RELEASE = FALSE
++    SECURE_BOOT_ENABLE = FALSE
+diff --git a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildConfig.cfg b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildConfig.cfg
+new file mode 100644
+index 0000000000..188ac51765
+--- /dev/null
++++ b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildConfig.cfg
+@@ -0,0 +1,27 @@
++
++[CONFIG]
++    WORKSPACE_PLATFORM_BIN = WORKSPACE_PLATFORM_BIN
++    EDK_SETUP_OPTION =
++    openssl_path =
++    PLATFORM_BOARD_PACKAGE = KabylakeOpenBoardPkg
++    PROJECT = KabylakeOpenBoardPkg/KabylakeRvp3
++    BOARD = KabylakeRvp3
++    FLASH_MAP_FDF = KabylakeOpenBoardPkg/Include/Fdf/FlashMapInclude.fdf
++    PROJECT_DSC = KabylakeOpenBoardPkg/KabylakeRvp3/OpenBoardPkg.dsc
++    BOARD_PKG_PCD_DSC = KabylakeOpenBoardPkg/KabylakeRvp3/OpenBoardPkgPcd.dsc
++    ADDITIONAL_SCRIPTS = KabylakeOpenBoardPkg/KabylakeRvp3/BuildEx.py
++    PrepRELEASE = DEBUG
++    SILENT_MODE = FALSE
++    EXT_CONFIG_CLEAR =
++    CapsuleBuild = FALSE
++    EXT_BUILD_FLAGS =
++    CAPSULE_BUILD = 0
++    TARGET = DEBUG
++    TARGET_SHORT = D
++    PERFORMANCE_BUILD = FALSE
++    FSP_WRAPPER_BUILD = TRUE
++    FSP_BIN_PKG = KabylakeFspBinPkg
++    FSP_PKG_NAME = KabylakeFspPkg
++    FSP_BINARY_BUILD = FALSE
++    FSP_TEST_RELEASE = FALSE
++    SECURE_BOOT_ENABLE = FALSE
+diff --git a/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildEx.py b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildEx.py
+new file mode 100644
+index 0000000000..c3b962ec72
+--- /dev/null
++++ b/Platform/Intel/KabylakeOpenBoardPkg/KabylakeRvp3/BuildEx.py
+@@ -0,0 +1,72 @@
++# @ BuildEx.py
++# This is a sample code provides Optional dynamic imports
++# of build functions to the BuildBios.py script
++#
++# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++# This program and the accompanying materials are licensed and
++# made available under the terms and conditions of the BSD
++# License that accompanies this distribution.
++# The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php.
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++#
++import os
++
++
++def preBuildEx(config, functions):
++    """Additional Pre BIOS build function
++
++    :param config: The environment variables to be used in the build process
++    :type config: Dictionary
++    :param functions: A dictionary of function pointers
++    :type functions: Dictionary
++    :returns: nothing
++    """
++    print("preBuildEx")
++    return None
++
++
++def buildEx(config, functions):
++    """Additional BIOS build function
++
++    :param config: The environment variables to be used in the build process
++    :type config: Dictionary
++    :param functions: A dictionary of function pointers
++    :type functions: Dictionary
++    :returns: config dictionary
++    :rtype: Dictionary
++    """
++    print("buildEx")
++    return None
++
++
++def postBuildEx(config, functions):
++    """Additional Post BIOS build function
++
++    :param config: The environment variables to be used in the post
++        build process
++    :type config: Dictionary
++    :param functions: A dictionary of function pointers
++    :type functions: Dictionary
++    :returns: config dictionary
++    :rtype: Dictionary
++    """
++    print("postBuildEx")
++    return None
++
++
++def cleanEx(config, functions):
++    """Additional clean function
++
++    :param config: The environment variables to be used in the build process
++    :type config: Dictionary
++    :param functions: A dictionary of function pointers
++    :type functions: Dictionary
++    :returns: config dictionary
++    :rtype: Dictionary
++    """
++    print("cleanEx")
++    return None
+diff --git a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildBoard.py b/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildBoard.py
+new file mode 100644
+index 0000000000..924016249f
+--- /dev/null
++++ b/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildBoard.py
+@@ -0,0 +1,177 @@
++# @ BuildBoard.py
++# This adds additional functions to the BuildBios.py
++#
++# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++# This program and the accompanying materials are
++# licensed and made available under the terms and
++# conditions of the BSD License that accompanies this distribution.
++# The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php.
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND,
++# EITHER EXPRESS OR IMPLIED.
++#
++#
++import os
++
++
++def preBuildEx(config, functions):
++
++    print("Info: re-generating PlatformOffset header files")
++
++    executeScript = functions.get("executeScript")
++
++    command = ["build", "-D", "MAX_SOCKET=" + config.get("MAX_SOCKET", "1"),
++               "-m",
++               os.path.join(config["PLATFORM_BOARD_PACKAGE"],
++                            "Acpi", "BoardAcpiDxe", "Dsdt.inf"),
++               "-y",
++               config.get("PRE_BUILD_REPORT",
++                          os.path.join(config["WORKSPACE"],
++                                       "preBuildReport.txt")),
++               "--log=" + config.get("PRE_BUILD_LOG",
++                                     os.path.join(config["WORKSPACE"],
++                                                  "prebuild.log"))]
++
++    stdout, stderr, env, code = executeScript(command, config)
++    if code != 0:
++        print(" ".join(command))
++        print("Error re-generating PlatformOffset header files")
++        exit(1)
++
++    config["AML_FILTER"] = "\"PSYS\" .MCTL\" .FIX[0-9,A-Z]\""
++    print("AML_FILTER= ", config.get("AML_FILTER"))
++
++    # build the command with arguments
++    command = ["python",
++               os.path.join(config["MIN_PACKAGE_TOOLS"],
++                            "AmlGenOffset",
++                            "AmlGenOffset.py"),
++               "-d", "--aml_filter", config["AML_FILTER"],
++               "-o", os.path.join(config["WORKSPACE_PLATFORM"],
++                                  config["PLATFORM_BOARD_PACKAGE"],
++                                  "Acpi", "BoardAcpiDxe",
++                                  "AmlOffsetTable.c"),
++               os.path.join(config["BUILD_X64"],
++                            "PurleyOpenBoardPkg",
++                            "Acpi",
++                            "BoardAcpiDxe",
++                            "DSDT",
++                            "OUTPUT",
++                            "Dsdt", "WFPPlatform.offset.h")]
++
++    # execute the command
++    stdout, stderr, env, code = executeScript(command, config)
++    if code != 0:
++        print(" ".join(command))
++        print("Error re-generating PlatformOffset header files")
++        exit(1)
++
++    print("GenOffset done")
++    return config
++
++
++def buildEx(config, functions):
++    """Additional BIOS build function
++
++    :param config: The environment variables to be used in
++    the build process
++    :type config: Dictionary
++    :param functions: A dictionary of function pointers
++    :type functions: Dictionary
++    :returns: config dictionary
++    :rtype: Dictionary
++    """
++    print("buildEx")
++    return None
++
++
++def postBuildEx(config, functions):
++    """Additional Post BIOS build function
++
++    :param config: The environment variables to be used in the post
++        build process
++    :type config: Dictionary
++    :param functions: A dictionary of function pointers
++    :type functions: Dictionary
++    :returns: config dictionary
++    :rtype: Dictionary
++    """
++    print("postBuildEx")
++
++    executeScript = functions.get("executeScript")
++
++    if not executeScript:
++        print("postBuildEx Error")
++        exit(1)
++
++    print("BoardPostBuild: python PatchBinFv.py")
++
++    commonPatchCommand = [os.path.join(config["PYTHON_HOME"], "python"),
++                          os.path.join(config["MIN_PACKAGE_TOOLS"],
++                          "PatchFv", "PatchBinFv.py"),
++                          config["TARGET"],
++                          os.path.join(config["WORKSPACE_SILICON_BIN"],
++                                       "PurleySiliconBinPkg"),
++                          os.path.join(config["WORKSPACE"],
++                                       "BuildReport.log")]
++
++    fvsToPatch = ["FvTempMemorySilicon",
++                  "FvPreMemorySilicon",
++                  "FvPostMemorySilicon",
++                  "FvLateSilicon"]
++    for fv in fvsToPatch:
++        patchCommand = commonPatchCommand + [fv]
++        stdout, stderr, env, code = executeScript(patchCommand, config)
++        if code != 0:
++            print(" ".join(patchCommand))
++            print("Patch Error!")
++            exit(1)
++
++    print("BoardPostBuild: python RebaseBinFv.py")
++
++    commonRebaseCommand = [os.path.join(config["PYTHON_HOME"], "python"),
++                           os.path.join(config["MIN_PACKAGE_TOOLS"],
++                           "PatchFv", "RebaseBinFv.py"),
++                           config["TARGET"],
++                           os.path.join(config["WORKSPACE_SILICON_BIN"],
++                                        "PurleySiliconBinPkg"),
++                           os.path.join(config["WORKSPACE"],
++                                        "BuildReport.log")]
++
++    rebaseCommand = commonRebaseCommand +\
++        ["FvPreMemorySilicon",
++         "gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspMBase"]
++
++    stdout, stderr, env, code = executeScript(rebaseCommand, config)
++    if code != 0:
++        print(" ".join(rebaseCommand))
++        print("Patch Error!")
++        exit(1)
++
++    rebaseCommand = commonRebaseCommand +\
++        ["FvPostMemorySilicon",
++         "gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspSBase"]
++
++    stdout, stderr, env, code = executeScript(rebaseCommand, config)
++    if code != 0:
++        print(" ".join(rebaseCommand))
++        print("Patch Error!")
++        exit(1)
++
++    return None
++
++
++def cleanEx(config, functions):
++    """Additional clean function
++
++    :param config: The environment variables to be used in the build process
++    :type config: Dictionary
++    :param functions: A dictionary of function pointers
++    :type functions: Dictionary
++    :returns: config dictionary
++    :rtype: Dictionary
++    """
++    print("cleanEx")
++    return None
+diff --git a/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildConfig.cfg b/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildConfig.cfg
+new file mode 100644
+index 0000000000..96f0a9d73f
+--- /dev/null
++++ b/Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus/BuildConfig.cfg
+@@ -0,0 +1,44 @@
++# @ BuildConfig.cfg
++# This is the main/default build configuration file
++#
++# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++# This program and the accompanying materials are
++# licensed and made available under the terms and
++# conditions of the BSD License that accompanies this distribution.
++# The full text of the license may be found at
++# http://opensource.org/licenses/bsd-license.php.
++#
++# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND,
++# EITHER EXPRESS OR IMPLIED.
++#
++
++[CONFIG]
++    WORKSPACE_PLATFORM_BIN = WORKSPACE_PLATFORM_BIN
++    EDK_SETUP_OPTION =
++    openssl_path =
++    PLATFORM_BOARD_PACKAGE = PurleyOpenBoardPkg
++    PROJECT = PurleyOpenBoardPkg/BoardMtOlympus
++    BOARD = BoardMtOlympus
++    FLASH_MAP_FDF = PurleyOpenBoardPkg/Include/Fdf/FlashMapInclude.fdf
++    PROJECT_DSC = PurleyOpenBoardPkg/BoardMtOlympus/PlatformPkg.dsc
++    BOARD_PKG_PCD_DSC = PurleyOpenBoardPkg/BoardMtOlympus/PlatformPkgPcd.dsc
++    ADDITIONAL_SCRIPTS = PurleyOpenBoardPkg/BoardMtOlympus/BuildBoard.py
++    PRE_BUILD_LOG = prebuild.log
++    PRE_BUILD_REPORT = prebuildReport.log
++    PrepRELEASE = DEBUG
++    SILENT_MODE = FALSE
++    EXT_CONFIG_CLEAR =
++    CapsuleBuild = FALSE
++    EXT_BUILD_FLAGS =
++    CAPSULE_BUILD = 0
++    TARGET = DEBUG
++    TARGET_SHORT = D
++    PERFORMANCE_BUILD = FALSE
++    FSP_WRAPPER_BUILD = FALSE
++    FSP_BIN_PKG = KabylakeFspBinPkg
++    FSP_PKG_NAME = KabylakeFspPkg
++    FSP_BINARY_BUILD = FALSE
++    FSP_TEST_RELEASE = FALSE
++    SECURE_BOOT_ENABLE = FALSE
++    MAX_SOCKET = 2
+-- 
+2.19.1.windows.1
+

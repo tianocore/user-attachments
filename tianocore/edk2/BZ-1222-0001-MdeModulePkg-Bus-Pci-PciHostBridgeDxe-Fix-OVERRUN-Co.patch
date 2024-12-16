@@ -1,0 +1,44 @@
+From 95af3d1cdadd7e355ecb772b2c844b956385f72a Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 10:52:46 +0530
+Subject: [PATCH 1/2] MdeModulePkg/Bus/Pci/PciHostBridgeDxe: Fix OVERRUN
+ Coverity issues
+
+The function NotifyPhase has a check
+
+    ASSERT (Index < TypeMax);
+
+but this comes into play only in DEBUG mode. In Release mode, there is
+no handling if the Index value is within array limits or not. If for
+whatever reasons, the Index does not get re-assigned to Index2 at line
+137, then it remains at TypeMax as assigned earlier at line 929. This
+poses array overrun risk at lines 942 and 943. It is better to deploy
+a safety check on Index limit before accessing array elements.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4212
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c b/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
+index b20bcd310ad5..7ebadb960b7d 100644
+--- a/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
++++ b/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
+@@ -939,6 +939,11 @@ NotifyPhase (
+             }
+ 
+             ASSERT (Index < TypeMax);
++
++            if (Index >= TypeMax) {
++                continue;
++            }
++
+             ResNodeHandled[Index] = TRUE;
+             Alignment             = RootBridge->ResAllocNode[Index].Alignment;
+             BitsOfAlignment       = LowBitSet64 (Alignment + 1);
+-- 
+2.36.1.windows.1
+

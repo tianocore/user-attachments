@@ -1,0 +1,323 @@
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.c b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.c
+index 39f49bd..839e81b 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.c
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.c
+@@ -11,6 +11,8 @@
+   THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+   WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ 
++  Copyright (c) 2016, Microsoft Corporation
++
+ **/
+ 
+ #include "NvmExpress.h"
+@@ -47,6 +49,27 @@ GLOBAL_REMOVE_IF_UNREFERENCED EFI_NVM_EXPRESS_PASS_THRU_MODE gEfiNvmExpressPassT
+   0x10100
+ };
+ 
++
++// Put NVMe driver in the PCH shutdown path by publishing a RESET_NOTIFICATION_CALLBACK PROTOCOL.
++
++#include <Protocol/ResetNotify.h>         //  MS_CHANGE_166417
++
++VOID
++EFIAPI
++NvmeEfiResetNotifyCallback (
++  IN EFI_RESET_TYPE               ResetType,
++  IN EFI_STATUS                   ResetStatus,
++  IN UINTN                        DataSize,
++  IN CONST VOID                   *ResetData OPTIONAL
++  );
++
++EFI_RESET_NOTIFY_CALLBACK_PROTOCOL mEfiResetNotifyCallbackProtocol = { NvmeEfiResetNotifyCallback };
++
++//
++// Head of the controller list.
++//
++LIST_ENTRY ControllerListHead;
++
+ /**
+   Check if the specified Nvm Express device namespace is active, and create child handles
+   for them with BlockIo and DiskInfo protocol instances.
+@@ -1399,5 +1422,68 @@ NvmExpressDriverEntry (
+                   NULL
+                   );
+   ASSERT_EFI_ERROR (Status);
++
++  //
++  // Initialize the controller list head.
++  //
++  InitializeListHead(&ControllerListHead);
++
++  // Install the PCH reset callback protocol.
++  Status = gBS->InstallProtocolInterface(&ImageHandle,
++                                         &gEfiResetNotifyCallbackProtocolGuid,
++                                         EFI_NATIVE_INTERFACE,
++                                         &mEfiResetNotifyCallbackProtocol);
++  DEBUG ((EFI_D_INFO, "NvmeControllerInit: install reset notify callback (%r)\n", Status));
++  Status = EFI_SUCCESS;  // Continue with init even if Install Protocol fails
++
+   return Status;
+ }
++
++/**
++ *This is the reset callback routine. It walks the
++ *blockIocontroller per NVMe spec.
++
++  @param[in]  ResetType         EFI_RESET_TYPE for the reset being requested.
++  @param[in]  ResetStatus       Honestly... just check the UEFI spec...
++  @param[in]  DataSize          This function mirrors the EFI_RESET_SYSTEM function prototype.
++  @param[in]  ResetData
++
++**/
++VOID
++EFIAPI
++NvmeEfiResetNotifyCallback (
++    IN EFI_RESET_TYPE               ResetType,
++    IN EFI_STATUS                   ResetStatus,
++    IN UINTN                        DataSize,
++    IN CONST VOID                   *ResetData OPTIONAL
++    )
++{
++
++  PNVME_CONTROLLER_LIST_ENTRY      ControllerListEntry;
++  LIST_ENTRY*                      Entry;
++  EFI_TPL                          OldTpl;
++  EFI_STATUS                       Status;
++  LIST_ENTRY*                      TempEntry;
++
++  DEBUG((EFI_D_INFO, __FUNCTION__ ": begin...\n"));
++
++  OldTpl = gBS->RaiseTPL(TPL_HIGH_LEVEL);
++  gBS->RestoreTPL(TPL_CALLBACK);
++
++  Entry = ControllerListHead.ForwardLink;
++  while (Entry != &ControllerListHead) {
++    ControllerListEntry = BASE_CR(Entry, NVME_CONTROLLER_LIST_ENTRY, Entry);
++    Status  = NvmeShutdownController(ControllerListEntry->Controller, TRUE);
++    DEBUG((EFI_D_INFO, __FUNCTION__ ": shutdown controller 0x%p... result %r\n", ControllerListEntry->Controller, Status));
++    TempEntry = Entry;
++    Entry = Entry->ForwardLink;
++    FreePool(TempEntry);
++  }
++
++  if (OldTpl > TPL_CALLBACK) {
++      gBS->RaiseTPL(OldTpl);
++  }
++
++  DEBUG((EFI_D_INFO, __FUNCTION__ ": done\n"));
++  return;
++}
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.h b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.h
+index 6a1c257..9be1b56 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.h
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpress.h
+@@ -12,6 +12,8 @@
+   THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+   WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ 
++  Copyright (c) 2016, Microsoft Corporation
++
+ **/
+ 
+ #ifndef _EFI_NVM_EXPRESS_H_
+@@ -295,6 +297,19 @@ typedef struct {
+   EFI_EVENT                                CallerEvent;
+ } NVME_PASS_THRU_ASYNC_REQ;
+ 
++//
++// Controller list entry used to maintain a linked list of controllers.
++//
++typedef struct _NVME_CONTROLLER_LIST_ENTRY {
++  LIST_ENTRY Entry;
++  NVME_CONTROLLER_PRIVATE_DATA* Controller;
++} NVME_CONTROLLER_LIST_ENTRY, *PNVME_CONTROLLER_LIST_ENTRY;
++
++//
++// Head of the controller list.
++//
++extern LIST_ENTRY ControllerListHead;
++
+ #define NVME_PASS_THRU_ASYNC_REQ_FROM_THIS(a) \
+   CR (a,                                                 \
+       NVME_PASS_THRU_ASYNC_REQ,                          \
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+index 3270042..1fc4d85 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+@@ -13,6 +13,7 @@
+ #  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+ #  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ #
++#  Copyright (c) 2016, Microsoft Corporation
+ ##
+ 
+ [Defines]
+@@ -71,6 +72,7 @@
+   gEfiDiskInfoProtocolGuid                    ## BY_START
+   gEfiStorageSecurityCommandProtocolGuid      ## BY_START
+   gEfiDriverSupportedEfiVersionProtocolGuid   ## PRODUCES
++  gEfiResetNotifyCallbackProtocolGuid         ## PRODUCES
+ 
+ # [Event]
+ # EVENT_TYPE_RELATIVE_TIMER ## SOMETIMES_CONSUMES
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c
+index 51cff3c..5b18bd3 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c
+@@ -11,6 +11,8 @@
+   THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+   WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ 
++  Copyright (c) 2016, Microsoft Corporation
++
+ **/
+ 
+ #include "NvmExpress.h"
+@@ -825,6 +827,7 @@ NvmeControllerInit (
+   NVME_ACQ                        Acq;
+   UINT8                           Sn[21];
+   UINT8                           Mn[41];
++  PNVME_CONTROLLER_LIST_ENTRY     ControllerListEntry;
+   //
+   // Save original PCI attributes and enable this controller.
+   //
+@@ -912,6 +915,15 @@ NvmeControllerInit (
+   if (EFI_ERROR(Status)) {
+     return Status;
+   }
++  //
++  // Allocate a controller list entry. If successful, initialize the entry and
++  // insert it into the controller list.
++  //
++  ControllerListEntry = (PNVME_CONTROLLER_LIST_ENTRY)AllocateZeroPool(sizeof(NVME_CONTROLLER_LIST_ENTRY));
++  if (ControllerListEntry != NULL) {
++    ControllerListEntry->Controller = Private;
++    InsertTailList(&ControllerListHead, &ControllerListEntry->Entry);
++  }
+ 
+   //
+   // set number of entries admin submission & completion queues.
+@@ -1053,3 +1065,76 @@ NvmeControllerInit (
+   return Status;
+ }
+ 
++/**
++ This routine is called to properly shutdown the Nvm Express controller per NVMe spec.
++
++  @param  Private         Supplies a pointer to the NVME_CONTROLLER_PRIVATE_DATA data structure.
++  @param  Normal          Supplies a boolean that indicates if this is a normal or an abrupt shutdown.
++
++  @return EFI_SUCCESS     Successfully enable the controller.
++  @return EFI_TIMEOUT     Fail to enable the controller in given time slot.
++
++**/
++EFI_STATUS
++NvmeShutdownController (
++  IN NVME_CONTROLLER_PRIVATE_DATA *Private,
++  IN BOOLEAN Normal
++  )
++{
++
++    NVME_CC     Cc;
++    NVME_CSTS   Csts;
++    UINT32      Iter;
++    EFI_STATUS  Status;
++    UINT32      Timeout;
++
++    DEBUG((EFI_D_INFO, "NvmeShutdownController: Controller:%p PciIo:%p\n", Private, Private->PciIo));
++
++    //
++    // Read Controller Configuration Register.
++    //
++    Status = ReadNvmeControllerConfiguration(Private, &Cc);
++    if (EFI_ERROR(Status)) {
++      goto Cleanup;
++    }
++
++    //
++    // Set the shutdown notification bit.
++    //
++    Cc.Shn = (Normal) ? NVME_CC_SHN_NORMAL_SHUTDOWN : NVME_CC_SHN_ABRUPT_SHUTDOWN;
++    Status = WriteNvmeControllerConfiguration (Private, &Cc);
++    if (EFI_ERROR(Status)) {
++      goto Cleanup;
++    }
++
++    //
++    // Wait up to 45 seconds for the shutdown to complete. When the controller
++    // has completed shutdown handling, it will set the shutdown status bit
++    // to 1.
++    //
++    Timeout = NVME_SHUTDOWN_TIMEOUT;
++    for (Iter = 0; Iter < (Timeout * 100); Iter += 1) {
++        Status = ReadNvmeControllerStatus (Private, &Csts);
++        if (EFI_ERROR(Status)) {
++            goto Cleanup;
++        }
++
++        if (Csts.Shst == NVME_CSTS_SHST_SHUTDOWN_COMPLETED) {
++            Status = EFI_SUCCESS;
++            DEBUG((EFI_D_INFO, "NvmeShutdownController: reset succeeded\n"));
++            break;
++
++        } else {
++            gBS->Stall(10000);
++        }
++    }
++
++    if (Iter == (Timeout * 100)) {
++        DEBUG((EFI_D_ERROR, "NvmeShutdownController: reset attempt timed out\n"));
++        Status = EFI_TIMEOUT;
++    }
++
++Cleanup:
++    return Status;
++}
++
+diff --git a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.h b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.h
+index ddfba14..608d752 100644
+--- a/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.h
++++ b/MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.h
+@@ -12,6 +12,8 @@
+   THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+   WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ 
++  Copyright (c) 2016, Microsoft Corporation
++
+ **/
+ 
+ #ifndef _NVME_HCI_H_
+@@ -72,5 +74,32 @@ NvmeIdentifyNamespace (
+   IN VOID                              *Buffer
+   );
+ 
++#pragma pack()
++
++// defines used for NVMe shutdown
++#define NVME_CC_SHN_NORMAL_SHUTDOWN 1
++#define NVME_CC_SHN_ABRUPT_SHUTDOWN 2
++
++#define NVME_CSTS_SHST_SHUTDOWN_IN_PROCESS 1
++#define NVME_CSTS_SHST_SHUTDOWN_COMPLETED  2
++
++#define NVME_SHUTDOWN_TIMEOUT 45
++
++/**
++This routine is called to properly shutdown the Nvm Express controller per NVMe spec.
++
++@param  Private         Supplies a pointer to the NVME_CONTROLLER_PRIVATE_DATA data structure.
++@param  Normal          Supplies a boolean that indicates if this is a normal or an abrupt shutdown.
++
++@return EFI_SUCCESS     Successfully enable the controller.
++@return EFI_TIMEOUT     Fail to enable the controller in given time slot.
++
++**/
++EFI_STATUS
++NvmeShutdownController(
++  IN NVME_CONTROLLER_PRIVATE_DATA *Private,
++  IN BOOLEAN Normal
++);
++
+ #endif
+ 

@@ -1,0 +1,406 @@
+From 02c85afc682e5e3147c1f5fea4e60b2c6a8f85ba Mon Sep 17 00:00:00 2001
+Message-Id: <02c85afc682e5e3147c1f5fea4e60b2c6a8f85ba.1649657331.git.bo-changx.ke@intel.com>
+From: Bo Chang Ke <bo-changx.ke@intel.com>
+Date: Mon, 11 Apr 2022 14:08:24 +0800
+Subject: [PATCH] ShellPkg: Update smbiosview type 9 with SMBIOS 3.5 fields
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3896
+
+update smbiosview type 9 related fileds.
+
+Signed-off-by: Bo Chang Ke <bo-changx.ke@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+---
+ .../SmbiosView/PrintInfo.c                    |  11 +-
+ .../SmbiosView/QueryTable.c                   | 238 ++++++++++++++++++
+ .../SmbiosView/QueryTable.h                   |  36 +++
+ .../SmbiosView/SmbiosViewStrings.uni          |   5 +-
+ 4 files changed, 285 insertions(+), 5 deletions(-)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+index b144600a25..0fa40dbe0c 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+@@ -637,6 +637,13 @@ SmbiosPrintStructure (
+           }
+         }
+       }
++      if (AE_SMBIOS_VERSION (0x3, 0x2)) {
++        if (Struct->Hdr->Length > 0x12) {
++          DisplaySystemSlotHeight(Struct->Type9->SlotHeight, Option);
++          DisplaySystemSlotPhysicalWidth(Struct->Type9->SlotPhysicalWidth, Option);
++          DisplaySystemSlotInformation(Struct->Type9->SlotInformation, Option);
++        }
++      }
+ 
+       break;
+     }
+@@ -2898,10 +2905,6 @@ DisplaySystemSlotId (
+   IN UINT8   Option
+   )
+ {
+-  //
+-  // Display slot type first
+-  //
+-  DisplaySystemSlotType (SlotType, Option);
+ 
+   ShellPrintHiiEx (-1, -1, NULL, STRING_TOKEN (STR_SMBIOSVIEW_PRINTINFO_SLOT_ID), gShellDebug1HiiHandle);
+   //
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.c
+index c4a6acb167..96e0e4036a 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.c
+@@ -1447,6 +1447,27 @@ TABLE_ITEM  SystemSlotTypeTable[] = {
+     0x23,
+     L"PCI Express Mini 76-pin (CEM spec. 2.0) Corresponds to Display-Mini card"
+   },
++  {
++    0x24,
++    L"PCI Express Gen 4 SFF-8639 (U.2)"
++  },
++  {
++    0x25,
++    L"PCI Express Gen 5 SFF-8639 (U.2)"
++  },
++  {
++    0x26,
++    L"OCP NIC 3.0 Small Form Factor (SFF)"
++  },
++  {
++    0x27,
++    L"OCP NIC 3.0 Large Form Factor (LFF)"
++  },
++  {
++    0x28,
++    L"OCP NIC Prior to 3.0"
++  },
++
+   {
+     SlotTypeCXLFlexbus10,
+     L"CXL Flexbus 1.0"
+@@ -1566,6 +1587,42 @@ TABLE_ITEM  SystemSlotTypeTable[] = {
+   {
+     SlotTypePciExpressGen4X16,
+     L"PCI Express Gen 4 X16"
++  },
++  {
++    SlotTypePCIExpressGen5,
++    L"PCI Express Gen 5"
++  },
++  {
++    SlotTypePCIExpressGen5X1,
++    L"PCI Express Gen 5 x1"
++  },
++  {
++    SlotTypePCIExpressGen5X2,
++    L"PCI Express Gen 5 x2"
++  },
++  {
++    SlotTypePCIExpressGen5X4,
++    L"PCI Express Gen 5 x4"
++  },
++  {
++    SlotTypePCIExpressGen5X8,
++    L"PCI Express Gen 5 x8"
++  },
++  {
++    SlotTypePCIExpressGen5X16,
++    L"PCI Express Gen 5 x16"
++  },
++  {
++    SlotTypePCIExpressGen6andBeyond,
++    L"PCI Express Gen 6 and Beyond"
++  },
++  {
++    SlotTypeEnterpriseandDatacenter1UE1FormFactorSlot,
++    L"Enterprise and Datacenter 1U E1 Form Factor Slot"
++  },
++  {
++    SlotTypeEnterpriseandDatacenter3E3FormFactorSlot,
++    L"Enterprise and Datacenter 3'E3 Form Factor Slot"
+   }
+ };
+ 
+@@ -1628,6 +1685,96 @@ TABLE_ITEM  SystemSlotDataBusWidthTable[] = {
+   }
+ };
+ 
++TABLE_ITEM  SystemSlotPhysicalWidthTable[] = {
++  {
++    0x01,
++    L" Other"
++  },
++  {
++    0x02,
++    L" Unknown"
++  },
++  {
++    0x03,
++    L" 8 bit"
++  },
++  {
++    0x04,
++    L" 16 bit"
++  },
++  {
++    0x05,
++    L" 32 bit"
++  },
++  {
++    0x06,
++    L" 64 bit"
++  },
++  {
++    0x07,
++    L" 128 bit"
++  },
++  {
++    0x08,
++    L" 1x or x1"
++  },
++  {
++    0x09,
++    L" 2x or x2"
++  },
++  {
++    0x0A,
++    L" 4x or x4"
++  },
++  {
++    0x0B,
++    L" 8x or x8"
++  },
++  {
++    0x0C,
++    L" 12x or x12"
++  },
++  {
++    0x0D,
++    L" 16x or x16"
++  },
++  {
++    0x0E,
++    L" 32x or x32"
++  }
++};
++
++TABLE_ITEM  SystemSlotInformationTable[] = {
++  {
++    0x00,
++    L" Others"
++  },
++  {
++    0x01,
++    L" Gen 1"
++  },
++  {
++    0x02,
++    L" Gen 2"
++  },
++  {
++    0x03,
++    L" Gen 3"
++  },
++  {
++    0x04,
++    L" Gen 4"
++  },
++  {
++    0x05,
++    L" Gen 5"
++  },
++  {
++    0x06,
++    L" Gen 6"
++  }
++};
++
+ TABLE_ITEM  SystemSlotCurrentUsageTable[] = {
+   {
+     0x01,
+@@ -1670,6 +1817,30 @@ TABLE_ITEM  SystemSlotLengthTable[] = {
+   },
+ };
+ 
++TABLE_ITEM  SystemSlotHeightTable[] = {
++  {
++    0x00,
++    L" Not applicable"
++  },
++  {
++    0x01,
++    L" Other"
++  },
++  {
++    0x02,
++    L" Unkown"
++  },
++  {
++    0x03,
++    L" Full height"
++  },
++  {
++    0x04,
++    L" Low-Profile"
++  },
++
++};
++
+ TABLE_ITEM  SlotCharacteristics1Table[] = {
+   {
+     0,
+@@ -1722,6 +1893,22 @@ TABLE_ITEM  SlotCharacteristics2Table[] = {
+   {
+     3,
+     L" PCIe slot supports bifurcation"
++  },
++  {
++    4,
++    L" Slot supports async/surprise removal"
++  },
++  {
++    5,
++    L" Flexbus slot, CXL 1.0 capable"
++  },
++  {
++    6,
++    L" Flexbus slot, CXL 2.0 capable"
++  },
++  {
++    7,
++    L" Reserved"
+   }
+ };
+ 
+@@ -4208,6 +4395,57 @@ DisplaySlotCharacteristics2 (
+   PRINT_BITS_INFO (SlotCharacteristics2Table, Chara2);
+ }
+ 
++/**
++  Display System Slots (Type 9) Information.
++
++  @param[in] Width      The key of the structure.
++  @param[in] Option     The optional information.
++**/
++VOID
++DisplaySystemSlotInformation (
++  IN UINT8  Width,
++  IN UINT8  Option
++  )
++{
++  ShellPrintHiiEx (-1, -1, NULL, STRING_TOKEN (STR_SMBIOSVIEW_QUERYTABLE_SYSTEM_SLOT_INFORMATION), gShellDebug1HiiHandle);
++  PRINT_INFO_OPTION (Width, Option);
++  PRINT_TABLE_ITEM (SystemSlotInformationTable, Width);
++}
++
++/**
++  Display System Slots (Type 9) Physical Width.
++
++  @param[in] Width      The key of the structure.
++  @param[in] Option     The optional information.
++**/
++VOID
++DisplaySystemSlotPhysicalWidth (
++  IN UINT8  Width,
++  IN UINT8  Option
++  )
++{
++  ShellPrintHiiEx (-1, -1, NULL, STRING_TOKEN (STR_SMBIOSVIEW_QUERYTABLE_SYSTEM_SLOT_PHYSICAL_WIDTH), gShellDebug1HiiHandle);
++  PRINT_INFO_OPTION (Width, Option);
++  PRINT_TABLE_ITEM (SystemSlotPhysicalWidthTable, Width);
++}
++
++/**
++  Display System Slots (Type 9) slot height.
++
++  @param[in] Length     The key of the structure.
++  @param[in] Option     The optional information.
++**/
++VOID
++DisplaySystemSlotHeight (
++  IN UINT8  Length,
++  IN UINT8  Option
++  )
++{
++  ShellPrintHiiEx (-1, -1, NULL, STRING_TOKEN (STR_SMBIOSVIEW_QUERYTABLE_SYSTEM_SLOT_HEIGHT), gShellDebug1HiiHandle);
++  PRINT_INFO_OPTION (Length, Option);
++  PRINT_TABLE_ITEM (SystemSlotHeightTable, Length);
++}
++
+ /**
+   Display On Board Devices Information (Type 10) types.
+ 
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.h b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.h
+index 5111d35f63..5f062762b3 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.h
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/QueryTable.h
+@@ -415,6 +415,42 @@ DisplaySlotCharacteristics2 (
+   IN UINT8  Option
+   );
+ 
++/**
++  Display System Slots (Type 9) Information.
++
++  @param[in] Width      The key of the structure.
++  @param[in] Option     The optional information.
++**/
++VOID
++DisplaySystemSlotInformation (
++  IN UINT8  Width,
++  IN UINT8  Option
++  );
++
++/**
++  Display System Slots (Type 9) Physical Width.
++
++  @param[in] Width      The key of the structure.
++  @param[in] Option     The optional information.
++**/
++VOID
++DisplaySystemSlotPhysicalWidth (
++  IN UINT8  Width,
++  IN UINT8  Option
++  );
++
++/**
++  Display System Slots (Type 9) slot height.
++
++  @param[in] Length     The key of the structure.
++  @param[in] Option     The optional information.
++**/
++VOID
++DisplaySystemSlotHeight (
++  IN UINT8  Length,
++  IN UINT8  Option
++  );
++
+ /**
+   Display On Board Devices Information (Type 10) types.
+ 
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
+index 9433e8a25f..a8728d6abc 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/SmbiosViewStrings.uni
+@@ -294,7 +294,7 @@
+ #string STR_SMBIOSVIEW_PRINTINFO_MEM_SIZE                       #language en-US " Memory Size: %d MB\r\n"
+ #string STR_SMBIOSVIEW_PRINTINFO_MEM_MODULE_DOUBLE_BANK         #language en-US "The memory module has a Double-bank connection\r\n"
+ #string STR_SMBIOSVIEW_PRINTINFO_MEM_MODULE_SINGLE_BANK         #language en-US "The memory module has a Single-bank connection\r\n"
+-#string STR_SMBIOSVIEW_PRINTINFO_SLOT_ID                        #language en-US " Slot Id:"
++#string STR_SMBIOSVIEW_PRINTINFO_SLOT_ID                        #language en-US "Slot Id:"
+ #string STR_SMBIOSVIEW_PRINTINFO_LOGICAL_MICRO_CHAN             #language en-US " the logical Micro Channel slot number is:"
+ #string STR_SMBIOSVIEW_PRINTINFO_ONE_VAR_D                      #language en-US " %d\r\n"
+ #string STR_SMBIOSVIEW_PRINTINFO_ERROR_NOT_1_15                 #language en-US " error, not 1-15.\r\n"
+@@ -412,6 +412,9 @@
+ #string STR_SMBIOSVIEW_QUERYTABLE_SYSTEM_SLOT_LENGTH            #language en-US "System Slot Length: "
+ #string STR_SMBIOSVIEW_QUERYTABLE_SLOT_CHARACTERISTICS          #language en-US "Slot characteristics 1: "
+ #string STR_SMBIOSVIEW_QUERYTABLE_SLOT_CHARACTERISTICS_2        #language en-US "Slot characteristics 2: "
++#string STR_SMBIOSVIEW_QUERYTABLE_SYSTEM_SLOT_INFORMATION       #language en-US "System Slot Information: "
++#string STR_SMBIOSVIEW_QUERYTABLE_SYSTEM_SLOT_HEIGHT            #language en-US "System Slot Height: "
++#string STR_SMBIOSVIEW_QUERYTABLE_SYSTEM_SLOT_PHYSICAL_WIDTH    #language en-US "System Slot Physical Width: "
+ #string STR_SMBIOSVIEW_QUERYTABLE_ONBOARD_DEVICE_TYPE           #language en-US "Onboard Device Type: "
+ #string STR_SMBIOSVIEW_QUERYTABLE_SYSTEM_EVENT_LOG_TYPE         #language en-US "System Event Log Type: "
+ #string STR_SMBIOSVIEW_QUERYTABLE_EVENT_LOG_VAR_DATA_FORMAT     #language en-US "Event Log Variable Data Format Types: "
+-- 
+2.32.0.windows.1
+

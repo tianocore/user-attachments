@@ -1,0 +1,68 @@
+From 2cded6479521363fc6a3a14282015e39046d7a2e Mon Sep 17 00:00:00 2001
+From: Wenyi Xie <xiewenyi2@huawei.com>
+Date: Thu, 20 Jul 2023 17:23:48 +0800
+Subject: [PATCH EDK2 v1 1/1] MdeModulePkg/Console:Modify check of text output
+ attribute
+
+When using EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL to output text, if
+the character is wide, the bit7 of attribute should be set to
+1. But SetAttribute failed and return EFI_UNSUPPORTED.
+Out->Mode->Attribute = Out->Mode->Attribute | 0x80;
+Out->SetAttribute (Out, Out->Mode->Attribute);
+
+So changing the check of attribute from 0x7F to 0xFF to cover
+the bit 7 for wide character.
+
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Signed-off-by: Wenyi Xie <xiewenyi2@huawei.com>
+---
+ MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c         | 2 +-
+ MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c | 2 +-
+ MdeModulePkg/Universal/Console/TerminalDxe/TerminalConOut.c         | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c b/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
+index 8b5e62e3a883..38d56cb37400 100644
+--- a/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
++++ b/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
+@@ -4933,7 +4933,7 @@ ConSplitterTextOutSetAttribute (
+   //
+   // Check whether param Attribute is valid.
+   //
+-  if ((Attribute | 0x7F) != 0x7F) {
++  if ((Attribute | 0xFF) != 0xFF) {
+     return EFI_UNSUPPORTED;
+   }
+ 
+diff --git a/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c b/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
+index b895dafedeaa..2167da977f0b 100644
+--- a/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
++++ b/MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsole.c
+@@ -1514,7 +1514,7 @@ GraphicsConsoleConOutSetAttribute (
+ {
+   EFI_TPL  OldTpl;
+ 
+-  if ((Attribute | 0x7F) != 0x7F) {
++  if ((Attribute | 0xFF) != 0xFF) {
+     return EFI_UNSUPPORTED;
+   }
+ 
+diff --git a/MdeModulePkg/Universal/Console/TerminalDxe/TerminalConOut.c b/MdeModulePkg/Universal/Console/TerminalDxe/TerminalConOut.c
+index 7809869e7d49..24078aa519f4 100644
+--- a/MdeModulePkg/Universal/Console/TerminalDxe/TerminalConOut.c
++++ b/MdeModulePkg/Universal/Console/TerminalDxe/TerminalConOut.c
+@@ -546,7 +546,7 @@ TerminalConOutSetAttribute (
+   //
+   //  only the bit0..6 of the Attribute is valid
+   //
+-  if ((Attribute | 0x7f) != 0x7f) {
++  if ((Attribute | 0xff) != 0xff) {
+     return EFI_UNSUPPORTED;
+   }
+ 
+-- 
+2.20.1.windows.1
+

@@ -1,0 +1,36 @@
+From b4f13bafafb0cda2fc746a6d0dcc195624bf2847 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Tue, 10 Nov 2020 00:10:14 +0100
+Subject: [PATCH 1/1] BaseTools: add edk2-test repo to SetupGit.py
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3066
+
+The SctPkg is managed in repository
+https://github.com/tianocore/edk2-test.
+
+Make SetupGit.py usable for this repository.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ BaseTools/Scripts/SetupGit.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/BaseTools/Scripts/SetupGit.py b/BaseTools/Scripts/SetupGit.py
+index 4416111ac0a5..91814199bfb9 100644
+--- a/BaseTools/Scripts/SetupGit.py
++++ b/BaseTools/Scripts/SetupGit.py
+@@ -46,7 +46,10 @@ UPSTREAMS = [
+      'list': 'devel@edk2.groups.io', 'prefix': 'edk2-platforms'},
+     {'name': 'edk2-non-osi',
+      'repo': 'https://github.com/tianocore/edk2-non-osi.git',
+-     'list': 'devel@edk2.groups.io', 'prefix': 'edk2-non-osi'}
++     'list': 'devel@edk2.groups.io', 'prefix': 'edk2-non-osi'},
++    {'name': 'edk2-test',
++     'repo': 'https://github.com/tianocore/edk2-test.git',
++     'list': 'devel@edk2.groups.io', 'prefix': 'edk2-test'}
+     ]
+ 
+ # The minimum version required for all of the below options to work
+-- 
+2.28.0
+

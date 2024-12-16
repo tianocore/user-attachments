@@ -1,0 +1,40 @@
+From 4e388637cc9004ef8befdd7fa6c9446c96daf011 Mon Sep 17 00:00:00 2001
+From: Vitaly Cheptsov <vit9696@protonmail.com>
+Date: Mon, 12 Aug 2019 12:43:06 +0300
+Subject: [PATCH] MdePkg: Add STATIC_ASSERT macro
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=2048
+
+Provide a macro for compile time assertions.
+Equivalent to C11 static_assert macro from assert.h.
+
+Signed-off-by: Vitaly Cheptsov <vit9696@protonmail.com>
+---
+ MdePkg/Include/Base.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/MdePkg/Include/Base.h b/MdePkg/Include/Base.h
+index ce20b5f01d..0162192f71 100644
+--- a/MdePkg/Include/Base.h
++++ b/MdePkg/Include/Base.h
+@@ -843,6 +843,17 @@ typedef UINTN  *BASE_LIST;
+ #define OFFSET_OF(TYPE, Field) ((UINTN) &(((TYPE *)0)->Field))
+ #endif
+ 
++///
++/// Portable definition for compile time assertions.
++/// Equivalent to C11 static_assert macro from assert.h.
++/// Takes condtion and error message as its arguments.
++///
++#ifdef _MSC_VER
++  #define STATIC_ASSERT static_assert
++#else
++  #define STATIC_ASSERT _Static_assert
++#endif
++
+ /**
+   Macro that returns a pointer to the data structure that contains a specified field of
+   that data structure.  This is a lightweight method to hide information by placing a
+-- 
+2.20.1 (Apple Git-117)
+

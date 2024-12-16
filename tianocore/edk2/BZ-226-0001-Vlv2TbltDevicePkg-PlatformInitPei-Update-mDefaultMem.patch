@@ -1,0 +1,73 @@
+From 65802759f3db4a3ee3f5b7f095fe76b3c8861b72 Mon Sep 17 00:00:00 2001
+From: Star Zeng <star.zeng@intel.com>
+Date: Thu, 18 Oct 2018 22:01:14 +0800
+Subject: [PATCH 1/2] Vlv2TbltDevicePkg PlatformInitPei: Update
+ mDefaultMemoryTypeInformation
+
+Only need have MemoryTypeInformation for ReservedMemory, ACPINvs,
+ACPIReclaim, RuntimeCode and RuntimeData memory type.
+
+And some NumberOfPages values for them are out of data based on the
+data below.
+
+DEBUG:
+             (HOB)   (ConfTabl)  (Var)
+  Memory    Previous  Current    Next
+   Type      Pages     Pages     Pages
+==========  ========  ========  ========
+ACPI_Recl   00000040  00000015  00000040
+ACPI_NVS    00000100  00000081  00000100
+Reserved    00000600  00000055  00000600
+RT_Code     00000200  0000006F  00000200
+RT_Data     00000100  0000002E  00000100
+
+RELEASE:
+             (HOB)   (ConfTabl)  (Var)
+  Memory    Previous  Current    Next
+   Type      Pages     Pages     Pages
+==========  ========  ========  ========
+ACPI_Recl   00000040  00000015  00000040
+ACPI_NVS    00000100  00000076  00000100
+Reserved    00000600  00000055  00000600
+RT_Code     00000200  0000002C  00000200
+RT_Data     00000100  0000002C  00000100
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Star Zeng <star.zeng@intel.com>
+---
+ Vlv2TbltDevicePkg/PlatformInitPei/MemoryPeim.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
+
+diff --git a/Vlv2TbltDevicePkg/PlatformInitPei/MemoryPeim.c b/Vlv2TbltDevicePkg/PlatformInitPei/MemoryPeim.c
+index 9592b07705f1..859dfc361595 100644
+--- a/Vlv2TbltDevicePkg/PlatformInitPei/MemoryPeim.c
++++ b/Vlv2TbltDevicePkg/PlatformInitPei/MemoryPeim.c
+@@ -44,20 +44,11 @@ Abstract:
+   )
+ 
+ EFI_MEMORY_TYPE_INFORMATION mDefaultMemoryTypeInformation[] = {
+-  { EfiACPIReclaimMemory,       0x40  },    // 0x40 pages = 256k for ASL
+-  { EfiACPIMemoryNVS,           0x100 },    // 0x100 pages = 1 MB for S3, SMM, HII, etc
+-  { EfiReservedMemoryType,      0x600 },    // 48k for BIOS Reserved
+-  { EfiMemoryMappedIO,          0     },
+-  { EfiMemoryMappedIOPortSpace, 0     },
+-  { EfiPalCode,                 0     },
+-  { EfiRuntimeServicesCode,     0x200 },
+-  { EfiRuntimeServicesData,     0x100 },
+-  { EfiLoaderCode,              0x100 },
+-  { EfiLoaderData,              0x100 },
+-  { EfiBootServicesCode,        0x800 },
+-  { EfiBootServicesData,        0x2500},
+-  { EfiConventionalMemory,      0     },
+-  { EfiUnusableMemory,          0     },
++  { EfiACPIReclaimMemory,       0x40  },    // For ASL
++  { EfiACPIMemoryNVS,           0x100 },    // For S3, etc
++  { EfiReservedMemoryType,      0x80  },    // For BIOS Reserved
++  { EfiRuntimeServicesCode,     0x80  },
++  { EfiRuntimeServicesData,     0x80  },
+   { EfiMaxMemoryType,           0     }
+ };
+ 
+-- 
+2.7.0.windows.1
+

@@ -1,0 +1,94 @@
+From 94640051379e27a81b9b974c1bf0c863e0c8c5ca Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Mon, 2 Nov 2020 23:33:54 +0100
+Subject: [edk] [PATCH] ShellPkg/edit: allow non-ASCII characters in edit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=2339
+
+Currently it is not possible to add letters outside the range
+U+0020 - U+007F to a file using the edit command.
+
+In Unicode the following are control characters:
+
+* U+0000—U+001F (C0 controls)
+* U+007F (DEL)
+* U+0080—U+009F (C1 controls).
+
+For reference see:
+
+* https://unicode.org/charts/PDF/U0000.pdf
+* https://unicode.org/charts/PDF/U0080.pdf
+
+So the characters we should exclude from the file buffer are:
+U+0000 - U+001f, U+007f - U009F
+
+Allow all other characters as input to the file buffer in Unicode mode.
+Allow only ASCII characters as input in ASCII mode.
+
+When saving a file in ASCII mode replace non-ASCII characters by a question
+mark ('?').
+
+For editing texts with double width characters (e.g. Japanese) further
+adjustments will be needed.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+Resent.
+Original message https://edk2.groups.io/g/devel/message/51205
+---
+ .../Edit/FileBuffer.c                         | 21 +++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c
+index 5659ec981054..3923b83670fa 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/Edit/FileBuffer.c
+@@ -1360,6 +1360,8 @@ GetNewLine (
+ /**
+   Change a Unicode string to an ASCII string.
+ 
++  Non-ASCII characters are replaced by '?'.
++
+   @param[in] UStr     The Unicode string.
+   @param[in] Length   The maximum size of AStr.
+   @param[out] AStr    ASCII string to pass out.
+@@ -1378,8 +1380,12 @@ UnicodeToAscii (
+   //
+   // just buffer copy, not character copy
+   //
+-  for (Index = 0; Index < Length; Index++) {
+-    *AStr++ = (CHAR8) *UStr++;
++  for (Index = 0; Index < Length; Index++, UStr++) {
++    if (*UStr < 0x80) {
++      *AStr++ = (CHAR8) *UStr;
++    } else {
++      *AStr++ = '?';
++    }
+   }
+ 
+   return Index;
+@@ -2154,9 +2160,16 @@ FileBufferDoCharInput (
+ 
+   default:
+     //
+-    // DEAL WITH ASCII CHAR, filter out thing like ctrl+f
++    // Do not add Unicode control characters to the file buffer:
+     //
+-    if (Char > 127 || Char < 32) {
++    // * U+0000-U+001f (C0 controls)
++    // * U+007f (DEL)
++    // * U+0080-U+009f (C1 controls)
++    //
++    // Do not add non-ASCII characters in ASCII mode.
++    //
++    if (Char < 0x20 || (Char >= 0x7f &&
++        (Char <= 0x9f || FileBuffer.FileType == FileTypeAscii))) {
+       Status = StatusBarSetStatusString (L"Unknown Command");
+     } else {
+       Status = FileBufferAddChar (Char);
+-- 
+2.28.0
+

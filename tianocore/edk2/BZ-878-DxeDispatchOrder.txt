@@ -1,0 +1,16 @@
+# Query: Loading driver at
+
+  30271: Loading driver at 0x00070652000 EntryPoint=0x00070652384 DevicePathDxe.efi
+  30280: Loading driver at 0x00070649000 EntryPoint=0x00070649384 PcdDxe.efi
+  30290: Loading driver at 0x00070662000 EntryPoint=0x00070662364 BlSupportDxe.efi
+  30298: Loading driver at 0x00076BC5000 EntryPoint=0x00076BC60F4 ReportStatusCodeRouterRuntimeDxe.efi
+  30306: Loading driver at 0x00070637000 EntryPoint=0x000706373A4 SecurityStubDxe.efi
+  30315: Loading driver at 0x00070611000 EntryPoint=0x00070612154 CpuDxe.efi
+  30360: Loading driver at 0x00070609000 EntryPoint=0x00070609384 Metronome.efi
+  30377: Loading driver at 0x00070601000 EntryPoint=0x000706013E0 CpuIo2Dxe.efi
+  ...
+  30414: Loading driver at 0x000703E6000 EntryPoint=0x000703E63A4 SmbiosDxe.efi
+  30421: Loading driver at 0x000703F4000 EntryPoint=0x000703F4390 SerialDxe.efi
+  30429: Loading driver at 0x0006FFB0000 EntryPoint=0x0006FFB03A4 AcpiTableDxe.efi
+  ...
+  30610: Loading driver at 0x00076B94000 EntryPoint=0x00076B950C4 StatusCodeHandlerRuntimeDxe.efi

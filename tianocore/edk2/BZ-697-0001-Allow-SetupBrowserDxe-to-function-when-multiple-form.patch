@@ -1,0 +1,41 @@
+From 5b1b4ae9aa6129a36d652e5a777b19801536187c Mon Sep 17 00:00:00 2001
+From: Allen Wynn <Allen_Wynn@dell.com>
+Date: Tue, 13 Apr 2021 21:55:37 -0500
+Subject: [PATCH] Allow SetupBrowserDxe to function when multiple formsets are
+ present.
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3311
+
+In file MdeModulePkg\Universal\SetupBrowserDxe\IfrParse.c procedure ParseOpCodes() in the
+"case EFI_IFR_SET_OP:" section, the code was setting ExpressionOpCode->VarStorage without
+properly checking for a match.  The code only checks to make sure the VarStoreId matches.
+This breaks if multiple formsets present and are using the same VarStorageId.
+
+The code needs to change to also needs to check to make sure VarStorage->FormSetOrder
+matches mFormSetOrderParse.
+
+Signed-off-by: Allen Wynn <allen_wynn@dell.com>
+---
+ MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c b/MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c
+index edb6a0fc4c..448807ffb0 100644
+--- a/MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c
++++ b/MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c
+@@ -1383,8 +1383,10 @@ ParseOpCodes (
+             while (!IsNull (&FormSet->StorageListHead, Link)) {
+               VarStorage = FORMSET_STORAGE_FROM_LINK (Link);
+               if (VarStorage->VarStoreId == ((EFI_IFR_GET *) OpCodeData)->VarStoreId) {
+-                ExpressionOpCode->VarStorage = VarStorage->BrowserStorage;
+-                break;
++                if (VarStorage->FormSetOrder == mFormSetOrderParse) {
++                  ExpressionOpCode->VarStorage = VarStorage->BrowserStorage;
++                  break;
++                }
+               }
+               Link = GetNextNode (&FormSet->StorageListHead, Link);
+             }
+-- 
+2.27.0.windows.1
+

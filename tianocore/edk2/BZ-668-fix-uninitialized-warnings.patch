@@ -1,0 +1,81 @@
+ MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c           | 2 +-
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c                    | 2 +-
+ OvmfPkg/VirtioFsDxe/SimpleFsOpen.c                         | 4 ++--
+ ShellPkg/DynamicCommand/HttpDynamicCommand/Http.c          | 2 +-
+ ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.c | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c
+index e99a812a44..52d0e1dd0d 100644
+--- a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c
++++ b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c
+@@ -1109,7 +1109,7 @@ AhciDmaTransfer (
+   IN     ATA_NONBLOCK_TASK          *Task
+   )
+ {
+-  EFI_STATUS                    Status;
++  EFI_STATUS                    Status = EFI_SUCCESS;
+   EFI_PHYSICAL_ADDRESS          PhyAddr;
+   VOID                          *Map;
+   UINTN                         MapLength;
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
+index 6bba283671..a93c97c62b 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
+@@ -1742,7 +1742,7 @@ PciProgramResizableBar (
+   UINT64                Capabilities;
+   UINT32                Index;
+   UINT32                Offset;
+-  INTN                  Bit;
++  INTN                  Bit = 0;
+   UINTN                 ResizableBarNumber;
+   EFI_STATUS            Status;
+   PCI_EXPRESS_EXTENDED_CAPABILITIES_RESIZABLE_BAR_ENTRY   Entries[PCI_MAX_BAR];
+diff --git a/OvmfPkg/VirtioFsDxe/SimpleFsOpen.c b/OvmfPkg/VirtioFsDxe/SimpleFsOpen.c
+index d73d23fe86..8ad95e18c0 100644
+--- a/OvmfPkg/VirtioFsDxe/SimpleFsOpen.c
++++ b/OvmfPkg/VirtioFsDxe/SimpleFsOpen.c
+@@ -298,7 +298,7 @@ VirtioFsSimpleFileOpen (
+   VIRTIO_FS      *VirtioFs;
+   BOOLEAN        OpenForWriting;
+   BOOLEAN        PermitCreation;
+-  BOOLEAN        CreateDirectoryIfCreating;
++  BOOLEAN        CreateDirectoryIfCreating = FALSE;
+   VIRTIO_FS_FILE *NewVirtioFsFile;
+   EFI_STATUS     Status;
+   CHAR8          *NewCanonicalPath;
+@@ -307,7 +307,7 @@ VirtioFsSimpleFileOpen (
+   CHAR8          *LastComponent;
+   UINT64         NewNodeId;
+   UINT64         NewFuseHandle;
+-  BOOLEAN        NewNodeIsDirectory;
++  BOOLEAN        NewNodeIsDirectory = FALSE;
+ 
+   VirtioFsFile = VIRTIO_FS_FILE_FROM_SIMPLE_FILE (This);
+   VirtioFs     = VirtioFsFile->OwnerFs;
+diff --git a/ShellPkg/DynamicCommand/HttpDynamicCommand/Http.c b/ShellPkg/DynamicCommand/HttpDynamicCommand/Http.c
+index 3735a4a7e6..4e02416dac 100644
+--- a/ShellPkg/DynamicCommand/HttpDynamicCommand/Http.c
++++ b/ShellPkg/DynamicCommand/HttpDynamicCommand/Http.c
+@@ -1505,7 +1505,7 @@ GetResponse (
+   EFI_HTTP_RESPONSE_DATA      ResponseData;
+   EFI_HTTP_MESSAGE            ResponseMessage;
+   EFI_HTTP_HEADER             *Header;
+-  EFI_STATUS                  Status;
++  EFI_STATUS                  Status = EFI_SUCCESS;
+   VOID                        *MsgParser;
+   EFI_TIME                    StartTime;
+   EFI_TIME                    EndTime;
+diff --git a/ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.c b/ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.c
+index b06d22592d..bcec795140 100644
+--- a/ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.c
++++ b/ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.c
+@@ -2058,7 +2058,7 @@ ShellSortFileList (
+   EFI_SHELL_FILE_INFO      *FileInfo;
+   SHELL_SORT_UNIQUE_NAME   *Unique;
+   EFI_STATUS               Status;
+-  EFI_SHELL_FILE_INFO      *Dupes;
++  EFI_SHELL_FILE_INFO      *Dupes = NULL;
+   LIST_ENTRY               *NextFileEntry;
+   CONST CHAR16             *Alias;
+   ORDERED_COLLECTION_ENTRY *SortEntry;

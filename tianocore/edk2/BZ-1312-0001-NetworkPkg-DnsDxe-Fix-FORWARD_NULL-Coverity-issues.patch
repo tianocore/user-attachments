@@ -1,0 +1,49 @@
+From c086ff44fe9fd8bd96040e4051a8dae7a0f8346b Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 19:18:15 +0530
+Subject: [PATCH] NetworkPkg/DnsDxe: Fix FORWARD_NULL Coverity issues
+
+The function ParseDnsResponse has ASSERT checks on Dns4TokenEntry
+and Dns6TokenEntry not being NULL. Both these ASSERT are applicable
+only in the DEBUG mode and the code still proceed further after the
+if-else blocks and may lead to CRASH.
+
+Hence, for safety add due blocking checks in if as well as else path.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4321
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/DnsDxe/DnsImpl.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/NetworkPkg/DnsDxe/DnsImpl.c b/NetworkPkg/DnsDxe/DnsImpl.c
+index d311812800..f6da9ed860 100644
+--- a/NetworkPkg/DnsDxe/DnsImpl.c
++++ b/NetworkPkg/DnsDxe/DnsImpl.c
+@@ -1299,6 +1299,10 @@ ParseDnsResponse (
+   //
+   if (Instance->Service->IpVersion == IP_VERSION_4) {
+     ASSERT (Dns4TokenEntry != NULL);
++    if (Dns4TokenEntry == NULL) {
++      Status = EFI_ABORTED;
++      goto ON_EXIT;
++    }
+ 
+     if (Dns4TokenEntry->GeneralLookUp) {
+       //
+@@ -1338,6 +1342,10 @@ ParseDnsResponse (
+     }
+   } else {
+     ASSERT (Dns6TokenEntry != NULL);
++    if (Dns6TokenEntry == NULL) {
++      Status = EFI_ABORTED;
++      goto ON_EXIT;
++    }
+ 
+     if (Dns6TokenEntry->GeneralLookUp) {
+       //
+-- 
+2.36.1.windows.1
+

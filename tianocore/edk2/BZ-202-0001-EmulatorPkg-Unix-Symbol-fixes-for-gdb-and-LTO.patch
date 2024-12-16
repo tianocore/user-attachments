@@ -1,0 +1,45 @@
+From 4c1fc3d4a73daf5ec4bc058e70033675f25e2bf0 Mon Sep 17 00:00:00 2001
+Message-Id: <4c1fc3d4a73daf5ec4bc058e70033675f25e2bf0.1533628455.git.steven.arnold@dektech.com.au>
+From: Steven Arnold <steven.arnold@dektech.com.au>
+Date: Tue, 7 Aug 2018 17:43:14 +1000
+Subject: [PATCH] EmulatorPkg/Unix: Symbol fixes for gdb and LTO
+
+Introducing gcc5 / LTO broke the gdb scripts used when running
+the emulator. Enable debug symbols when linking Host executable
+and insert a fake reference to gInXcode to stop it being optimized
+out at link time.
+---
+ EmulatorPkg/Unix/Host/Host.c   | 3 +++
+ EmulatorPkg/Unix/Host/Host.inf | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/EmulatorPkg/Unix/Host/Host.c b/EmulatorPkg/Unix/Host/Host.c
+index f84b22f..a530bc3 100644
+--- a/EmulatorPkg/Unix/Host/Host.c
++++ b/EmulatorPkg/Unix/Host/Host.c
+@@ -117,6 +117,9 @@ main (
+   UINTN                 *StackPointer;
+   FILE                  *GdbTempFile;
+ 
++  // Prevent lto from stripping this variable, used by gdb scripts
++  __asm__ __volatile__("" :: "m" (gInXcode));
++
+   //
+   // Xcode does not support sourcing gdb scripts directly, so the Xcode XML
+   // has a break point script to source the GdbRun script.
+diff --git a/EmulatorPkg/Unix/Host/Host.inf b/EmulatorPkg/Unix/Host/Host.inf
+index 33990fc..83928d4 100644
+--- a/EmulatorPkg/Unix/Host/Host.inf
++++ b/EmulatorPkg/Unix/Host/Host.inf
+@@ -122,7 +122,7 @@
+    GCC:*_*_IA32_ASM_FLAGS == -m32 -c -x assembler -imacros $(DEST_DIR_DEBUG)/AutoGen.h
+ 
+    GCC:*_*_X64_DLINK_FLAGS == -o $(BIN_DIR)/Host -m64 -L/usr/X11R6/lib
+-   GCC:*_GCC5_X64_DLINK_FLAGS == -flto -o $(BIN_DIR)/Host -m64 -L/usr/X11R6/lib
++   GCC:*_GCC5_X64_DLINK_FLAGS == -g -flto -o $(BIN_DIR)/Host -m64 -L/usr/X11R6/lib
+    GCC:*_*_X64_CC_FLAGS == -m64 -g -fshort-wchar -fno-strict-aliasing -Wall -malign-double -idirafter/usr/include -c -include $(DEST_DIR_DEBUG)/AutoGen.h -DSTRING_ARRAY_NAME=$(BASE_NAME)Strings
+    GCC:*_GCC44_X64_CC_FLAGS = "-DEFIAPI=__attribute__((ms_abi))"
+    GCC:*_GCC45_X64_CC_FLAGS = "-DEFIAPI=__attribute__((ms_abi))"
+-- 
+2.7.4
+

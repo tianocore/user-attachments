@@ -1,0 +1,5 @@
+diff  E:/Work/NWStack/edk2-edk2-stable202002/edk2-edk2-stable202002/NetworkPkg/HttpDxe/HttpsSupport.c E:/Work/NWStack/edk2-edk2-stable202002/edk2-edk2-stable202002/NetworkPkg/HttpDxe/HttpsSupport_Mod.c
+628c628
+<   HttpInstance->TlsConfigData.VerifyHost.Flags    = EFI_TLS_VERIFY_FLAG_NO_WILDCARDS;
+---
+>   HttpInstance->TlsConfigData.VerifyHost.Flags    = EFI_TLS_VERIFY_FLAG_NONE;

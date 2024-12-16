@@ -1,0 +1,49 @@
+From 09033c20fb447c17975332998ec81041f199a01d Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:55:38 +0530
+Subject: [PATCH 1/2] NetworkPkg/Dhcp4Dxe: Fix FORWARD_NULL Coverity issue
+
+The function DhcpSendMessage contains
+
+  ASSERT (SeedHead != NULL);
+
+but this comes into play only in DEBUG mode. In Release mode, the
+code continues further to unconditionally access SeedHead->YourAddr
+which will lead to CRASH if SeedHead is NULL.
+
+Hence, for safety add SeedHead NULL pointer check.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4257
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Dhcp4Dxe/Dhcp4Io.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/NetworkPkg/Dhcp4Dxe/Dhcp4Io.c b/NetworkPkg/Dhcp4Dxe/Dhcp4Io.c
+index 238e186c5b91..884c9a2e0af7 100644
+--- a/NetworkPkg/Dhcp4Dxe/Dhcp4Io.c
++++ b/NetworkPkg/Dhcp4Dxe/Dhcp4Io.c
+@@ -1222,11 +1222,15 @@ DhcpSendMessage (
+       IpAddr = EFI_IP4 (Config->ClientAddress);
+     } else if (DhcpSb->DhcpState == Dhcp4Requesting) {
+       ASSERT (SeedHead != NULL);
+-      IpAddr = EFI_IP4 (SeedHead->YourAddr);
++      if (SeedHead != NULL) {
++        IpAddr = EFI_IP4 (SeedHead->YourAddr);
++      }
+     }
+   } else if (Type == DHCP_MSG_DECLINE) {
+     ASSERT (SeedHead != NULL);
+-    IpAddr = EFI_IP4 (SeedHead->YourAddr);
++    if (SeedHead != NULL) {
++      IpAddr = EFI_IP4 (SeedHead->YourAddr);
++    }
+   }
+ 
+   if (IpAddr != 0) {
+-- 
+2.36.1.windows.1
+

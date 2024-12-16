@@ -1,0 +1,45 @@
+
+C:\FW\edk2-ws\edk2>build -p EmulatorPkg\EmulatorPkg.dsc -t VS2017 -a X64
+Build environment: Windows-10-10.0.18362-SP0
+Build start time: 09:39:20, Mar.12 2020
+
+WORKSPACE        = c:\fw\edk2-ws
+PACKAGES_PATH    = c:\fw\edk2-ws\edk2;c:\fw\edk2-ws\edk2-libc
+EDK_TOOLS_PATH   = c:\fw\edk2-ws\edk2\basetools
+EDK_TOOLS_BIN    = c:\fw\edk2-ws\edk2\basetools\bin\win32
+CONF_PATH        = c:\fw\edk2-ws\edk2\conf
+PYTHON_COMMAND   = py -3
+
+
+
+Processing meta-data Architecture(s)  = X64
+.Build target     = DEBUG
+Toolchain        = VS2017
+
+Active Platform          = c:\fw\edk2-ws\edk2\EmulatorPkg\EmulatorPkg.dsc
+..... done!
+Building ... c:\fw\edk2-ws\edk2\MdeModulePkg\Library\UefiBootManagerLib\UefiBootManagerLib.inf [X64]
+Building ... c:\fw\edk2-ws\edk2\MdePkg\Library\UefiDriverEntryPoint\UefiDriverEntryPoint.inf [X64]
+The system cannot find the path specified.
+
+
+build.py...
+ : error 7000: Failed to execute command
+        bin\Hostx86\x86\nmake.exe /nologo tbuild [c:\fw\edk2-ws\Build\EmulatorX64\DEBUG_VS2017\X64\MdeModulePkg\Library\UefiBootManagerLib\UefiBootManagerLib]
+
+
+build.py...
+ : error 7000: Failed to execute command
+        bin\Hostx86\x86\nmake.exe /nologo tbuild [c:\fw\edk2-ws\Build\EmulatorX64\DEBUG_VS2017\X64\MdePkg\Library\UefiDriverEntryPoint\UefiDriverEntryPoint]
+
+
+build.py...
+ : error F002: Failed to build module
+        c:\fw\edk2-ws\edk2\MdeModulePkg\Library\UefiBootManagerLib\UefiBootManagerLib.inf [X64, VS2017, DEBUG]
+
+- Failed -
+Build end time: 09:39:27, Mar.12 2020
+Build total time: 00:00:07
+
+
+C:\FW\edk2-ws\edk2>

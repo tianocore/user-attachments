@@ -1,0 +1,62 @@
+From 7ac05a9261bea52386a926d4069a613f22a4ba3d Mon Sep 17 00:00:00 2001
+From: Jiaxin Wu <jiaxin.wu@intel.com>
+Date: Mon, 22 May 2017 09:13:18 +0800
+Subject: [Patch 1/2] MdeModulePkg/UefiPxeBcDxe: Fix the PXE BootMenu selection issue
+
+Currently implementation doesn't accept the input during the user
+is trying to select the PXE BootMenu from option 43. This path is
+to fix that problem.
+
+Cc: Ye Ting <ting.ye@intel.com>
+Cc: Fu Siyuan <siyuan.fu@intel.com>
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Wu Jiaxin <jiaxin.wu@intel.com>
+---
+ MdeModulePkg/Universal/Network/UefiPxeBcDxe/PxeBcDhcp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/Network/UefiPxeBcDxe/PxeBcDhcp.c b/MdeModulePkg/Universal/Network/UefiPxeBcDxe/PxeBcDhcp.c
+index f0720e5..c5f3437 100644
+--- a/MdeModulePkg/Universal/Network/UefiPxeBcDxe/PxeBcDhcp.c
++++ b/MdeModulePkg/Universal/Network/UefiPxeBcDxe/PxeBcDhcp.c
+@@ -1,10 +1,10 @@
+ /** @file
+   Support for PxeBc dhcp functions.
+ 
+ Copyright (c) 2013, Red Hat, Inc.
+-Copyright (c) 2007 - 2016, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2007 - 2017, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+ which accompanies this distribution.  The full text of the license may be found at
+ http://opensource.org/licenses/bsd-license.php
+ 
+@@ -1843,11 +1843,11 @@ PxeBcSelectBootMenu (
+   CHAR8                      Blank[70];
+   PXEBC_BOOT_MENU_ENTRY      *MenuItem;
+   PXEBC_BOOT_MENU_ENTRY      *MenuArray[PXEBC_MAX_MENU_NUM];
+ 
+   Finish  = FALSE;
+-  Select  = 1;
++  Select  = 0;
+   Index   = 0;
+   *Type   = 0;
+ 
+   if (Private->PxeBc.Mode->ProxyOfferReceived) {
+ 
+@@ -1912,11 +1912,11 @@ PxeBcSelectBootMenu (
+ 
+     while (gST->ConIn->ReadKeyStroke (gST->ConIn, &InputKey) == EFI_NOT_READY) {
+       gBS->Stall (10 * TICKS_PER_MS);
+     }
+ 
+-    if (InputKey.ScanCode != 0) {
++    if (InputKey.ScanCode == 0) {
+       switch (InputKey.UnicodeChar) {
+       case CTRL ('c'):
+         InputKey.ScanCode = SCAN_ESC;
+         break;
+ 
+-- 
+1.9.5.msysgit.1
+

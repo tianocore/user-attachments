@@ -1,0 +1,87 @@
+From d2d465f11fdc7b1212e299ebc326558b5c7ee155 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 28 Dec 2022 16:36:26 +0530
+Subject: [PATCH] NetworkPkg/HttpDxe: Fix NULL_RETURNS Coverity issues
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4218
+
+If PacketOut is NULL, even then
+
+    NetbufAllocSpace (PacketOut, (UINT32)BufferOutSize, NET_BUF_TAIL);
+
+is getting called which further calls macro
+
+    NET_CHECK_SIGNATURE (Nbuf, NET_BUF_SIGNATURE);
+
+Nbuf receives the value of PacketOut. This macro is defined as
+
+#define NET_CHECK_SIGNATURE(PData, SIGNATURE) \
+  ASSERT (((PData) != NULL) && ((PData)->Signature == (SIGNATURE)))
+
+but this ASSERT comes into play only in DEBUG mode. In Release mode,
+there is no handling if the Nbuf value is NULL and the code proceeds
+to unconditionally dereference "Nbuf" which will lead to CRASH.
+
+Hence, for safety add NULL pointer checks always wrt PacketOut and
+return EFI_OUT_OF_RESOURCES if PacketOut value is NULL.
+
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/HttpDxe/HttpsSupport.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/NetworkPkg/HttpDxe/HttpsSupport.c b/NetworkPkg/HttpDxe/HttpsSupport.c
+index ad611e7c38..0f550d544f 100644
+--- a/NetworkPkg/HttpDxe/HttpsSupport.c
++++ b/NetworkPkg/HttpDxe/HttpsSupport.c
+@@ -1225,6 +1225,11 @@ TlsConnectSession (
+   // Transmit ClientHello
+   //
+   PacketOut = NetbufAlloc ((UINT32)BufferOutSize);
++  if (PacketOut == NULL) {
++    FreePool (BufferOut);
++    return EFI_OUT_OF_RESOURCES;
++  }
++
+   DataOut   = NetbufAllocSpace (PacketOut, (UINT32)BufferOutSize, NET_BUF_TAIL);
+   if (DataOut == NULL) {
+     FreePool (BufferOut);
+@@ -1311,6 +1316,11 @@ TlsConnectSession (
+       // Transmit the response packet.
+       //
+       PacketOut = NetbufAlloc ((UINT32)BufferOutSize);
++      if (PacketOut == NULL) {
++        FreePool (BufferOut);
++        return EFI_OUT_OF_RESOURCES;
++      }
++
+       DataOut   = NetbufAllocSpace (PacketOut, (UINT32)BufferOutSize, NET_BUF_TAIL);
+       if (DataOut == NULL) {
+         FreePool (BufferOut);
+@@ -1468,6 +1478,11 @@ TlsCloseSession (
+   }
+ 
+   PacketOut = NetbufAlloc ((UINT32)BufferOutSize);
++  if (PacketOut == NULL) {
++    FreePool (BufferOut);
++    return EFI_OUT_OF_RESOURCES;
++  }
++
+   DataOut   = NetbufAllocSpace (PacketOut, (UINT32)BufferOutSize, NET_BUF_TAIL);
+   if (DataOut == NULL) {
+     FreePool (BufferOut);
+@@ -1848,6 +1863,11 @@ HttpsReceive (
+ 
+     if (BufferOutSize != 0) {
+       PacketOut = NetbufAlloc ((UINT32)BufferOutSize);
++      if (PacketOut == NULL) {
++        FreePool (BufferOut);
++        return EFI_OUT_OF_RESOURCES;
++      }
++
+       DataOut   = NetbufAllocSpace (PacketOut, (UINT32)BufferOutSize, NET_BUF_TAIL);
+       if (DataOut == NULL) {
+         FreePool (BufferOut);
+-- 
+2.36.1.windows.1
+

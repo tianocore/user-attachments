@@ -1,0 +1,44 @@
+From 79ba77606ce11a999ee403d147b2c1aca6170116 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 12:24:22 +0530
+Subject: [PATCH 1/1] UefiCpuPkg/Library/RegisterCpuFeaturesLib: Fix
+ FORWARD_NULL Coverity issue
+
+The function SetProcessorRegister contains
+
+  ASSERT (RegisterTable != NULL);
+
+but this comes into play only in DEBUG mode. In Release mode, the
+code continues further through to call ProgramProcessorRegister
+function in which the parameter RegisterTable passed is dereferenced
+unconditionally which will lead to CRASH if RegisterTable is NULL.
+
+Hence, for safety add RegisterTable NULL pointer check.
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Rahul Kumar <rahul1.kumar@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4259
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../Library/RegisterCpuFeaturesLib/CpuFeaturesInitialize.c    | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/UefiCpuPkg/Library/RegisterCpuFeaturesLib/CpuFeaturesInitialize.c b/UefiCpuPkg/Library/RegisterCpuFeaturesLib/CpuFeaturesInitialize.c
+index a8e4f920fc9e..c9e031d1dc9d 100644
+--- a/UefiCpuPkg/Library/RegisterCpuFeaturesLib/CpuFeaturesInitialize.c
++++ b/UefiCpuPkg/Library/RegisterCpuFeaturesLib/CpuFeaturesInitialize.c
+@@ -1180,6 +1180,10 @@ SetProcessorRegister (
+ 
+   ASSERT (RegisterTable != NULL);
+ 
++  if (RegisterTable == NULL) {
++    return;
++  }
++
+   ProgramProcessorRegister (
+     RegisterTable,
+     (EFI_CPU_PHYSICAL_LOCATION *)(UINTN)AcpiCpuData->CpuFeatureInitData.ApLocation + ProcIndex,
+-- 
+2.36.1.windows.1
+

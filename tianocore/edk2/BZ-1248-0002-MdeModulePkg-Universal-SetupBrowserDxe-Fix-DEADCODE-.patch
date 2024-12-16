@@ -1,0 +1,49 @@
+From 7460657b5f100b2218f49a7e61d4d156e14799d4 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:54:39 +0530
+Subject: [PATCH 2/2] MdeModulePkg/Universal/SetupBrowserDxe: Fix DEADCODE
+ Coverity issues
+
+HiiHandle will always be NULL as it is initialized only in the if block
+just above after which it breaks from the while loop.
+
+Hence, the (HiiHandle != NULL) check will never succeed which means it
+is a DEADCODE and can simply be removed.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4254
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c b/MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c
+index ea4480414e60..25deff79a6dc 100644
+--- a/MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c
++++ b/MdeModulePkg/Universal/SetupBrowserDxe/Presentation.c
+@@ -1213,10 +1213,6 @@ DevicePathToHiiHandle (
+         HiiHandle = HiiHandles[Index];
+         break;
+       }
+-
+-      if (HiiHandle != NULL) {
+-        break;
+-      }
+     }
+   }
+ 
+@@ -1263,10 +1259,6 @@ FormSetGuidToHiiHandle (
+       HiiHandle = HiiHandles[Index];
+       break;
+     }
+-
+-    if (HiiHandle != NULL) {
+-      break;
+-    }
+   }
+ 
+   FreePool (HiiHandles);
+-- 
+2.36.1.windows.1
+

@@ -1,0 +1,73 @@
+From c0c963cb6eb4eccd34fda45a7c459617280b160d Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:12:50 +0530
+Subject: [PATCH 1/1] NetworkPkg/SnpDxe: Fix DEADCODE Coverity issues
+
+The parameter "This" received in the functions SnpUndi32GetStatus,
+SnpUndi32Initialize and SnpUndi32Transmit has already been checked for
+NULL value. Once that check is over and the flow reaches below, then
+the Snp variable is initialized with the return value from the macro
+EFI_SIMPLE_NETWORK_DEV_FROM_THIS which cannot be NULL at that point.
+
+Hence, remove the redundant check as it is a DEADCODE.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4271
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/SnpDxe/Get_status.c | 4 ----
+ NetworkPkg/SnpDxe/Initialize.c | 5 -----
+ NetworkPkg/SnpDxe/Transmit.c   | 4 ----
+ 3 files changed, 13 deletions(-)
+
+diff --git a/NetworkPkg/SnpDxe/Get_status.c b/NetworkPkg/SnpDxe/Get_status.c
+index 14b678fd364c..b132d963c8d0 100644
+--- a/NetworkPkg/SnpDxe/Get_status.c
++++ b/NetworkPkg/SnpDxe/Get_status.c
+@@ -218,10 +218,6 @@ SnpUndi32GetStatus (
+ 
+   OldTpl = gBS->RaiseTPL (TPL_CALLBACK);
+ 
+-  if (Snp == NULL) {
+-    return EFI_DEVICE_ERROR;
+-  }
+-
+   switch (Snp->Mode.State) {
+     case EfiSimpleNetworkInitialized:
+       break;
+diff --git a/NetworkPkg/SnpDxe/Initialize.c b/NetworkPkg/SnpDxe/Initialize.c
+index c219a1cb20bc..12575b2d3fb6 100644
+--- a/NetworkPkg/SnpDxe/Initialize.c
++++ b/NetworkPkg/SnpDxe/Initialize.c
+@@ -196,11 +196,6 @@ SnpUndi32Initialize (
+ 
+   OldTpl = gBS->RaiseTPL (TPL_CALLBACK);
+ 
+-  if (Snp == NULL) {
+-    EfiStatus = EFI_INVALID_PARAMETER;
+-    goto ON_EXIT;
+-  }
+-
+   switch (Snp->Mode.State) {
+     case EfiSimpleNetworkStarted:
+       break;
+diff --git a/NetworkPkg/SnpDxe/Transmit.c b/NetworkPkg/SnpDxe/Transmit.c
+index e2c7467b8670..b608a48598fb 100644
+--- a/NetworkPkg/SnpDxe/Transmit.c
++++ b/NetworkPkg/SnpDxe/Transmit.c
+@@ -289,10 +289,6 @@ SnpUndi32Transmit (
+ 
+   OldTpl = gBS->RaiseTPL (TPL_CALLBACK);
+ 
+-  if (Snp == NULL) {
+-    return EFI_DEVICE_ERROR;
+-  }
+-
+   switch (Snp->Mode.State) {
+     case EfiSimpleNetworkInitialized:
+       break;
+-- 
+2.36.1.windows.1
+

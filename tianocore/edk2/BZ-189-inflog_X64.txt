@@ -1,0 +1,41 @@
+
+Dead code function in file: IntelFrameworkModulePkg/Bus/Pci/IdeBusDxe/Ata.c
+AtaNonDataCommandInExt, line 2695
+
+Dead code function in file: IntelFrameworkModulePkg/Bus/Pci/IdeBusDxe/DriverConfiguration.c
+IDEBusDriverConfigurationSetOptions, line 118
+GetResponse, line 45
+IDEBusDriverConfigurationOptionsValid, line 206
+IDEBusDriverConfigurationForceDefaults, line 268
+
+Inf redundant definition in file: IntelFrameworkModulePkg/Bus/Isa/IsaIoDxe/IsaIoDxe.inf
+gEfiGenericMemTestProtocolGuid, line 65
+
+Dead code function in file: IntelFrameworkModulePkg/Bus/Isa/Ps2KeyboardDxe/Ps2KbdCtrller.c
+DisableKeyboard, line 1860
+
+Dead code function in file: IntelFrameworkModulePkg/Csm/BiosThunk/Snp16Dxe/PxeUndi.c
+PxeUndiSetMcastAddr, line 595
+PxeUndiInitiateDiags, line 867
+PxeUndiGetState, line 1243
+PxeUndiForceInterrupt, line 911
+PxeUndiSetPacketFilter, line 678
+
+Dead code function in file: IntelFrameworkModulePkg/Universal/BdsDxe/BootMaint/ConsoleOption.c
+ChangeVariableDevicePath, line 230
+
+Dead code function in file: IntelFrameworkModulePkg/Universal/BdsDxe/BootMaint/BmLib.c
+EfiReallocatePool, line 339
+
+Dead code function in file: IntelFrameworkModulePkg/Universal/BdsDxe/FrontPage.c
+GetProducerString, line 584
+
+Dead code function in file: IntelFrameworkModulePkg/Universal/BdsDxe/BootMaint/Variable.c
+Var_UpdateAllConsoleOption, line 322
+
+Dead code function in file: IntelFrameworkModulePkg/Universal/BdsDxe/BootMaint/BootOption.c
+BOpt_IsEfiApp, line 1207
+
+Inf redundant definition in file: IntelFrameworkModulePkg/Csm/LegacyBiosDxe/LegacyBiosDxe.inf
+PeCoffLib, line 75
+CacheMaintenanceLib, line 76

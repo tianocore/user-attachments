@@ -1,0 +1,163 @@
+jwestfah@jmw-lm181 ~/git/edk2 $ EmulatorPkg/build.sh run
+Building from: /home/jwestfah/git/edk2
+using prebuilt tools
+Reading symbols from /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/Host...done.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+EDK II UNIX Host Emulation Environment from http://www.tianocore.org/edk2/
+  BootMode 0x00
+  OS Emulator passing in 128 KB of temp RAM at 0x40000000 to SEC
+  FD loaded from ../FV/FV_RECOVERY.fd at 0x102000000 contains SEC Core
+
+0x102000400 Loading /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/EmulatorPkg/Sec/Sec/DEBUG/EmuSec.dll with entry point 0x102000400
+SEC Has Started
+0x102003f80 Loading /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Core/Pei/PeiMain/DEBUG/PeiCore.dll with entry point 0x102003f80
+0x102019a80 Loading /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Universal/ReportStatusCodeRouter/Pei/ReportStatusCodeRouterPei/DEBUG/ReportStatusCodeRouterPei.dll with entry point 0x102019a80
+0x10201c680 Loading /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Universal/StatusCodeHandler/Pei/StatusCodeHandlerPei/DEBUG/StatusCodeHandlerPei.dll with entry point 0x10201c680
+PROGRESS CODE: V03020003 I0
+0x102013480 Loading /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Universal/PCD/Pei/Pcd/DEBUG/PcdPeim.dll with entry point 0x102013480
+Loading PEIM at 0x00102013240 EntryPoint=0x00102013480 PcdPeim.efi
+PROGRESS CODE: V03020002 I0
+Install PPI: 06E81C58-4AD7-44BC-8390-F10265F72480
+Install PPI: 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+Install PPI: 4D8B155B-C059-4C8F-8926-06FD4331DB8A
+Install PPI: A60C6B59-E459-425D-9C69-0BCC9CB27D81
+PROGRESS CODE: V03020003 I0
+0x102021380 Loading /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/EmulatorPkg/BootModePei/BootModePei/DEBUG/BootModePei.dll with entry point 0x102021380
+Loading PEIM at 0x00102021140 EntryPoint=0x00102021380 BootModePei.efi
+PROGRESS CODE: V03020002 I0
+Emu Boot Mode PEIM Loaded
+Install PPI: 7408D748-FC8C-4EE6-9288-C4BEC092A410
+PROGRESS CODE: V03020003 I0
+0x102023680 Loading /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/EmulatorPkg/AutoScanPei/AutoScanPei/DEBUG/AutoScanPei.dll with entry point 0x102023680
+Loading PEIM at 0x00102023440 EntryPoint=0x00102023680 AutoScanPei.efi
+PROGRESS CODE: V03020002 I0
+Emu Autoscan PEIM Loaded
+PeiInstallPeiMemory MemoryBegin 0x41000000, MemoryLength 0x4000000
+PROGRESS CODE: V03020003 I0
+Temp Stack : BaseAddress=0x40000000 Length=0x10000
+Temp Heap  : BaseAddress=0x40010000 Length=0x10000
+Total temporary memory:    131072 bytes.
+  temporary memory stack ever used: 65532 bytes.
+  temporary memory heap used:       5088 bytes.
+Old Stack size 65536, New stack size 131072
+Stack Hob: BaseAddress=0x41000000 Length=0x20000
+Heap Offset = 0x1010000 Stack Offset = 0x1010000
+0x44fef240 Loading /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Core/Pei/PeiMain/DEBUG/PeiCore.dll with entry point 0x44fef240
+
+Program received signal SIGSEGV, Segmentation fault.
+add symbol table from file "/home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/EmulatorPkg/Sec/Sec/DEBUG/EmuSec.dll" at
+	.text_addr = 0x102000400
+add symbol table from file "/home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Core/Pei/PeiMain/DEBUG/PeiCore.dll" at
+	.text_addr = 0x102003f80
+add symbol table from file "/home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Universal/ReportStatusCodeRouter/Pei/ReportStatusCodeRouterPei/DEBUG/ReportStatusCodeRouterPei.dll" at
+	.text_addr = 0x102019a80
+add symbol table from file "/home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Universal/StatusCodeHandler/Pei/StatusCodeHandlerPei/DEBUG/StatusCodeHandlerPei.dll" at
+	.text_addr = 0x10201c680
+add symbol table from file "/home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Universal/PCD/Pei/Pcd/DEBUG/PcdPeim.dll" at
+	.text_addr = 0x102013480
+add symbol table from file "/home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/EmulatorPkg/BootModePei/BootModePei/DEBUG/BootModePei.dll" at
+	.text_addr = 0x102021380
+add symbol table from file "/home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/EmulatorPkg/AutoScanPei/AutoScanPei/DEBUG/AutoScanPei.dll" at
+	.text_addr = 0x102023680
+add symbol table from file "/home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Core/Pei/PeiMain/DEBUG/PeiCore.dll" at
+	.text_addr = 0x44fef240
+PeiLocatePpi (PeiServices=<optimized out>, Guid=0x102012be0 <gEfiPeiStatusCodePpiGuid>, 
+    Instance=0, PpiDescriptor=0x0, Ppi=0x4101e7b8)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/Ppi/Ppi.c:380
+380	    if ((((INT32 *)Guid)[0] == ((INT32 *)CheckGuid)[0]) &&
+(gdb) bt
+#0  PeiLocatePpi (PeiServices=<optimized out>, Guid=0x102012be0 <gEfiPeiStatusCodePpiGuid>, 
+    Instance=0, PpiDescriptor=0x0, Ppi=0x4101e7b8)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/Ppi/Ppi.c:380
+#1  0x000000010200d70f in PeiServicesLocatePpi (Guid=0x102012be0 <gEfiPeiStatusCodePpiGuid>, 
+    Instance=0, PpiDescriptor=0x0, Ppi=0x4101e7b8)
+    at /home/jwestfah/git/edk2/MdePkg/Library/PeiServicesLib/PeiServicesLib.c:105
+#2  0x000000010200b32f in PeiReportStatusCode (PeiServices=0x4101f8d8, CodeType=3, Value=50659328, 
+    Instance=0, CallerId=0x102012c60 <gEfiCallerIdGuid>, Data=0x4101e878)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/StatusCode/StatusCode.c:50
+#3  0x000000010200dc01 in InternalReportStatusCode (Type=3, Value=50659328, Instance=0, 
+    CallerId=0x102012c60 <gEfiCallerIdGuid>, Data=0x4101e878)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Library/PeiReportStatusCodeLib/ReportStatusCodeLib.c:68
+#4  0x000000010200de78 in ReportStatusCodeEx (Type=Type@entry=3, Value=1090648448, 
+    Value@entry=50659328, Instance=Instance@entry=0, CallerId=0x102012c60 <gEfiCallerIdGuid>, 
+    CallerId@entry=0x0, ExtendedDataGuid=0x102012c10 <gEfiStatusCodeDataTypeDebugGuid>, 
+    ExtendedData=ExtendedData@entry=0x4101ebc4, ExtendedDataSize=ExtendedDataSize@entry=146)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Library/PeiReportStatusCodeLib/ReportStatusCodeLib.c:493
+#5  0x000000010200c987 in DebugPrint (ErrorLevel=<optimized out>, Format=0x1020101f5 "")
+    at /home/jwestfah/git/edk2/MdeModulePkg/Library/PeiDxeDebugLibReportStatusCode/DebugLib.c:219
+#6  0x00000001020058cc in PeiLoadImageLoadImage (PeiServices=PeiServices@entry=0x4101ed20, 
+    FileHandle=0x102003ce8, FileHandle@entry=0x4101ed18, 
+    ImageAddressArg=ImageAddressArg@entry=0x4101f0b0, ImageSizeArg=0x4101f0b8, 
+    EntryPoint=EntryPoint@entry=0x4101f118, 
+    AuthenticationState=AuthenticationState@entry=0x4101f10c)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/Image/Image.c:665
+#7  0x0000000102005a8c in PeiLoadImageLoadImageWrapper (This=<optimized out>, 
+    FileHandle=0x4101ed18, ImageAddressArg=0x4101f0b0, ImageSizeArg=<optimized out>, 
+    EntryPoint=0x4101f118, AuthenticationState=0x4101f10c)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/Image/Image.c:740
+#8  0x0000000102005bc6 in PeiLoadImage (PeiServices=<optimized out>, 
+    FileHandle=FileHandle@entry=0x102003ce8, PeimState=PeimState@entry=2 '\002', 
+    EntryPoint=EntryPoint@entry=0x4101f118, 
+    AuthenticationState=AuthenticationState@entry=0x4101f10c)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/Image/Image.c:857
+#9  0x000000010200408a in ShadowPeiCore (PrivateData=PrivateData@entry=0x4101f8d8)
+---Type <return> to continue, or q <return> to quit---
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/PeiMain/PeiMain.c:103
+#10 0x00000001020043b4 in PeiCore (SecCoreDataPtr=SecCoreDataPtr@entry=0x4202ffb0, 
+    PpiList=PpiList@entry=0x0, Data=Data@entry=0x4101f8d0)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/PeiMain/PeiMain.c:265
+#11 0x000000010200a286 in PeiCheckAndSwitchStack (SecCoreData=0x4202ffb0, 
+    SecCoreData@entry=0x4000ffb0, Private=0x4101f8d0, Private@entry=0x4000f8d0)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c:806
+#12 0x000000010200ac08 in PeiDispatcher (SecCoreData=SecCoreData@entry=0x4000ffb0, 
+    Private=Private@entry=0x4000f8d0)
+    at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c:1134
+#13 0x000000010200492f in PeiCore (SecCoreDataPtr=<optimized out>, PpiList=0x4000fe70, 
+    Data=Data@entry=0x0) at /home/jwestfah/git/edk2/MdeModulePkg/Core/Pei/PeiMain/PeiMain.c:423
+#14 0x0000000102003fbc in ProcessModuleEntryPointList (SecCoreData=<optimized out>, 
+    PpiList=<optimized out>, Context=Context@entry=0x0)
+    at /home/jwestfah/git/edk2/Build/Emulator/DEBUG_GCC49/X64/MdeModulePkg/Core/Pei/PeiMain/DEBUG/AutoGen.c:196
+#15 0x0000000102003f8c in _ModuleEntryPoint (SecCoreData=<optimized out>, PpiList=<optimized out>)
+    at /home/jwestfah/git/edk2/MdePkg/Library/PeiCoreEntryPoint/PeiCoreEntryPoint.c:64
+#16 0x0000000102000621 in _ModuleEntryPoint (SecCoreData=0x4000ffb0, PpiList=0x61a060)
+    at /home/jwestfah/git/edk2/EmulatorPkg/Sec/Sec.c:141
+#17 0x000000000040c152 in PeiSwitchStacks ()
+#18 0x000000005aa55aa5 in ?? ()
+#19 0x000000005aa55aa5 in ?? ()
+#20 0x000000005aa55aa5 in ?? ()
+#21 0x000000005aa55aa5 in ?? ()
+#22 0x000000005aa50048 in ?? ()
+#23 0x0000000102000000 in ?? ()
+#24 0x00000000005a0000 in ?? ()
+#25 0x0000000040000000 in ?? ()
+#26 0x0000000000020000 in ?? ()
+#27 0x0000000040010000 in ?? ()
+#28 0x0000000000010000 in ?? ()
+#29 0x0000000040000000 in ?? ()
+#30 0x0000000000010000 in ?? ()
+#31 0x000000005aa55aa5 in ?? ()
+#32 0x0000000000380001 in ?? ()
+---Type <return> to continue, or q <return> to quit---
+#33 0x0000000000000009 in ?? ()
+#34 0x0000000045000000 in ?? ()
+#35 0x0000000041000000 in ?? ()
+#36 0x0000000044fef000 in ?? ()
+#37 0x0000000041021470 in ?? ()
+#38 0x0000000041021468 in ?? ()
+#39 0x0000000002080007 in ?? ()
+#40 0x0000000102012de0 in ?? ()
+#41 0x0000000102012dc0 in ?? ()
+#42 0x0000000102012d90 in ?? ()
+#43 0x000000004000fe70 in ?? ()
+#44 0x000000004000fe88 in ?? ()
+#45 0x000000010201c220 in ?? ()
+#46 0x000000010201c200 in ?? ()
+#47 0x0000000102019400 in ?? ()
+#48 0x0000000102019418 in ?? ()
+#49 0x00000001020193c0 in ?? ()
+#50 0x00000001020193d8 in ?? ()
+#51 0x0000000102023240 in ?? ()
+#52 0x0000000000000000 in ?? ()
+(gdb) 

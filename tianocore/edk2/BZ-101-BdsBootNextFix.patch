@@ -1,0 +1,64 @@
+diff --git a/MdeModulePkg/Universal/BdsDxe/BdsEntry.c b/MdeModulePkg/Universal/BdsDxe/BdsEntry.c
+index afcf1cd96..d272e7730 100644
+--- a/MdeModulePkg/Universal/BdsDxe/BdsEntry.c
++++ b/MdeModulePkg/Universal/BdsDxe/BdsEntry.c
+@@ -812,28 +812,6 @@ BdsEntry (
+   //
+   ASSERT_EFI_ERROR (Status);
+ 
+-  //
+-  // Cache and remove the "BootNext" NV variable.
+-  //
+-  GetEfiGlobalVariable2 (EFI_BOOT_NEXT_VARIABLE_NAME, (VOID **) &BootNext, &DataSize);
+-  if (DataSize != sizeof (UINT16)) {
+-    if (BootNext != NULL) {
+-      FreePool (BootNext);
+-    }
+-    BootNext = NULL;
+-  }
+-  Status = gRT->SetVariable (
+-                  EFI_BOOT_NEXT_VARIABLE_NAME,
+-                  &gEfiGlobalVariableGuid,
+-                  0,
+-                  0,
+-                  NULL
+-                  );
+-  //
+-  // Deleting NV variable shouldn't fail unless it doesn't exist.
+-  //
+-  ASSERT (Status == EFI_SUCCESS || Status == EFI_NOT_FOUND);
+-
+   //
+   // Initialize the platform language variables
+   //
+@@ -955,6 +933,30 @@ BdsEntry (
+   PERF_START (NULL, "PlatformBootManagerAfterConsole", "BDS", 0);
+   PlatformBootManagerAfterConsole ();
+   PERF_END   (NULL, "PlatformBootManagerAfterConsole", "BDS", 0);
++
++  //
++  // Cache and remove the "BootNext" NV variable.
++  //
++  GetEfiGlobalVariable2 (EFI_BOOT_NEXT_VARIABLE_NAME, (VOID **) &BootNext, &DataSize);
++  if (DataSize != sizeof (UINT16)) {
++    if (BootNext != NULL) {
++      FreePool (BootNext);
++    }
++    BootNext = NULL;
++  }
++
++  Status = gRT->SetVariable (
++                  EFI_BOOT_NEXT_VARIABLE_NAME,
++                  &gEfiGlobalVariableGuid,
++                  0,
++                  0,
++                  NULL
++                  );
++  //
++  // Deleting NV variable shouldn't fail unless it doesn't exist.
++  //
++  ASSERT (Status == EFI_SUCCESS || Status == EFI_NOT_FOUND);
++
+   //
+   // Boot to Boot Manager Menu when EFI_OS_INDICATIONS_BOOT_TO_FW_UI is set. Skip HotkeyBoot
+   //

@@ -1,0 +1,747 @@
+From 888f6efc7600c7b20314b2ce1c747e564369fd07 Mon Sep 17 00:00:00 2001
+From: Sunil V L <sunilvl@ventanamicro.com>
+Date: Thu, 3 Mar 2022 19:08:04 +0530
+Subject: [RFC V1 2/5] uefi-sct/SctPkg: Add test cases for
+ RISCV_EFI_BOOT_PROTOCOL
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3837
+
+RISC-V platforms need to support new RISCV_EFI_BOOT_PROTOCOL
+to communicate the boot hart ID to the operating system. This
+patch adds the required test cases for this protocol.
+
+The specification of the protocol is maintained at:
+https://github.com/riscv-non-isa/riscv-uefi
+
+The test case specification is attached in the Bugzilla.
+
+Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+---
+ .../EFI/Protocol/RiscV/BlackBoxTest/Guid.c    |  38 ++++
+ .../EFI/Protocol/RiscV/BlackBoxTest/Guid.h    |  50 +++++
+ .../BlackBoxTest/RiscVBootProtocolBBTest.inf  |  50 +++++
+ .../RiscVBootProtocolBBTestConformance.c      | 171 ++++++++++++++++++
+ .../RiscVBootProtocolBBTestFunction.c         | 124 +++++++++++++
+ .../RiscVBootProtocolBBTestMain.c             | 122 +++++++++++++
+ .../RiscVBootProtocolBBTestMain.h             | 112 ++++++++++++
+ 7 files changed, 667 insertions(+)
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.h
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTest.inf
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestConformance.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestFunction.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.c
+ create mode 100644 uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.h
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.c
+new file mode 100644
+index 00000000..00ae2d0f
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.c
+@@ -0,0 +1,38 @@
++/** @file
++
++  Copyright (c) 2022, Ventana Micro Systems Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at 
++  http://opensource.org/licenses/bsd-license.php
++ 
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++ 
++**/
++/*++
++
++ Module Name:
++
++   Guid.c
++
++ Abstract:
++
++   GUIDs auto-generated for EFI test assertion.
++
++--*/
++
++#include "Efi.h"
++#include "Guid.h"
++
++
++EFI_GUID gGetBootHartIdBBTestConformanceAssertionGuid001 = EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTCONFORMANCE_ASSERTION_001_GUID;
++
++EFI_GUID gGetBootHartIdBBTestConformanceAssertionGuid002 = EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTCONFORMANCE_ASSERTION_002_GUID;
++
++EFI_GUID gGetBootHartIdBBTestConformanceAssertionGuid003 = EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTCONFORMANCE_ASSERTION_003_GUID;
++
++EFI_GUID gGetBootHartIdBBTestFunctionAssertionGuid001 = EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTFUNCTION_ASSERTION_001_GUID;
++
++EFI_GUID gGetBootHartIdBBTestFunctionAssertionGuid002 = EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTFUNCTION_ASSERTION_002_GUID;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.h
+new file mode 100644
+index 00000000..d7efcc67
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/Guid.h
+@@ -0,0 +1,50 @@
++/** @file
++
++  Copyright (c) 2022, Ventana Micro Systems Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at 
++  http://opensource.org/licenses/bsd-license.php
++ 
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++ 
++**/
++/*++
++
++ Module Name:
++
++   Guid.h
++
++ Abstract:
++
++   GUIDs auto-generated for EFI test assertion.
++
++--*/
++
++
++#define EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTCONFORMANCE_ASSERTION_001_GUID \
++{ 0x5ccf7e22, 0x5ca1, 0x433c, { 0x97, 0xb4, 0xea, 0x3a, 0xb8, 0x49, 0xf7, 0x03 } }
++
++extern EFI_GUID gGetBootHartIdBBTestConformanceAssertionGuid001;
++
++#define EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTCONFORMANCE_ASSERTION_002_GUID \
++{ 0xa07c08ba, 0x8581, 0x477a, { 0x85, 0xe2, 0x69, 0x88, 0xa5, 0xb3, 0xd4, 0xec } }
++
++extern EFI_GUID gGetBootHartIdBBTestConformanceAssertionGuid002;
++
++#define EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTCONFORMANCE_ASSERTION_003_GUID \
++{ 0x00b63b3a, 0xd91d, 0x4175, { 0x8c, 0xee, 0xf9, 0xca, 0x63, 0xf5, 0x84, 0x1c } }
++
++extern EFI_GUID gGetBootHartIdBBTestConformanceAssertionGuid003;
++
++#define EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTFUNCTION_ASSERTION_001_GUID \
++{ 0xe3a8b4a8, 0x866c, 0x4513, { 0x86, 0xb3, 0x61, 0x1d, 0x02, 0x52, 0x2f, 0x81 } }
++
++extern EFI_GUID gGetBootHartIdBBTestFunctionAssertionGuid001;
++
++#define EFI_TEST_RISCV_BOOT_PROTOCOL_BBTESTFUNCTION_ASSERTION_002_GUID \
++{ 0x8fbbf9d8, 0x0ab2, 0x481d, { 0xb5, 0xe0, 0x5f, 0x29, 0x99, 0xd3, 0xcb, 0x34 } }
++
++extern EFI_GUID gGetBootHartIdBBTestFunctionAssertionGuid002;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTest.inf b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTest.inf
+new file mode 100644
+index 00000000..34af2366
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTest.inf
+@@ -0,0 +1,50 @@
++## @file
++#
++#  Copyright (c) 2022, Ventana Micro Systems Inc. All rights reserved.<BR>
++#
++#  This program and the accompanying materials
++#  are licensed and made available under the terms and conditions of the BSD License
++#  which accompanies this distribution.  The full text of the license may be found at 
++#  http://opensource.org/licenses/bsd-license.php
++# 
++#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++# 
++##
++#/*++
++#
++# Module Name:
++#
++#   RiscVBootProtocolBBTest.inf
++#
++# Abstract:
++#
++#   Component description file for RISC-V Boot Protocol Black-Box Test.
++#
++#--*/
++
++[defines]
++  INF_VERSION          = 0x00010005
++  BASE_NAME            = RiscVBootProtocolBBTest
++  FILE_GUID            = DC33F790-D1EE-41A7-A114-1DF84FF7110B
++  MODULE_TYPE          = UEFI_DRIVER
++  VERSION_STRING       = 1.0
++  ENTRY_POINT          = InitializeBBTestRiscVBootProtocol
++
++[sources.common]
++  RiscVBootProtocolBBTestConformance.c
++  RiscVBootProtocolBBTestFunction.c
++  RiscVBootProtocolBBTestMain.c
++  Guid.c
++
++[Packages]
++  MdePkg/MdePkg.dec
++  SctPkg/SctPkg.dec
++  SctPkg/UEFI/UEFI.dec
++
++[LibraryClasses]
++  UefiDriverEntryPoint
++  SctLib
++  EfiTestLib
++
++[Protocols]
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestConformance.c
+new file mode 100644
+index 00000000..7ea5b799
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestConformance.c
+@@ -0,0 +1,171 @@
++/** @file
++
++  Copyright (c) 2022, Ventana Micro Systems Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at 
++  http://opensource.org/licenses/bsd-license.php
++ 
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++ 
++**/
++/*++
++
++Module Name:
++    RiscVBootProtocolBBTestConformance.c
++
++Abstract:
++    for EFI Driver RISC-V Boot Protocol's Conformance Test
++
++--*/
++#include "SctLib.h"
++#include "RiscVBootProtocolBBTestMain.h"
++
++
++EFI_STATUS
++BBTestGetBootHartIdConformanceTest (
++  IN EFI_BB_TEST_PROTOCOL       *This,
++  IN VOID                       *ClientInterface,
++  IN EFI_TEST_LEVEL             TestLevel,
++  IN EFI_HANDLE                 SupportHandle
++  )
++{
++  EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib;
++  EFI_STATUS                            Status;
++  RISCV_EFI_BOOT_PROTOCOL          		*RiscVBoot;
++
++  //
++  // init
++  //
++  RiscVBoot = (RISCV_EFI_BOOT_PROTOCOL*)ClientInterface;
++
++  //
++  // Get the Standard Library Interface
++  //
++  Status = gtBS->HandleProtocol (
++                   SupportHandle,
++                   &gEfiStandardTestLibraryGuid,
++                   (VOID **) &StandardLib
++                   );
++  if (EFI_ERROR(Status)) {
++    return Status;
++  }
++
++  BBTestGetBootHartIdConformanceTestCheckpoint1 (StandardLib, RiscVBoot);
++
++  BBTestGetBootHartIdConformanceTestCheckpoint2 (StandardLib, RiscVBoot);
++
++  BBTestGetBootHartIdConformanceTestCheckpoint3 (StandardLib, RiscVBoot);
++  
++  return EFI_SUCCESS;
++}
++
++EFI_STATUS
++BBTestGetBootHartIdConformanceTestCheckpoint1 (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib,
++  IN RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot
++  )
++{
++  EFI_STATUS                                  Status;
++  EFI_TEST_ASSERTION                          AssertionType;
++  UINTN                                       hartid;
++
++  //
++  // with "This" pointer being NULL.
++  //
++  Status = RiscVBoot->GetBootHartId (
++                        NULL,
++                        &hartid
++                        );
++  if (EFI_INVALID_PARAMETER == Status) {
++    AssertionType = EFI_TEST_ASSERTION_PASSED;
++  } else {
++    AssertionType = EFI_TEST_ASSERTION_FAILED;
++  }
++  StandardLib->RecordAssertion (
++                 StandardLib,
++                 AssertionType,
++                 gGetBootHartIdBBTestConformanceAssertionGuid001,
++                 L"RISCV_EFI_BOOT_PROTOCOL - GetBootHartId() returns EFI_INVALID_PARAMETER with This pointer as NULL.",
++                 L"%a:%d: Status - %r",
++                 __FILE__,
++                 (UINTN)__LINE__,
++                 Status
++                 );
++
++  return EFI_SUCCESS;
++}
++
++EFI_STATUS
++BBTestGetBootHartIdConformanceTestCheckpoint2 (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib,
++  IN RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot
++  )
++{
++  EFI_STATUS                                  Status;
++  EFI_TEST_ASSERTION                          AssertionType;
++  UINTN                                       hartid;
++  RISCV_EFI_BOOT_PROTOCOL                     protocol;
++
++  //
++  // with "This" pointer being some thing other than located protocol.
++  //
++  Status = RiscVBoot->GetBootHartId (
++                        &protocol,
++                        &hartid
++                        );
++  if (EFI_INVALID_PARAMETER == Status) {
++    AssertionType = EFI_TEST_ASSERTION_PASSED;
++  } else {
++    AssertionType = EFI_TEST_ASSERTION_FAILED;
++  }
++  StandardLib->RecordAssertion (
++                 StandardLib,
++                 AssertionType,
++                 gGetBootHartIdBBTestConformanceAssertionGuid001,
++                 L"RISCV_EFI_BOOT_PROTOCOL - GetBootHartId() returns EFI_INVALID_PARAMETER with invalid This pointer.",
++                 L"%a:%d: Status - %r",
++                 __FILE__,
++                 (UINTN)__LINE__,
++                 Status
++                 );
++
++  return EFI_SUCCESS;
++}
++
++EFI_STATUS
++BBTestGetBootHartIdConformanceTestCheckpoint3 (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib,
++  IN RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot
++  )
++{
++  EFI_STATUS                                  Status;
++  EFI_TEST_ASSERTION                          AssertionType;
++
++  //
++  // with BootHartId as NULL pointer.
++  //
++  Status = RiscVBoot->GetBootHartId (
++                        RiscVBoot,
++                        NULL
++                        );
++  if (EFI_INVALID_PARAMETER == Status) {
++    AssertionType = EFI_TEST_ASSERTION_PASSED;
++  } else {
++    AssertionType = EFI_TEST_ASSERTION_FAILED;
++  }
++  StandardLib->RecordAssertion (
++                 StandardLib,
++                 AssertionType,
++                 gGetBootHartIdBBTestConformanceAssertionGuid001,
++                 L"RISCV_EFI_BOOT_PROTOCOL - GetBootHartId() returns EFI_INVALID_PARAMETER with NULL BootHartId pointer.",
++                 L"%a:%d: Status - %r",
++                 __FILE__,
++                 (UINTN)__LINE__,
++                 Status
++                 );
++
++  return EFI_SUCCESS;
++}
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestFunction.c
+new file mode 100644
+index 00000000..bcd40133
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestFunction.c
+@@ -0,0 +1,124 @@
++/** @file
++
++  Copyright (c) 2022, Ventana Micro Systems Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at 
++  http://opensource.org/licenses/bsd-license.php
++ 
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++ 
++**/
++/*++
++
++Module Name:
++    RiscVBootProtocolBBTestFunction.c
++
++Abstract:
++    for EFI Driver RISC-V Boot Protocol's function Test
++
++--*/
++#include "SctLib.h"
++#include "RiscVBootProtocolBBTestMain.h"
++
++EFI_STATUS
++BBTestGetBootHartIdFunctionTest (
++  IN EFI_BB_TEST_PROTOCOL       *This,
++  IN VOID                       *ClientInterface,
++  IN EFI_TEST_LEVEL             TestLevel,
++  IN EFI_HANDLE                 SupportHandle
++  )
++{
++  EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib;
++  EFI_STATUS                            Status;
++  RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot;
++
++  //
++  // init
++  //
++  RiscVBoot = (RISCV_EFI_BOOT_PROTOCOL*)ClientInterface;
++
++  //
++  // Get the Standard Library Interface
++  //
++  Status = gtBS->HandleProtocol (
++                   SupportHandle,
++                   &gEfiStandardTestLibraryGuid,
++                   (VOID **) &StandardLib
++                   );
++  if (EFI_ERROR(Status)) {
++    return Status;
++  }
++
++  BBTestGetBootHartIdFunctionTestCheckpoint1 (StandardLib, RiscVBoot);
++  
++  return EFI_SUCCESS;
++}
++
++
++EFI_STATUS
++BBTestGetBootHartIdFunctionTestCheckpoint1 (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib,
++  IN RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot
++  )
++{
++  EFI_STATUS                            Status;
++  EFI_TEST_ASSERTION                    AssertionType;
++  UINTN					hartid1 = 0xdead;
++  UINTN					hartid2 = 0xbeef;
++
++  
++  //
++  // with correct This and BoothartId pointers.
++  //
++
++  Status = RiscVBoot->GetBootHartId (
++                        RiscVBoot,
++                        &hartid1
++                        );
++  if (EFI_SUCCESS == Status) {
++    AssertionType = EFI_TEST_ASSERTION_PASSED;
++  } else {
++    AssertionType = EFI_TEST_ASSERTION_FAILED;
++  }
++  StandardLib->RecordAssertion (
++                 StandardLib,
++                 AssertionType,
++                 gGetBootHartIdBBTestFunctionAssertionGuid001,
++                 L"RISCV_EFI_BOOT_PROTOCOL.GetBootHartId - GetBootHartId() returns EFI_SUCCESS with valid parameters.",
++                 L"%a:%d: Status - %r",
++                 __FILE__,
++                 (UINTN)__LINE__,
++                 Status
++                 );
++  //
++  // call again with correct This and BoothartId pointers to ensure hartid is not changed.
++  //
++
++  Status = RiscVBoot->GetBootHartId (
++                        RiscVBoot,
++                        &hartid2
++                        );
++  if (EFI_SUCCESS == Status) {
++    AssertionType = EFI_TEST_ASSERTION_PASSED;
++    if (hartid1 != hartid2) {
++      AssertionType = EFI_TEST_ASSERTION_FAILED;
++    }
++  } else {
++    AssertionType = EFI_TEST_ASSERTION_FAILED;
++  }
++  StandardLib->RecordAssertion (
++                 StandardLib,
++                 AssertionType,
++                 gGetBootHartIdBBTestFunctionAssertionGuid002,
++                 L"RISCV_EFI_BOOT_PROTOCOL.GetBootHartId - GetBootHartId() returned same hartid when called twice.",
++                 L"%a:%d: Status - %r",
++                 __FILE__,
++                 (UINTN)__LINE__,
++                 Status
++                 );
++  return EFI_SUCCESS;
++
++  }
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.c
+new file mode 100644
+index 00000000..4f145843
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.c
+@@ -0,0 +1,122 @@
++/** @file
++
++  Copyright (c) 2022, Ventana Micro Systems Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at 
++  http://opensource.org/licenses/bsd-license.php
++ 
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++ 
++**/
++/*++
++
++Module Name:
++
++  RiscVBootBBTestMain.c
++
++Abstract:
++
++  Test Driver of RISC-V Boot Protocol
++
++--*/
++
++#include "SctLib.h"
++#include "RiscVBootProtocolBBTestMain.h"
++
++#define RISCV_EFI_BOOT_PROTOCOL_TEST_REVISION    0x00010000
++
++//
++// Global variables
++//
++
++EFI_HANDLE mImageHandle;
++
++
++EFI_BB_TEST_PROTOCOL_FIELD gBBTestProtocolField = {
++  RISCV_EFI_BOOT_PROTOCOL_TEST_REVISION,
++  RISCV_EFI_BOOT_PROTOCOL_GUID,
++  L"RISC-V Boot Protocol Test",
++  L"UEFI RISC-V Boot Protocol Black-Box Test"
++};
++
++EFI_GUID gSupportProtocolGuid[] = {
++  EFI_STANDARD_TEST_LIBRARY_GUID,
++  EFI_NULL_GUID
++};
++
++EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] = {
++  {
++    RISCV_EFI_BOOT_PROTOCOL_TEST_ENTRY_GUID0101,
++    L"GetBootHartIdFunction",
++    L"Function test for RISC-V Boot Protocol GetBootHartId().",
++    EFI_TEST_LEVEL_MINIMAL,
++    gSupportProtocolGuid,
++    EFI_TEST_CASE_AUTO,
++    BBTestGetBootHartIdFunctionTest
++  },
++  {
++    RISCV_EFI_BOOT_PROTOCOL_TEST_ENTRY_GUID0201,
++    L"GetBootHartIdConformance",
++    L"Conformance test for RISC-V Boot Protocol GetBootHartId().",
++    EFI_TEST_LEVEL_MINIMAL,
++    gSupportProtocolGuid,
++    EFI_TEST_CASE_AUTO,
++    BBTestGetBootHartIdConformanceTest
++  },
++  0
++};
++
++EFI_BB_TEST_PROTOCOL                  *gBBTestProtocolInterface;
++
++//
++// Unload function
++//
++
++EFI_STATUS
++EFIAPI
++UnloadBBTestRiscVBootProtocol (
++  IN EFI_HANDLE                   ImageHandle
++  );
++
++
++EFI_STATUS
++EFIAPI
++InitializeBBTestRiscVBootProtocol (
++  IN EFI_HANDLE                   ImageHandle,
++  IN EFI_SYSTEM_TABLE             *SystemTable
++  )
++{
++  EfiInitializeTestLib (ImageHandle, SystemTable);
++
++  //
++  // initialize test utility lib
++  //
++
++  SctInitializeLib (ImageHandle, SystemTable);
++
++  mImageHandle = ImageHandle;
++
++  return EfiInitAndInstallBBTestInterface (
++           &ImageHandle,
++           &gBBTestProtocolField,
++           gBBTestEntryField,
++           UnloadBBTestRiscVBootProtocol,
++           &gBBTestProtocolInterface
++           );
++}
++
++
++EFI_STATUS
++EFIAPI
++UnloadBBTestRiscVBootProtocol (
++  IN EFI_HANDLE                   ImageHandle
++  )
++{
++  return EfiUninstallAndFreeBBTestInterface (
++           ImageHandle,
++           gBBTestProtocolInterface
++           );
++}
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.h
+new file mode 100644
+index 00000000..008139eb
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RiscV/BlackBoxTest/RiscVBootProtocolBBTestMain.h
+@@ -0,0 +1,112 @@
++/** @file
++
++  Copyright (c) 2022, Ventana Micro Systems Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at 
++  http://opensource.org/licenses/bsd-license.php
++ 
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++ 
++**/
++/*++
++
++Module Name:
++
++  RiscVBootProtocolBBTestMain.h
++
++Abstract:
++
++  Test Driver of RISC-V Boot Protocol header file
++
++--*/
++
++#ifndef _RISCV_BOOT_PROTOCOL_BB_TEST_MAIN_H
++#define _RISCV_BOOT_PROTOCOL_BB_TEST_MAIN_H
++
++
++#include "Efi.h"
++#include <Library/EfiTestLib.h>
++#include <UEFI/Protocol/RiscVBoot.h>
++#include "Guid.h"
++
++
++//
++// One private signature
++//
++#define UEFI_SCTT_TABLE_SIGNATURE    EFI_SIGNATURE_32 ('S', 'C', 'T', 'T')
++
++//
++// Entry GUIDs for Func Test
++//
++#define RISCV_EFI_BOOT_PROTOCOL_TEST_ENTRY_GUID0101 \
++{0xa17fc0c9, 0x82d8, 0x499f, { 0x81, 0x03, 0xe1, 0x3c, 0x7d, 0x08, 0xed, 0x57 } }
++
++//
++// Entry GUIDs for Conf Test
++//
++#define RISCV_EFI_BOOT_PROTOCOL_TEST_ENTRY_GUID0201 \
++{0x69378fba, 0x4f73, 0x4632, { 0xad, 0x1e, 0x5b, 0x1c, 0x18, 0x84, 0x99, 0x88 } }
++
++
++
++EFI_STATUS
++EFIAPI
++InitializeBBTestRiscVBootProtocol (
++  IN EFI_HANDLE                   ImageHandle,
++  IN EFI_SYSTEM_TABLE             *SystemTable
++  );
++  
++EFI_STATUS
++EFIAPI
++UnloadBBTestRiscVBootProtocol (
++  IN EFI_HANDLE                   ImageHandle
++  );
++
++//
++// Prototypes: Test Cases
++//
++
++EFI_STATUS
++BBTestGetBootHartIdConformanceTest (
++  IN EFI_BB_TEST_PROTOCOL       *This,
++  IN VOID                       *ClientInterface,
++  IN EFI_TEST_LEVEL             TestLevel,
++  IN EFI_HANDLE                 SupportHandle
++  );
++  
++EFI_STATUS
++BBTestGetBootHartIdConformanceTestCheckpoint1 (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib,
++  IN RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot
++  );
++  
++EFI_STATUS
++BBTestGetBootHartIdConformanceTestCheckpoint2 (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib,
++  IN RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot
++  );
++  
++EFI_STATUS
++BBTestGetBootHartIdConformanceTestCheckpoint3 (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib,
++  IN RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot
++  );
++  
++EFI_STATUS
++BBTestGetBootHartIdFunctionTest (
++  IN EFI_BB_TEST_PROTOCOL       *This,
++  IN VOID                       *ClientInterface,
++  IN EFI_TEST_LEVEL             TestLevel,
++  IN EFI_HANDLE                 SupportHandle
++  );
++  
++EFI_STATUS
++BBTestGetBootHartIdFunctionTestCheckpoint1 (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL    *StandardLib,
++  IN RISCV_EFI_BOOT_PROTOCOL               *RiscVBoot
++  );
++  
++#endif
+-- 
+2.25.1
+

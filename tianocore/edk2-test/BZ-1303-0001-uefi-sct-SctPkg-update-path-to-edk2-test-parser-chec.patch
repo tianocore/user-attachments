@@ -1,0 +1,48 @@
+From cab11c622262259ebab151017272c1e5c0c2e677 Mon Sep 17 00:00:00 2001
+From: Abhi Singh <Abhi.Singh@arm.com>
+Date: Wed, 25 Jan 2023 15:47:34 -0600
+Subject: [PATCH v1 1/1] uefi-sct/SctPkg: update path to edk2-test-parser,
+ check for repo
+
+buildzip.sh was referencing the obsolete sct_parser project
+which has been replaced with edk2-test-parser.
+
+The script now checks for the edk2-test-parser repo in $pwd,
+if not present then the script exits and reminds the user to
+clone edk2-test-parser.
+Now the script copies edk2-test-parser/* recursively to the repo.
+
+Cc: G Edhaya Chandran <Edhaya.Chandran@arm.com>
+Cc: Barton Gao <gaojie@byosoft.com.cn>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@amd.com>
+
+Signed-off-by: Abhi Singh <Abhi.Singh@arm.com>
+---
+ uefi-sct/SctPkg/buildzip.sh | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/buildzip.sh b/uefi-sct/SctPkg/buildzip.sh
+index cdbe80d74155..625475701f12 100755
+--- a/uefi-sct/SctPkg/buildzip.sh
++++ b/uefi-sct/SctPkg/buildzip.sh
+@@ -53,8 +53,15 @@ cp Build/UefiSct/RELEASE_GCC5/SctPackage${TARGET_ARCH}/SctStartup.nsh ${TARGET_A
+ mkdir -p ${TARGET_ARCH}_SCT/Mde
+ cp Build/MdeModule/RELEASE_GCC5/${TARGET_ARCH}/CapsuleApp.efi ${TARGET_ARCH}_SCT/Mde
+ 
+-# Copy the SCT Parser tool into the repo
+-cp sct_parser/* ${TARGET_ARCH}_SCT/SCT/Sequence/
++# Check if user has cloned edk-test-parser and buildzip.sh can access
++if [ ! -d "${pwd}edk2-test-parser" ]
++then
++        echo "edk2-test-parser repo is missing from current directory, please clone and try again"
++        exit
++fi
++
++# Copy edk2-test-parser tool into the repo
++cp -r edk2-test-parser/* ${TARGET_ARCH}_SCT/SCT/Sequence/
+ 
+ # Put some version information into the ESP directory
+ cat > ./${TARGET_ARCH}_SCT/versions.txt << EOF
+-- 
+2.25.1
+

@@ -1,0 +1,96 @@
+diff --git a/BaseTools/Source/C/Common/Decompress.c b/BaseTools/Source/C/Common/Decompress.c
+index 4b83e88210..b2049bd01c 100644
+--- a/BaseTools/Source/C/Common/Decompress.c
++++ b/BaseTools/Source/C/Common/Decompress.c
+@@ -89,11 +89,11 @@ Returns: (VOID)
+ 
+ --*/
+ {
+-  Sd->mBitBuf = (UINT32) (Sd->mBitBuf << NumOfBits);
++  Sd->mBitBuf = (UINT32) (((UINT64)Sd->mBitBuf) << NumOfBits);
+ 
+   while (NumOfBits > Sd->mBitCount) {
+ 
+-    Sd->mBitBuf |= (UINT32) (Sd->mSubBitBuf << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
++    Sd->mBitBuf |= (UINT32) (((UINT64)Sd->mSubBitBuf) << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
+ 
+     if (Sd->mCompSize > 0) {
+       //
+diff --git a/BaseTools/Source/C/TianoCompress/TianoCompress.c b/BaseTools/Source/C/TianoCompress/TianoCompress.c
+index f810511f5f..046fb36a17 100644
+--- a/BaseTools/Source/C/TianoCompress/TianoCompress.c
++++ b/BaseTools/Source/C/TianoCompress/TianoCompress.c
+@@ -2066,11 +2066,11 @@ Returns: (VOID)
+ 
+ --*/
+ {
+-  Sd->mBitBuf = (UINT32) (Sd->mBitBuf << NumOfBits);
++  Sd->mBitBuf = (UINT32) (((UINT64)Sd->mBitBuf) << NumOfBits);
+ 
+   while (NumOfBits > Sd->mBitCount) {
+ 
+-    Sd->mBitBuf |= (UINT32) (Sd->mSubBitBuf << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
++    Sd->mBitBuf |= (UINT32) (((UINT64)Sd->mSubBitBuf) << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
+ 
+     if (Sd->mCompSize > 0) {
+       //
+diff --git a/DuetPkg/EfiLdr/TianoDecompress.c b/DuetPkg/EfiLdr/TianoDecompress.c
+index b504e8e1d4..86d82fc961 100644
+--- a/DuetPkg/EfiLdr/TianoDecompress.c
++++ b/DuetPkg/EfiLdr/TianoDecompress.c
+@@ -93,11 +93,11 @@ Returns: (VOID)
+ 
+ --*/
+ {
+-  Sd->mBitBuf = (UINT32) (Sd->mBitBuf << NumOfBits);
++  Sd->mBitBuf = (UINT32) (((UINT64)Sd->mBitBuf) << NumOfBits);
+ 
+   while (NumOfBits > Sd->mBitCount) {
+ 
+-    Sd->mBitBuf |= (UINT32) (Sd->mSubBitBuf << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
++    Sd->mBitBuf |= (UINT32) (((UINT64)Sd->mSubBitBuf) << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
+ 
+     if (Sd->mCompSize > 0) {
+       //
+diff --git a/IntelFrameworkModulePkg/Library/BaseUefiTianoCustomDecompressLib/BaseUefiTianoCustomDecompressLib.c b/IntelFrameworkModulePkg/Library/BaseUefiTianoCustomDecompressLib/BaseUefiTianoCustomDecompressLib.c
+index e0ba05383c..4a4340b821 100644
+--- a/IntelFrameworkModulePkg/Library/BaseUefiTianoCustomDecompressLib/BaseUefiTianoCustomDecompressLib.c
++++ b/IntelFrameworkModulePkg/Library/BaseUefiTianoCustomDecompressLib/BaseUefiTianoCustomDecompressLib.c
+@@ -30,14 +30,14 @@ FillBuf (
+   //
+   // Left shift NumOfBits of bits in advance
+   //
+-  Sd->mBitBuf = (UINT32) (Sd->mBitBuf << NumOfBits);
++  Sd->mBitBuf = (UINT32) (((UINT64)Sd->mBitBuf) << NumOfBits);
+ 
+   //
+   // Copy data needed in bytes into mSbuBitBuf
+   //
+   while (NumOfBits > Sd->mBitCount) {
+ 
+-    Sd->mBitBuf |= (UINT32) (Sd->mSubBitBuf << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
++    Sd->mBitBuf |= (UINT32) (((UINT64)Sd->mSubBitBuf) << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
+ 
+     if (Sd->mCompSize > 0) {
+       //
+diff --git a/MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.c b/MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.c
+index e3b2846c09..ce1fe0a1ad 100644
+--- a/MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.c
++++ b/MdePkg/Library/BaseUefiDecompressLib/BaseUefiDecompressLib.c
+@@ -40,14 +40,14 @@ FillBuf (
+   //
+   // Left shift NumOfBits of bits in advance
+   //
+-  Sd->mBitBuf = (UINT32) (Sd->mBitBuf << NumOfBits);
++  Sd->mBitBuf = (UINT32) (((UINT64)Sd->mBitBuf) << NumOfBits);
+ 
+   //
+   // Copy data needed in bytes into mSbuBitBuf
+   //
+   while (NumOfBits > Sd->mBitCount) {
+ 
+-    Sd->mBitBuf |= (UINT32) (Sd->mSubBitBuf << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
++    Sd->mBitBuf |= (UINT32) (((UINT64)Sd->mSubBitBuf) << (NumOfBits = (UINT16) (NumOfBits - Sd->mBitCount)));
+ 
+     if (Sd->mCompSize > 0) {
+       //

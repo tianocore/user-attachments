@@ -1,0 +1,56 @@
+From ef59eb2f68ded87af00e6be8bef346da893605e6 Mon Sep 17 00:00:00 2001
+Message-Id: <ef59eb2f68ded87af00e6be8bef346da893605e6.1533693385.git.steven.arnold@dektech.com.au>
+From: Steven Arnold <steven.arnold@dektech.com.au>
+Date: Wed, 8 Aug 2018 11:55:57 +1000
+Subject: [PATCH] EmulatorPkg/Library: Signal EndOfDxe in Bds
+
+Applications could not be run from the EFI shell in when using
+EmulatorPkg, due to EndOfDxe not being signaled.
+---
+ EmulatorPkg/Library/EmuBdsLib/BdsPlatform.c | 10 ++++++++++
+ EmulatorPkg/Library/EmuBdsLib/EmuBdsLib.inf |  1 +
+ 2 files changed, 11 insertions(+)
+
+diff --git a/EmulatorPkg/Library/EmuBdsLib/BdsPlatform.c b/EmulatorPkg/Library/EmuBdsLib/BdsPlatform.c
+index 3580d36..929dc05 100644
+--- a/EmulatorPkg/Library/EmuBdsLib/BdsPlatform.c
++++ b/EmulatorPkg/Library/EmuBdsLib/BdsPlatform.c
+@@ -13,6 +13,9 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ **/
+ 
+ #include "BdsPlatform.h"
++#include <Library/UefiLib.h>
++#include <Library/UefiBootManagerLib.h>
++#include <Guid/EventGroup.h>
+ 
+ EMU_SYSTEM_CONFIGURATION mSystemConfigData;
+ 
+@@ -77,6 +80,13 @@ Returns:
+ **/
+ {
+   SetupVariableInit ();
++
++  //
++  // From PI spec vol2:
++  // Prior to invoking any UEFI drivers, applications, or connecting consoles, 
++  // the platform should signal the event EFI_END_OF_DXE_EVENT_GUID
++  //
++  EfiEventGroupSignal (&gEfiEndOfDxeEventGroupGuid);
+ }
+ 
+ EFI_STATUS
+diff --git a/EmulatorPkg/Library/EmuBdsLib/EmuBdsLib.inf b/EmulatorPkg/Library/EmuBdsLib/EmuBdsLib.inf
+index 526a159..14d3df9 100644
+--- a/EmulatorPkg/Library/EmuBdsLib/EmuBdsLib.inf
++++ b/EmulatorPkg/Library/EmuBdsLib/EmuBdsLib.inf
+@@ -55,6 +55,7 @@
+ 
+ [Guids]
+   gEmuSystemConfigGuid
++  gEfiEndOfDxeEventGroupGuid
+ 
+ [Pcd]
+   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow
+-- 
+2.7.4
+

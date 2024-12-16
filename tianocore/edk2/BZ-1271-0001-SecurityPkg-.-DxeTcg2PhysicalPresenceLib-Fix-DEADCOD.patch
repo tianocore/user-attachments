@@ -1,0 +1,70 @@
+From ac8b31f4788d5c4fe0b5f259605e4f1e08c807f6 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:22:08 +0530
+Subject: [PATCH 1/2] SecurityPkg/.../DxeTcg2PhysicalPresenceLib: Fix DEADCODE
+ Coverity issue
+
+Full pathname - SecurityPkg/Library/DxeTcg2PhysicalPresenceLib
+
+CautionKey is initially set to FALSE. In the switch-case, it is set to
+TRUE under the following cases
+
+    case TCG2_PHYSICAL_PRESENCE_CLEAR:
+    case TCG2_PHYSICAL_PRESENCE_ENABLE_CLEAR:
+    case TCG2_PHYSICAL_PRESENCE_ENABLE_CLEAR_2:
+    case TCG2_PHYSICAL_PRESENCE_ENABLE_CLEAR_3:
+    case TCG2_PHYSICAL_PRESENCE_SET_PP_REQUIRED_FOR_CLEAR_FALSE:
+    case TCG2_PHYSICAL_PRESENCE_SET_PCR_BANKS:
+    case TCG2_PHYSICAL_PRESENCE_CHANGE_EPS:
+
+and would remain FALSE otherwise. Also, if the flow goes under default
+in switch-case, then TmpStr2 remains set to NULL and in this case, the
+function would return.
+
+At this point, it is conclusively established that CautionKey is TRUE
+if TpmPpCommand < TCG2_PHYSICAL_PRESENCE_STORAGE_MANAGEMENT_BEGIN and
+FALSE otherwise.
+
+Hence, remove the redundant/deadcode check/statements.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4276
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../DxeTcg2PhysicalPresenceLib.c                     | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
+index de4f5e583d51..8293c08e5833 100644
+--- a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
++++ b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
+@@ -538,11 +538,7 @@ Tcg2UserConfirm (
+   }
+ 
+   if (TpmPpCommand < TCG2_PHYSICAL_PRESENCE_STORAGE_MANAGEMENT_BEGIN) {
+-    if (CautionKey) {
+-      TmpStr1 = Tcg2PhysicalPresenceGetStringById (STRING_TOKEN (TPM_CAUTION_KEY));
+-    } else {
+-      TmpStr1 = Tcg2PhysicalPresenceGetStringById (STRING_TOKEN (TPM_ACCEPT_KEY));
+-    }
++    TmpStr1 = Tcg2PhysicalPresenceGetStringById (STRING_TOKEN (TPM_CAUTION_KEY));
+ 
+     StrnCatS (ConfirmText, BufSize / sizeof (CHAR16), TmpStr1, (BufSize / sizeof (CHAR16)) - StrLen (ConfirmText) - 1);
+     FreePool (TmpStr1);
+@@ -555,11 +551,7 @@ Tcg2UserConfirm (
+ 
+     TmpStr1 = Tcg2PhysicalPresenceGetStringById (STRING_TOKEN (TPM_REJECT_KEY));
+   } else {
+-    if (CautionKey) {
+-      TmpStr1 = Tcg2PhysicalPresenceGetStringById (STRING_TOKEN (TCG_STORAGE_CAUTION_KEY));
+-    } else {
+-      TmpStr1 = Tcg2PhysicalPresenceGetStringById (STRING_TOKEN (TCG_STORAGE_ACCEPT_KEY));
+-    }
++    TmpStr1 = Tcg2PhysicalPresenceGetStringById (STRING_TOKEN (TCG_STORAGE_ACCEPT_KEY));
+ 
+     StrnCatS (ConfirmText, BufSize / sizeof (CHAR16), TmpStr1, (BufSize / sizeof (CHAR16)) - StrLen (ConfirmText) - 1);
+     FreePool (TmpStr1);
+-- 
+2.36.1.windows.1
+

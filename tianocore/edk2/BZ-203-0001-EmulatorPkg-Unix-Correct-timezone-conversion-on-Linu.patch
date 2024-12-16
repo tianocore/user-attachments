@@ -1,0 +1,44 @@
+From 095ab36de75ab8b36fa4f4a24ba34c26ffcbf098 Mon Sep 17 00:00:00 2001
+Message-Id: <095ab36de75ab8b36fa4f4a24ba34c26ffcbf098.1533644911.git.slarnold@yahoo.com>
+From: Steven Arnold <slarnold@yahoo.com>
+Date: Tue, 7 Aug 2018 22:24:41 +1000
+Subject: [PATCH] EmulatorPkg/Unix: Correct timezone conversion on Linux host
+
+/usr/include/time.h defines 'timezone' as seconds west of UTC
+Whilst EFI defines it in minutes relative to UTC.
+
+This patch does the conversion.
+---
+ EmulatorPkg/Unix/Host/EmuThunk.c        | 2 +-
+ EmulatorPkg/Unix/Host/PosixFileSystem.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/EmulatorPkg/Unix/Host/EmuThunk.c b/EmulatorPkg/Unix/Host/EmuThunk.c
+index a7b12b14e5..40a4a5ccf2 100644
+--- a/EmulatorPkg/Unix/Host/EmuThunk.c
++++ b/EmulatorPkg/Unix/Host/EmuThunk.c
+@@ -369,7 +369,7 @@ SecGetTime (
+   Time->Minute = tm->tm_min;
+   Time->Second = tm->tm_sec;
+   Time->Nanosecond = 0;
+-  Time->TimeZone = timezone;
++  Time->TimeZone = timezone/60;
+   Time->Daylight = (daylight ? EFI_TIME_ADJUST_DAYLIGHT : 0)
+     | (tm->tm_isdst > 0 ? EFI_TIME_IN_DAYLIGHT : 0);
+ 
+diff --git a/EmulatorPkg/Unix/Host/PosixFileSystem.c b/EmulatorPkg/Unix/Host/PosixFileSystem.c
+index 98e8c894eb..a8bdee9665 100644
+--- a/EmulatorPkg/Unix/Host/PosixFileSystem.c
++++ b/EmulatorPkg/Unix/Host/PosixFileSystem.c
+@@ -226,7 +226,7 @@ PosixSystemTimeToEfiTime (
+   Time->Second = tm->tm_sec;
+   Time->Nanosecond = 0;
+ 
+-  Time->TimeZone = timezone;
++  Time->TimeZone = timezone/60;
+   Time->Daylight = (daylight ? EFI_TIME_ADJUST_DAYLIGHT : 0) | (tm->tm_isdst > 0 ? EFI_TIME_IN_DAYLIGHT : 0);
+ }
+ 
+-- 
+2.14.4
+

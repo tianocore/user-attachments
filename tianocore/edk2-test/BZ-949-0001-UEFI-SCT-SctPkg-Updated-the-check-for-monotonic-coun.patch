@@ -1,0 +1,68 @@
+From 092b7ea4fec54158e4ab797225feeb340028d2c5 Mon Sep 17 00:00:00 2001
+From: G Edhaya Chandran <edhaya.chandran@arm.com>
+Date: Mon, 28 Feb 2022 14:51:24 +0530
+Subject: [PATCH 1/1] UEFI-SCT: SctPkg: Updated the check for monotonic count
+ after restart
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Updated the check for montonic count in the case of after restart
+
+From the UEFI Spec:
+"The platform’s monotonic counter is comprised of two parts: the high 32 bits and the low 32 bits.
+The low 32-bit value is volatile and is reset to zero on every system reset.
+It is increased by 1 on every call to GetNextMonotonicCount().
+The high 32-bit value is nonvolatile and is increased by one on
+whenever the system resets or the low 32-bit counter overflows."
+
+It was found in one case where the higher 32-bit increased by 2
+presumably due to the overflow of lower 32-bit counter.
+Update the logic to handle this case and to print a warning.
+
+Please find more details in the ticket: https://bugzilla.tianocore.org/show_bug.cgi?id=2774
+
+Cc: Barton Gao <gaojie@byosoft.com.cn>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@amd.com>
+Cc: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Cc: Samer El-Haj-Mahmoud <samer.el-haj-mahmoud@arm.com>
+
+Signed-off-by: G Edhaya Chandran<edhaya.chandran@arm.com>
+---
+ .../MiscBootServicesBBTestFunction.c          | 20 +++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestFunction.c
+index 5d631c16d58b..12703d46f98c 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestFunction.c
+@@ -1707,12 +1707,20 @@ GetNextMonotonicCountStep2:
+                    TplArray[Index]
+                    );
+ 
+-    if (SctRShiftU64 (Count2, 32) == SctRShiftU64 (Count, 32) + 1) {
+-      AssertionType = EFI_TEST_ASSERTION_PASSED;
+-    } else {
+-      AssertionType = EFI_TEST_ASSERTION_FAILED;
+-    }
+-    StandardLib->RecordAssertion (
++    //The new count of upper 32 bits must be atleast 1 more than the old count.
++    //Pass case: new count is equal to old count + 1
++    if (SctRShiftU64 (Count2, 32) <= SctRShiftU64 (Count, 32)) {
++      AssertionType = EFI_TEST_ASSERTION_FAILED;
++    } else {
++      //If new count is more that old count + 1, then print warning.
++      if (SctRShiftU64 (Count2, 32) > SctRShiftU64 (Count, 32) + 1) {
++        AssertionType = EFI_TEST_ASSERTION_WARNING;
++      } else {
++        //new count == old count + 1
++        AssertionType = EFI_TEST_ASSERTION_PASSED;
++      }
++   }
++   StandardLib->RecordAssertion (
+                    StandardLib,
+                    AssertionType,
+                    Index==0? \
+-- 
+2.17.1
+

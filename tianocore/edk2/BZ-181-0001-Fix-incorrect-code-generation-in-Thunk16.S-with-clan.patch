@@ -1,0 +1,64 @@
+From cef14dbaba30656f4301eda7299014c01860b5e5 Mon Sep 17 00:00:00 2001
+From: zenith432 <zenith432@users.sourceforge.net>
+Date: Fri, 15 Jun 2018 12:15:11 +0000
+Subject: [PATCH] Fix incorrect code generation in Thunk16.S with clang
+
+The file MdePkg/Library/BaseLib/X64/Thunk16.S is used in
+XCODE BUILDRULEFAMILY assembled with clang.
+
+The source file today generates incorrect code that causes a
+CPU exception because of a 32-bit displacement for lgdt, lidt
+instructions used in 16 bit mode without an address-size
+override prefix.
+
+This patch fixes the condition by adding the address-size
+override prefix.  It also adds an 8-byte alignment for
+a GDT area that is present in Thunk16.nasm but is
+missing from Thunk16.S.
+
+CC: Liming Gao <liming.gao@intel.com>
+CC: Michael Kinney <michael.d.kinney@intel.com>
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Zenith432 <zenith432@users.sourceforge.net>
+---
+ MdePkg/Library/BaseLib/X64/Thunk16.S | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/MdePkg/Library/BaseLib/X64/Thunk16.S b/MdePkg/Library/BaseLib/X64/Thunk16.S
+index f592a286..a0123f57 100644
+--- a/MdePkg/Library/BaseLib/X64/Thunk16.S
++++ b/MdePkg/Library/BaseLib/X64/Thunk16.S
+@@ -131,8 +131,8 @@ L_SavedCr4: .space      4
+     #
+     # rdi in the instruction below is indeed bx in 16-bit code
+     #
+-    .byte 0x66,0x2e                     # 2eh is "cs:" segment override
+-    lgdt    (SavedGdt - L_Base)(%rdi)
++    .byte 0x66,0x67,0x2e                     # 2eh is "cs:" segment override
++    lgdt    (SavedGdt - L_Base)(%rbx)
+     .byte 0x66
+     movl    $0xc0000080,%ecx
+     rdmsr
+@@ -187,8 +187,8 @@ L_Base1:
+     pushq   %rax
+     lret                                # execution begins at next instruction
+ L_RealMode: 
+-    .byte 0x66,0x2e                     # CS and operand size override
+-    lidt    (_16Idtr - L_Base1)(%rsi)
++    .byte 0x66,0x67,0x2e                     # CS and operand size override
++    lidt    (_16Idtr - L_Base1)(%rbp)
+     .byte 0x66,0x61                     # popad
+     .byte 0x1f                          # pop ds
+     .byte 0x7                           # pop es
+@@ -199,6 +199,8 @@ L_RealMode:
+     .byte 0x66                          # make the following retf 32-bit
+     lret                                # transfer control to user code
+ 
++.p2align 3
++
+ .set  CODE16,  ASM_PFX(_16Code) - .
+ .set  DATA16,  ASM_PFX(_16Data) - .
+ .set  DATA32,  ASM_PFX(_32Data) - .
+-- 
+2.15.2 (Apple Git-101.1)
+

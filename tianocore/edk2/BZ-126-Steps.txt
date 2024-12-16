@@ -1,0 +1,91 @@
+Below are the steps and GCD debug logs.
+Steps 1 : Add a memory space . We can see that an entry from system memory is added.
+
+Status = gDS->AddMemorySpace (
+                                            EfiGcdMemoryTypeSystemMemory,
+                                            FixedPcdGet64(PcdSystemMemoryExBase),
+                                            SystemMemoryExSize,
+                                            EFI_MEMORY_WC | EFI_MEMORY_WT |
+                                            EFI_MEMORY_WB
+                                            );
+
+               Logs:
+                              GCD:AddMemorySpace(Base=0000008080000000,Length=0000000380000000)
+                              GcdMemoryType   = SystemMem
+                              Capabilities    = 000000000000000E
+CoreConvertSpace 774
+                              Status = Success
+GCDMemType Range                             Capabilities     Attributes
+========== ================================= ================ ================
+NonExist   0000000000000000-000000009FFFFFFF 0000000000000000 0000000000000000
+SystemMem  00000000A0000000-00000000DFFFFFFF 800000000000000E 0000000000000008*
+NonExist   00000000E0000000-00000000E01BFFFF 0000000000000000 0000000000000000
+SystemMem  00000000E01C0000-00000000FFFFFFFF 800000000000000E 0000000000000008*
+NonExist   0000000100000000-000000807FFFFFFF 0000000000000000 0000000000000000
+SystemMem  0000008080000000-00000083FFFFFFFF 800000000000000E 0000000000000000
+NonExist   0000008400000000-0000FFFFFFFFFFFF 0000000000000000 0000000000000000
+
+GCD:AllocateMemorySpace(Base=0000008080000000,Length=0000000380000000)
+  GcdAllocateType = AtAddress
+  GcdMemoryType   = SystemMem
+  Alignment       = 0000000000001000
+  ImageHandle     = FED1FF98
+  DeviceHandle    = 0
+  Status = Success  (BaseAddress = 0000008080000000)
+GCDMemType Range                             Capabilities     Attributes
+========== ================================= ================ ================
+NonExist   0000000000000000-000000009FFFFFFF 0000000000000000 0000000000000000
+SystemMem  00000000A0000000-00000000DFFFFFFF 800000000000000E 0000000000000008*
+NonExist   00000000E0000000-00000000E01BFFFF 0000000000000000 0000000000000000
+SystemMem  00000000E01C0000-00000000FFFFFFFF 800000000000000E 0000000000000008*
+NonExist   0000000100000000-000000807FFFFFFF 0000000000000000 0000000000000000
+SystemMem  0000008080000000-00000083FFFFFFFF 800000000000000E 0000000000000000*
+NonExist   0000008400000000-0000FFFFFFFFFFFF 0000000000000000 0000000000000000
+               
+
+Step2: Free the memory space
+               Status = gDS->FreeMemorySpace (
+               FixedPcdGet64(PcdSystemMemoryExBase),
+               SystemMemoryExSize
+               );
+               
+               Logs:
+                              GCD:FreeMemorySpace(Base=0000008080000000,Length=0000000380000000)
+Status = Success
+GCDMemType Range                             Capabilities     Attributes
+========== ================================= ================ ================
+NonExist   0000000000000000-000000009FFFFFFF 0000000000000000 0000000000000000
+SystemMem  00000000A0000000-00000000DFFFFFFF 800000000000000E 0000000000000008*
+NonExist   00000000E0000000-00000000E01BFFFF 0000000000000000 0000000000000000
+SystemMem  00000000E01C0000-00000000FFFFFFFF 800000000000000E 0000000000000008*
+NonExist   0000000100000000-000000807FFFFFFF 0000000000000000 0000000000000000
+SystemMem  0000008080000000-00000083FFFFFFFF 800000000000000E 0000000000000000
+NonExist   0000008400000000-0000FFFFFFFFFFFF 0000000000000000 0000000000000000
+
+
+Step3: Remove the memory space , As we can see that entry ‘SystemMem  0000008080000000-00000083FFFFFFFF’ is removed.
+               Status = gDS->RemoveMemorySpace (
+               FixedPcdGet64(PcdSystemMemoryExBase),
+               SystemMemoryExSize
+               );
+               
+               Logs:
+                              GCD:RemoveMemorySpace(Base=0000008080000000,Length=0000000380000000)
+Status = Success
+GCDMemType Range                             Capabilities     Attributes
+========== ================================= ================ ================
+NonExist   0000000000000000-000000009FFFFFFF 0000000000000000 0000000000000000
+SystemMem  00000000A0000000-00000000DFFFFFFF 800000000000000E 0000000000000008*
+NonExist   00000000E0000000-00000000E01BFFFF 0000000000000000 0000000000000000
+SystemMem  00000000E01C0000-00000000FFFFFFFF 800000000000000E 0000000000000008*
+NonExist   0000000100000000-0000FFFFFFFFFFFF 0000000000000000 0000000000000000
+
+Step4 : Run the ‘memmap’ command. As we can see that entry is still present.
+               Shell> memmap
+Type       Start            End              # Pages          Attributes
+Available  00000000A0000000-00000000DFFFFFFF 0000000000040000 000000000000000E
+Available  00000000E01C0000-00000000E53C0FFF 0000000000005201 000000000000000E
+BS_Data    00000000E53C1000-00000000E5D99FFF 00000000000009D9 000000000000000E
+…
+Available  0000008080000000-00000083FFFFFFFF 0000000000380000 000000000000000E
+                              …

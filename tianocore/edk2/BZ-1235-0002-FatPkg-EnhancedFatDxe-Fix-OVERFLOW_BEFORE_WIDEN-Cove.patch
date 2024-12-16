@@ -1,0 +1,42 @@
+From 818565d03b5aba6a009103f8e361af5e050a09ac Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:09:14 +0530
+Subject: [PATCH 2/2] FatPkg/EnhancedFatDxe: Fix OVERFLOW_BEFORE_WIDEN Coverity
+ issue
+
+The function FatInitializeDiskCache evaluates an expression
+
+FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment
+and
+assigns it to DataCacheSize which is of type UINTN;
+
+As per Coverity report,
+FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment is a
+potentially overflowing expression with type "int" (32 bits, signed)
+evaluated using 32-bit arithmetic, and then used in a context that
+expects an expression of type "UINTN" (64 bits, unsigned).
+To avoid overflow, cast "FAT_DATACACHE_GROUP_COUNT" to type "UINTN".
+
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4249
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ FatPkg/EnhancedFatDxe/DiskCache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/FatPkg/EnhancedFatDxe/DiskCache.c b/FatPkg/EnhancedFatDxe/DiskCache.c
+index d1a34a6a646f..d56e338586d8 100644
+--- a/FatPkg/EnhancedFatDxe/DiskCache.c
++++ b/FatPkg/EnhancedFatDxe/DiskCache.c
+@@ -477,7 +477,7 @@ FatInitializeDiskCache (
+   DiskCache[CacheFat].BaseAddress   = Volume->FatPos;
+   DiskCache[CacheFat].LimitAddress  = Volume->FatPos + Volume->FatSize;
+   FatCacheSize                      = FatCacheGroupCount << DiskCache[CacheFat].PageAlignment;
+-  DataCacheSize                     = FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment;
++  DataCacheSize                     = (UINTN)FAT_DATACACHE_GROUP_COUNT << DiskCache[CacheData].PageAlignment;
+   //
+   // Allocate the Fat Cache buffer
+   //
+-- 
+2.36.1.windows.1
+

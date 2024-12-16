@@ -1,0 +1,1485 @@
+From c05f3da8b591f73e7ab8acd1506f02b690486dbf Mon Sep 17 00:00:00 2001
+From: Christopher J Zurcher <christopher.j.zurcher@intel.com>
+Date: Tue, 12 Feb 2019 20:10:11 -0800
+Subject: [PATCH] MdeModulePkg/ScsiDiskDxe: Support Storage Security Command
+ Protocol
+
+This patch implements the EFI_STORAGE_SECURITY_COMMAND_PROTOCOL in the
+ScsiDiskDxe driver (and supporting library, UefiScsiLib).
+
+Support is currently limited to the RPMB Well-known LUN for UFS devices.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Christopher J Zurcher <christopher.j.zurcher@intel.com>
+---
+ MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBus.c        |   5 +-
+ MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ComponentName.c |  14 +-
+ MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.c      | 510 +++++++++++++++++++++-
+ MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.h      | 171 +++++++-
+ MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf |   3 +-
+ MdeModulePkg/Bus/Ufs/UfsPassThruDxe/UfsPassThru.c |  19 +-
+ MdePkg/Include/IndustryStandard/Scsi.h            |  48 +-
+ MdePkg/Include/Library/UefiScsiLib.h              | 126 +++++-
+ MdePkg/Include/Protocol/ScsiIo.h                  |   9 +-
+ MdePkg/Library/UefiScsiLib/UefiScsiLib.c          | 205 ++++++++-
+ 10 files changed, 1064 insertions(+), 46 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBus.c b/MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBus.c
+index 11a7f2a927..0b4c51764e 100644
+--- a/MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBus.c
++++ b/MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBus.c
+@@ -2,7 +2,7 @@
+   SCSI Bus driver that layers on every SCSI Pass Thru and
+   Extended SCSI Pass Thru protocol in the system.
+ 
+-Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+ which accompanies this distribution.  The full text of the license may be found at
+@@ -1374,7 +1374,8 @@ DiscoverScsiDevice (
+     goto Done;
+   }
+ 
+-  if (0x1e >= InquiryData->Peripheral_Type && InquiryData->Peripheral_Type >= 0xa) {
++  if ((InquiryData->Peripheral_Type >= EFI_SCSI_TYPE_RESERVED_LOW) &&
++      (InquiryData->Peripheral_Type <= EFI_SCSI_TYPE_RESERVED_HIGH)) {
+     ScsiDeviceFound = FALSE;
+     goto Done;
+   }
+diff --git a/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ComponentName.c b/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ComponentName.c
+index f2da7af8fb..cba833d4ca 100644
+--- a/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ComponentName.c
++++ b/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ComponentName.c
+@@ -1,7 +1,7 @@
+ /** @file
+   UEFI Component Name(2) protocol implementation for SCSI disk driver.
+ 
+-Copyright (c) 2004 - 2018, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2004 - 2019, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+ which accompanies this distribution.  The full text of the license may be found at
+@@ -173,9 +173,9 @@ ScsiDiskComponentNameGetControllerName (
+   OUT CHAR16                                          **ControllerName
+   )
+ {
+-  EFI_STATUS            Status;
+-  SCSI_DISK_DEV         *ScsiDiskDevice;
+-  EFI_BLOCK_IO_PROTOCOL *BlockIo;
++  EFI_STATUS              Status;
++  SCSI_DISK_DEV           *ScsiDiskDevice;
++  EFI_DISK_INFO_PROTOCOL  *DiskInfo;
+ 
+   //
+   // This is a device driver, so ChildHandle must be NULL.
+@@ -200,8 +200,8 @@ ScsiDiskComponentNameGetControllerName (
+   //
+   Status = gBS->OpenProtocol (
+                   ControllerHandle,
+-                  &gEfiBlockIoProtocolGuid,
+-                  (VOID **) &BlockIo,
++                  &gEfiDiskInfoProtocolGuid,
++                  (VOID **) &DiskInfo,
+                   gScsiDiskDriverBinding.DriverBindingHandle,
+                   ControllerHandle,
+                   EFI_OPEN_PROTOCOL_GET_PROTOCOL
+@@ -211,7 +211,7 @@ ScsiDiskComponentNameGetControllerName (
+     return Status;
+   }
+ 
+-  ScsiDiskDevice = SCSI_DISK_DEV_FROM_BLKIO (BlockIo);
++  ScsiDiskDevice = SCSI_DISK_DEV_FROM_DISKINFO (DiskInfo);
+ 
+   return LookupUnicodeString2 (
+            Language,
+diff --git a/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.c b/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.c
+index 0d63c85e44..75eb13ca20 100644
+--- a/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.c
++++ b/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.c
+@@ -1,7 +1,7 @@
+ /** @file
+   SCSI disk driver that layers on every SCSI IO protocol in the system.
+ 
+-Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+ which accompanies this distribution.  The full text of the license may be found at
+@@ -157,7 +157,9 @@ ScsiDiskDriverBindingSupported (
+ 
+   Status = ScsiIo->GetDeviceType (ScsiIo, &DeviceType);
+   if (!EFI_ERROR (Status)) {
+-    if ((DeviceType == EFI_SCSI_TYPE_DISK) || (DeviceType == EFI_SCSI_TYPE_CDROM)) {
++    if ((DeviceType == EFI_SCSI_TYPE_DISK) ||
++        (DeviceType == EFI_SCSI_TYPE_CDROM) ||
++        (DeviceType == EFI_SCSI_TYPE_WLUN)) {
+       Status = EFI_SUCCESS;
+     } else {
+       Status = EFI_UNSUPPORTED;
+@@ -244,6 +246,8 @@ ScsiDiskDriverBindingStart (
+   ScsiDiskDevice->BlkIo2.ReadBlocksEx               = ScsiDiskReadBlocksEx;
+   ScsiDiskDevice->BlkIo2.WriteBlocksEx              = ScsiDiskWriteBlocksEx;
+   ScsiDiskDevice->BlkIo2.FlushBlocksEx              = ScsiDiskFlushBlocksEx;
++  ScsiDiskDevice->StorageSecurity.ReceiveData       = ScsiDiskReceiveData;
++  ScsiDiskDevice->StorageSecurity.SendData          = ScsiDiskSendData;
+   ScsiDiskDevice->EraseBlock.Revision               = EFI_ERASE_BLOCK_PROTOCOL_REVISION;
+   ScsiDiskDevice->EraseBlock.EraseLengthGranularity = 1;
+   ScsiDiskDevice->EraseBlock.EraseBlocks            = ScsiDiskEraseBlocks;
+@@ -264,6 +268,10 @@ ScsiDiskDriverBindingStart (
+     ScsiDiskDevice->BlkIo.Media->ReadOnly  = TRUE;
+     MustReadCapacity = FALSE;
+     break;
++
++  case EFI_SCSI_TYPE_WLUN:
++    MustReadCapacity = FALSE;
++    break;
+   }
+   //
+   // The Sense Data Array's initial size is 6
+@@ -311,11 +319,45 @@ ScsiDiskDriverBindingStart (
+   //
+   Status = ScsiDiskDetectMedia (ScsiDiskDevice, MustReadCapacity, &Temp);
+   if (!EFI_ERROR (Status)) {
++
++    //
++    // Determine if StorageSecurity should be produced on this controller
++    //
++    if (DetermineInstallStorageSecurity(ScsiDiskDevice, Controller) &&
++        DetermineInstallBlockIo(Controller)) {
++      InitializeInstallDiskInfo(ScsiDiskDevice, Controller);
++      Status = gBS->InstallMultipleProtocolInterfaces (
++                      &Controller,
++                      &gEfiStorageSecurityCommandProtocolGuid,
++                      &ScsiDiskDevice->StorageSecurity,
++                      &gEfiDiskInfoProtocolGuid,
++                      &ScsiDiskDevice->DiskInfo,
++                      NULL
++                      );
++      if (!EFI_ERROR(Status)) {
++        ScsiDiskDevice->ControllerNameTable = NULL;
++        AddUnicodeString2 (
++          "eng",
++          gScsiDiskComponentName.SupportedLanguages,
++          &ScsiDiskDevice->ControllerNameTable,
++          L"SCSI Secure Disk Device",
++          TRUE
++          );
++        AddUnicodeString2 (
++          "en",
++          gScsiDiskComponentName2.SupportedLanguages,
++          &ScsiDiskDevice->ControllerNameTable,
++          L"SCSI Secure Disk Device",
++          FALSE
++          );
++        return EFI_SUCCESS;
++      }
++
+     //
+     // Determine if Block IO & Block IO2 should be produced on this controller
+     // handle
+     //
+-    if (DetermineInstallBlockIo(Controller)) {
++    } else if (DetermineInstallBlockIo(Controller)) {
+       InitializeInstallDiskInfo(ScsiDiskDevice, Controller);
+       Status = gBS->InstallMultipleProtocolInterfaces (
+                       &Controller,
+@@ -1714,6 +1756,396 @@ Done:
+   return Status;
+ }
+ 
++/**
++  Send a security protocol command to a device that receives data and/or the result
++  of one or more commands sent by SendData.
++
++  The ReceiveData function sends a security protocol command to the given MediaId.
++  The security protocol command sent is defined by SecurityProtocolId and contains
++  the security protocol specific data SecurityProtocolSpecificData. The function
++  returns the data from the security protocol command in PayloadBuffer.
++
++  For devices supporting the SCSI command set, the security protocol command is sent
++  using the SECURITY PROTOCOL IN command defined in SPC-4.
++
++  If PayloadBufferSize is too small to store the available data from the security
++  protocol command, the function shall copy PayloadBufferSize bytes into the
++  PayloadBuffer and return EFI_WARN_BUFFER_TOO_SMALL.
++
++  If PayloadBuffer or PayloadTransferSize is NULL and PayloadBufferSize is non-zero,
++  the function shall return EFI_INVALID_PARAMETER.
++
++  If the given MediaId does not support security protocol commands, the function shall
++  return EFI_UNSUPPORTED. If there is no media in the device, the function returns
++  EFI_NO_MEDIA. If the MediaId is not the ID for the current media in the device,
++  the function returns EFI_MEDIA_CHANGED.
++
++  If the security protocol fails to complete within the Timeout period, the function
++  shall return EFI_TIMEOUT.
++
++  If the security protocol command completes without an error, the function shall
++  return EFI_SUCCESS. If the security protocol command completes with an error, the
++  function shall return EFI_DEVICE_ERROR.
++
++  @param  This                         Indicates a pointer to the calling context.
++  @param  MediaId                      ID of the medium to receive data from.
++  @param  Timeout                      The timeout, in 100ns units, to use for the execution
++                                       of the security protocol command. A Timeout value of 0
++                                       means that this function will wait indefinitely for the
++                                       security protocol command to execute. If Timeout is greater
++                                       than zero, then this function will return EFI_TIMEOUT if the
++                                       time required to execute the receive data command is greater than Timeout.
++  @param  SecurityProtocolId           The value of the "Security Protocol" parameter of
++                                       the security protocol command to be sent.
++  @param  SecurityProtocolSpecificData The value of the "Security Protocol Specific" parameter
++                                       of the security protocol command to be sent.
++  @param  PayloadBufferSize            Size in bytes of the payload data buffer.
++  @param  PayloadBuffer                A pointer to a destination buffer to store the security
++                                       protocol command specific payload data for the security
++                                       protocol command. The caller is responsible for having
++                                       either implicit or explicit ownership of the buffer.
++  @param  PayloadTransferSize          A pointer to a buffer to store the size in bytes of the
++                                       data written to the payload data buffer.
++
++  @retval EFI_SUCCESS                  The security protocol command completed successfully.
++  @retval EFI_WARN_BUFFER_TOO_SMALL    The PayloadBufferSize was too small to store the available
++                                       data from the device. The PayloadBuffer contains the truncated data.
++  @retval EFI_UNSUPPORTED              The given MediaId does not support security protocol commands.
++  @retval EFI_DEVICE_ERROR             The security protocol command completed with an error.
++  @retval EFI_NO_MEDIA                 There is no media in the device.
++  @retval EFI_MEDIA_CHANGED            The MediaId is not for the current media.
++  @retval EFI_INVALID_PARAMETER        The PayloadBuffer or PayloadTransferSize is NULL and
++                                       PayloadBufferSize is non-zero.
++  @retval EFI_TIMEOUT                  A timeout occurred while waiting for the security
++                                       protocol command to execute.
++
++**/
++EFI_STATUS
++EFIAPI
++ScsiDiskReceiveData (
++  IN EFI_STORAGE_SECURITY_COMMAND_PROTOCOL    *This,
++  IN UINT32                                   MediaId   OPTIONAL,
++  IN UINT64                                   Timeout,
++  IN UINT8                                    SecurityProtocolId,
++  IN UINT16                                   SecurityProtocolSpecificData,
++  IN UINTN                                    PayloadBufferSize,
++  OUT VOID                                    *PayloadBuffer,
++  OUT UINTN                                   *PayloadTransferSize
++  )
++{
++  SCSI_DISK_DEV       *ScsiDiskDevice;
++  EFI_BLOCK_IO_MEDIA  *Media;
++  EFI_STATUS          Status;
++  BOOLEAN             MediaChange;
++  EFI_TPL             OldTpl;
++  UINT8               SenseDataLength;
++  UINT8               HostAdapterStatus;
++  UINT8               TargetStatus;
++  VOID                *AlignedBuffer;
++  BOOLEAN             AlignedBufferAllocated;
++
++  MediaChange             = FALSE;
++  AlignedBufferAllocated  = FALSE;
++  OldTpl                  = gBS->RaiseTPL (TPL_CALLBACK);
++  ScsiDiskDevice          = SCSI_DISK_DEV_FROM_STORSEC (This);
++  Media                   = ScsiDiskDevice->BlkIo.Media;
++
++  SenseDataLength = (UINT8) (ScsiDiskDevice->SenseDataNumber * sizeof (EFI_SCSI_SENSE_DATA));
++
++  if (!DetermineInstallStorageSecurity(ScsiDiskDevice, ScsiDiskDevice->Handle)) {
++    Status = EFI_UNSUPPORTED;
++    goto Done;
++  }
++
++  if (!IS_DEVICE_FIXED(ScsiDiskDevice)) {
++    Status = ScsiDiskDetectMedia (ScsiDiskDevice, FALSE, &MediaChange);
++    if (EFI_ERROR (Status)) {
++      Status = EFI_DEVICE_ERROR;
++      goto Done;
++    }
++
++    if (MediaChange) {
++      gBS->ReinstallProtocolInterface (
++              ScsiDiskDevice->Handle,
++              &gEfiStorageSecurityCommandProtocolGuid,
++              &ScsiDiskDevice->StorageSecurity,
++              &ScsiDiskDevice->StorageSecurity
++              );
++      if (Media->MediaPresent) {
++        Status = EFI_MEDIA_CHANGED;
++      } else {
++        Status = EFI_NO_MEDIA;
++      }
++      goto Done;
++    }
++  }
++
++  //
++  // Validate Media
++  //
++  if (!(Media->MediaPresent)) {
++    Status = EFI_NO_MEDIA;
++    goto Done;
++  }
++
++  if ((MediaId != 0) && (MediaId != Media->MediaId)) {
++    Status = EFI_MEDIA_CHANGED;
++    goto Done;
++  }
++
++  if (PayloadBufferSize != 0) {
++    if ((PayloadBuffer == NULL) || (PayloadTransferSize == NULL)) {
++      Status = EFI_INVALID_PARAMETER;
++      goto Done;
++    }
++
++    if ((ScsiDiskDevice->ScsiIo->IoAlign > 1) && !IS_ALIGNED(PayloadBuffer, ScsiDiskDevice->ScsiIo->IoAlign)) {
++      AlignedBuffer = AllocateAlignedBuffer (ScsiDiskDevice, PayloadBufferSize);
++      if (AlignedBuffer == NULL) {
++        Status = EFI_OUT_OF_RESOURCES;
++        goto Done;
++      }
++      ZeroMem (AlignedBuffer, PayloadBufferSize);
++      AlignedBufferAllocated = TRUE;
++    } else {
++      AlignedBuffer = PayloadBuffer;
++    }
++  }
++
++  Status = ScsiSecurityProtocolInCommand (
++            ScsiDiskDevice->ScsiIo,
++            Timeout,
++            ScsiDiskDevice->SenseData,
++            &SenseDataLength,
++            &HostAdapterStatus,
++            &TargetStatus,
++            SecurityProtocolId,
++            SecurityProtocolSpecificData,
++            (UINT32) PayloadBufferSize,
++            AlignedBuffer,
++            (UINT32 *) PayloadTransferSize
++          );
++  if (EFI_ERROR (Status)) {
++    goto Done;
++  }
++
++  if (AlignedBufferAllocated) {
++    CopyMem (PayloadBuffer, AlignedBuffer, PayloadBufferSize);
++  }
++
++  if (PayloadBufferSize < *PayloadTransferSize) {
++    Status = EFI_WARN_BUFFER_TOO_SMALL;
++    goto Done;
++  }
++
++  Status = CheckHostAdapterStatus (HostAdapterStatus);
++  if (EFI_ERROR (Status)) {
++    goto Done;
++  }
++
++  Status = CheckTargetStatus (TargetStatus);
++  if (EFI_ERROR (Status)) {
++    goto Done;
++  }
++
++Done:
++  if (AlignedBufferAllocated) {
++    FreeAlignedBuffer (AlignedBuffer, PayloadBufferSize);
++  }
++  gBS->RestoreTPL (OldTpl);
++  return Status;
++}
++
++/**
++  Send a security protocol command to a device.
++
++  The SendData function sends a security protocol command containing the payload
++  PayloadBuffer to the given MediaId. The security protocol command sent is
++  defined by SecurityProtocolId and contains the security protocol specific data
++  SecurityProtocolSpecificData. If the underlying protocol command requires a
++  specific padding for the command payload, the SendData function shall add padding
++  bytes to the command payload to satisfy the padding requirements.
++
++  For devices supporting the SCSI command set, the security protocol command is sent
++  using the SECURITY PROTOCOL OUT command defined in SPC-4.
++
++  If PayloadBuffer is NULL and PayloadBufferSize is non-zero, the function shall
++  return EFI_INVALID_PARAMETER.
++
++  If the given MediaId does not support security protocol commands, the function
++  shall return EFI_UNSUPPORTED. If there is no media in the device, the function
++  returns EFI_NO_MEDIA. If the MediaId is not the ID for the current media in the
++  device, the function returns EFI_MEDIA_CHANGED.
++
++  If the security protocol fails to complete within the Timeout period, the function
++  shall return EFI_TIMEOUT.
++
++  If the security protocol command completes without an error, the function shall return
++  EFI_SUCCESS. If the security protocol command completes with an error, the function
++  shall return EFI_DEVICE_ERROR.
++
++  @param  This                         Indicates a pointer to the calling context.
++  @param  MediaId                      ID of the medium to receive data from.
++  @param  Timeout                      The timeout, in 100ns units, to use for the execution
++                                       of the security protocol command. A Timeout value of 0
++                                       means that this function will wait indefinitely for the
++                                       security protocol command to execute. If Timeout is greater
++                                       than zero, then this function will return EFI_TIMEOUT if the
++                                       time required to execute the receive data command is greater than Timeout.
++  @param  SecurityProtocolId           The value of the "Security Protocol" parameter of
++                                       the security protocol command to be sent.
++  @param  SecurityProtocolSpecificData The value of the "Security Protocol Specific" parameter
++                                       of the security protocol command to be sent.
++  @param  PayloadBufferSize            Size in bytes of the payload data buffer.
++  @param  PayloadBuffer                A pointer to a destination buffer to store the security
++                                       protocol command specific payload data for the security
++                                       protocol command.
++
++  @retval EFI_SUCCESS                  The security protocol command completed successfully.
++  @retval EFI_UNSUPPORTED              The given MediaId does not support security protocol commands.
++  @retval EFI_DEVICE_ERROR             The security protocol command completed with an error.
++  @retval EFI_NO_MEDIA                 There is no media in the device.
++  @retval EFI_MEDIA_CHANGED            The MediaId is not for the current media.
++  @retval EFI_INVALID_PARAMETER        The PayloadBuffer is NULL and PayloadBufferSize is non-zero.
++  @retval EFI_TIMEOUT                  A timeout occurred while waiting for the security
++                                       protocol command to execute.
++
++**/
++EFI_STATUS
++EFIAPI
++ScsiDiskSendData (
++  IN EFI_STORAGE_SECURITY_COMMAND_PROTOCOL    *This,
++  IN UINT32                                   MediaId   OPTIONAL,
++  IN UINT64                                   Timeout,
++  IN UINT8                                    SecurityProtocolId,
++  IN UINT16                                   SecurityProtocolSpecificData,
++  IN UINTN                                    PayloadBufferSize,
++  OUT VOID                                    *PayloadBuffer
++  )
++{
++  SCSI_DISK_DEV       *ScsiDiskDevice;
++  EFI_BLOCK_IO_MEDIA  *Media;
++  EFI_STATUS          Status;
++  BOOLEAN             MediaChange;
++  EFI_TPL             OldTpl;
++  UINT8               SenseDataLength;
++  UINT8               HostAdapterStatus;
++  UINT8               TargetStatus;
++  VOID                *AlignedBuffer;
++  BOOLEAN             AlignedBufferAllocated;
++
++  MediaChange             = FALSE;
++  AlignedBufferAllocated  = FALSE;
++  OldTpl                  = gBS->RaiseTPL (TPL_CALLBACK);
++  ScsiDiskDevice          = SCSI_DISK_DEV_FROM_STORSEC (This);
++  Media                   = ScsiDiskDevice->BlkIo.Media;
++
++  SenseDataLength = (UINT8) (ScsiDiskDevice->SenseDataNumber * sizeof (EFI_SCSI_SENSE_DATA));
++
++  if (!DetermineInstallStorageSecurity(ScsiDiskDevice, ScsiDiskDevice->Handle)) {
++    Status = EFI_UNSUPPORTED;
++    goto Done;
++  }
++
++  if (!IS_DEVICE_FIXED(ScsiDiskDevice)) {
++    Status = ScsiDiskDetectMedia (ScsiDiskDevice, FALSE, &MediaChange);
++    if (EFI_ERROR (Status)) {
++      Status = EFI_DEVICE_ERROR;
++      goto Done;
++    }
++
++    if (MediaChange) {
++      gBS->ReinstallProtocolInterface (
++              ScsiDiskDevice->Handle,
++              &gEfiStorageSecurityCommandProtocolGuid,
++              &ScsiDiskDevice->StorageSecurity,
++              &ScsiDiskDevice->StorageSecurity
++              );
++      if (Media->MediaPresent) {
++        Status = EFI_MEDIA_CHANGED;
++      } else {
++        Status = EFI_NO_MEDIA;
++      }
++      goto Done;
++    }
++  }
++
++  //
++  // Validate Media
++  //
++  if (!(Media->MediaPresent)) {
++    Status = EFI_NO_MEDIA;
++    goto Done;
++  }
++
++  if ((MediaId != 0) && (MediaId != Media->MediaId)) {
++    Status = EFI_MEDIA_CHANGED;
++    goto Done;
++  }
++
++  if (Media->ReadOnly) {
++    Status = EFI_WRITE_PROTECTED;
++    goto Done;
++  }
++
++  if ((PayloadBuffer == NULL) && (PayloadBufferSize != 0)) {
++    DEBUG ((DEBUG_ERROR, "ScsiDiskSendData: PayloadBuffer NULL!\n"));
++    Status = EFI_INVALID_PARAMETER;
++    goto Done;
++  }
++  if (PayloadBufferSize != 0) {
++    if (PayloadBuffer == NULL) {
++      Status = EFI_INVALID_PARAMETER;
++      goto Done;
++    }
++
++    if ((ScsiDiskDevice->ScsiIo->IoAlign > 1) && !IS_ALIGNED(PayloadBuffer, ScsiDiskDevice->ScsiIo->IoAlign)) {
++      AlignedBuffer = AllocateAlignedBuffer (ScsiDiskDevice, PayloadBufferSize);
++      if (AlignedBuffer == NULL) {
++        Status = EFI_OUT_OF_RESOURCES;
++        goto Done;
++      }
++      CopyMem (AlignedBuffer, PayloadBuffer, PayloadBufferSize);
++      AlignedBufferAllocated = TRUE;
++    } else {
++      AlignedBuffer = PayloadBuffer;
++    }
++  }
++
++  Status = ScsiSecurityProtocolOutCommand (
++            ScsiDiskDevice->ScsiIo,
++            Timeout,
++            ScsiDiskDevice->SenseData,
++            &SenseDataLength,
++            &HostAdapterStatus,
++            &TargetStatus,
++            SecurityProtocolId,
++            SecurityProtocolSpecificData,
++            (UINT32) PayloadBufferSize,
++            AlignedBuffer
++          );
++  if (EFI_ERROR (Status)) {
++    goto Done;
++  }
++
++  Status = CheckHostAdapterStatus (HostAdapterStatus);
++  if (EFI_ERROR (Status)) {
++    goto Done;
++  }
++
++  Status = CheckTargetStatus (TargetStatus);
++  if (EFI_ERROR (Status)) {
++    goto Done;
++  }
++
++Done:
++  if (AlignedBufferAllocated) {
++    FreeAlignedBuffer (AlignedBuffer, PayloadBufferSize);
++  }
++  gBS->RestoreTPL (OldTpl);
++  return Status;
++}
++
+ 
+ /**
+   Detect Device and read out capacity ,if error occurs, parse the sense key.
+@@ -2267,6 +2699,8 @@ ScsiDiskTestUnitReady (
+     return EFI_DEVICE_ERROR;
+   }
+ 
++  ScsiDiskDevice->BlkIo.Media->MediaPresent = TRUE;
++
+   if (SenseDataLength != 0) {
+     *NumberOfSenseKeys = SenseDataLength / sizeof (EFI_SCSI_SENSE_DATA);
+     *SenseDataArray    = ScsiDiskDevice->SenseData;
+@@ -2321,13 +2755,12 @@ DetectMediaParsingSenseKeys (
+   BOOLEAN RetryLater;
+ 
+   //
+-  // Default is to read capacity, unless..
++  // Default is no action
+   //
+-  *Action = ACTION_READ_CAPACITY;
++  *Action = ACTION_NO_ACTION;
+ 
+   if (NumberOfSenseKeys == 0) {
+     if (ScsiDiskDevice->BlkIo.Media->MediaPresent == TRUE) {
+-      *Action = ACTION_NO_ACTION;
+     }
+     return EFI_SUCCESS;
+   }
+@@ -2337,7 +2770,6 @@ DetectMediaParsingSenseKeys (
+     // No Sense Key returned from last submitted command
+     //
+     if (ScsiDiskDevice->BlkIo.Media->MediaPresent == TRUE) {
+-      *Action = ACTION_NO_ACTION;
+     }
+     return EFI_SUCCESS;
+   }
+@@ -2345,13 +2777,13 @@ DetectMediaParsingSenseKeys (
+   if (ScsiDiskIsNoMedia (SenseData, NumberOfSenseKeys)) {
+     ScsiDiskDevice->BlkIo.Media->MediaPresent = FALSE;
+     ScsiDiskDevice->BlkIo.Media->LastBlock    = 0;
+-    *Action = ACTION_NO_ACTION;
+     DEBUG ((EFI_D_VERBOSE, "ScsiDisk: ScsiDiskIsNoMedia\n"));
+     return EFI_SUCCESS;
+   }
+ 
+   if (ScsiDiskIsMediaChange (SenseData, NumberOfSenseKeys)) {
+     ScsiDiskDevice->BlkIo.Media->MediaId++;
++    *Action = ACTION_READ_CAPACITY;
+     DEBUG ((EFI_D_VERBOSE, "ScsiDisk: ScsiDiskIsMediaChange!\n"));
+     return EFI_SUCCESS;
+   }
+@@ -2380,7 +2812,6 @@ DetectMediaParsingSenseKeys (
+       DEBUG ((EFI_D_VERBOSE, "ScsiDisk: ScsiDiskDriveNotReady!\n"));
+       return EFI_SUCCESS;
+     }
+-    *Action = ACTION_NO_ACTION;
+     return EFI_DEVICE_ERROR;
+   }
+ 
+@@ -2814,8 +3245,6 @@ GetMediaInfo (
+       }
+     }
+   }
+-
+-  ScsiDiskDevice->BlkIo.Media->MediaPresent = TRUE;
+ }
+ 
+ /**
+@@ -5466,6 +5895,65 @@ Done:
+   return RetVal;
+ }
+ 
++/**
++  Determine if EFI Storage Security Command Protocol should be produced.
++
++  @param   ScsiDiskDevice    The pointer of SCSI_DISK_DEV.
++  @param   ChildHandle       Handle of device.
++
++  @retval  TRUE    Should produce EFI Storage Security Command Protocol.
++  @retval  FALSE   Should not produce EFI Storage Security Command Protocol.
++
++**/
++BOOLEAN
++DetermineInstallStorageSecurity (
++  IN  SCSI_DISK_DEV          *ScsiDiskDevice,
++  IN  EFI_HANDLE             ChildHandle
++  )
++{
++  EFI_STATUS                      Status;
++  UFS_DEVICE_PATH                 *UfsDevice;
++  BOOLEAN                         RetVal;
++  EFI_DEVICE_PATH_PROTOCOL        *DevicePathNode;
++
++  UfsDevice      = NULL;
++  RetVal         = TRUE;
++
++  Status = gBS->HandleProtocol (
++                  ChildHandle,
++                  &gEfiDevicePathProtocolGuid,
++                  (VOID **) &DevicePathNode
++                  );
++  //
++  // Device Path protocol must be installed on the device handle.
++  //
++  ASSERT_EFI_ERROR (Status);
++
++  while (!IsDevicePathEndType (DevicePathNode)) {
++    //
++    // For now, only support Storage Security Command Protocol on UFS devices.
++    //
++    if ((DevicePathNode->Type == MESSAGING_DEVICE_PATH) &&
++        (DevicePathNode->SubType == MSG_UFS_DP)) {
++      UfsDevice = (UFS_DEVICE_PATH *) DevicePathNode;
++      break;
++    }
++
++    DevicePathNode = NextDevicePathNode (DevicePathNode);
++  }
++  if (UfsDevice == NULL) {
++    RetVal = FALSE;
++    goto Done;
++  }
++
++  if (UfsDevice->Lun != UFS_WLUN_RPMB) {
++    RetVal = FALSE;
++  }
++
++Done:
++  return RetVal;
++}
++
+ /**
+   Provides inquiry information for the controller type.
+ 
+diff --git a/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.h b/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.h
+index bb6232676d..4731258018 100644
+--- a/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.h
++++ b/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDisk.h
+@@ -1,7 +1,7 @@
+ /** @file
+   Header file for SCSI Disk Driver.
+ 
+-Copyright (c) 2004 - 2018, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2004 - 2019, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+ which accompanies this distribution.  The full text of the license may be found at
+@@ -28,6 +28,7 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ #include <Protocol/ScsiPassThruExt.h>
+ #include <Protocol/ScsiPassThru.h>
+ #include <Protocol/DiskInfo.h>
++#include <Protocol/StorageSecurityCommand.h>
+ 
+ 
+ #include <Library/DebugLib.h>
+@@ -44,6 +45,10 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+ 
+ #define IS_DEVICE_FIXED(a)        (a)->FixedDevice ? 1 : 0
+ 
++#define IS_ALIGNED(addr, size)    (((UINTN) (addr) & (size - 1)) == 0)
++
++#define UFS_WLUN_RPMB 0xC4
++
+ typedef struct {
+   UINT32                    MaxLbaCnt;
+   UINT32                    MaxBlkDespCnt;
+@@ -57,6 +62,8 @@ typedef struct {
+ 
+   EFI_HANDLE                Handle;
+ 
++  EFI_STORAGE_SECURITY_COMMAND_PROTOCOL   StorageSecurity;
++
+   EFI_BLOCK_IO_PROTOCOL     BlkIo;
+   EFI_BLOCK_IO2_PROTOCOL    BlkIo2;
+   EFI_BLOCK_IO_MEDIA        BlkIoMedia;
+@@ -101,6 +108,7 @@ typedef struct {
+ #define SCSI_DISK_DEV_FROM_BLKIO(a)  CR (a, SCSI_DISK_DEV, BlkIo, SCSI_DISK_DEV_SIGNATURE)
+ #define SCSI_DISK_DEV_FROM_BLKIO2(a)  CR (a, SCSI_DISK_DEV, BlkIo2, SCSI_DISK_DEV_SIGNATURE)
+ #define SCSI_DISK_DEV_FROM_ERASEBLK(a)  CR (a, SCSI_DISK_DEV, EraseBlock, SCSI_DISK_DEV_SIGNATURE)
++#define SCSI_DISK_DEV_FROM_STORSEC(a)  CR (a, SCSI_DISK_DEV, StorageSecurity, SCSI_DISK_DEV_SIGNATURE)
+ 
+ #define SCSI_DISK_DEV_FROM_DISKINFO(a) CR (a, SCSI_DISK_DEV, DiskInfo, SCSI_DISK_DEV_SIGNATURE)
+ 
+@@ -644,6 +652,151 @@ ScsiDiskEraseBlocks (
+   );
+ 
+ 
++/**
++  Send a security protocol command to a device that receives data and/or the result
++  of one or more commands sent by SendData.
++
++  The ReceiveData function sends a security protocol command to the given MediaId.
++  The security protocol command sent is defined by SecurityProtocolId and contains
++  the security protocol specific data SecurityProtocolSpecificData. The function
++  returns the data from the security protocol command in PayloadBuffer.
++
++  For devices supporting the SCSI command set, the security protocol command is sent
++  using the SECURITY PROTOCOL IN command defined in SPC-4.
++
++  If PayloadBufferSize is too small to store the available data from the security
++  protocol command, the function shall copy PayloadBufferSize bytes into the
++  PayloadBuffer and return EFI_WARN_BUFFER_TOO_SMALL.
++
++  If PayloadBuffer or PayloadTransferSize is NULL and PayloadBufferSize is non-zero,
++  the function shall return EFI_INVALID_PARAMETER.
++
++  If the given MediaId does not support security protocol commands, the function shall
++  return EFI_UNSUPPORTED. If there is no media in the device, the function returns
++  EFI_NO_MEDIA. If the MediaId is not the ID for the current media in the device,
++  the function returns EFI_MEDIA_CHANGED.
++
++  If the security protocol fails to complete within the Timeout period, the function
++  shall return EFI_TIMEOUT.
++
++  If the security protocol command completes without an error, the function shall
++  return EFI_SUCCESS. If the security protocol command completes with an error, the
++  function shall return EFI_DEVICE_ERROR.
++
++  @param  This                         Indicates a pointer to the calling context.
++  @param  MediaId                      ID of the medium to receive data from.
++  @param  Timeout                      The timeout, in 100ns units, to use for the execution
++                                       of the security protocol command. A Timeout value of 0
++                                       means that this function will wait indefinitely for the
++                                       security protocol command to execute. If Timeout is greater
++                                       than zero, then this function will return EFI_TIMEOUT if the
++                                       time required to execute the receive data command is greater than Timeout.
++  @param  SecurityProtocolId           The value of the "Security Protocol" parameter of
++                                       the security protocol command to be sent.
++  @param  SecurityProtocolSpecificData The value of the "Security Protocol Specific" parameter
++                                       of the security protocol command to be sent.
++  @param  PayloadBufferSize            Size in bytes of the payload data buffer.
++  @param  PayloadBuffer                A pointer to a destination buffer to store the security
++                                       protocol command specific payload data for the security
++                                       protocol command. The caller is responsible for having
++                                       either implicit or explicit ownership of the buffer.
++  @param  PayloadTransferSize          A pointer to a buffer to store the size in bytes of the
++                                       data written to the payload data buffer.
++
++  @retval EFI_SUCCESS                  The security protocol command completed successfully.
++  @retval EFI_WARN_BUFFER_TOO_SMALL    The PayloadBufferSize was too small to store the available
++                                       data from the device. The PayloadBuffer contains the truncated data.
++  @retval EFI_UNSUPPORTED              The given MediaId does not support security protocol commands.
++  @retval EFI_DEVICE_ERROR             The security protocol command completed with an error.
++  @retval EFI_NO_MEDIA                 There is no media in the device.
++  @retval EFI_MEDIA_CHANGED            The MediaId is not for the current media.
++  @retval EFI_INVALID_PARAMETER        The PayloadBuffer or PayloadTransferSize is NULL and
++                                       PayloadBufferSize is non-zero.
++  @retval EFI_TIMEOUT                  A timeout occurred while waiting for the security
++                                       protocol command to execute.
++
++**/
++EFI_STATUS
++EFIAPI
++ScsiDiskReceiveData (
++  IN EFI_STORAGE_SECURITY_COMMAND_PROTOCOL    *This,
++  IN UINT32                                   MediaId   OPTIONAL,
++  IN UINT64                                   Timeout,
++  IN UINT8                                    SecurityProtocolId,
++  IN UINT16                                   SecurityProtocolSpecificData,
++  IN UINTN                                    PayloadBufferSize,
++  OUT VOID                                    *PayloadBuffer,
++  OUT UINTN                                   *PayloadTransferSize
++  );
++
++/**
++  Send a security protocol command to a device.
++
++  The SendData function sends a security protocol command containing the payload
++  PayloadBuffer to the given MediaId. The security protocol command sent is
++  defined by SecurityProtocolId and contains the security protocol specific data
++  SecurityProtocolSpecificData. If the underlying protocol command requires a
++  specific padding for the command payload, the SendData function shall add padding
++  bytes to the command payload to satisfy the padding requirements.
++
++  For devices supporting the SCSI command set, the security protocol command is sent
++  using the SECURITY PROTOCOL OUT command defined in SPC-4.
++
++  If PayloadBuffer is NULL and PayloadBufferSize is non-zero, the function shall
++  return EFI_INVALID_PARAMETER.
++
++  If the given MediaId does not support security protocol commands, the function
++  shall return EFI_UNSUPPORTED. If there is no media in the device, the function
++  returns EFI_NO_MEDIA. If the MediaId is not the ID for the current media in the
++  device, the function returns EFI_MEDIA_CHANGED.
++
++  If the security protocol fails to complete within the Timeout period, the function
++  shall return EFI_TIMEOUT.
++
++  If the security protocol command completes without an error, the function shall return
++  EFI_SUCCESS. If the security protocol command completes with an error, the function
++  shall return EFI_DEVICE_ERROR.
++
++  @param  This                         Indicates a pointer to the calling context.
++  @param  MediaId                      ID of the medium to receive data from.
++  @param  Timeout                      The timeout, in 100ns units, to use for the execution
++                                       of the security protocol command. A Timeout value of 0
++                                       means that this function will wait indefinitely for the
++                                       security protocol command to execute. If Timeout is greater
++                                       than zero, then this function will return EFI_TIMEOUT if the
++                                       time required to execute the receive data command is greater than Timeout.
++  @param  SecurityProtocolId           The value of the "Security Protocol" parameter of
++                                       the security protocol command to be sent.
++  @param  SecurityProtocolSpecificData The value of the "Security Protocol Specific" parameter
++                                       of the security protocol command to be sent.
++  @param  PayloadBufferSize            Size in bytes of the payload data buffer.
++  @param  PayloadBuffer                A pointer to a destination buffer to store the security
++                                       protocol command specific payload data for the security
++                                       protocol command.
++
++  @retval EFI_SUCCESS                  The security protocol command completed successfully.
++  @retval EFI_UNSUPPORTED              The given MediaId does not support security protocol commands.
++  @retval EFI_DEVICE_ERROR             The security protocol command completed with an error.
++  @retval EFI_NO_MEDIA                 There is no media in the device.
++  @retval EFI_MEDIA_CHANGED            The MediaId is not for the current media.
++  @retval EFI_INVALID_PARAMETER        The PayloadBuffer is NULL and PayloadBufferSize is non-zero.
++  @retval EFI_TIMEOUT                  A timeout occurred while waiting for the security
++                                       protocol command to execute.
++
++**/
++EFI_STATUS
++EFIAPI
++ScsiDiskSendData (
++  IN EFI_STORAGE_SECURITY_COMMAND_PROTOCOL    *This,
++  IN UINT32                                   MediaId   OPTIONAL,
++  IN UINT64                                   Timeout,
++  IN UINT8                                    SecurityProtocolId,
++  IN UINT16                                   SecurityProtocolSpecificData,
++  IN UINTN                                    PayloadBufferSize,
++  OUT VOID                                    *PayloadBuffer
++  );
++
++
+ /**
+   Provides inquiry information for the controller type.
+ 
+@@ -1434,4 +1587,20 @@ DetermineInstallEraseBlock (
+   IN  EFI_HANDLE             ChildHandle
+   );
+ 
++/**
++  Determine if EFI Storage Security Command Protocol should be produced.
++
++  @param   ScsiDiskDevice    The pointer of SCSI_DISK_DEV.
++  @param   ChildHandle       Handle of device.
++
++  @retval  TRUE    Should produce EFI Storage Security Command Protocol.
++  @retval  FALSE   Should not produce EFI Storage Security Command Protocol.
++
++**/
++BOOLEAN
++DetermineInstallStorageSecurity (
++  IN  SCSI_DISK_DEV          *ScsiDiskDevice,
++  IN  EFI_HANDLE             ChildHandle
++  );
++
+ #endif
+diff --git a/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf b/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
+index 14010802a8..2122aa4b01 100644
+--- a/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
++++ b/MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
+@@ -3,7 +3,7 @@
+ #  It detects the SCSI disk media and installs Block I/O and Block I/O2 Protocol on
+ #  the device handle.
+ #
+-#  Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+ #  This program and the accompanying materials
+ #  are licensed and made available under the terms and conditions of the BSD License
+ #  which accompanies this distribution.  The full text of the license may be found at
+@@ -58,6 +58,7 @@
+   gEfiBlockIoProtocolGuid                       ## BY_START
+   gEfiBlockIo2ProtocolGuid                      ## BY_START
+   gEfiEraseBlockProtocolGuid                    ## BY_START
++  gEfiStorageSecurityCommandProtocolGuid        ## BY_START
+   gEfiScsiIoProtocolGuid                        ## TO_START
+   gEfiScsiPassThruProtocolGuid                  ## TO_START
+   gEfiExtScsiPassThruProtocolGuid               ## TO_START
+diff --git a/MdeModulePkg/Bus/Ufs/UfsPassThruDxe/UfsPassThru.c b/MdeModulePkg/Bus/Ufs/UfsPassThruDxe/UfsPassThru.c
+index ea329618dc..6ed5da21fd 100644
+--- a/MdeModulePkg/Bus/Ufs/UfsPassThruDxe/UfsPassThru.c
++++ b/MdeModulePkg/Bus/Ufs/UfsPassThruDxe/UfsPassThru.c
+@@ -1,6 +1,6 @@
+ /** @file
+ 
+-  Copyright (c) 2014 - 2018, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2014 - 2019, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -825,7 +825,9 @@ UfsPassThruDriverBindingStart (
+   UINTN                                 UfsHcBase;
+   UINT32                                Index;
+   UFS_UNIT_DESC                         UnitDescriptor;
++  UFS_DEV_DESC                          DeviceDescriptor;
+   UINT32                                UnitDescriptorSize;
++  UINT32                                DeviceDescriptorSize;
+ 
+   Status    = EFI_SUCCESS;
+   UfsHc     = NULL;
+@@ -900,7 +902,6 @@ UfsPassThruDriverBindingStart (
+ 
+   //
+   // Check if 8 common luns are active and set corresponding bit mask.
+-  // TODO: Parse device descriptor to decide if exposing RPMB LUN to upper layer for authentication access.
+   //
+   UnitDescriptorSize = sizeof (UFS_UNIT_DESC);
+   for (Index = 0; Index < 8; Index++) {
+@@ -915,6 +916,20 @@ UfsPassThruDriverBindingStart (
+     }
+   }
+ 
++  //
++  // Check if RPMB WLUN is supported and set corresponding bit mask.
++  //
++  DeviceDescriptorSize = sizeof (UFS_DEV_DESC);
++  Status = UfsRwDeviceDesc (Private, TRUE, UfsDeviceDesc, 0, 0, &DeviceDescriptor, &DeviceDescriptorSize);
++  if (EFI_ERROR (Status)) {
++    DEBUG ((DEBUG_ERROR, "Failed to read device descriptor, status = %r\n", Status));
++  } else {
++    if (DeviceDescriptor.SecurityLun == 0x1) {
++      DEBUG ((DEBUG_INFO, "UFS WLUN RPMB is supported\n"));
++      Private->Luns.BitMask |= BIT11;
++    }
++  }
++
+   //
+   // Start the asynchronous interrupt monitor
+   //
+diff --git a/MdePkg/Include/IndustryStandard/Scsi.h b/MdePkg/Include/IndustryStandard/Scsi.h
+index 213d8acc2d..59509a0256 100644
+--- a/MdePkg/Include/IndustryStandard/Scsi.h
++++ b/MdePkg/Include/IndustryStandard/Scsi.h
+@@ -1,7 +1,7 @@
+ /** @file
+   Support for SCSI-2 standard
+ 
+-  Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -169,6 +169,12 @@
+ #define EFI_SCSI_OP_SEND_MESSAGE10  0x2a
+ #define EFI_SCSI_OP_SEND_MESSAGE12  0xaa
+ 
++//
++// Additional commands for Secure Transactions
++//
++#define EFI_SCSI_OP_SECURITY_PROTOCOL_IN  0xa2
++#define EFI_SCSI_OP_SECURITY_PROTOCOL_OUT 0xb5
++
+ //
+ // SCSI Data Transfer Direction
+ //
+@@ -178,22 +184,30 @@
+ //
+ // Peripheral Device Type Definitions
+ //
+-#define EFI_SCSI_TYPE_DISK          0x00  ///< Direct-access device (e.g. magnetic disk)
+-#define EFI_SCSI_TYPE_TAPE          0x01  ///< Sequential-access device (e.g. magnetic tape)
+-#define EFI_SCSI_TYPE_PRINTER       0x02  ///< Printer device
+-#define EFI_SCSI_TYPE_PROCESSOR     0x03  ///< Processor device
+-#define EFI_SCSI_TYPE_WORM          0x04  ///< Write-once device (e.g. some optical disks)
+-#define EFI_SCSI_TYPE_CDROM         0x05  ///< CD-ROM device
+-#define EFI_SCSI_TYPE_SCANNER       0x06  ///< Scanner device
+-#define EFI_SCSI_TYPE_OPTICAL       0x07  ///< Optical memory device (e.g. some optical disks)
+-#define EFI_SCSI_TYPE_MEDIUMCHANGER 0x08  ///< Medium changer device (e.g. jukeboxes)
+-#define EFI_SCSI_TYPE_COMMUNICATION 0x09  ///< Communications device
+-#define EFI_SCSI_TYPE_ASCIT8_1      0x0A  ///< Defined by ASC IT8 (Graphic arts pre-press devices)
+-#define EFI_SCSI_TYPE_ASCIT8_2      0x0B  ///< Defined by ASC IT8 (Graphic arts pre-press devices)
+-//
+-// 0Ch - 1Eh are reserved
+-//
+-#define EFI_SCSI_TYPE_UNKNOWN       0x1F  ///< Unknown or no device type
++#define EFI_SCSI_TYPE_DISK            0x00  ///< Direct-access device (e.g. magnetic disk)
++#define EFI_SCSI_TYPE_TAPE            0x01  ///< Sequential-access device (e.g. magnetic tape)
++#define EFI_SCSI_TYPE_PRINTER         0x02  ///< Printer device
++#define EFI_SCSI_TYPE_PROCESSOR       0x03  ///< Processor device
++#define EFI_SCSI_TYPE_WORM            0x04  ///< Write-once device (e.g. some optical disks)
++#define EFI_SCSI_TYPE_CDROM           0x05  ///< CD/DVD device
++#define EFI_SCSI_TYPE_SCANNER         0x06  ///< Scanner device (obsolete)
++#define EFI_SCSI_TYPE_OPTICAL         0x07  ///< Optical memory device (e.g. some optical disks)
++#define EFI_SCSI_TYPE_MEDIUMCHANGER   0x08  ///< Medium changer device (e.g. jukeboxes)
++#define EFI_SCSI_TYPE_COMMUNICATION   0x09  ///< Communications device (obsolete)
++#define EFI_SCSI_TYPE_A               0x0A  ///< Obsolete
++#define EFI_SCSI_TYPE_B               0x0B  ///< Obsolete
++#define EFI_SCSI_TYPE_RAID            0x0C  ///< Storage array controller device (e.g., RAID)
++#define EFI_SCSI_TYPE_SES             0x0D  ///< Enclosure services device
++#define EFI_SCSI_TYPE_RBC             0x0E  ///< Simplified direct-access device (e.g., magnetic disk)
++#define EFI_SCSI_TYPE_OCRW            0x0F  ///< Optical card reader/writer device
++#define EFI_SCSI_TYPE_BRIDGE          0x10  ///< Bridge Controller Commands
++#define EFI_SCSI_TYPE_OSD             0x11  ///< Object-based Storage Device
++#define EFI_SCSI_TYPE_AUTOMATION      0x12  ///< Automation/Drive Interface
++#define EFI_SCSI_TYPE_SECURITYMANAGER 0x13  ///< Security manager device
++#define EFI_SCSI_TYPE_RESERVED_LOW    0x14  ///< Reserved (low)
++#define EFI_SCSI_TYPE_RESERVED_HIGH   0x1D  ///< Reserved (high)
++#define EFI_SCSI_TYPE_WLUN            0x1E  ///< Well known logical unit
++#define EFI_SCSI_TYPE_UNKNOWN         0x1F  ///< Unknown or no device type
+ 
+ //
+ // Page Codes for INQUIRY command
+diff --git a/MdePkg/Include/Library/UefiScsiLib.h b/MdePkg/Include/Library/UefiScsiLib.h
+index dbb248972b..594f495d7d 100644
+--- a/MdePkg/Include/Library/UefiScsiLib.h
++++ b/MdePkg/Include/Library/UefiScsiLib.h
+@@ -5,7 +5,7 @@
+   for hard drive, CD and DVD devices that are the most common SCSI boot targets used by UEFI platforms.
+   This library class depends on SCSI I/O Protocol defined in UEFI Specification and SCSI-2 industry standard.
+ 
+-Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials
+ are licensed and made available under the terms and conditions of the BSD License
+ which accompanies this distribution.  The full text of the license may be found at
+@@ -819,6 +819,130 @@ ScsiWrite16Command (
+   );
+ 
+ 
++/**
++  Execute Security Protocol In SCSI command on a specific SCSI target.
++
++  Executes the SCSI Security Protocol In command on the SCSI target specified by ScsiIo.
++  If Timeout is zero, then this function waits indefinitely for the command to complete.
++  If Timeout is greater than zero, then the command is executed and will timeout after
++  Timeout 100 ns units.  The StartLba and SectorSize parameters are used to construct
++  the CDB for this SCSI command.
++  If ScsiIo is NULL, then ASSERT().
++  If SenseDataLength is NULL, then ASSERT().
++  If HostAdapterStatus is NULL, then ASSERT().
++  If TargetStatus is NULL, then ASSERT().
++  If DataLength is NULL, then ASSERT().
++
++  If SenseDataLength is non-zero and SenseData is not NULL, SenseData must meet buffer
++  alignment requirement defined in EFI_SCSI_IO_PROTOCOL. Otherwise EFI_INVALID_PARAMETER
++  gets returned.
++
++  If DataLength is non-zero and DataBuffer is not NULL, DataBuffer must meet buffer
++  alignment requirement defined in EFI_SCSI_IO_PROTOCOL. Otherwise EFI_INVALID_PARAMETER
++  gets returned.
++
++  @param[in]      ScsiIo               SCSI IO Protocol to use.
++  @param[in]      Timeout              The length of timeout period.
++  @param[in, out] SenseData            A pointer to output sense data.
++  @param[in, out] SenseDataLength      The length of output sense data.
++  @param[out]     HostAdapterStatus    The status of Host Adapter.
++  @param[out]     TargetStatus         The status of the target.
++  @param[in]      SecurityProtocol     The Security Protocol to use.
++  @param[in]      SecurityProtocolSpecific  The Security Protocol Specific data.
++  @param[in]      TransferLength       The size in bytes of the data allocation.
++  @param[in, out] DataBuffer           A pointer to a data buffer.
++  @param[in, out] DataLength           The length of data buffer.
++
++  @retval  EFI_SUCCESS                 Command is executed successfully.
++  @retval  EFI_BAD_BUFFER_SIZE         The SCSI Request Packet was executed, but the entire DataBuffer could
++                                       not be transferred. The actual number of bytes transferred is returned in DataLength.
++  @retval  EFI_NOT_READY               The SCSI Request Packet could not be sent because there are too many
++                                       SCSI Command Packets already queued.
++  @retval  EFI_DEVICE_ERROR            A device error occurred while attempting to send SCSI Request Packet.
++  @retval  EFI_UNSUPPORTED             The command described by the SCSI Request Packet is not supported by
++                                       the SCSI initiator(i.e., SCSI  Host Controller)
++  @retval  EFI_TIMEOUT                 A timeout occurred while waiting for the SCSI Request Packet to execute.
++  @retval  EFI_INVALID_PARAMETER       The contents of the SCSI Request Packet are invalid.
++
++**/
++EFI_STATUS
++EFIAPI
++ScsiSecurityProtocolInCommand (
++  IN     EFI_SCSI_IO_PROTOCOL  *ScsiIo,
++  IN     UINT64                Timeout,
++  IN OUT VOID                  *SenseData,   OPTIONAL
++  IN OUT UINT8                 *SenseDataLength,
++     OUT UINT8                 *HostAdapterStatus,
++     OUT UINT8                 *TargetStatus,
++  IN     UINT8                 SecurityProtocol,
++  IN     UINT16                SecurityProtocolSpecific,
++  IN     UINT32                TransferLength,
++  IN OUT VOID                  *DataBuffer,  OPTIONAL
++  IN OUT UINT32                *DataLength
++  );
++
++
++/**
++  Execute Security Protocol Out SCSI command on a specific SCSI target.
++
++  Executes the SCSI Security Protocol Out command on the SCSI target specified by ScsiIo.
++  If Timeout is zero, then this function waits indefinitely for the command to complete.
++  If Timeout is greater than zero, then the command is executed and will timeout after
++  Timeout 100 ns units.  The StartLba and SectorSize parameters are used to construct
++  the CDB for this SCSI command.
++  If ScsiIo is NULL, then ASSERT().
++  If SenseDataLength is NULL, then ASSERT().
++  If HostAdapterStatus is NULL, then ASSERT().
++  If TargetStatus is NULL, then ASSERT().
++  If DataLength is NULL, then ASSERT().
++
++  If SenseDataLength is non-zero and SenseData is not NULL, SenseData must meet buffer
++  alignment requirement defined in EFI_SCSI_IO_PROTOCOL. Otherwise EFI_INVALID_PARAMETER
++  gets returned.
++
++  If DataLength is non-zero and DataBuffer is not NULL, DataBuffer must meet buffer
++  alignment requirement defined in EFI_SCSI_IO_PROTOCOL. Otherwise EFI_INVALID_PARAMETER
++  gets returned.
++
++  @param[in]      ScsiIo               SCSI IO Protocol to use.
++  @param[in]      Timeout              The length of timeout period.
++  @param[in, out] SenseData            A pointer to output sense data.
++  @param[in, out] SenseDataLength      The length of output sense data.
++  @param[out]     HostAdapterStatus    The status of Host Adapter.
++  @param[out]     TargetStatus         The status of the target.
++  @param[in]      SecurityProtocol     The Security Protocol to use.
++  @param[in]      SecurityProtocolSpecific  The Security Protocol Specific data.
++  @param[in]      TransferLength       The size in bytes of the transfer data.
++  @param[in, out] DataBuffer           A pointer to a data buffer.
++
++  @retval  EFI_SUCCESS                 Command is executed successfully.
++  @retval  EFI_BAD_BUFFER_SIZE         The SCSI Request Packet was executed, but the entire DataBuffer could
++                                       not be transferred. The actual number of bytes transferred is returned in DataLength.
++  @retval  EFI_NOT_READY               The SCSI Request Packet could not be sent because there are too many
++                                       SCSI Command Packets already queued.
++  @retval  EFI_DEVICE_ERROR            A device error occurred while attempting to send SCSI Request Packet.
++  @retval  EFI_UNSUPPORTED             The command described by the SCSI Request Packet is not supported by
++                                       the SCSI initiator(i.e., SCSI  Host Controller)
++  @retval  EFI_TIMEOUT                 A timeout occurred while waiting for the SCSI Request Packet to execute.
++  @retval  EFI_INVALID_PARAMETER       The contents of the SCSI Request Packet are invalid.
++
++**/
++EFI_STATUS
++EFIAPI
++ScsiSecurityProtocolOutCommand (
++  IN     EFI_SCSI_IO_PROTOCOL  *ScsiIo,
++  IN     UINT64                Timeout,
++  IN OUT VOID                  *SenseData,   OPTIONAL
++  IN OUT UINT8                 *SenseDataLength,
++     OUT UINT8                 *HostAdapterStatus,
++     OUT UINT8                 *TargetStatus,
++  IN     UINT8                 SecurityProtocol,
++  IN     UINT16                SecurityProtocolSpecific,
++  IN     UINT32                TransferLength,
++  IN OUT VOID                  *DataBuffer  OPTIONAL
++  );
++
++
+ /**
+   Execute blocking/non-blocking Read(10) SCSI command on a specific SCSI
+   target.
+diff --git a/MdePkg/Include/Protocol/ScsiIo.h b/MdePkg/Include/Protocol/ScsiIo.h
+index 1e7bc86b29..cddf395cb1 100644
+--- a/MdePkg/Include/Protocol/ScsiIo.h
++++ b/MdePkg/Include/Protocol/ScsiIo.h
+@@ -4,7 +4,7 @@
+   services environment to access SCSI devices. In particular, functions for
+   managing devices on SCSI buses are defined here.
+ 
+-  Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -49,8 +49,11 @@ typedef struct _EFI_SCSI_IO_PROTOCOL EFI_SCSI_IO_PROTOCOL;
+ #define MFI_SCSI_IO_TYPE_OCRW                                  0x0F    ///< Optical card reader/writer device
+ #define MFI_SCSI_IO_TYPE_BRIDGE                                0x10    ///< Bridge Controller Commands
+ #define MFI_SCSI_IO_TYPE_OSD                                   0x11    ///< Object-based Storage Device
+-#define EFI_SCSI_IO_TYPE_RESERVED_LOW                          0x12    ///< Reserved (low)
+-#define EFI_SCSI_IO_TYPE_RESERVED_HIGH                         0x1E    ///< Reserved (high)
++#define MFI_SCSI_IO_TYPE_AUTOMATION                            0x12    ///< Automation/Drive Interface
++#define MFI_SCSI_IO_TYPE_SECURITYMANAGER                       0x13    ///< Security manager device
++#define EFI_SCSI_IO_TYPE_RESERVED_LOW                          0x14    ///< Reserved (low)
++#define EFI_SCSI_IO_TYPE_RESERVED_HIGH                         0x1D    ///< Reserved (high)
++#define EFI_SCSI_IO_TYPE_WLUN                                  0x1E    ///< Well known logical unit
+ #define EFI_SCSI_IO_TYPE_UNKNOWN                               0x1F    ///< Unknown no device type
+ 
+ //
+diff --git a/MdePkg/Library/UefiScsiLib/UefiScsiLib.c b/MdePkg/Library/UefiScsiLib/UefiScsiLib.c
+index 62a73e2773..b7b83a7ab6 100644
+--- a/MdePkg/Library/UefiScsiLib/UefiScsiLib.c
++++ b/MdePkg/Library/UefiScsiLib/UefiScsiLib.c
+@@ -1,7 +1,7 @@
+ /** @file
+   UEFI SCSI Library implementation
+ 
+-  Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+   This program and the accompanying materials
+   are licensed and made available under the terms and conditions of the BSD License
+   which accompanies this distribution.  The full text of the license may be found at
+@@ -29,6 +29,7 @@
+   //
+ #define EFI_SCSI_OP_LENGTH_SIX      0x6
+ #define EFI_SCSI_OP_LENGTH_TEN      0xa
++#define EFI_SCSI_OP_LENGTH_TWELVE   0xc
+ #define EFI_SCSI_OP_LENGTH_SIXTEEN  0x10
+ 
+ //
+@@ -1286,6 +1287,208 @@ ScsiWrite16Command (
+ }
+ 
+ 
++/**
++  Execute Security Protocol In SCSI command on a specific SCSI target.
++
++  Executes the SCSI Security Protocol In command on the SCSI target specified by ScsiIo.
++  If Timeout is zero, then this function waits indefinitely for the command to complete.
++  If Timeout is greater than zero, then the command is executed and will timeout after
++  Timeout 100 ns units.  The StartLba and SectorSize parameters are used to construct
++  the CDB for this SCSI command.
++  If ScsiIo is NULL, then ASSERT().
++  If SenseDataLength is NULL, then ASSERT().
++  If HostAdapterStatus is NULL, then ASSERT().
++  If TargetStatus is NULL, then ASSERT().
++  If DataLength is NULL, then ASSERT().
++
++  If SenseDataLength is non-zero and SenseData is not NULL, SenseData must meet buffer
++  alignment requirement defined in EFI_SCSI_IO_PROTOCOL. Otherwise EFI_INVALID_PARAMETER
++  gets returned.
++
++  If DataLength is non-zero and DataBuffer is not NULL, DataBuffer must meet buffer
++  alignment requirement defined in EFI_SCSI_IO_PROTOCOL. Otherwise EFI_INVALID_PARAMETER
++  gets returned.
++
++  @param[in]      ScsiIo               SCSI IO Protocol to use.
++  @param[in]      Timeout              The length of timeout period.
++  @param[in, out] SenseData            A pointer to output sense data.
++  @param[in, out] SenseDataLength      The length of output sense data.
++  @param[out]     HostAdapterStatus    The status of Host Adapter.
++  @param[out]     TargetStatus         The status of the target.
++  @param[in]      SecurityProtocol     The Security Protocol to use.
++  @param[in]      SecurityProtocolSpecific  The Security Protocol Specific data.
++  @param[in]      TransferLength       The size in bytes of the data allocation.
++  @param[in, out] DataBuffer           A pointer to a data buffer.
++  @param[in, out] DataLength           The length of data buffer.
++
++  @retval  EFI_SUCCESS                 Command is executed successfully.
++  @retval  EFI_BAD_BUFFER_SIZE         The SCSI Request Packet was executed, but the entire DataBuffer could
++                                       not be transferred. The actual number of bytes transferred is returned in DataLength.
++  @retval  EFI_NOT_READY               The SCSI Request Packet could not be sent because there are too many
++                                       SCSI Command Packets already queued.
++  @retval  EFI_DEVICE_ERROR            A device error occurred while attempting to send SCSI Request Packet.
++  @retval  EFI_UNSUPPORTED             The command described by the SCSI Request Packet is not supported by
++                                       the SCSI initiator(i.e., SCSI  Host Controller)
++  @retval  EFI_TIMEOUT                 A timeout occurred while waiting for the SCSI Request Packet to execute.
++  @retval  EFI_INVALID_PARAMETER       The contents of the SCSI Request Packet are invalid.
++
++**/
++EFI_STATUS
++EFIAPI
++ScsiSecurityProtocolInCommand (
++  IN     EFI_SCSI_IO_PROTOCOL  *ScsiIo,
++  IN     UINT64                Timeout,
++  IN OUT VOID                  *SenseData,   OPTIONAL
++  IN OUT UINT8                 *SenseDataLength,
++     OUT UINT8                 *HostAdapterStatus,
++     OUT UINT8                 *TargetStatus,
++  IN     UINT8                 SecurityProtocol,
++  IN     UINT16                SecurityProtocolSpecific,
++  IN     UINT32                TransferLength,
++  IN OUT VOID                  *DataBuffer,  OPTIONAL
++  IN OUT UINT32                *DataLength
++  )
++{
++  EFI_SCSI_IO_SCSI_REQUEST_PACKET CommandPacket;
++  EFI_STATUS                      Status;
++  UINT8                           Cdb[EFI_SCSI_OP_LENGTH_TWELVE];
++
++  ASSERT (SenseDataLength != NULL);
++  ASSERT (HostAdapterStatus != NULL);
++  ASSERT (TargetStatus != NULL);
++  ASSERT (DataLength != NULL);
++  ASSERT (ScsiIo != NULL);
++
++  ZeroMem (&CommandPacket, sizeof (EFI_SCSI_IO_SCSI_REQUEST_PACKET));
++  ZeroMem (Cdb, EFI_SCSI_OP_LENGTH_TWELVE);
++
++  CommandPacket.Timeout           = Timeout;
++  CommandPacket.InDataBuffer      = DataBuffer;
++  CommandPacket.SenseData         = SenseData;
++  CommandPacket.InTransferLength  = TransferLength;
++  CommandPacket.Cdb               = Cdb;
++  //
++  // Fill Cdb for Security Protocol In Command
++  //
++  Cdb[0]                        = EFI_SCSI_OP_SECURITY_PROTOCOL_IN;
++  Cdb[1]                        = SecurityProtocol;
++  WriteUnaligned16 ((UINT16 *)&Cdb[2], SwapBytes16 (SecurityProtocolSpecific));
++  WriteUnaligned32 ((UINT32 *)&Cdb[6], SwapBytes32 (TransferLength));
++
++  CommandPacket.CdbLength       = EFI_SCSI_OP_LENGTH_TWELVE;
++  CommandPacket.DataDirection   = EFI_SCSI_DATA_IN;
++  CommandPacket.SenseDataLength = *SenseDataLength;
++
++  Status                        = ScsiIo->ExecuteScsiCommand (ScsiIo, &CommandPacket, NULL);
++
++  *HostAdapterStatus            = CommandPacket.HostAdapterStatus;
++  *TargetStatus                 = CommandPacket.TargetStatus;
++  *SenseDataLength              = CommandPacket.SenseDataLength;
++  *DataLength                   = CommandPacket.InTransferLength;
++
++  return Status;
++}
++
++
++/**
++  Execute Security Protocol Out SCSI command on a specific SCSI target.
++
++  Executes the SCSI Security Protocol Out command on the SCSI target specified by ScsiIo.
++  If Timeout is zero, then this function waits indefinitely for the command to complete.
++  If Timeout is greater than zero, then the command is executed and will timeout after
++  Timeout 100 ns units.  The StartLba and SectorSize parameters are used to construct
++  the CDB for this SCSI command.
++  If ScsiIo is NULL, then ASSERT().
++  If SenseDataLength is NULL, then ASSERT().
++  If HostAdapterStatus is NULL, then ASSERT().
++  If TargetStatus is NULL, then ASSERT().
++  If DataLength is NULL, then ASSERT().
++
++  If SenseDataLength is non-zero and SenseData is not NULL, SenseData must meet buffer
++  alignment requirement defined in EFI_SCSI_IO_PROTOCOL. Otherwise EFI_INVALID_PARAMETER
++  gets returned.
++
++  If DataLength is non-zero and DataBuffer is not NULL, DataBuffer must meet buffer
++  alignment requirement defined in EFI_SCSI_IO_PROTOCOL. Otherwise EFI_INVALID_PARAMETER
++  gets returned.
++
++  @param[in]      ScsiIo               SCSI IO Protocol to use.
++  @param[in]      Timeout              The length of timeout period.
++  @param[in, out] SenseData            A pointer to output sense data.
++  @param[in, out] SenseDataLength      The length of output sense data.
++  @param[out]     HostAdapterStatus    The status of Host Adapter.
++  @param[out]     TargetStatus         The status of the target.
++  @param[in]      SecurityProtocol     The Security Protocol to use.
++  @param[in]      SecurityProtocolSpecific  The Security Protocol Specific data.
++  @param[in]      TransferLength       The size in bytes of the transfer data.
++  @param[in, out] DataBuffer           A pointer to a data buffer.
++
++  @retval  EFI_SUCCESS                 Command is executed successfully.
++  @retval  EFI_BAD_BUFFER_SIZE         The SCSI Request Packet was executed, but the entire DataBuffer could
++                                       not be transferred. The actual number of bytes transferred is returned in DataLength.
++  @retval  EFI_NOT_READY               The SCSI Request Packet could not be sent because there are too many
++                                       SCSI Command Packets already queued.
++  @retval  EFI_DEVICE_ERROR            A device error occurred while attempting to send SCSI Request Packet.
++  @retval  EFI_UNSUPPORTED             The command described by the SCSI Request Packet is not supported by
++                                       the SCSI initiator(i.e., SCSI  Host Controller)
++  @retval  EFI_TIMEOUT                 A timeout occurred while waiting for the SCSI Request Packet to execute.
++  @retval  EFI_INVALID_PARAMETER       The contents of the SCSI Request Packet are invalid.
++
++**/
++EFI_STATUS
++EFIAPI
++ScsiSecurityProtocolOutCommand (
++  IN     EFI_SCSI_IO_PROTOCOL  *ScsiIo,
++  IN     UINT64                Timeout,
++  IN OUT VOID                  *SenseData,   OPTIONAL
++  IN OUT UINT8                 *SenseDataLength,
++     OUT UINT8                 *HostAdapterStatus,
++     OUT UINT8                 *TargetStatus,
++  IN     UINT8                 SecurityProtocol,
++  IN     UINT16                SecurityProtocolSpecific,
++  IN     UINT32                TransferLength,
++  IN OUT VOID                  *DataBuffer   OPTIONAL
++  )
++{
++  EFI_SCSI_IO_SCSI_REQUEST_PACKET CommandPacket;
++  EFI_STATUS                      Status;
++  UINT8                           Cdb[EFI_SCSI_OP_LENGTH_TWELVE];
++
++  ASSERT (SenseDataLength != NULL);
++  ASSERT (HostAdapterStatus != NULL);
++  ASSERT (TargetStatus != NULL);
++  ASSERT (ScsiIo != NULL);
++
++  ZeroMem (&CommandPacket, sizeof (EFI_SCSI_IO_SCSI_REQUEST_PACKET));
++  ZeroMem (Cdb, EFI_SCSI_OP_LENGTH_TWELVE);
++
++  CommandPacket.Timeout           = Timeout;
++  CommandPacket.OutDataBuffer     = DataBuffer;
++  CommandPacket.SenseData         = SenseData;
++  CommandPacket.OutTransferLength = TransferLength;
++  CommandPacket.Cdb               = Cdb;
++  //
++  // Fill Cdb for Security Protocol Out Command
++  //
++  Cdb[0]                        = EFI_SCSI_OP_SECURITY_PROTOCOL_OUT;
++  Cdb[1]                        = SecurityProtocol;
++  WriteUnaligned16 ((UINT16 *)&Cdb[2], SwapBytes16 (SecurityProtocolSpecific));
++  WriteUnaligned32 ((UINT32 *)&Cdb[6], SwapBytes32 (TransferLength));
++
++  CommandPacket.CdbLength       = EFI_SCSI_OP_LENGTH_TWELVE;
++  CommandPacket.DataDirection   = EFI_SCSI_DATA_OUT;
++  CommandPacket.SenseDataLength = *SenseDataLength;
++
++  Status                        = ScsiIo->ExecuteScsiCommand (ScsiIo, &CommandPacket, NULL);
++
++  *HostAdapterStatus            = CommandPacket.HostAdapterStatus;
++  *TargetStatus                 = CommandPacket.TargetStatus;
++  *SenseDataLength              = CommandPacket.SenseDataLength;
++
++  return Status;
++}
++
++
+ /**
+   Internal helper notify function in which update the result of the
+   non-blocking SCSI Read/Write commands and signal caller event.
+-- 
+2.16.2.windows.1
+

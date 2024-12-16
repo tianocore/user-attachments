@@ -1,0 +1,155 @@
+From 74f83c93f9264452d5bb67103bfd71dcda742a64 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:07:43 +0530
+Subject: [PATCH 5/5] MdeModulePkg/Bus/Pci/PciBusDxe: Fix UNUSED_VALUE Coverity
+ issues
+
+The return value after calls to functions
+gBS->UninstallMultipleProtocolInterfaces, StartPciDevicesOnBridge,
+PciPciDeviceInfoCollector, BarExisted, PciRootBridgeIo->Pci.Write,
+gPciHotPlugInit->InitializeRootHpc and PciRootBridgeP2CProcess is
+stored in Status, but it is not made of any use and later Status
+gets overriden.
+
+Assuming this is deliberate, remove the return value storage in Status.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4239
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../Bus/Pci/PciBusDxe/PciDeviceSupport.c      | 26 +++++++++----------
+ .../Bus/Pci/PciBusDxe/PciEnumeratorSupport.c  | 24 ++++++++---------
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c       | 16 ++++++------
+ 3 files changed, 33 insertions(+), 33 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c
+index f43f10325f16..58641a5d7527 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c
+@@ -544,12 +544,12 @@ DeRegisterPciDevice (
+                       EFI_OPEN_PROTOCOL_TEST_PROTOCOL
+                       );
+       if (!EFI_ERROR (Status)) {
+-        Status = gBS->UninstallMultipleProtocolInterfaces (
+-                        Handle,
+-                        &gEfiLoadFile2ProtocolGuid,
+-                        &PciIoDevice->LoadFile2,
+-                        NULL
+-                        );
++        gBS->UninstallMultipleProtocolInterfaces (
++               Handle,
++               &gEfiLoadFile2ProtocolGuid,
++               &PciIoDevice->LoadFile2,
++               NULL
++               );
+       }
+ 
+       //
+@@ -718,13 +718,13 @@ StartPciDevicesOnBridge (
+       }
+ 
+       if (IS_PCI_BRIDGE (&PciIoDevice->Pci)) {
+-        Status = StartPciDevicesOnBridge (
+-                   Controller,
+-                   PciIoDevice,
+-                   RemainingDevicePath,
+-                   NumberOfChildren,
+-                   ChildHandleBuffer
+-                   );
++        StartPciDevicesOnBridge (
++        Controller,
++        PciIoDevice,
++        RemainingDevicePath,
++        NumberOfChildren,
++        ChildHandleBuffer
++        );
+ 
+         PciIoDevice->PciIo.Attributes (
+                              &(PciIoDevice->PciIo),
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
+index e01ef4d4d9d0..f34b09837844 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciEnumeratorSupport.c
+@@ -176,10 +176,10 @@ PciPciDeviceInfoCollector (
+           //
+           // Deep enumerate the next level bus
+           //
+-          Status = PciPciDeviceInfoCollector (
+-                     PciIoDevice,
+-                     (UINT8)(SecBus)
+-                     );
++          PciPciDeviceInfoCollector (
++            PciIoDevice,
++            (UINT8)(SecBus)
++            );
+         }
+ 
+         if ((Func == 0) && !IS_PCI_MULTI_FUNC (&Pci)) {
+@@ -2792,7 +2792,7 @@ IsPciDeviceRejected (
+           //
+           // Test its high 32-Bit BAR
+           //
+-          Status = BarExisted (PciIoDevice, BarOffset, &TestValue, &OldValue);
++          BarExisted (PciIoDevice, BarOffset, &TestValue, &OldValue);
+           if (TestValue == OldValue) {
+             return TRUE;
+           }
+@@ -2875,13 +2875,13 @@ ResetAllPpbBusNumber (
+         // Reset register 18h, 19h, 1Ah on PCI Bridge
+         //
+         Register &= 0xFF000000;
+-        Status    = PciRootBridgeIo->Pci.Write (
+-                                           PciRootBridgeIo,
+-                                           EfiPciWidthUint32,
+-                                           Address,
+-                                           1,
+-                                           &Register
+-                                           );
++        PciRootBridgeIo->Pci.Write (
++                               PciRootBridgeIo,
++                               EfiPciWidthUint32,
++                               Address,
++                               1,
++                               &Register
++                               );
+       }
+ 
+       if ((Func == 0) && !IS_PCI_MULTI_FUNC (&Pci)) {
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
+index 71767d3793d4..908193059074 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciLib.c
+@@ -1242,13 +1242,13 @@ PciScanBus (
+ 
+               ASSERT (!EFI_ERROR (Status));
+ 
+-              Status = gPciHotPlugInit->InitializeRootHpc (
+-                                          gPciHotPlugInit,
+-                                          gPciRootHpcPool[HpIndex].HpcDevicePath,
+-                                          PciAddress,
+-                                          Event,
+-                                          &State
+-                                          );
++              gPciHotPlugInit->InitializeRootHpc (
++                                 gPciHotPlugInit,
++                                 gPciRootHpcPool[HpIndex].HpcDevicePath,
++                                 PciAddress,
++                                 Event,
++                                 &State
++                                 );
+ 
+               PreprocessController (
+                 PciDevice,
+@@ -1500,7 +1500,7 @@ PciRootBridgeP2CProcess (
+     }
+ 
+     if (!IsListEmpty (&Temp->ChildList)) {
+-      Status = PciRootBridgeP2CProcess (Temp);
++      PciRootBridgeP2CProcess (Temp);
+     }
+ 
+     CurrentLink = CurrentLink->ForwardLink;
+-- 
+2.36.1.windows.1
+

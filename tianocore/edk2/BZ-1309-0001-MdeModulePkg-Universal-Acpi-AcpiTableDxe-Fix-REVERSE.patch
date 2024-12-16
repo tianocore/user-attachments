@@ -1,0 +1,39 @@
+From 879885193c840b6e4ad980c6ba2dcb618b057811 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 18:43:53 +0530
+Subject: [PATCH] MdeModulePkg/Universal/Acpi/AcpiTableDxe: Fix REVERSE_INULL
+ Coverity issue
+
+if (Table->Table != NULL) { - this check is present in the the function
+DeleteTable, but after it has been already dereferenced.
+
+Hence, add relevant NULL pointer checks at the beginning of the function.
+
+Cc: Zhiguang Liu <zhiguang.liu@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4318
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableProtocol.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableProtocol.c b/MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableProtocol.c
+index e09bc9b704..8257c03e62 100644
+--- a/MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableProtocol.c
++++ b/MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableProtocol.c
+@@ -1354,6 +1354,11 @@ DeleteTable (
+   // Check for Table->Table
+   //
+   ASSERT (Table->Table != NULL);
++
++  if ((Table == NULL) || (Table->Table == NULL)) {
++    return EFI_INVALID_PARAMETER;
++  }
++
+   CurrentTableSignature = ((EFI_ACPI_COMMON_HEADER *)Table->Table)->Signature;
+ 
+   //
+-- 
+2.36.1.windows.1
+

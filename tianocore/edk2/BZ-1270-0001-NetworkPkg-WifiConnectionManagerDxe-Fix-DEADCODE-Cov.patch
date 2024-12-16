@@ -1,0 +1,41 @@
+From 79ecb0b1e08027ab7a629157cd32090f17f422b6 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 14:21:18 +0530
+Subject: [PATCH 1/1] NetworkPkg/WifiConnectionManagerDxe: Fix DEADCODE
+ Coverity issue
+
+The Nic variable is initialized with the return value from the macro
+WIFI_MGR_DEVICE_DATA_FROM_IDENTIFIER which cannot be NULL at that point.
+
+As per Coverity,
+(1) Event arith_non_null:	The result of pointer arithmetic
+"(CHAR8 *)WifiMgrIdentifier - 64ULL" is never null.
+
+Hence, remove the redundant check as it is a DEADCODE.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4275
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c
+index 36c467025f9b..225e63776b14 100644
+--- a/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c
++++ b/NetworkPkg/WifiConnectionManagerDxe/WifiConnectionMgrDriver.c
+@@ -437,9 +437,6 @@ WifiMgrDxeDriverBindingStop (
+   }
+ 
+   Nic = WIFI_MGR_DEVICE_DATA_FROM_IDENTIFIER (WifiMgrIdentifier);
+-  if (Nic == NULL) {
+-    return EFI_DEVICE_ERROR;
+-  }
+ 
+   //
+   // Close Event
+-- 
+2.36.1.windows.1
+

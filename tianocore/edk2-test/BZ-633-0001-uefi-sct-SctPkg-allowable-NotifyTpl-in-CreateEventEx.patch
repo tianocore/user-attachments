@@ -1,0 +1,61 @@
+From 5e500f2bcbf1e649e6a8882503444a5283822069 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Wed, 6 Jan 2021 12:20:51 +0100
+Subject: [PATCH 1/2] uefi-sct/SctPkg: allowable NotifyTpl in CreateEventEx
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3057
+
+According to table Table 27. TPL Restrictions in UEFI spec 2.8 B:
+
+Event Notification Levels must be "> TPL_APPLICATION" and "<= TPL_HIGH_LEVEL".
+
+In the conformance test for CreateEvent() check that TPL_APPLICATION
+results in EFI_INVALID_PARAMETER if the event can be notified.
+
+Run the other conformance tests for TPL_HIGH_LEVEL, too.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ .../EventTimerTaskPriorityServicesBBTestCreateEventEx.c      | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/EventTimerTaskPriorityServices/BlackBoxTest/EventTimerTaskPriorityServicesBBTestCreateEventEx.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/EventTimerTaskPriorityServices/BlackBoxTest/EventTimerTaskPriorityServicesBBTestCreateEventEx.c
+index c7f0a80f60b3..eb458de5e185 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/EventTimerTaskPriorityServices/BlackBoxTest/EventTimerTaskPriorityServicesBBTestCreateEventEx.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/EventTimerTaskPriorityServices/BlackBoxTest/EventTimerTaskPriorityServicesBBTestCreateEventEx.c
+@@ -228,6 +228,7 @@ BBTestCreateEventEx_Conf_Sub1 (
+   EFI_TPL             NotifyTpls[] = {
+                         TPL_CALLBACK,
+                         TPL_NOTIFY,
++                        TPL_HIGH_LEVEL,
+                         0
+                       };
+   EFI_GUID            *EventGroups[] = {
+@@ -317,6 +318,7 @@ BBTestCreateEventEx_Conf_Sub2 (
+   EFI_TPL             NotifyTpls[] = {
+                         TPL_CALLBACK,
+                         TPL_NOTIFY,
++                        TPL_HIGH_LEVEL,
+                         0
+                       };
+   EFI_GUID            *EventGroups[] = {
+@@ -411,6 +413,7 @@ BBTestCreateEventEx_Conf_Sub3 (
+   EFI_TPL             NotifyTpls[] = {
+                         TPL_CALLBACK,
+                         TPL_NOTIFY,
++                        TPL_HIGH_LEVEL,
+                         0
+                       };
+   EFI_GUID            *EventGroups[] = {
+@@ -492,6 +495,8 @@ BBTestCreateEventEx_Conf_Sub4 (
+                       };
+   EFI_TPL             InvalidNotifyTpls[] = {
+                         (EFI_TPL) (TPL_HIGH_LEVEL + 1),
++                        (EFI_TPL) TPL_APPLICATION,
++                        (EFI_TPL) (TPL_APPLICATION - 1),
+                         (EFI_TPL) -1,
+                         0
+                       };
+-- 
+2.29.2
+

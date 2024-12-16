@@ -1,0 +1,156 @@
+From 6e257944a82289b6a9cb142f5697942c6abede76 Mon Sep 17 00:00:00 2001
+From: Qi Zhang <qi1.zhang@intel.com>
+Date: Thu, 7 Jul 2022 16:45:15 +0800
+Subject: [PATCH] SecurityPkg: Add retry mechanism for tpm command
+
+Change-Id: If7cafe04dff07d3f464f08d37ae9c9b574cb0de5
+Signed-off-by: Qi Zhang <qi1.zhang@intel.com>
+---
+ .../Library/Tpm2DeviceLibDTpm/Tpm2Ptp.c       | 108 +++++++++++-------
+ 1 file changed, 68 insertions(+), 40 deletions(-)
+
+diff --git a/SecurityPkg/Library/Tpm2DeviceLibDTpm/Tpm2Ptp.c b/SecurityPkg/Library/Tpm2DeviceLibDTpm/Tpm2Ptp.c
+index 1d99beaa10..ad959f36db 100644
+--- a/SecurityPkg/Library/Tpm2DeviceLibDTpm/Tpm2Ptp.c
++++ b/SecurityPkg/Library/Tpm2DeviceLibDTpm/Tpm2Ptp.c
+@@ -33,6 +33,11 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ //
+ #define TPMCMDBUFLENGTH  0x500
+ 
++//
++// Max retry count
++//
++#define RETRY_CNT_MAX    3
++
+ /**
+   Check whether TPM PTP register exist.
+ 
+@@ -153,6 +158,7 @@ PtpCrbTpmCommand (
+   UINT32      TpmOutSize;
+   UINT16      Data16;
+   UINT32      Data32;
++  UINT8       RetryCnt;
+ 
+   DEBUG_CODE_BEGIN ();
+   UINTN  DebugSize;
+@@ -179,55 +185,77 @@ PtpCrbTpmCommand (
+   DEBUG_CODE_END ();
+   TpmOutSize = 0;
+ 
+-  //
+-  // STEP 0:
+-  // if CapCRbIdelByPass == 0, enforce Idle state before sending command
+-  //
+-  if ((GetCachedIdleByPass () == 0) && ((MmioRead32 ((UINTN)&CrbReg->CrbControlStatus) & PTP_CRB_CONTROL_AREA_STATUS_TPM_IDLE) == 0)) {
++  RetryCnt = 0;
++  while (TRUE) {
++    //
++    // STEP 0:
++    // if CapCRbIdelByPass == 0, enforce Idle state before sending command
++    //
++    if ((GetCachedIdleByPass () == 0) && ((MmioRead32 ((UINTN)&CrbReg->CrbControlStatus) & PTP_CRB_CONTROL_AREA_STATUS_TPM_IDLE) == 0)) {
++      Status = PtpCrbWaitRegisterBits (
++                 &CrbReg->CrbControlStatus,
++                 PTP_CRB_CONTROL_AREA_STATUS_TPM_IDLE,
++                 0,
++                 PTP_TIMEOUT_C
++                 );
++      if (EFI_ERROR (Status)) {
++        RetryCnt++;
++        if (RetryCnt < RETRY_CNT_MAX) {
++          MmioWrite32 ((UINTN)&CrbReg->CrbControlRequest, PTP_CRB_CONTROL_AREA_REQUEST_GO_IDLE);
++          continue;
++        } else {
++          //
++          // Try to goIdle to recover TPM
++          //
++          Status = EFI_DEVICE_ERROR;
++          goto GoIdle_Exit;
++        }
++      }
++    }
++
++    //
++    // STEP 1:
++    // Ready is any time the TPM is ready to receive a command, following a write
++    // of 1 by software to Request.cmdReady, as indicated by the Status field
++    // being cleared to 0.
++    //
++    MmioWrite32 ((UINTN)&CrbReg->CrbControlRequest, PTP_CRB_CONTROL_AREA_REQUEST_COMMAND_READY);
+     Status = PtpCrbWaitRegisterBits (
+-               &CrbReg->CrbControlStatus,
+-               PTP_CRB_CONTROL_AREA_STATUS_TPM_IDLE,
++               &CrbReg->CrbControlRequest,
+                0,
++               PTP_CRB_CONTROL_AREA_REQUEST_COMMAND_READY,
+                PTP_TIMEOUT_C
+                );
+     if (EFI_ERROR (Status)) {
+-      //
+-      // Try to goIdle to recover TPM
+-      //
+-      Status = EFI_DEVICE_ERROR;
+-      goto GoIdle_Exit;
++      RetryCnt++;
++      if (RetryCnt < RETRY_CNT_MAX) {
++        MmioWrite32 ((UINTN)&CrbReg->CrbControlRequest, PTP_CRB_CONTROL_AREA_REQUEST_GO_IDLE);
++        continue;
++      } else {
++        Status = EFI_DEVICE_ERROR;
++        goto GoIdle_Exit;
++      }
+     }
+-  }
+ 
+-  //
+-  // STEP 1:
+-  // Ready is any time the TPM is ready to receive a command, following a write
+-  // of 1 by software to Request.cmdReady, as indicated by the Status field
+-  // being cleared to 0.
+-  //
+-  MmioWrite32 ((UINTN)&CrbReg->CrbControlRequest, PTP_CRB_CONTROL_AREA_REQUEST_COMMAND_READY);
+-  Status = PtpCrbWaitRegisterBits (
+-             &CrbReg->CrbControlRequest,
+-             0,
+-             PTP_CRB_CONTROL_AREA_REQUEST_COMMAND_READY,
+-             PTP_TIMEOUT_C
+-             );
+-  if (EFI_ERROR (Status)) {
+-    Status = EFI_DEVICE_ERROR;
+-    goto GoIdle_Exit;
+-  }
++    Status = PtpCrbWaitRegisterBits (
++               &CrbReg->CrbControlStatus,
++               0,
++               PTP_CRB_CONTROL_AREA_STATUS_TPM_IDLE,
++               PTP_TIMEOUT_C
++               );
++    if (EFI_ERROR (Status)) {
++      RetryCnt++;
++      if (RetryCnt < RETRY_CNT_MAX) {
++        MmioWrite32 ((UINTN)&CrbReg->CrbControlRequest, PTP_CRB_CONTROL_AREA_REQUEST_GO_IDLE);
++        continue;
++      } else {
++        Status = EFI_DEVICE_ERROR;
++        goto GoIdle_Exit;
++      }
++    }
+ 
+-  Status = PtpCrbWaitRegisterBits (
+-             &CrbReg->CrbControlStatus,
+-             0,
+-             PTP_CRB_CONTROL_AREA_STATUS_TPM_IDLE,
+-             PTP_TIMEOUT_C
+-             );
+-  if (EFI_ERROR (Status)) {
+-    Status = EFI_DEVICE_ERROR;
+-    goto GoIdle_Exit;
++	break;
+   }
+-
+   //
+   // STEP 2:
+   // Command Reception occurs following a Ready state between the write of the
+-- 
+2.26.2.windows.1
+

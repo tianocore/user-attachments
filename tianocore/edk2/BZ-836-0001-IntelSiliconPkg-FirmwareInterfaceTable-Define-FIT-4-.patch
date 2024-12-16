@@ -1,0 +1,28 @@
+From 09436d36dd6c91a47a97314a37fe9f2760c06659 Mon Sep 17 00:00:00 2001
+From: Michael Holland <michael.holland@intel.com>
+Date: Fri, 18 Jun 2021 17:28:21 -0500
+Subject: [PATCH] IntelSiliconPkg/FirmwareInterfaceTable: Define FIT 4 record
+
+Define FIT 4 record for BHS
+
+Change-Id: I171f10194f4abab492932d9101f3c53db8f22c65
+Signed-off-by: Michael Holland <michael.holland@intel.com>
+---
+ Silicon/Intel/IntelSiliconPkg/Include/IndustryStandard/FirmwareInterfaceTable.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Silicon/Intel/IntelSiliconPkg/Include/IndustryStandard/FirmwareInterfaceTable.h b/Silicon/Intel/IntelSiliconPkg/Include/IndustryStandard/FirmwareInterfaceTable.h
+index 3a8dd24d..f65779eb 100644
+--- a/Silicon/Intel/IntelSiliconPkg/Include/IndustryStandard/FirmwareInterfaceTable.h
++++ b/Silicon/Intel/IntelSiliconPkg/Include/IndustryStandard/FirmwareInterfaceTable.h
+@@ -17,6 +17,7 @@
+ #define FIT_TYPE_00_HEADER                  0x00
+ #define FIT_TYPE_01_MICROCODE               0x01
+ #define FIT_TYPE_02_STARTUP_ACM             0x02
++#define FIT_TYPE_04_PROT_BOOT_POLICY        0x04
+ #define FIT_TYPE_07_BIOS_STARTUP_MODULE     0x07
+ #define FIT_TYPE_08_TPM_POLICY              0x08
+ #define FIT_TYPE_09_BIOS_POLICY             0x09
+-- 
+2.28.0.windows.1
+

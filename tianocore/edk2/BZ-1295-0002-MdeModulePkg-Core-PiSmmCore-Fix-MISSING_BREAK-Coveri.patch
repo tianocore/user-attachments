@@ -1,0 +1,69 @@
+From 85bfcbde7de83a5edd5c2291a783b6c93194a546 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:06:49 +0530
+Subject: [PATCH 2/3] MdeModulePkg/Core/PiSmmCore: Fix MISSING_BREAK Coverity
+ issues
+
+The function SmmIsSchedulable has a switch-case in which
+         case EFI_DEP_BEFORE:
+         case EFI_DEP_AFTER:
+has a comment that
+// For a well-formed Dependency Expression, the code should never get here.
+It also has a ASSERT (FALSE); but this is applicable only in DEBUG mode.
+Seemingly, for RELEASE mode, code should not be allowed to fall through
+to case below the above two.
+
+In function SmmInternalAllocatePagesEx has a switch-case in which
+
+case AllocateAnyPages: falls through to
+case AllocateMaxAddress:
+
+While this may be intentional, it is not evident to any general code
+reader as well as any static analyzer tool. Just adding
+
+    // No break; here as this is an intentional fallthrough.
+
+as comment in between makes any reader as well as Coverity happy.
+
+Cc: Eric Dong <eric.dong@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4299
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Core/PiSmmCore/Dependency.c | 1 +
+ MdeModulePkg/Core/PiSmmCore/Page.c       | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/MdeModulePkg/Core/PiSmmCore/Dependency.c b/MdeModulePkg/Core/PiSmmCore/Dependency.c
+index c070f4216b08..10ee1b8c6e22 100644
+--- a/MdeModulePkg/Core/PiSmmCore/Dependency.c
++++ b/MdeModulePkg/Core/PiSmmCore/Dependency.c
+@@ -231,6 +231,7 @@ SmmIsSchedulable (
+         //
+         DEBUG ((DEBUG_DISPATCH, "  RESULT = FALSE (Unexpected BEFORE or AFTER opcode)\n"));
+         ASSERT (FALSE);
++        return FALSE;
+ 
+       case EFI_DEP_PUSH:
+         //
+diff --git a/MdeModulePkg/Core/PiSmmCore/Page.c b/MdeModulePkg/Core/PiSmmCore/Page.c
+index 255964c23a2f..ec40fb6e80ab 100644
+--- a/MdeModulePkg/Core/PiSmmCore/Page.c
++++ b/MdeModulePkg/Core/PiSmmCore/Page.c
+@@ -612,6 +612,9 @@ SmmInternalAllocatePagesEx (
+   switch (Type) {
+     case AllocateAnyPages:
+       RequestedAddress = (UINTN)(-1);
++      //
++      // No break; here as this is an intentional fall through.
++      //
+     case AllocateMaxAddress:
+       if (NeedGuard) {
+         *Memory = InternalAllocMaxAddressWithGuard (
+-- 
+2.36.1.windows.1
+

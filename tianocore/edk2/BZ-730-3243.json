@@ -1,0 +1,63 @@
+{
+    "data_type": "CVE",
+    "data_format": "MITRE",
+    "data_version": "4.0",
+    "CVE_data_meta": {
+        "ID": "",
+        "ASSIGNER": "infosec@edk2.groups.io",
+        "STATE": "PUBLIC"
+    },
+    "affects": {
+        "vendor": {
+            "vendor_data": [
+                {
+                    "vendor_name": "TianoCore",
+                    "product": {
+                        "product_data": [
+                            {
+                                "product_name": "EDK II",
+                                "version": {
+                                    "version_data": [
+                                        {
+                                            "version_affected": "=",
+                                            "version_value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "problemtype": {
+        "problemtype_data": [
+            {
+                "description": [
+                    {
+                        "lang": "eng",
+                        "value": "A case of CWE-684 is occurring in CryptoPkg."
+                    }
+                ]
+            }
+        ]
+    },
+    "references": {
+        "reference_data": [
+            {
+				"refsource": "MISC",
+                "url": "https://bugzilla.tianocore.org/show_bug.cgi?id=3243",
+                "name": "https://bugzilla.tianocore.org/show_bug.cgi?id=3243"
+            }
+        ]
+    },	
+    "description": {
+        "description_data": [
+            {
+                "lang": "eng",
+                "value": "Pkcs7GetSigners() is used both when checking revocation of a certificate by cert hash, and also when calculating the trusted signer for private authenticated variables."
+            }
+        ]
+    }
+}

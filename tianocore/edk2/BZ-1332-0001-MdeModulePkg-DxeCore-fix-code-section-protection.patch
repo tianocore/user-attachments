@@ -1,0 +1,38 @@
+From eedddcc4578423aecb93cea7842449dadf0b12ff Mon Sep 17 00:00:00 2001
+From: Gerd Hoffmann <kraxel@redhat.com>
+Date: Wed, 22 Feb 2023 16:52:09 +0100
+Subject: [PATCH 1/1] MdeModulePkg/DxeCore: fix code section protection
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+PE/COFF image sections have two sizes, the "raw" size (i.e. the size
+section data occupies in a stored file) and "virtual" size (i.e. the
+size section data occupies in a loaded image). There is no strict
+relation between them, i.e. raw size can be lesser than, equal to, or
+greater than virtual size. As memory protection always works on loaded
+images, virtual size needs to be used to ensure adequate permissions.
+
+Bugzilla: https://bugzilla.tianocore.org/show_bug.cgi?id=3328
+Reported-by:  Marvin Häuser <mhaeuser@posteo.de>
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ MdeModulePkg/Core/Dxe/Misc/MemoryProtection.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Core/Dxe/Misc/MemoryProtection.c b/MdeModulePkg/Core/Dxe/Misc/MemoryProtection.c
+index b89ab046fa73..45ca030b5ecc 100644
+--- a/MdeModulePkg/Core/Dxe/Misc/MemoryProtection.c
++++ b/MdeModulePkg/Core/Dxe/Misc/MemoryProtection.c
+@@ -537,7 +537,7 @@ ProtectUefiImage (
+       ImageRecordCodeSection->Signature = IMAGE_PROPERTIES_RECORD_CODE_SECTION_SIGNATURE;
+ 
+       ImageRecordCodeSection->CodeSegmentBase = (UINTN)ImageAddress + Section[Index].VirtualAddress;
+-      ImageRecordCodeSection->CodeSegmentSize = ALIGN_VALUE (Section[Index].SizeOfRawData, SectionAlignment);
++      ImageRecordCodeSection->CodeSegmentSize = ALIGN_VALUE (Section[Index].Misc.VirtualSize, SectionAlignment);
+ 
+       DEBUG ((DEBUG_VERBOSE, "ImageCode: 0x%016lx - 0x%016lx\n", ImageRecordCodeSection->CodeSegmentBase, ImageRecordCodeSection->CodeSegmentSize));
+ 
+-- 
+2.39.2
+

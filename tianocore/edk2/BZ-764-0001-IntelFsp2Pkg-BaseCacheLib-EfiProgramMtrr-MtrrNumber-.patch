@@ -1,0 +1,71 @@
+From eb771b1bb1c625516ebc16c839b5182d11ed593c Mon Sep 17 00:00:00 2001
+Message-Id: <eb771b1bb1c625516ebc16c839b5182d11ed593c.1625815958.git.ashraf.ali.s@intel.com>
+From: Ashraf Ali S <ashraf.ali.s@intel.com>
+Date: Fri, 9 Jul 2021 12:54:58 +0530
+Subject: [PATCH] IntelFsp2Pkg: BaseCacheLib EfiProgramMtrr MtrrNumber Should
+ be UINT32
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3485
+
+CacheLib EfiProgramMtrr Function takes MTRR number as a input parameter,
+in the function the parameter is defined as UINTN were as the caller
+calling MTTR number in UINT32.
+
+Signed-off-by: Ashraf Ali S <ashraf.ali.s@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Chasel Chiu <chasel.chiu@intel.com>
+Cc: Nate DeSimone <nathaniel.l.desimone@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+Cc: Digant H Solanki <digant.h.solanki@intel.com>
+Cc: Sangeetha V <sangeetha.v@intel.com>
+---
+ IntelFsp2Pkg/Library/BaseCacheLib/BaseCacheLib.inf | 4 ++--
+ IntelFsp2Pkg/Library/BaseCacheLib/CacheLib.c       | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/IntelFsp2Pkg/Library/BaseCacheLib/BaseCacheLib.inf b/IntelFsp2Pkg/Library/BaseCacheLib/BaseCacheLib.inf
+index d9034bcbaf..9a513fb6df 100644
+--- a/IntelFsp2Pkg/Library/BaseCacheLib/BaseCacheLib.inf
++++ b/IntelFsp2Pkg/Library/BaseCacheLib/BaseCacheLib.inf
+@@ -1,7 +1,7 @@
+ ## @file
+ #  Instance of BaseCache.
+ #
+-#  Copyright (c) 2014 - 2017, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+ #
+ #  SPDX-License-Identifier: BSD-2-Clause-Patent
+ #
+@@ -15,7 +15,7 @@
+   VERSION_STRING                 = 1.0
+   LIBRARY_CLASS                  = CacheLib
+ 
+-[Sources.IA32]
++[Sources]
+   CacheLib.c
+   CacheLibInternal.h
+ 
+diff --git a/IntelFsp2Pkg/Library/BaseCacheLib/CacheLib.c b/IntelFsp2Pkg/Library/BaseCacheLib/CacheLib.c
+index 17e895c345..2365f7514e 100644
+--- a/IntelFsp2Pkg/Library/BaseCacheLib/CacheLib.c
++++ b/IntelFsp2Pkg/Library/BaseCacheLib/CacheLib.c
+@@ -1,6 +1,6 @@
+ /** @file
+ 
+-  Copyright (c) 2014 - 2019, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2014 - 2021, Intel Corporation. All rights reserved.<BR>
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -164,7 +164,7 @@ EfiRecoverCacheMtrr (
+ **/
+ VOID
+ EfiProgramMtrr (
+-  IN  UINTN                     MtrrNumber,
++  IN  UINT32                    MtrrNumber,
+   IN  EFI_PHYSICAL_ADDRESS      MemoryAddress,
+   IN  UINT64                    MemoryLength,
+   IN  EFI_MEMORY_CACHE_TYPE     MemoryCacheType,
+-- 
+2.30.2.windows.1
+

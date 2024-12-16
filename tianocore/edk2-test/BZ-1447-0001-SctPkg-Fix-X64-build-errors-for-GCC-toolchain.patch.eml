@@ -1,0 +1,1928 @@
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (NAM02-SN1-obe.outbound.protection.outlook.com [40.107.96.61])
+ by mx.groups.io with SMTP id smtpd.web08.11834.1654772067866159382
+ for <devel@edk2.groups.io>;
+ Thu, 09 Jun 2022 03:54:28 -0700
+Authentication-Results: mx.groups.io;
+ dkim=pass header.i=@... header.s=selector1 header.b=SrLLBUCe;
+ spf=permerror, err=parse error for token &{10 18 %{i}._ip.%{h}._ehlo.%{d}._spf.vali.email}: invalid domain name (domain: amd.com, ip: 40.107.96.61, mailfrom: abdullateef.attar@...)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iyuPUBXUXazYDanoAOtWuKwlhurN3SmNVNNFuHyBB2QiyQ9R4JwdOm+AnFTO3UDa1C45oB2UdLK2M+hu5mItmJWXRxEms1nES8Ziy9v1g30DWSdg0lsuS719rrT7GzOnf9V7IMEHkrhLL8dN/qC6rQAAUthhnQj7X4lm81XCs7eGmGESM5UGV80ZyKw6VONYcWhTlnVNZlVW4Z3tvWVVp+Nnuro9Q/9/QJO5P5ev19NE9BMt76nAanPzqsXRbtwZiqkzheyVK08UK001bhTrzHN5/I/pSy4VIRBAal/t4chw9SLE9ZL6zs6AbOesNIfOeu19NsZ2ffEkCenDXUccKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nd+jHRJU8uVmrr+KzaYLCu7BiokL5tYcj1U8TrsIBiI=;
+ b=gaf3GQ/oIloi61cnIVjLEpY58QD9CUjHTA26aPbfZMByq6jIXo9VthmEvTMahfYhybfiPL1uYL3Ik7/ToX15pOjDe8GUXjaWjSc6n6YJ8YoH5JS2+x8iV0vgRBKwFE7AroBkLdMKX97lRa99xzMvQ7I9ZctC1ae6dKfSQiFTKTmuH2AZkOY0fOt3GdtGgOdKlUFk7kr5EzUuqZK5CU9jVZ7DmTW9kGJ7WQ85uVeUMYXjN45bm/9vS+JrumYmmh5EbU5s0MbA2FfSMNODOsTGbs2xOSPUdep9IrcGv+Lsf81CJXy7sHXOekyKQosHM1Y/4IG22L122AMKf4xT73C3yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=edk2.groups.io smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nd+jHRJU8uVmrr+KzaYLCu7BiokL5tYcj1U8TrsIBiI=;
+ b=SrLLBUCeDA9t/2aEwxsQrPMLGH5l47zdJ65K1vfyMGGjsXXgJLMDu6U6em2pg0Z6eVFfdT7mVO/AJCe/+SEeT3DAFPzkzZZRRtq0Rer+oPGUtFNCp5yDaecUucDTwetFLTC9Eq4Y+N2J0Asj/lou/SXuK0q+EHQnryWoYIoCKBs=
+Received: from BN6PR1201CA0011.namprd12.prod.outlook.com
+ (2603:10b6:405:4c::21) by BN6PR12MB1572.namprd12.prod.outlook.com
+ (2603:10b6:405:3::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.12; Thu, 9 Jun
+ 2022 10:54:20 +0000
+Received: from BN8NAM11FT044.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:405:4c:cafe::28) by BN6PR1201CA0011.outlook.office365.com
+ (2603:10b6:405:4c::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.13 via Frontend
+ Transport; Thu, 9 Jun 2022 10:54:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BN8NAM11FT044.mail.protection.outlook.com (10.13.177.219) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5332.12 via Frontend Transport; Thu, 9 Jun 2022 10:54:19 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 9 Jun
+ 2022 05:54:19 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 9 Jun
+ 2022 03:54:07 -0700
+Received: from BLR-LAB-SFW01.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.28 via Frontend
+ Transport; Thu, 9 Jun 2022 05:54:04 -0500
+From: "Abdul Lateef Attar" <abdattar@...>
+To: <devel@edk2.groups.io>
+CC: G Edhaya Chandran <Edhaya.Chandran@...>, Barton Gao
+	<gaojie@...>, Carolyn Gjertsen <Carolyn.Gjertsen@...>, "Samer
+ El-Haj-Mahmoud" <Samer.El-Haj-Mahmoud@...>, Eric Jin
+	<eric.jin@...>, Arvin Chen <arvinx.chen@...>, Supreeth Venkatesh
+	<Supreeth.Venkatesh@...>
+Subject: [PATCH v2 1/2] SctPkg: Fix X64 build errors for GCC toolchain
+Date: Thu, 9 Jun 2022 16:24:01 +0530
+Message-ID: <20220609105402.31567-2-abdattar@...>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220609105402.31567-1-abdattar@...>
+References: <20220609105402.31567-1-abdattar@...>
+MIME-Version: 1.0
+Return-Path: AbdulLateef.Attar@...
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ea089cd0-bb66-4ee9-6792-08da4a0667c9
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1572:EE_
+X-Microsoft-Antispam-PRVS:
+	<BN6PR12MB1572D4E9368D6D056C1A91DCE0A79@...>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	tcY37nc8hUfwAA6RJquwFA3jKqrXRWVQ1OGUnElry4Te9t28MZFAal6GPnWQGsJkIA3QzuuMFI2Kmlx8V57VUccEMyA4JG7R59mw+0eBalQOCbay8R9J/PEqvh3Z6yXo2OqbV/Rii4prUuQVMsTAo91avH8V88/pRxsyBMZ3KYhJuLLidnF/dHACyoiiqYgExwxGj2duzGtmXJpEx9vFmF+Us9idzsk59TA+dy2R9yTTGnAYHodwGUm153ArY1XNISJ2HMsHKCVPQjNRFkE7P0bBi2ov59uq+fLDJr/xBpjV6UXynMosbbt9wGSSmb8ppKBk16GsqRSi37ruiZmzgtUx2aLpNNfsseQ+zOr1H0wOf4AZum94lL7UVgfqR42OsDWfYgm9gPXi3XiMAvG1YLx71BNSLvZpoOK/dKZ9piTKjMnlYkXgmM48WeZxIZlgXANvYAQ5uqJSz9Tnt9YB9qrIwwp1kcb6NB2WWkaJ6pPpeGJLgiwYoeZ24dtCm58Vb/DbHnsTW5D7OmLd96woMO2YU6gk7ufu0ppIkvcwL4vW3L+T+cmPv7rXBo+rOieOqzelqxeH9MnBn6PKCWZWu13Qlem1J2Hq+QzMGL3xV3C3ryDf2PIsdSDUueEaJrEDLikvNrUiqz+VYWrk9u3HWT1o7DRDh0OypJUHuhC2MyFu0XD827IGdstZNPgbb0VnjMSGsrOAnq112xRy1wWCbQ==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(36840700001)(46966006)(40470700004)(81166007)(1076003)(26005)(356005)(8936002)(30864003)(82310400005)(2616005)(36860700001)(8676002)(54906003)(4326008)(36756003)(336012)(2906002)(40460700003)(47076005)(186003)(6916009)(19627235002)(83380400001)(426003)(7696005)(70206006)(6666004)(508600001)(316002)(5660300002)(70586007)(36900700001)(559001)(579004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2022 10:54:19.7076
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea089cd0-bb66-4ee9-6792-08da4a0667c9
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN8NAM11FT044.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1572
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+
+Corrects the function declaration/definition
+by adding EFIAPI.
+Removes duplicate functions.
+
+Cc: G Edhaya Chandran <Edhaya.Chandran@...>
+Cc: Barton Gao <gaojie@...>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@...>
+Cc: Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@...>
+Cc: Eric Jin <eric.jin@...>
+Cc: Arvin Chen <arvinx.chen@...>
+Cc: Supreeth Venkatesh <Supreeth.Venkatesh@...>
+Signed-off-by: Abdul Lateef Attar <abdattar@...>
+---
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DebugSupport/BlackBoxTest/Debug=
+SupportBBTestMain.h                  |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBoxTest=
+/DevicePathFromTextBBTestMain.h      |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/D=
+evicePathToTextBBTestMain.h          |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTest/HI=
+IConfigAccessBBTestMain.h            |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxTest/H=
+IIConfigRoutingBBTestMain.h          |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HIIFontE=
+xBBTestMain.h                        |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIIImageB=
+BTestMain.h                          |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HIIImag=
+eExBBTestMain.h                      |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HIIStrin=
+gBBTestMain.h                        |  3 ++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/LoadedImage/BlackBoxTest/Loaded=
+ImageBBTest.h                        |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PartitionInfo/BlackBoxTest/Part=
+itionInfoBBTestMain.h                |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ResetNotification/BlackBoxTest/=
+ResetNotificationBBTestMain.h        |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/S=
+impleFileSystemBBTest.h              |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/Simpl=
+eTextInBBTestMain.h                  |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/Simp=
+leTextOutBBTestMain_efi.h            |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/Simp=
+leTextOutBBTestMain_uefi.h           |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTest/UF=
+SDeviceConfigBBTestMain.h            |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DevicePath/BlackBoxTest/DeviceP=
+athBBTestMain.h                      |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/HIIConfigAccess/BlackBoxTest/HI=
+IConfigAccessBBTestMain.h            |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/S=
+impleFileSystemBBTest.h              |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/Simpl=
+eTextInBBTestMain.h                  |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextInputEx/BlackBoxTest/=
+SimpleTextInputExBBTestMain.h        |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/Simp=
+leTextOutBBTestMain_uefi.h           |  1 +
+ uefi-sct/SctPkg/SCRT/SCRTDriver/ia32/Debug.c                              =
+                                     |  9 ------
+ uefi-sct/SctPkg/SCRT/SCRTDriver/x64/Debug.c                               =
+                                     |  9 ------
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolutionProtocol/Arp/ArpEN=
+TSTest.c                             |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolutionProtocol/ArpServic=
+eBinding/ArpServiceBindingENTSTest.c |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4/Dhcp4ENTSTest.c        =
+                                     |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4SB/Dhcp4SBENTSTest.c    =
+                                     |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6/Dhcp6ENTSTest.c        =
+                                     |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6SB/Dhcp6SBENTSTest.c    =
+                                     |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/Http/HttpENTSTest.c           =
+                                     |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpService=
+BindingENTSTest.c                    |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4/Ip4ENTSTest.c=
+                                     |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Config/Ip4Conf=
+igENTSTest.c                         |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Config2/Ip4Con=
+fig2ENTSTest.c                       |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4ServiceBinding=
+/Ip4ServiceBindingENTSTest.c         |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6/Ip6ENTSTest.c=
+                                     |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6Config/Ip6Conf=
+igENTSTest.c                         |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6ServiceBinding=
+/Ip6ServiceBindingENTSTest.c         |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNP/MnpENTSTest.c   =
+                                     |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNPSB/MnpSBENTSTest.=
+c                                    |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4/Mtftp4ENTSTest.c     =
+                                     |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4ServiceBinding/Mtftp4S=
+erviceBindingENTSTest.c              |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6/Mtftp6ENTSTest.c     =
+                                     |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6ServiceBinding/Mtftp6S=
+erviceBindingENTSTest.c              |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/PXEBaseCode/PXEBaseCodeENTSTest.c  =
+                                     |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/SimpleNetwork/SimpleNetworkENTSTest=
+.c                                   |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4/Tcp4ENTSTest.c           =
+                                     |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4ServiceBinding/Tcp4Service=
+BindingENTSTest.c                    |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6/Tcp6ENTSTest.c           =
+                                     |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6ServiceBinding/Tcp6Service=
+BindingENTSTest.c                    |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4/Udp4ENTSTest.c           =
+                                     |  3 ++
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4ServiceBinding/Udp4Service=
+BindingENTSTest.c                    |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6/Udp6ENTSTest.c           =
+                                     |  1 +
+ uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6ServiceBinding/Udp6Service=
+BindingENTSTest.c                    |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/BlackBoxTest/EfiCom=
+pliantBBTestSupport_uefi.c           |  2 +-
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DebugSupport/BlackBoxTest/Debug=
+SupportBBTestMain.c                  |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBoxTest=
+/DevicePathFromTextBBTestMain.c      |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxTest/D=
+evicePathToTextBBTestMain.c          |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Ebc/BlackBoxTest/EbcBBTestMain.=
+c                                    |  3 ++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTest/HI=
+IConfigAccessBBTestMain.c            |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxTest/H=
+IIConfigRoutingBBTestMain.c          |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HIIFontE=
+xBBTestMain.c                        |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIIImageB=
+BTestMain.c                          |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HIIImag=
+eExBBTestMain.c                      |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HIIStrin=
+gBBTestConformance.c                 |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HIIStrin=
+gBBTestMain.c                        |  2 ++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/LoadedImage/BlackBoxTest/Loaded=
+ImageBBTestMain.c                    |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PartitionInfo/BlackBoxTest/Part=
+itionInfoBBTestMain.c                |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ResetNotification/BlackBoxTest/=
+ResetNotificationBBTestMain.c        |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxTest/S=
+impleFileSystemBBTestMain.c          |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/Simpl=
+eTextInBBTestMain.c                  |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/Simp=
+leTextOutBBTestMain_efi.c            |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest/Simp=
+leTextOutBBTestMain_uefi.c           |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTest/UF=
+SDeviceConfigBBTestMain.c            |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DevicePath/BlackBoxTest/DeviceP=
+athBBTestMain.c                      |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/Ebc/BlackBoxTest/EbcBBTestMain.=
+c                                    |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/HIIConfigAccess/BlackBoxTest/HI=
+IConfigAccessBBTestMain.c            |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxTest/S=
+impleFileSystemBBTestMain.c          |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/Simpl=
+eTextInBBTestMain.c                  |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextInputEx/BlackBoxTest/=
+SimpleTextInputExBBTestMain.c        |  1 +
+ uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest/Simp=
+leTextOutBBTestMain_uefi.c           |  1 +
+ uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/Ebc/EfiLibPla=
+t.c                                  | 29 --------------------
+ uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/X64/EfiLibPla=
+t.c                                  | 29 --------------------
+ 85 files changed, 112 insertions(+), 77 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DebugSupport/BlackB=
+oxTest/DebugSupportBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protoco=
+l/DebugSupport/BlackBoxTest/DebugSupportBBTestMain.h
+index a9934a269380..aba49457a737 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DebugSupport/BlackBoxTest/=
+DebugSupportBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DebugSupport/BlackBoxTest/=
+DebugSupportBBTestMain.h
+@@ -39,6 +39,7 @@ Abstract:
+ extern EFI_INSTRUCTION_SET_ARCHITECTURE PlatformIsa;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestDebugSupport (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/=
+BlackBoxTest/DevicePathFromTextBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI=
+/EFI/Protocol/DevicePathFromText/BlackBoxTest/DevicePathFromTextBBTestMain.h
+index 22799075fdab..dfdd561734dd 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBo=
+xTest/DevicePathFromTextBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBo=
+xTest/DevicePathFromTextBBTestMain.h
+@@ -38,6 +38,7 @@ Abstract:
+ #define DEVICE_PATH_PROTOCOL_TEST_REVISION  0x00010001=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestDevicePathFromTextProtocol (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/Bl=
+ackBoxTest/DevicePathToTextBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI=
+/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestMain.h
+index b3e1bf365053..211b2228bf1d 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxT=
+est/DevicePathToTextBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxT=
+est/DevicePathToTextBBTestMain.h
+@@ -67,6 +67,7 @@ typedef struct {
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestDevicePathToTextProtocol (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/Bla=
+ckBoxTest/HIIConfigAccessBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/P=
+rotocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestMain.h
+index 0857df89d76c..bedad19211b8 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTe=
+st/HIIConfigAccessBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTe=
+st/HIIConfigAccessBBTestMain.h
+@@ -61,6 +61,7 @@ Abstract:
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeHIIConfigAccessBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/Bl=
+ackBoxTest/HIIConfigRoutingBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI=
+/Protocol/HIIConfigRouting/BlackBoxTest/HIIConfigRoutingBBTestMain.h
+index c6ca192246c6..22f7d26c49e0 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxT=
+est/HIIConfigRoutingBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxT=
+est/HIIConfigRoutingBBTestMain.h
+@@ -40,6 +40,7 @@ Abstract:
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestHIIConfigRouting (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxT=
+est/HIIFontExBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIF=
+ontEx/BlackBoxTest/HIIFontExBBTestMain.h
+index 593f1ee0d468..fde8e70fa483 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HII=
+FontExBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HII=
+FontExBBTestMain.h
+@@ -86,6 +86,7 @@ Abstract:
+ //
+ //
+ EFI_STATUS
++EFIAPI
+ InitializeHIIFontExBBTest (
+   IN EFI_HANDLE                   ImageHandle,
+   IN EFI_SYSTEM_TABLE             *SystemTable
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTe=
+st/HIIImageBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIIma=
+ge/BlackBoxTest/HIIImageBBTestMain.h
+index 8bfcd36e281a..88a545c043ee 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIII=
+mageBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIII=
+mageBBTestMain.h
+@@ -79,6 +79,7 @@ Abstract:
+ //=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeHIIImageBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBox=
+Test/HIIImageExBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HI=
+IImageEx/BlackBoxTest/HIIImageExBBTestMain.h
+index 03deec936e37..f7bc1a0c548d 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HI=
+IImageExBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HI=
+IImageExBBTestMain.h
+@@ -85,6 +85,7 @@ Abstract:
+ //
+ //
+ EFI_STATUS
++EFIAPI
+ InitializeHIIImageExBBTest (
+   IN EFI_HANDLE                   ImageHandle,
+   IN EFI_SYSTEM_TABLE             *SystemTable
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxT=
+est/HIIStringBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIS=
+tring/BlackBoxTest/HIIStringBBTestMain.h
+index e062eba9fc5b..81be489bd868 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HII=
+StringBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HII=
+StringBBTestMain.h
+@@ -77,6 +77,7 @@ Abstract:
+ //=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeHIIStringBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+@@ -84,6 +85,7 @@ InitializeHIIStringBBTest (
+   =0D
+   =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ UnloadHIIStringBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle=0D
+   );=0D
+@@ -93,6 +95,7 @@ UnloadHIIStringBBTest (
+ //Test Cases=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ BBTestNewStringConformanceTest (=0D
+   IN EFI_BB_TEST_PROTOCOL       *This,=0D
+   IN VOID                       *ClientInterface,=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/LoadedImage/BlackBo=
+xTest/LoadedImageBBTest.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Load=
+edImage/BlackBoxTest/LoadedImageBBTest.h
+index eb3061ac14a5..1ad3e9a39c93 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/LoadedImage/BlackBoxTest/L=
+oadedImageBBTest.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/LoadedImage/BlackBoxTest/L=
+oadedImageBBTest.h
+@@ -73,6 +73,7 @@ typedef struct {
+ // Functions definitions=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestLoadedImageProtocol (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PartitionInfo/Black=
+BoxTest/PartitionInfoBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Proto=
+col/PartitionInfo/BlackBoxTest/PartitionInfoBBTestMain.h
+index 93811a715ce5..33818f867436 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PartitionInfo/BlackBoxTest=
+/PartitionInfoBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PartitionInfo/BlackBoxTest=
+/PartitionInfoBBTestMain.h
+@@ -46,6 +46,7 @@ Abstract:
+ //=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializePartitionInfoBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ResetNotification/B=
+lackBoxTest/ResetNotificationBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/E=
+FI/Protocol/ResetNotification/BlackBoxTest/ResetNotificationBBTestMain.h
+index f47e1ecc5369..84fb5ef9b8c7 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ResetNotification/BlackBox=
+Test/ResetNotificationBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ResetNotification/BlackBox=
+Test/ResetNotificationBBTestMain.h
+@@ -71,6 +71,7 @@ extern UINT32      Attributes;
+ //=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeResetNotificationBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/Bl=
+ackBoxTest/SimpleFileSystemBBTest.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Pro=
+tocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTest.h
+index 4bb2c8e19da1..713d8b64dc56 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxT=
+est/SimpleFileSystemBBTest.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxT=
+est/SimpleFileSystemBBTest.h
+@@ -229,6 +229,7 @@ typedef struct {
+ //=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleFileSystem (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackB=
+oxTest/SimpleTextInBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protoco=
+l/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestMain.h
+index ebb782212535..3497ba21e77f 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/=
+SimpleTextInBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/=
+SimpleTextInBBTestMain.h
+@@ -61,6 +61,7 @@ extern   UINT8                  UnprintableKeyCheckingMap=
+[][6];
+ extern   CHAR16                 *UnprintableKeySymbol[];=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextIn (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/Black=
+BoxTest/SimpleTextOutBBTestMain_efi.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/P=
+rotocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestMain_efi.h
+index 75a0acb7efca..d515ea4d8f7c 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_efi.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_efi.h
+@@ -46,6 +46,7 @@ extern   CHAR16                  *mAttribStr[];
+ #define SIMPLE_TEXT_OUTPUT_PROTOCOL_TEST_REVISION 0x00010001=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextOutput (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/Black=
+BoxTest/SimpleTextOutBBTestMain_uefi.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/=
+Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestMain_uefi.h
+index 882fbf691ebc..3dce653f22db 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_uefi.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_uefi.h
+@@ -42,6 +42,7 @@ extern   CHAR16                  *mAttribStr[];
+ #define SIMPLE_TEXT_OUTPUT_PROTOCOL_TEST_REVISION 0x00010001=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextOutput (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/Bla=
+ckBoxTest/UFSDeviceConfigBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/P=
+rotocol/UFSDeviceConfig/BlackBoxTest/UFSDeviceConfigBBTestMain.h
+index 61c32ce43f28..5a7fbc5a75bf 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTe=
+st/UFSDeviceConfigBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTe=
+st/UFSDeviceConfigBBTestMain.h
+@@ -52,6 +52,7 @@ Abstract:
+ //=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeUFSDeviceConfigBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DevicePath/BlackBox=
+Test/DevicePathBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/De=
+vicePath/BlackBoxTest/DevicePathBBTestMain.h
+index d2c422259eb3..691113f2868e 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DevicePath/BlackBoxTest/De=
+vicePathBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DevicePath/BlackBoxTest/De=
+vicePathBBTestMain.h
+@@ -39,6 +39,7 @@ Abstract:
+   { 0xac7b0fd0, 0x884d, 0x45a8, 0x9d, 0x90, 0x99, 0x2a, 0x41, 0xa7, 0x88, =
+0x09 }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestDevicePath (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/HIIConfigAccess/Bla=
+ckBoxTest/HIIConfigAccessBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/IHV/P=
+rotocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestMain.h
+index acd0fabc7fc7..d2979d1cf214 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/HIIConfigAccess/BlackBoxTe=
+st/HIIConfigAccessBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/HIIConfigAccess/BlackBoxTe=
+st/HIIConfigAccessBBTestMain.h
+@@ -63,6 +63,7 @@ Abstract:
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeHIIConfigAccessBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/Bl=
+ackBoxTest/SimpleFileSystemBBTest.h b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Pro=
+tocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTest.h
+index e869b52dd3a3..76ce3155e502 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxT=
+est/SimpleFileSystemBBTest.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxT=
+est/SimpleFileSystemBBTest.h
+@@ -233,6 +233,7 @@ typedef struct {
+ //=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleFileSystem (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackB=
+oxTest/SimpleTextInBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protoco=
+l/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestMain.h
+index f03963ac8fa2..fe1081f73ac1 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/=
+SimpleTextInBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/=
+SimpleTextInBBTestMain.h
+@@ -64,6 +64,7 @@ extern   UINT8                  UnprintableKeyCheckingMap=
+[][6];
+ extern   CHAR16                 *UnprintableKeySymbol[];=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextIn (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextInputEx/B=
+lackBoxTest/SimpleTextInputExBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/I=
+HV/Protocol/SimpleTextInputEx/BlackBoxTest/SimpleTextInputExBBTestMain.h
+index bb0d8c9aef3a..88c13e2179d8 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextInputEx/BlackBox=
+Test/SimpleTextInputExBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextInputEx/BlackBox=
+Test/SimpleTextInputExBBTestMain.h
+@@ -92,6 +92,7 @@ typedef enum {
+ //=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeSimpleTextInputExBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/Black=
+BoxTest/SimpleTextOutBBTestMain_uefi.h b/uefi-sct/SctPkg/TestCase/UEFI/IHV/=
+Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestMain_uefi.h
+index 59bc848825d4..d0854a1faac0 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_uefi.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_uefi.h
+@@ -46,6 +46,7 @@ extern   CHAR16                  *mAttribStr[];
+   { 0x3395ddfa, 0xb843, 0x4fb2, 0xbc, 0x81, 0x10, 0xab, 0x95, 0xff, 0x87, =
+0x34 }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextOutput (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/SCRT/SCRTDriver/ia32/Debug.c b/uefi-sct/SctPkg=
+/SCRT/SCRTDriver/ia32/Debug.c
+index fce42739f4db..76146b0dd2f5 100644
+--- a/uefi-sct/SctPkg/SCRT/SCRTDriver/ia32/Debug.c
++++ b/uefi-sct/SctPkg/SCRT/SCRTDriver/ia32/Debug.c
+@@ -26,15 +26,6 @@ Module Name:
+ UINTN                 mHandOffPtr        =3D  0;=0D
+ EFI_PHYSICAL_ADDRESS  mIoPortSpaceAddress =3D 0;=0D
+ =0D
+-VOID=0D
+-EFIAPI=0D
+-MemoryFence (=0D
+-  VOID=0D
+-  )=0D
+-{=0D
+-  //TODO: Please implement me!=0D
+-}=0D
+-=0D
+ VOID=0D
+ UartReadWrite (=0D
+   IN BOOLEAN                 ReadFlag,=0D
+diff --git a/uefi-sct/SctPkg/SCRT/SCRTDriver/x64/Debug.c b/uefi-sct/SctPkg/=
+SCRT/SCRTDriver/x64/Debug.c
+index d2be4d3f479a..69a08f43e8da 100644
+--- a/uefi-sct/SctPkg/SCRT/SCRTDriver/x64/Debug.c
++++ b/uefi-sct/SctPkg/SCRT/SCRTDriver/x64/Debug.c
+@@ -25,15 +25,6 @@ Module Name:
+ UINTN                 mHandOffPtr        =3D  0;=0D
+ EFI_PHYSICAL_ADDRESS  mIoPortSpaceAddress =3D 0;=0D
+ =0D
+-VOID=0D
+-EFIAPI=0D
+-MemoryFence (=0D
+-  VOID=0D
+-  )=0D
+-{=0D
+-  //TODO: Please implement me!=0D
+-}=0D
+-=0D
+ VOID=0D
+ UartReadWrite (=0D
+   IN BOOLEAN                 ReadFlag,=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolutionProtoc=
+ol/Arp/ArpENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolu=
+tionProtocol/Arp/ArpENTSTest.c
+index 62b64a4e15d7..93bd85c77dce 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolutionProtocol/Arp/=
+ArpENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolutionProtocol/Arp/=
+ArpENTSTest.c
+@@ -77,6 +77,7 @@ ArpENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ ArpENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolutionProtoc=
+ol/ArpServiceBinding/ArpServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase=
+/RIVL/Protocol/AddressResolutionProtocol/ArpServiceBinding/ArpServiceBindin=
+gENTSTest.c
+index 59ff5e544ba6..2e605c18054b 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolutionProtocol/ArpS=
+erviceBinding/ArpServiceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/AddressResolutionProtocol/ArpS=
+erviceBinding/ArpServiceBindingENTSTest.c
+@@ -46,12 +46,14 @@ ENTS_INTERFACE    gArpServiceBindingEntsInterfaceList[]=
+ =3D {
+ EFI_ENTS_PROTOCOL *gArpServiceBindingEntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ ArpServiceBindingENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ ArpServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -136,6 +138,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ ArpServiceBindingENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4/Dhcp4ENTSTe=
+st.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4/Dhcp4ENTSTest.c
+index 3747e1c2fb3d..b817775d8dd0 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4/Dhcp4ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4/Dhcp4ENTSTest.c
+@@ -87,6 +87,7 @@ Dhcp4ENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Dhcp4ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4SB/Dhcp4SBEN=
+TSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4SB/Dhcp4SBENTS=
+Test.c
+index 2b2af202fe03..774ee853bfca 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4SB/Dhcp4SBENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp4/Dhcp4SB/Dhcp4SBENTSTest.c
+@@ -46,12 +46,14 @@ ENTS_INTERFACE    gDhcp4ServiceBindingEntsInterfaceList=
+[] =3D {
+ EFI_ENTS_PROTOCOL *gDhcp4ServiceBindingEntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Dhcp4SBENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Dhcp4SBENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -136,6 +138,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Dhcp4SBENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6/Dhcp6ENTSTe=
+st.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6/Dhcp6ENTSTest.c
+index 9c075ef37cc6..e5afe3fd4f2f 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6/Dhcp6ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6/Dhcp6ENTSTest.c
+@@ -89,6 +89,7 @@ Dhcp6ENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Dhcp6ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6SB/Dhcp6SBEN=
+TSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6SB/Dhcp6SBENTS=
+Test.c
+index 018828c17a0c..64feb5cb0ead 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6SB/Dhcp6SBENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Dhcp6/Dhcp6SB/Dhcp6SBENTSTest.c
+@@ -53,6 +53,7 @@ Dhcp6SBENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Dhcp6SBENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/Http/HttpENTSTest.=
+c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/Http/HttpENTSTest.c
+index 0e65fc0eb3d4..f380df707fff 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/Http/HttpENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/Http/HttpENTSTest.c
+@@ -71,6 +71,7 @@ HttpENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ HttpENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding=
+/HttpServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http=
+/HttpServiceBinding/HttpServiceBindingENTSTest.c
+index 5a538ca78dfa..102acd1d4c7d 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpSe=
+rviceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Http/HttpServiceBinding/HttpSe=
+rviceBindingENTSTest.c
+@@ -46,12 +46,14 @@ ENTS_INTERFACE    gHttpServiceBindingEntsInterfaceList[=
+] =3D {
+ EFI_ENTS_PROTOCOL *gHttpServiceBindingEntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ HttpServiceBindingENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ HttpServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -136,6 +138,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ HttpServiceBindingENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4/I=
+p4ENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4=
+/Ip4ENTSTest.c
+index 5580e25296fc..4853c2a641ba 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4/Ip4ENTST=
+est.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4/Ip4ENTST=
+est.c
+@@ -82,6 +82,7 @@ Ip4ENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip4ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Co=
+nfig/Ip4ConfigENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetP=
+rotocol4/Ip4Config/Ip4ConfigENTSTest.c
+index e94d865b9940..24db7b9ef2fc 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Config/Ip=
+4ConfigENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Config/Ip=
+4ConfigENTSTest.c
+@@ -52,12 +52,14 @@ ENTS_INTERFACE    gIp4ConfigEntsInterfaceList[] =3D {
+ EFI_ENTS_PROTOCOL *gIp4ConfigEntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip4ConfigENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip4ConfigENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -133,6 +135,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip4ConfigENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Co=
+nfig2/Ip4Config2ENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Interne=
+tProtocol4/Ip4Config2/Ip4Config2ENTSTest.c
+index 6cdb544c0759..d4c3ad07340a 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Config2/I=
+p4Config2ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Config2/I=
+p4Config2ENTSTest.c
+@@ -63,6 +63,7 @@ Ip4Config2ENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip4Config2ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4Se=
+rviceBinding/Ip4ServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Pr=
+otocol/InternetProtocol4/Ip4ServiceBinding/Ip4ServiceBindingENTSTest.c
+index b8c3271d018a..dc7aa96ca5db 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4ServiceBi=
+nding/Ip4ServiceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol4/Ip4ServiceBi=
+nding/Ip4ServiceBindingENTSTest.c
+@@ -46,12 +46,14 @@ ENTS_INTERFACE    gIp4ServiceBindingEntsInterfaceList[]=
+ =3D {
+ EFI_ENTS_PROTOCOL *gIp4ServiceBindingEntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip4ServiceBindingENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip4ServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -136,6 +138,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip4ServiceBindingENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6/I=
+p6ENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6=
+/Ip6ENTSTest.c
+index 69f5e19d17a7..090ea5827721 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6/Ip6ENTST=
+est.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6/Ip6ENTST=
+est.c
+@@ -82,12 +82,14 @@ ENTS_INTERFACE    gIp6EntsInterfaceList[] =3D {
+ EFI_ENTS_PROTOCOL *gIp6EntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip6ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip6ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -163,6 +165,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip6ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6Co=
+nfig/Ip6ConfigENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetP=
+rotocol6/Ip6Config/Ip6ConfigENTSTest.c
+index 4bc7e518a64f..046c28b642cd 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6Config/Ip=
+6ConfigENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6Config/Ip=
+6ConfigENTSTest.c
+@@ -56,12 +56,14 @@ ENTS_INTERFACE    gIp6ConfigEntsInterfaceList[] =3D {
+ EFI_ENTS_PROTOCOL *gIp6ConfigEntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip6ConfigENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip6ConfigENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -146,6 +148,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip6ConfigENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6Se=
+rviceBinding/Ip6ServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Pr=
+otocol/InternetProtocol6/Ip6ServiceBinding/Ip6ServiceBindingENTSTest.c
+index d84348f0a83e..b847fb056164 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6ServiceBi=
+nding/Ip6ServiceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/InternetProtocol6/Ip6ServiceBi=
+nding/Ip6ServiceBindingENTSTest.c
+@@ -54,6 +54,7 @@ Ip6ServiceBindingENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Ip6ServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNP/MnpE=
+NTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNP/MnpEN=
+TSTest.c
+index 5066c3c7fc1d..2a248d94ccca 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNP/MnpENTSTest=
+.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNP/MnpENTSTest=
+.c
+@@ -97,6 +97,7 @@ MnpENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ MnpENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNPSB/Mn=
+pSBENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNPSB=
+/MnpSBENTSTest.c
+index fe7d8a290e42..3e842786e2fb 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNPSB/MnpSBENTS=
+Test.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/ManagedNetwork/MNPSB/MnpSBENTS=
+Test.c
+@@ -52,6 +52,7 @@ MnpSBENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ MnpSBENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4/Mtftp4ENT=
+STest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4/Mtftp4ENTSTe=
+st.c
+index 7f8625c08a52..ecc75d9be96e 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4/Mtftp4ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4/Mtftp4ENTSTest.c
+@@ -75,12 +75,14 @@ ENTS_INTERFACE    gMtftp4EntsInterfaceList[] =3D {
+ EFI_ENTS_PROTOCOL *gMtftp4EntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Mtftp4ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Mtftp4ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -157,6 +159,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Mtftp4ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4ServiceBin=
+ding/Mtftp4ServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protoco=
+l/Mtftp4/Mtftp4ServiceBinding/Mtftp4ServiceBindingENTSTest.c
+index 4eaa41bfece7..a50dbd2cbee1 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4ServiceBinding/Mt=
+ftp4ServiceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp4/Mtftp4ServiceBinding/Mt=
+ftp4ServiceBindingENTSTest.c
+@@ -52,6 +52,7 @@ Mtftp4ServiceBindingENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Mtftp4ServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6/Mtftp6ENT=
+STest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6/Mtftp6ENTSTe=
+st.c
+index 7e17957cfc77..10c501c3e34e 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6/Mtftp6ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6/Mtftp6ENTSTest.c
+@@ -76,12 +76,14 @@ ENTS_INTERFACE    gMtftp6EntsInterfaceList[] =3D {
+ EFI_ENTS_PROTOCOL *gMtftp6EntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Mtftp6ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Mtftp6ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -158,6 +160,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Mtftp6ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6ServiceBin=
+ding/Mtftp6ServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protoco=
+l/Mtftp6/Mtftp6ServiceBinding/Mtftp6ServiceBindingENTSTest.c
+index b87a43ef7d1b..07a1ca0d8dc6 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6ServiceBinding/Mt=
+ftp6ServiceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Mtftp6/Mtftp6ServiceBinding/Mt=
+ftp6ServiceBindingENTSTest.c
+@@ -53,6 +53,7 @@ Mtftp6ServiceBindingENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Mtftp6ServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/PXEBaseCode/PXEBaseCode=
+ENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/PXEBaseCode/PXEBaseCode=
+ENTSTest.c
+index 5fef0062ff50..d4f1855a6c1f 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/PXEBaseCode/PXEBaseCodeENTSTes=
+t.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/PXEBaseCode/PXEBaseCodeENTSTes=
+t.c
+@@ -110,12 +110,14 @@ ENTS_INTERFACE    gPXEBaseCodeEntsInterfaceList[] =3D=
+ {
+ EFI_ENTS_PROTOCOL *gPXEBaseCodeEntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ PXEBaseCodeENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ PXEBaseCodeENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -191,6 +193,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ PXEBaseCodeENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/SimpleNetwork/SimpleNet=
+workENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/SimpleNetwork/Simpl=
+eNetworkENTSTest.c
+index e99a4a604a26..bbcdb951141c 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/SimpleNetwork/SimpleNetworkENT=
+STest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/SimpleNetwork/SimpleNetworkENT=
+STest.c
+@@ -126,6 +126,7 @@ SimpleNetworkENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ SimpleNetworkENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4/Tcp4ENTSTest.=
+c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4/Tcp4ENTSTest.c
+index 261e9adbe20e..a4daf90b1b45 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4/Tcp4ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4/Tcp4ENTSTest.c
+@@ -85,12 +85,14 @@ ENTS_INTERFACE    gTcp4EntsInterfaceList[] =3D {
+ EFI_ENTS_PROTOCOL *gTcp4EntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Tcp4ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Tcp4ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -167,6 +169,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Tcp4ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4ServiceBinding=
+/Tcp4ServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4=
+/Tcp4ServiceBinding/Tcp4ServiceBindingENTSTest.c
+index 15e6b1ccbbb0..b887ee64afeb 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4ServiceBinding/Tcp4Se=
+rviceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp4/Tcp4ServiceBinding/Tcp4Se=
+rviceBindingENTSTest.c
+@@ -52,6 +52,7 @@ Tcp4ServiceBindingENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Tcp4ServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6/Tcp6ENTSTest.=
+c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6/Tcp6ENTSTest.c
+index 3d4d5a35698c..b965f0f33452 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6/Tcp6ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6/Tcp6ENTSTest.c
+@@ -81,12 +81,14 @@ ENTS_INTERFACE    gTcp6EntsInterfaceList[] =3D {
+ EFI_ENTS_PROTOCOL *gTcp6EntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Tcp6ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Tcp6ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -163,6 +165,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Tcp6ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6ServiceBinding=
+/Tcp6ServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6=
+/Tcp6ServiceBinding/Tcp6ServiceBindingENTSTest.c
+index e35f6fc1dddd..6c49bd1d0a78 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6ServiceBinding/Tcp6Se=
+rviceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Tcp6/Tcp6ServiceBinding/Tcp6Se=
+rviceBindingENTSTest.c
+@@ -53,6 +53,7 @@ Tcp6ServiceBindingENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Tcp6ServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4/Udp4ENTSTest.=
+c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4/Udp4ENTSTest.c
+index ddf1909f46d7..b0d03c58ad0e 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4/Udp4ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4/Udp4ENTSTest.c
+@@ -80,12 +80,14 @@ ENTS_INTERFACE    gUdp4EntsInterfaceList[] =3D {
+ EFI_ENTS_PROTOCOL *gUdp4EntsProtocolInterface =3D NULL;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Udp4ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   );=0D
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Udp4ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+@@ -162,6 +164,7 @@ Error:
+ }=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Udp4ENTSTestUnload (=0D
+   IN EFI_HANDLE                ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4ServiceBinding=
+/Udp4ServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4=
+/Udp4ServiceBinding/Udp4ServiceBindingENTSTest.c
+index b3f47ee696fb..e42d1dc8793e 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4ServiceBinding/Udp4Se=
+rviceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp4/Udp4ServiceBinding/Udp4Se=
+rviceBindingENTSTest.c
+@@ -52,6 +52,7 @@ Udp4ServiceBindingENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Udp4ServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6/Udp6ENTSTest.=
+c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6/Udp6ENTSTest.c
+index 2c4b61af03b5..a90862064fe8 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6/Udp6ENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6/Udp6ENTSTest.c
+@@ -82,6 +82,7 @@ Udp6ENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Udp6ENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6ServiceBinding=
+/Udp6ServiceBindingENTSTest.c b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6=
+/Udp6ServiceBinding/Udp6ServiceBindingENTSTest.c
+index 00a8039ddc98..292e66f66a00 100644
+--- a/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6ServiceBinding/Udp6Se=
+rviceBindingENTSTest.c
++++ b/uefi-sct/SctPkg/TestCase/RIVL/Protocol/Udp6/Udp6ServiceBinding/Udp6Se=
+rviceBindingENTSTest.c
+@@ -53,6 +53,7 @@ Udp6ServiceBindingENTSTestUnload (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ Udp6ServiceBindingENTSTestMain (=0D
+   IN EFI_HANDLE                ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE          *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/BlackBo=
+xTest/EfiCompliantBBTestSupport_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/=
+Generic/EfiCompliant/BlackBoxTest/EfiCompliantBBTestSupport_uefi.c
+index 6017f41c2ef3..9e1bc9e14ef3 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/BlackBoxTest/E=
+fiCompliantBBTestSupport_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/BlackBoxTest/E=
+fiCompliantBBTestSupport_uefi.c
+@@ -31,7 +31,7 @@ Abstract:
+ // Module variables=0D
+ //=0D
+ =0D
+-UINT32  mCrcTable[256] =3D {=0D
++STATIC UINT32  mCrcTable[256] =3D {=0D
+   0x00000000,=0D
+   0x77073096,=0D
+   0xEE0E612C,=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DebugSupport/BlackB=
+oxTest/DebugSupportBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protoco=
+l/DebugSupport/BlackBoxTest/DebugSupportBBTestMain.c
+index 29202445800a..0e3cd62e8dc0 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DebugSupport/BlackBoxTest/=
+DebugSupportBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DebugSupport/BlackBoxTest/=
+DebugSupportBBTestMain.c
+@@ -115,6 +115,7 @@ BBTestDebugSupportProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestDebugSupport (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/=
+BlackBoxTest/DevicePathFromTextBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI=
+/EFI/Protocol/DevicePathFromText/BlackBoxTest/DevicePathFromTextBBTestMain.c
+index 4252ff3ab626..a21bb132a03c 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBo=
+xTest/DevicePathFromTextBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathFromText/BlackBo=
+xTest/DevicePathFromTextBBTestMain.c
+@@ -114,6 +114,7 @@ BBTestDevicePathFromTextProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestDevicePathFromTextProtocol (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/Bl=
+ackBoxTest/DevicePathToTextBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI=
+/Protocol/DevicePathToText/BlackBoxTest/DevicePathToTextBBTestMain.c
+index fc7cbb8113a2..b2c741816d72 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxT=
+est/DevicePathToTextBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/DevicePathToText/BlackBoxT=
+est/DevicePathToTextBBTestMain.c
+@@ -106,6 +106,7 @@ BBTestDevicePathToTextProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestDevicePathToTextProtocol (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Ebc/BlackBoxTest/Eb=
+cBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Ebc/BlackBoxTest=
+/EbcBBTestMain.c
+index 84f21f0ced7f..2f1cd712d129 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Ebc/BlackBoxTest/EbcBBTest=
+Main.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/Ebc/BlackBoxTest/EbcBBTest=
+Main.c
+@@ -132,6 +132,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ EFI_BB_TEST_PROTOCOL *gBBTestProtocolInterface;=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ BBTestEbcUnload (=0D
+   IN EFI_HANDLE       ImageHandle=0D
+   );=0D
+@@ -148,6 +149,7 @@ BBTestEbcUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestEbcProtocol (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+@@ -218,6 +220,7 @@ InitializeBBTestEbcProtocol (
+  *  @return EFI_SUCCESS unload successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ BBTestEbcUnload (=0D
+   IN EFI_HANDLE       ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/Bla=
+ckBoxTest/HIIConfigAccessBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/P=
+rotocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestMain.c
+index f9d2fa0d42ca..cfb5fb1d4c18 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTe=
+st/HIIConfigAccessBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigAccess/BlackBoxTe=
+st/HIIConfigAccessBBTestMain.c
+@@ -124,6 +124,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI
+ InitializeHIIConfigAccessBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/Bl=
+ackBoxTest/HIIConfigRoutingBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI=
+/Protocol/HIIConfigRouting/BlackBoxTest/HIIConfigRoutingBBTestMain.c
+index 22820a95126e..6949c0241be0 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxT=
+est/HIIConfigRoutingBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIConfigRouting/BlackBoxT=
+est/HIIConfigRoutingBBTestMain.c
+@@ -186,6 +186,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestHIIConfigRouting (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxT=
+est/HIIFontExBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIF=
+ontEx/BlackBoxTest/HIIFontExBBTestMain.c
+index afb3518bcf9e..82d67e0718dd 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HII=
+FontExBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIFontEx/BlackBoxTest/HII=
+FontExBBTestMain.c
+@@ -145,6 +145,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ //
+=20
+ EFI_STATUS
++EFIAPI
+ InitializeHIIFontExBBTest (
+   IN EFI_HANDLE                   ImageHandle,
+   IN EFI_SYSTEM_TABLE             *SystemTable
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTe=
+st/HIIImageBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIIma=
+ge/BlackBoxTest/HIIImageBBTestMain.c
+index 622c57ca3ee3..4bb1f43a4c80 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIII=
+mageBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImage/BlackBoxTest/HIII=
+mageBBTestMain.c
+@@ -144,6 +144,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ //=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeHIIImageBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBox=
+Test/HIIImageExBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HI=
+IImageEx/BlackBoxTest/HIIImageExBBTestMain.c
+index 47a54e716b4d..8a860a89a318 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HI=
+IImageExBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIImageEx/BlackBoxTest/HI=
+IImageExBBTestMain.c
+@@ -162,6 +162,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ //
+=20
+ EFI_STATUS
++EFIAPI
+ InitializeHIIImageExBBTest (
+   IN EFI_HANDLE                   ImageHandle,
+   IN EFI_SYSTEM_TABLE             *SystemTable
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxT=
+est/HIIStringBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protoc=
+ol/HIIString/BlackBoxTest/HIIStringBBTestConformance.c
+index 995ec2a09ec7..783524468a80 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HII=
+StringBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HII=
+StringBBTestConformance.c
+@@ -90,6 +90,7 @@ BBTestGetSecondaryLanguagesConformanceTestCheckpoint1 (
+ //Test Cases=0D
+ //=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ BBTestNewStringConformanceTest (=0D
+   IN EFI_BB_TEST_PROTOCOL       *This,=0D
+   IN VOID                       *ClientInterface,=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxT=
+est/HIIStringBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIS=
+tring/BlackBoxTest/HIIStringBBTestMain.c
+index 807e88db40bc..ca01cd33c09c 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HII=
+StringBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/HIIString/BlackBoxTest/HII=
+StringBBTestMain.c
+@@ -145,6 +145,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ //=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeHIIStringBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+@@ -172,6 +173,7 @@ InitializeHIIStringBBTest (
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ UnloadHIIStringBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle=0D
+   )=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/LoadedImage/BlackBo=
+xTest/LoadedImageBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/=
+LoadedImage/BlackBoxTest/LoadedImageBBTestMain.c
+index 4a46e6425a77..b3b5afd19a41 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/LoadedImage/BlackBoxTest/L=
+oadedImageBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/LoadedImage/BlackBoxTest/L=
+oadedImageBBTestMain.c
+@@ -78,6 +78,7 @@ EFI_BB_TEST_PROTOCOL *gBBTestProtocolInterface;
+  *  @return EFI_INVALID_PARAMETER: One of the parameters has an invalid va=
+lue.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestLoadedImageProtocol (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PartitionInfo/Black=
+BoxTest/PartitionInfoBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Proto=
+col/PartitionInfo/BlackBoxTest/PartitionInfoBBTestMain.c
+index 684265e67298..fc49266fce29 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PartitionInfo/BlackBoxTest=
+/PartitionInfoBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/PartitionInfo/BlackBoxTest=
+/PartitionInfoBBTestMain.c
+@@ -66,6 +66,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializePartitionInfoBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ResetNotification/B=
+lackBoxTest/ResetNotificationBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/E=
+FI/Protocol/ResetNotification/BlackBoxTest/ResetNotificationBBTestMain.c
+index 83704a2fe051..9e0233e62cbe 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ResetNotification/BlackBox=
+Test/ResetNotificationBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/ResetNotification/BlackBox=
+Test/ResetNotificationBBTestMain.c
+@@ -98,6 +98,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeResetNotificationBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/Bl=
+ackBoxTest/SimpleFileSystemBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI=
+/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestMain.c
+index 725e76c6829e..1cc7f12d4c65 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxT=
+est/SimpleFileSystemBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleFileSystem/BlackBoxT=
+est/SimpleFileSystemBBTestMain.c
+@@ -400,6 +400,7 @@ EFI_BB_TEST_PROTOCOL *gBBTestProtocolInterface;
+  *  @return EFI_INVALID_PARAMETER: One of the parameters has an invalid va=
+lue.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleFileSystem (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackB=
+oxTest/SimpleTextInBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protoco=
+l/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestMain.c
+index b878791dc1db..fe847f8f98eb 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/=
+SimpleTextInBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextIn/BlackBoxTest/=
+SimpleTextInBBTestMain.c
+@@ -142,6 +142,7 @@ BBTestSimpleTextInProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextIn (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/Black=
+BoxTest/SimpleTextOutBBTestMain_efi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/P=
+rotocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestMain_efi.c
+index 9ed9363bd321..ca2c3a083324 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_efi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_efi.c
+@@ -249,6 +249,7 @@ BBTestSimpleTextOutputProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextOutput (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/Black=
+BoxTest/SimpleTextOutBBTestMain_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/=
+Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestMain_uefi.c
+index cce2f3e1ff23..2419ed8bbc68 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_uefi.c
+@@ -257,6 +257,7 @@ BBTestSimpleTextOutputProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextOutput (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/Bla=
+ckBoxTest/UFSDeviceConfigBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/P=
+rotocol/UFSDeviceConfig/BlackBoxTest/UFSDeviceConfigBBTestMain.c
+index 04caf3ce5d6c..e3b96f857825 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTe=
+st/UFSDeviceConfigBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/UFSDeviceConfig/BlackBoxTe=
+st/UFSDeviceConfigBBTestMain.c
+@@ -82,6 +82,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeUFSDeviceConfigBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DevicePath/BlackBox=
+Test/DevicePathBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/De=
+vicePath/BlackBoxTest/DevicePathBBTestMain.c
+index 2c0349e57363..30a394ef5142 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DevicePath/BlackBoxTest/De=
+vicePathBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/DevicePath/BlackBoxTest/De=
+vicePathBBTestMain.c
+@@ -69,6 +69,7 @@ BBTestDevicePathProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestDevicePath (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/Ebc/BlackBoxTest/Eb=
+cBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/Ebc/BlackBoxTest=
+/EbcBBTestMain.c
+index b7842575f74c..b5fec2a029f1 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/Ebc/BlackBoxTest/EbcBBTest=
+Main.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/Ebc/BlackBoxTest/EbcBBTest=
+Main.c
+@@ -144,6 +144,7 @@ BBTestEbcUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestEbcProtocol (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/HIIConfigAccess/Bla=
+ckBoxTest/HIIConfigAccessBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/P=
+rotocol/HIIConfigAccess/BlackBoxTest/HIIConfigAccessBBTestMain.c
+index 92de424a496f..4c5bb1e6a4c9 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/HIIConfigAccess/BlackBoxTe=
+st/HIIConfigAccessBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/HIIConfigAccess/BlackBoxTe=
+st/HIIConfigAccessBBTestMain.c
+@@ -90,6 +90,7 @@ EFI_BB_TEST_ENTRY_FIELD gBBTestEntryField[] =3D {
+ =0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeHIIConfigAccessBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/Bl=
+ackBoxTest/SimpleFileSystemBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV=
+/Protocol/SimpleFileSystem/BlackBoxTest/SimpleFileSystemBBTestMain.c
+index 629f41d49736..6bfbfda9d27d 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxT=
+est/SimpleFileSystemBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleFileSystem/BlackBoxT=
+est/SimpleFileSystemBBTestMain.c
+@@ -400,6 +400,7 @@ EFI_BB_TEST_PROTOCOL *gBBTestProtocolInterface;
+  *  @return EFI_INVALID_PARAMETER: One of the parameters has an invalid va=
+lue.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleFileSystem (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackB=
+oxTest/SimpleTextInBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protoco=
+l/SimpleTextIn/BlackBoxTest/SimpleTextInBBTestMain.c
+index 38f94dc5024a..b66e21fad31d 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/=
+SimpleTextInBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextIn/BlackBoxTest/=
+SimpleTextInBBTestMain.c
+@@ -142,6 +142,7 @@ BBTestSimpleTextInProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextIn (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextInputEx/B=
+lackBoxTest/SimpleTextInputExBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/I=
+HV/Protocol/SimpleTextInputEx/BlackBoxTest/SimpleTextInputExBBTestMain.c
+index c0a4f5aa51b5..29e09c6b07cb 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextInputEx/BlackBox=
+Test/SimpleTextInputExBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextInputEx/BlackBox=
+Test/SimpleTextInputExBBTestMain.c
+@@ -160,6 +160,7 @@ BOOLEAN     BeenExecuted;
+ //=0D
+ =0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeSimpleTextInputExBBTest (=0D
+   IN EFI_HANDLE                   ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE             *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/Black=
+BoxTest/SimpleTextOutBBTestMain_uefi.c b/uefi-sct/SctPkg/TestCase/UEFI/IHV/=
+Protocol/SimpleTextOut/BlackBoxTest/SimpleTextOutBBTestMain_uefi.c
+index e72826bbaaaf..0cb29973240c 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_uefi.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/IHV/Protocol/SimpleTextOut/BlackBoxTest=
+/SimpleTextOutBBTestMain_uefi.c
+@@ -258,6 +258,7 @@ BBTestSimpleTextOutputProtocolUnload (
+  *  @return EFI_SUCCESS the driver is loaded successfully.=0D
+  */=0D
+ EFI_STATUS=0D
++EFIAPI=0D
+ InitializeBBTestSimpleTextOutput (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+   IN EFI_SYSTEM_TABLE     *SystemTable=0D
+diff --git a/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/E=
+bc/EfiLibPlat.c b/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Eas=
+Lib/Ebc/EfiLibPlat.c
+index c942823bb8e0..4fbf6a735912 100644
+--- a/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/Ebc/EfiL=
+ibPlat.c
++++ b/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/Ebc/EfiL=
+ibPlat.c
+@@ -27,35 +27,6 @@ Abstract:
+ #include "Efi.h"=0D
+ #include "EntsLibPlat.h"=0D
+ =0D
+-UINT64=0D
+-SctRShiftU64 (=0D
+-  IN UINT64   Operand,=0D
+-  IN UINTN    Count=0D
+-  )=0D
+-{=0D
+-  return Operand >> Count;=0D
+-}=0D
+-=0D
+-UINT64=0D
+-SctDivU64x32 (=0D
+-  IN UINT64   Dividend,=0D
+-  IN UINTN    Divisor,=0D
+-  OUT UINTN   *Remainder OPTIONAL=0D
+-  )=0D
+-{=0D
+-  ASSERT (Divisor !=3D 0);=0D
+-=0D
+-  //=0D
+-  // Have to compute twice if remainder. No support for=0D
+-  // divide-with-remainder in VM.=0D
+-  //=0D
+-  if (Remainder !=3D NULL) {=0D
+-    *Remainder =3D Dividend % Divisor;=0D
+-  }=0D
+-=0D
+-  return Dividend / Divisor;=0D
+-}=0D
+-=0D
+ VOID=0D
+ EntsInitializeLibPlatform (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+diff --git a/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/X=
+64/EfiLibPlat.c b/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/Eas=
+Lib/X64/EfiLibPlat.c
+index c942823bb8e0..4fbf6a735912 100644
+--- a/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/X64/EfiL=
+ibPlat.c
++++ b/uefi-sct/SctPkg/TestInfrastructure/SCT/Framework/ENTS/EasLib/X64/EfiL=
+ibPlat.c
+@@ -27,35 +27,6 @@ Abstract:
+ #include "Efi.h"=0D
+ #include "EntsLibPlat.h"=0D
+ =0D
+-UINT64=0D
+-SctRShiftU64 (=0D
+-  IN UINT64   Operand,=0D
+-  IN UINTN    Count=0D
+-  )=0D
+-{=0D
+-  return Operand >> Count;=0D
+-}=0D
+-=0D
+-UINT64=0D
+-SctDivU64x32 (=0D
+-  IN UINT64   Dividend,=0D
+-  IN UINTN    Divisor,=0D
+-  OUT UINTN   *Remainder OPTIONAL=0D
+-  )=0D
+-{=0D
+-  ASSERT (Divisor !=3D 0);=0D
+-=0D
+-  //=0D
+-  // Have to compute twice if remainder. No support for=0D
+-  // divide-with-remainder in VM.=0D
+-  //=0D
+-  if (Remainder !=3D NULL) {=0D
+-    *Remainder =3D Dividend % Divisor;=0D
+-  }=0D
+-=0D
+-  return Dividend / Divisor;=0D
+-}=0D
+-=0D
+ VOID=0D
+ EntsInitializeLibPlatform (=0D
+   IN EFI_HANDLE           ImageHandle,=0D
+--=20
+2.25.1

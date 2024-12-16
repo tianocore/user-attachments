@@ -1,0 +1,141 @@
+From c537f9c5c9e02c54e27466b96fe33555afccd358 Mon Sep 17 00:00:00 2001
+From: Karunakar Poosapalli <karunakar_poosapalli@dell.com>
+Date: Sat, 22 Jul 2023 01:13:44 +0530
+Subject: [PATCH] Patch - Enhance Tcg2 to clear graphics before printing the
+ messages on screen
+
+[Background]
+Tcg2UserConfirm() Function is used to display any user conformation messages on the console
+Function Definition Full path - SecurityPkg\Library\DxeTcg2PhysicalPresenceLib\DxeTcg2PhysicalPresenceLib.c
+
+[Issue]
+In the current Tcg2UserConfirm() implementation, This function forms a destination string to be displayed on the console and directly Print the message on Console.
+
+But there is no logic added to clear the graphics before printing the messages on the screen.
+
+There are some scenarios where Tcg messages might have been blocked by some other GUI or messages on Console.
+  1. When there are some messages or logos already displayed in the content on the console,
+     TCG message will NOT be displayed or corrupted to the End user.
+  2. There could be a Custom logo displaying on the screen which actually blocks the screen.
+
+[Solution]
+  1. As TCG user confirmation is the highest priority and it blocks the POST until the user
+     presses the input key. Before TCG messages Print on the console, there should be logic
+     added to clear the graphics screen
+
+Cc: gaoliming <gaoliming@byosoft.com.cn>
+Cc: Jiewen  <Jiewen.yao@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4462
+Signed-off-by: Karunakar Poosapalli <karunakar_poosapalli@dell.com>
+---
+ .../DxeTcg2PhysicalPresenceLib.c              | 74 +++++++++++++++++++
+ .../DxeTcg2PhysicalPresenceLib.inf            |  1 +
+ 2 files changed, 75 insertions(+)
+
+diff --git a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
+index de4f5e583d..bd486f3b5b 100644
+--- a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
++++ b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.c
+@@ -251,6 +251,74 @@ Tcg2ExecutePhysicalPresence (
+   }
+ }
+ 
++/**
++  Clear Graphics Screen To unblock and Display TPM messages  
++
++  @param[in]  VOID
++  @retval     EFI_STATUS
++**/
++EFI_STATUS 
++ClearGraphicsScreenToDisplayTpmMessages()
++{
++  EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
++  EFI_STATUS Status;
++  EFI_HANDLE                              *HandleBuffer;
++  UINTN                                   NumberOfHandles;
++  UINTN                                   Index;
++  EFI_DEVICE_PATH_PROTOCOL                *GopDevicePath;
++
++  DEBUG((DEBUG_INFO, "ClearGraphicsScreenToDisplayTpmMessages Entry...\n"));
++
++  Status = gBS->LocateHandleBuffer (
++            ByProtocol,
++            &gEfiGraphicsOutputProtocolGuid,
++            NULL,
++            &NumberOfHandles,
++            &HandleBuffer
++            );
++  DEBUG((DEBUG_INFO, "LocateHandleBuffer Status = %r, NumberOfHandles = %x\n", Status, NumberOfHandles)); 
++
++  if (EFI_ERROR (Status))
++  {
++    return Status;
++  }
++  
++  for (Index = 0; Index < NumberOfHandles; Index++)
++    {
++      Status = gBS->HandleProtocol (
++                HandleBuffer[Index],
++                &gEfiDevicePathProtocolGuid,
++                (VOID *)&GopDevicePath
++                );
++      DEBUG((DEBUG_INFO, "HandleProtocol GopDevicePath Status = %r, Index = %x\n", Status, Index));
++      if (EFI_ERROR (Status))
++        {
++          continue;
++        }
++
++      Status = gBS->HandleProtocol (
++                HandleBuffer[Index],
++                &gEfiGraphicsOutputProtocolGuid,
++                (VOID **) &Gop
++                );
++      DEBUG((DEBUG_INFO, "HandleProtocol Gop Status = %r, Index = %x\n", Status, Index));
++      if (EFI_ERROR(Status))
++        {
++            continue;
++        }
++
++      // Clear the graphics screen to black
++      Status = Gop->Blt(Gop, NULL, EfiBltVideoFill, 0, 0, 0, 0, Gop->Mode->Info->HorizontalResolution, Gop->Mode->Info->VerticalResolution, 0);
++      DEBUG((DEBUG_INFO, "Gop->Blt Status = %r, Index = %x\n", Status, Index));
++      if (EFI_ERROR(Status)) {
++        continue;
++      }
++    }
++
++  gBS->FreePool (HandleBuffer);
++  DEBUG((DEBUG_INFO, "ClearGraphicsScreenToDisplayTpmMessages Exit...\n"));
++  return Status;
++}
+ /**
+   Read the specified key for user confirmation.
+ 
+@@ -576,6 +644,12 @@ Tcg2UserConfirm (
+   BufSize -= StrSize (ConfirmText);
+   UnicodeSPrint (ConfirmText + StrLen (ConfirmText), BufSize, TmpStr1, TmpStr2);
+ 
++  //
++  //Clear Graphics Screen To unblock and Display TPM messages 
++  // 
++  Status = ClearGraphicsScreenToDisplayTpmMessages();
++  DEBUG((DEBUG_INFO, "ClearGraphicsScreenToDisplayTpmMessages Status = %r\n", Status));
++
+   DstStr[80] = L'\0';
+   for (Index = 0; Index < StrLen (ConfirmText); Index += 80) {
+     StrnCpyS (DstStr, sizeof (DstStr) / sizeof (CHAR16), ConfirmText + Index, sizeof (DstStr) / sizeof (CHAR16) - 1);
+diff --git a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
+index e1c7c20d52..de423cfd13 100644
+--- a/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
++++ b/SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
+@@ -54,6 +54,7 @@
+ [Protocols]
+   gEfiTcg2ProtocolGuid                 ## SOMETIMES_CONSUMES
+   gEdkiiVariableLockProtocolGuid       ## SOMETIMES_CONSUMES
++  gEfiGraphicsOutputProtocolGuid       ## CONSUMES
+ 
+ [Pcd]
+   gEfiSecurityPkgTokenSpaceGuid.PcdTcg2PhysicalPresenceFlags       ## SOMETIMES_CONSUMES
+-- 
+2.17.0.windows.1
+

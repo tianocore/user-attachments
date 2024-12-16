@@ -1,0 +1,16 @@
+diff --git a/SecurityPkg/Library/TcgStorageOpalLib/TcgStorageOpalCore.c b/SecurityPkg/Library/TcgStorageOpalLib/TcgStorageOpalCore.c
+index 873ca1909b..b58597e61f 100644
+--- a/SecurityPkg/Library/TcgStorageOpalLib/TcgStorageOpalCore.c
++++ b/SecurityPkg/Library/TcgStorageOpalLib/TcgStorageOpalCore.c
+@@ -1892,10 +1892,9 @@ OpalGetFeatureDescriptor (
+ 
+     *DataSize = Size;
+     CopyMem (Data, Feat, Size);
+-    return TcgResultSuccess;
+   }
+ 
+-  return TcgResultFailure;
++  return TcgResultSuccess;
+ }
+ 
+ /**

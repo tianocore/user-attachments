@@ -1,0 +1,136 @@
+From 1efab97439a3b337bd6468b6f2ff4e33af13fa9c Mon Sep 17 00:00:00 2001
+From: Zihong Yi <yizihong@huawei.com>
+Date: Thu, 24 Nov 2022 09:25:21 +0800
+Subject: [PATCH EDK2 v1 1/1] CryptoPkg/BaseCryptLib:time overflow
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4167
+
+In CrtLibSupport.h, time_t is defined as INT32, and its maximum value
+is 2147483647. That is, the corresponding maximum timestamp is
+2038-01-19 11:14:07. Therefore, overflow occurs when the test time
+exceeds 2038-01-19 11:14:07. So change the type of time_t to INT64 and
+also change the type of variables in function gmtime which calculated
+with time_t.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Jian J Wang <jian.j.wang@intel.com>
+Cc: Xiaoyu Lu <xiaoyu1.lu@intel.com>
+Cc: Guomin Jiang <guomin.jiang@intel.com>
+Signed-off-by: Zihong Yi <yizihong@huawei.com>
+---
+ CryptoPkg/Library/Include/CrtLibSupport.h             |  2 +-
+ CryptoPkg/Library/BaseCryptLib/SysCall/TimerWrapper.c | 51 ++++++++++++++------
+ 2 files changed, 38 insertions(+), 15 deletions(-)
+
+diff --git a/CryptoPkg/Library/Include/CrtLibSupport.h b/CryptoPkg/Library/Include/CrtLibSupport.h
+index 5072c343da57..94b0e6b6014f 100644
+--- a/CryptoPkg/Library/Include/CrtLibSupport.h
++++ b/CryptoPkg/Library/Include/CrtLibSupport.h
+@@ -109,7 +109,7 @@ typedef UINTN   off_t;
+ typedef UINTN   u_int;
+ typedef INTN    ptrdiff_t;
+ typedef INTN    ssize_t;
+-typedef INT32   time_t;
++typedef INT64   time_t;
+ typedef UINT8   __uint8_t;
+ typedef UINT8   sa_family_t;
+ typedef UINT8   u_char;
+diff --git a/CryptoPkg/Library/BaseCryptLib/SysCall/TimerWrapper.c b/CryptoPkg/Library/BaseCryptLib/SysCall/TimerWrapper.c
+index bf8a5325817f..3ed64375d0ff 100644
+--- a/CryptoPkg/Library/BaseCryptLib/SysCall/TimerWrapper.c
++++ b/CryptoPkg/Library/BaseCryptLib/SysCall/TimerWrapper.c
+@@ -15,7 +15,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
+ // -- Time Management Routines --
+ //
+ 
+-#define IsLeap(y)  (((y) % 4) == 0 && (((y) % 100) != 0 || ((y) % 400) == 0))
+ #define SECSPERMIN   (60)
+ #define SECSPERHOUR  (60 * 60)
+ #define SECSPERDAY   (24 * SECSPERHOUR)
+@@ -60,6 +59,26 @@ UINTN  CumulativeDays[2][14] = {
+   }
+ };
+ 
++/* Check the year is leap or not. */
++// BOOLEAN IsLeap(
++//  INTN timer
++//  )
++BOOLEAN
++IsLeap (
++  time_t  timer
++  )
++{
++  INT64  Remainder1;
++  INT64  Remainder2;
++  INT64  Remainder3;
++
++  DivS64x64Remainder (timer, 4, &Remainder1);
++  DivS64x64Remainder (timer, 100, &Remainder2);
++  DivS64x64Remainder (timer, 400, &Remainder3);
++
++  return (Remainder1 == 0 && (Remainder2 != 0 || Remainder3 == 0));
++}
++
+ /* Get the system time as seconds elapsed since midnight, January 1, 1970. */
+ // INTN time(
+ //  INTN *timer
+@@ -117,12 +136,13 @@ gmtime (
+   )
+ {
+   struct tm  *GmTime;
+-  UINT16     DayNo;
+-  UINT32     DayRemainder;
++  UINT64     DayNo;
++  UINT64     DayRemainder;
+   time_t     Year;
+   time_t     YearNo;
+-  UINT16     TotalDays;
+-  UINT16     MonthNo;
++  UINT32     TotalDays;
++  UINT32     MonthNo;
++  INT64      Remainder;
+ 
+   if (timer == NULL) {
+     return NULL;
+@@ -135,18 +155,21 @@ gmtime (
+ 
+   ZeroMem ((VOID *)GmTime, (UINTN)sizeof (struct tm));
+ 
+-  DayNo        = (UINT16)(*timer / SECSPERDAY);
+-  DayRemainder = (UINT32)(*timer % SECSPERDAY);
++  DayNo        = (UINT64)DivS64x64Remainder (*timer, SECSPERDAY, &Remainder);
++  DayRemainder = (UINT64)Remainder;
+ 
+-  GmTime->tm_sec  = (int)(DayRemainder % SECSPERMIN);
+-  GmTime->tm_min  = (int)((DayRemainder % SECSPERHOUR) / SECSPERMIN);
+-  GmTime->tm_hour = (int)(DayRemainder / SECSPERHOUR);
+-  GmTime->tm_wday = (int)((DayNo + 4) % 7);
++  DivS64x64Remainder (DayRemainder, SECSPERMIN, &Remainder);
++  GmTime->tm_sec  = (int)Remainder;
++  DivS64x64Remainder (DayRemainder, SECSPERHOUR, &Remainder);
++  GmTime->tm_min  = (int)DivS64x64Remainder (Remainder, SECSPERMIN, NULL);
++  GmTime->tm_hour = (int)DivS64x64Remainder (DayRemainder, SECSPERHOUR, NULL);
++  DivS64x64Remainder ((DayNo + 4), 7, &Remainder);
++  GmTime->tm_wday = (int)Remainder;
+ 
+   for (Year = 1970, YearNo = 0; DayNo > 0; Year++) {
+-    TotalDays = (UINT16)(IsLeap (Year) ? 366 : 365);
++    TotalDays = (UINT32)(IsLeap (Year) ? 366 : 365);
+     if (DayNo >= TotalDays) {
+-      DayNo = (UINT16)(DayNo - TotalDays);
++      DayNo = (UINT64)(DayNo - TotalDays);
+       YearNo++;
+     } else {
+       break;
+@@ -158,7 +181,7 @@ gmtime (
+ 
+   for (MonthNo = 12; MonthNo > 1; MonthNo--) {
+     if (DayNo >= CumulativeDays[IsLeap (Year)][MonthNo]) {
+-      DayNo = (UINT16)(DayNo - (UINT16)(CumulativeDays[IsLeap (Year)][MonthNo]));
++      DayNo = (UINT64)(DayNo - (UINT32)(CumulativeDays[IsLeap (Year)][MonthNo]));
+       break;
+     }
+   }
+-- 
+2.20.1.windows.1
+

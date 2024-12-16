@@ -1,0 +1,50 @@
+From 3bd60553a909ed466556c88330618f40658a3240 Mon Sep 17 00:00:00 2001
+From: Luben Tuikov <luben.tuikov@amd.com>
+Date: Wed, 20 Mar 2019 17:34:37 -0400
+Subject: [PATCH] [TESTS] Fix decode bug
+
+Need to specify the encoding method, UTF-8, when
+opening a UTF-8 encoded file. This commit fixes
+the following bug, as observed in RHEL 7, when
+running "make -C BaseTools", during the
+config/install phase.
+
+======================================================================
+ERROR: testRandomDataCycles (TianoCompress.Tests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/var/home/ltuikov/proj/kahlee/edk2/BaseTools/Tests/TianoCompress.py", line 66, in testRandomDataCycles
+    self.compressionTestCycle(data)
+  File "/var/home/ltuikov/proj/kahlee/edk2/BaseTools/Tests/TianoCompress.py", line 52, in compressionTestCycle
+    start = self.ReadTmpFile('input')
+  File "/var/home/ltuikov/proj/kahlee/edk2/BaseTools/Tests/TestTools.py", line 145, in ReadTmpFile
+    data = f.read()
+  File "/usr/lib64/python3.6/encodings/ascii.py", line 26, in decode
+    return codecs.ascii_decode(input, self.errors)[0]
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc2 in position 0: ordinal not in range(128)
+
+----------------------------------------------------------------------
+
+https://github.com/tianocore/tianocore.github.io/wiki/Common-instructions
+
+Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
+---
+ BaseTools/Tests/TestTools.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/BaseTools/Tests/TestTools.py b/BaseTools/Tests/TestTools.py
+index ace92992fc..f3cd9785ad 100644
+--- a/BaseTools/Tests/TestTools.py
++++ b/BaseTools/Tests/TestTools.py
+@@ -141,7 +141,7 @@ class BaseToolsTest(unittest.TestCase):
+         return open(os.path.join(self.testDir, fileName), mode)
+ 
+     def ReadTmpFile(self, fileName):
+-        f = open(self.GetTmpFilePath(fileName), 'r')
++        f = open(self.GetTmpFilePath(fileName), 'r', encoding='utf-8')
+         data = f.read()
+         f.close()
+         return data
+-- 
+2.19.0.271.gfe8321e
+

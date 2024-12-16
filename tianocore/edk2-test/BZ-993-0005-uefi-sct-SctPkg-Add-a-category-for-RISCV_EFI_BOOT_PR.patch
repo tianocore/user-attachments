@@ -1,0 +1,46 @@
+From 41aec8262bc476679d3c0f234b329ec4b6d51ee3 Mon Sep 17 00:00:00 2001
+From: Sunil V L <sunilvl@ventanamicro.com>
+Date: Thu, 9 Jun 2022 14:33:06 +0530
+Subject: [PATCH 5/5] uefi-sct/SctPkg: Add a category for
+ RISCV_EFI_BOOT_PROTOCOL
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=3837
+
+Provide a name for the GUID of RISCV_EFI_BOOT_PROTOCOL
+in the SCT.
+
+Cc: G Edhaya Chandran <Edhaya.Chandran@arm.com>
+Cc: Barton Gao <gaojie@byosoft.com.cn>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@amd.com>
+Cc: Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>
+Cc: Eric Jin <eric.jin@intel.com>
+Cc: Arvin Chen <arvinx.chen@intel.com>
+Cc: Supreeth Venkatesh <Supreeth.Venkatesh@amd.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Cc: Abner Chang <abner.chang@hpe.com>
+
+Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+Reviewed-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Tested-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+ uefi-sct/SctPkg/Config/Data/Category.ini | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/uefi-sct/SctPkg/Config/Data/Category.ini b/uefi-sct/SctPkg/Config/Data/Category.ini
+index af27e362..70058577 100644
+--- a/uefi-sct/SctPkg/Config/Data/Category.ini
++++ b/uefi-sct/SctPkg/Config/Data/Category.ini
+@@ -1026,3 +1026,9 @@ InterfaceGuid = 8D59D32B-C655-4AE9-9B15-F25904992A43
+ Name          = IHV\ConsoleSupportTest\AbsolutePointerProtocolTest
+ Description   = Absolute Pointer Protocol Test on IHV Drivers
+ 
++[Category Data]
++Revision      = 0x00010000
++CategoryGuid  = CCD15FEC-6F73-4EEC-8395-3E69E4B940BF
++InterfaceGuid = CCD15FEC-6F73-4EEC-8395-3E69E4B940BF
++Name          = RiscvBootProtocolTest
++Description   = RISC-V Boot Protocol Test
+-- 
+2.25.1
+

@@ -1,0 +1,56 @@
+From 2c7e6b3029361b15bf668d506c5b6fd3cf45e8eb Mon Sep 17 00:00:00 2001
+From: Dandan Bi <dandan.bi@intel.com>
+Date: Tue, 24 Sep 2019 11:17:52 +0800
+Subject: [patch] MdeModulePkg/HiiDB: Remove configuration table when it's
+ freed
+
+Fix the corner case issue that the original configuration runtime
+memory is freed, but it is still exposed to the OS runtime.
+So this patch is to remove the configuration table to avoid being
+used in OS runtime when the configuration runtime memory is freed.
+
+Cc: Liming Gao <liming.gao@intel.com>
+Cc: Eric Dong <eric.dong@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=1995
+Signed-off-by: Dandan Bi <dandan.bi@intel.com>
+---
+ MdeModulePkg/Universal/HiiDatabaseDxe/Database.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c b/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
+index d3791ca68b..36265b8ff9 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/Database.c
+@@ -3374,10 +3374,14 @@ HiiGetConfigRespInfo(
+       }
+       gRTConfigRespBuffer = (EFI_STRING) AllocateRuntimeZeroPool (gConfigRespSize);
+       if (gRTConfigRespBuffer == NULL){
+         FreePool(ConfigAltResp);
+         DEBUG ((DEBUG_ERROR, "[HiiDatabase]: No enough memory resource to store the ConfigResp string.\n"));
++        //
++        // Remove from the System Table when the configuration runtime buffer is freed.
++        //
++        gBS->InstallConfigurationTable (&gEfiHiiConfigRoutingProtocolGuid, NULL);
+         return EFI_OUT_OF_RESOURCES;
+       }
+     } else {
+       ZeroMem(gRTConfigRespBuffer,gConfigRespSize);
+     }
+@@ -3429,10 +3433,14 @@ HiiGetDatabaseInfo(
+       DEBUG ((DEBUG_WARN, "[HiiDatabase]: Memory allocation is required after ReadyToBoot, which may change memory map and cause S4 resume issue.\n"));
+     }
+     gRTDatabaseInfoBuffer = AllocateRuntimeZeroPool (gDatabaseInfoSize);
+     if (gRTDatabaseInfoBuffer == NULL){
+       DEBUG ((DEBUG_ERROR, "[HiiDatabase]: No enough memory resource to store the HiiDatabase info.\n"));
++      //
++      // Remove from the System Table when the configuration runtime buffer is freed.
++      //
++      gBS->InstallConfigurationTable (&gEfiHiiDatabaseProtocolGuid, NULL);
+       return EFI_OUT_OF_RESOURCES;
+     }
+   } else {
+     ZeroMem(gRTDatabaseInfoBuffer,gDatabaseInfoSize);
+   }
+-- 
+2.18.0.windows.1
+

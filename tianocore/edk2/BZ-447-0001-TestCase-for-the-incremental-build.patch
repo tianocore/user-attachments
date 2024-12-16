@@ -1,0 +1,30 @@
+From 766935f0b08eb4abcaa473320cad756d8e1fdc26 Mon Sep 17 00:00:00 2001
+From: Liming Gao <liming.gao@intel.com>
+Date: Thu, 9 Jan 2020 13:36:07 +0800
+Subject: [Patch] TestCase for the incremental build
+
+Signed-off-by: Liming Gao <liming.gao@intel.com>
+---
+ MdeModulePkg/Application/HelloWorld/HelloWorld.c | 1 +
+ MdeModulePkg/Application/HelloWorld/Test.h       | 0
+ 2 files changed, 1 insertion(+)
+ create mode 100644 MdeModulePkg/Application/HelloWorld/Test.h
+
+diff --git a/MdeModulePkg/Application/HelloWorld/HelloWorld.c b/MdeModulePkg/Application/HelloWorld/HelloWorld.c
+index e45a3746e7..6717645a03 100644
+--- a/MdeModulePkg/Application/HelloWorld/HelloWorld.c
++++ b/MdeModulePkg/Application/HelloWorld/HelloWorld.c
+@@ -11,6 +11,7 @@
+ #include <Library/PcdLib.h>
+ #include <Library/UefiLib.h>
+ #include <Library/UefiApplicationEntryPoint.h>
++#include "Test.h"
+ 
+ //
+ // String token ID of help message text.
+diff --git a/MdeModulePkg/Application/HelloWorld/Test.h b/MdeModulePkg/Application/HelloWorld/Test.h
+new file mode 100644
+index 0000000000..e69de29bb2
+-- 
+2.13.0.windows.1
+

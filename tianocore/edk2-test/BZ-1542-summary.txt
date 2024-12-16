@@ -1,0 +1,40 @@
+Analysis summary report:
+------------------------
+Files analyzed                 : 1582 Total
+    C                          : 1536
+    C++                        : 46
+Total LoC input to cov-analyze : 713695
+Functions analyzed             : 10051
+Classes/structs analyzed       : 1441
+Paths analyzed                 : 792182
+Time taken by analysis         : 00:00:27
+Defect occurrences found       : 1282 Total
+                                    2 BAD_SHIFT
+                                   35 CHECKED_RETURN
+                                    6 CONSTANT_EXPRESSION_RESULT
+                                    5 COPY_PASTE_ERROR
+                                  114 DEADCODE
+                                   49 FORWARD_NULL
+                                    2 IDENTICAL_BRANCHES
+                                    1 INCOMPATIBLE_CAST
+                                    7 MISSING_BREAK
+                                    1 MISSING_MOVE_ASSIGNMENT
+                                    2 MISSING_RESTORE
+                                   15 NEGATIVE_RETURNS
+                                    1 NESTING_INDENT_MISMATCH
+                                   33 NO_EFFECT
+                                    5 NULL_RETURNS
+                                   24 OVERFLOW_BEFORE_WIDEN
+                                  225 OVERRUN
+                                   14 PRINTF_ARGS
+                                   39 RESOURCE_LEAK
+                                    1 RETURN_LOCAL
+                                  295 REVERSE_INULL
+                                  160 SIGN_EXTENSION
+                                   16 SIZEOF_MISMATCH
+                                   36 UNINIT
+                                    1 UNINIT_CTOR
+                                   14 UNREACHABLE
+                                  165 UNUSED_VALUE
+                                    7 VARARGS
+                                    7 Y2K38_SAFETY

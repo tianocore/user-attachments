@@ -1,0 +1,34 @@
+From b78e11d7f6c7b7930135351ce3ce05df5759ba88 Mon Sep 17 00:00:00 2001
+From: Jeremiah Cox <jerecox@ntdev.microsoft.com>
+Date: Mon, 2 Aug 2021 14:11:03 -0700
+Subject: [PATCH] TCBZ_#### : SmmTestPointCheckLib index bugs
+
+---
+ .../Test/Library/TestPointCheckLib/SmmTestPointCheckLib.c     | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.c b/MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.c
+index c9b1809deb..b991bb2a3b 100644
+--- a/MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.c
++++ b/MinPlatformPkg/Test/Library/TestPointCheckLib/SmmTestPointCheckLib.c
+@@ -109,7 +109,7 @@ TestPointSmmEndOfDxeSmrrFunctional (
+   EFI_STATUS  Status;
+   BOOLEAN     Result;
+ 
+-  if ((mFeatureImplemented[5] & TEST_POINT_BYTE6_SMM_END_OF_DXE_SMRR_FUNCTIONAL) == 0) {
++  if ((mFeatureImplemented[6] & TEST_POINT_BYTE6_SMM_END_OF_DXE_SMRR_FUNCTIONAL) == 0) { // MU_CHANGE TCBZ#### : correct parameter is 6 to indicate byte 6
+     return EFI_SUCCESS;
+   }
+ 
+@@ -125,7 +125,7 @@ TestPointSmmEndOfDxeSmrrFunctional (
+     TestPointLibSetFeaturesVerified (
+       PLATFORM_TEST_POINT_ROLE_PLATFORM_IBV,
+       NULL,
+-      5,
++      6, // MU_CHANGE TCBZ#### : correct parameter is 6 to indicate byte 6
+       TEST_POINT_BYTE6_SMM_END_OF_DXE_SMRR_FUNCTIONAL
+       );
+   }
+-- 
+2.32.0.windows.2
+

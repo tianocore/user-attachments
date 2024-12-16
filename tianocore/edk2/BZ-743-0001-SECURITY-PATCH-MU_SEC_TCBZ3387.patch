@@ -1,0 +1,113 @@
+From afcfe1edf5c047d1f962da032f3a5a22988eaa54 Mon Sep 17 00:00:00 2001
+From: Bret Barkelew <bret@corthon.com>
+Date: Wed, 23 Jun 2021 21:56:14 +0000
+Subject: [PATCH] SECURITY PATCH MU_SEC_TCBZ3387
+
+Prevents potential math over and underflows when comparing buffers for SMM validity.
+---
+ MdeModulePkg/Core/PiSmmCore/PiSmmCore.c | 23 ++++++++++++++++++++---
+ MdeModulePkg/Core/PiSmmCore/PiSmmCore.h |  1 +
+ MdeModulePkg/Core/PiSmmCore/PiSmmIpl.c  |  9 +++++++--
+ 3 files changed, 28 insertions(+), 5 deletions(-)
+
+diff --git a/MdeModulePkg/Core/PiSmmCore/PiSmmCore.c b/MdeModulePkg/Core/PiSmmCore/PiSmmCore.c
+index cfa9922cbd..4a8a076aee 100644
+--- a/MdeModulePkg/Core/PiSmmCore/PiSmmCore.c
++++ b/MdeModulePkg/Core/PiSmmCore/PiSmmCore.c
+@@ -609,6 +609,7 @@ SmmEndOfS3ResumeHandler (
+   @param[in] Size2  Size of Buff2
+ 
+   @retval TRUE      Buffers overlap in memory.
++  @retval TRUE      Math error.       MU_SEC_TCBZ3387 - Prevents potential math over and underflows.
+   @retval FALSE     Buffer doesn't overlap.
+ 
+ **/
+@@ -620,11 +621,20 @@ InternalIsBufferOverlapped (
+   IN UINTN      Size2
+   )
+ {
++  UINTN         End1;   // MU_SEC_TCBZ3387 - Prevents potential math over and underflows.
++  UINTN         End2;   // MU_SEC_TCBZ3387 - Prevents potential math over and underflows.
++
+   //
+   // If buff1's end is less than the start of buff2, then it's ok.
+   // Also, if buff1's start is beyond buff2's end, then it's ok.
+   //
+-  if (((Buff1 + Size1) <= Buff2) || (Buff1 >= (Buff2 + Size2))) {
++  // MU_SEC_TCBZ3387 [BEGIN] - Prevents potential math over and underflows.
++  if (EFI_ERROR (SafeUintnAdd ((UINTN)Buff1, Size1, &End1) ||
++      EFI_ERROR (SafeUintnAdd ((UINTN)Buff2, Size2, &End2)))) {
++    return TRUE;
++  }
++  if ((End1 <= (UINTN)Buff2) || ((UINTN)Buff1 >= End2)) {
++  // MU_SEC_TCBZ3387 [END] - Prevents potential math over and underflows.
+     return FALSE;
+   }
+ 
+@@ -698,7 +708,11 @@ SmmEntryPoint (
+                        (UINT8 *) gSmmCorePrivate,
+                        sizeof (*gSmmCorePrivate)
+                        );
+-      if (!SmmIsBufferOutsideSmmValid ((UINTN)CommunicationBuffer, BufferSize) || IsOverlapped) {
++      // MU_SEC_TCBZ3387 [BEGIN] - Prevents potential math over and underflows.
++      if (!SmmIsBufferOutsideSmmValid ((UINTN)CommunicationBuffer, BufferSize) ||
++          IsOverlapped ||
++          EFI_ERROR (SafeUintnSub (BufferSize, OFFSET_OF (EFI_SMM_COMMUNICATE_HEADER, Data), &BufferSize))) {
++      // MU_SEC_TCBZ3387 [END] - Prevents potential math over and underflows.
+         //
+         // If CommunicationBuffer is not in valid address scope,
+         // or there is overlap between gSmmCorePrivate and CommunicationBuffer,
+@@ -708,7 +722,10 @@ SmmEntryPoint (
+         gSmmCorePrivate->ReturnStatus = EFI_ACCESS_DENIED;
+       } else {
+         CommunicateHeader = (EFI_SMM_COMMUNICATE_HEADER *)CommunicationBuffer;
+-        BufferSize -= OFFSET_OF (EFI_SMM_COMMUNICATE_HEADER, Data);
++        // MU_SEC_TCBZ3387 [BEGIN] - Prevents potential math over and underflows.
++        // BufferSize was altered by the SafeUintnSub().
++        // BufferSize -= OFFSET_OF (EFI_SMM_COMMUNICATE_HEADER, Data);
++        // MU_SEC_TCBZ3387 [END] - Prevents potential math over and underflows.
+         Status = SmiManage (
+                    &CommunicateHeader->HeaderGuid,
+                    NULL,
+diff --git a/MdeModulePkg/Core/PiSmmCore/PiSmmCore.h b/MdeModulePkg/Core/PiSmmCore/PiSmmCore.h
+index c2082dae60..222e0a0832 100644
+--- a/MdeModulePkg/Core/PiSmmCore/PiSmmCore.h
++++ b/MdeModulePkg/Core/PiSmmCore/PiSmmCore.h
+@@ -55,6 +55,7 @@
+ #include <Library/HobLib.h>
+ #include <Library/SmmMemLib.h>
+ #include <Library/BaseBinSecurityLib.h>          // MS_CHANGE_?
++#include <Library/SafeIntLib.h>                 // MU_SEC_TCBZ3387 - Prevents potential math over and underflows.
+ 
+ #include "PiSmmCorePrivateData.h"
+ #include "HeapGuard.h"
+diff --git a/MdeModulePkg/Core/PiSmmCore/PiSmmIpl.c b/MdeModulePkg/Core/PiSmmCore/PiSmmIpl.c
+index 9969e2e657..ee212d7dbe 100644
+--- a/MdeModulePkg/Core/PiSmmCore/PiSmmIpl.c
++++ b/MdeModulePkg/Core/PiSmmCore/PiSmmIpl.c
+@@ -1364,6 +1364,7 @@ SmmSplitSmramEntry (
+   @param[in] ReservedRangeToCompare     Pointer to EFI_SMM_RESERVED_SMRAM_REGION to compare.
+ 
+   @retval TRUE  There is overlap.
++  @retval TRUE  Math error.             MU_SEC_TCBZ3387 - Prevents potential math over and underflows.
+   @retval FALSE There is no overlap.
+ 
+ **/
+@@ -1376,8 +1377,12 @@ SmmIsSmramOverlap (
+   UINT64    RangeToCompareEnd;
+   UINT64    ReservedRangeToCompareEnd;
+ 
+-  RangeToCompareEnd         = RangeToCompare->CpuStart + RangeToCompare->PhysicalSize;
+-  ReservedRangeToCompareEnd = ReservedRangeToCompare->SmramReservedStart + ReservedRangeToCompare->SmramReservedSize;
++  // MU_SEC_TCBZ3387 [BEGIN] - Prevents potential math over and underflows.
++  if (EFI_ERROR (SafeUint64Add ((UINT64)RangeToCompare->CpuStart, RangeToCompare->PhysicalSize, &RangeToCompareEnd)) ||
++      EFI_ERROR (SafeUint64Add ((UINT64)ReservedRangeToCompare->SmramReservedStart, ReservedRangeToCompare->SmramReservedSize, &RangeToCompareEnd))) {
++    return TRUE;
++  }
++  // MU_SEC_TCBZ3387 [END] - Prevents potential math over and underflows.
+ 
+   if ((RangeToCompare->CpuStart >= ReservedRangeToCompare->SmramReservedStart) &&
+       (RangeToCompare->CpuStart < ReservedRangeToCompareEnd)) {
+-- 
+2.31.1.windows.1
+

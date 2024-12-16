@@ -1,0 +1,151 @@
+From 43ffd1cb027194b807d5d8a3b003ac0b481b0d05 Mon Sep 17 00:00:00 2001
+From: Joey Vagedes <joeyvagedes@microsoft.com>
+Date: Wed, 5 Oct 2022 16:03:35 -0700
+Subject: [PATCH] Update capsule header guid
+
+UpdateCapsule() Conformance requires that a capsule marked
+CAPSULE_FLAGS_PERSIST_ACROSS_RESET must also provide a valid
+ScatterGatherList. In some platforms, however, if a capsule is marked as
+such, the capsule is validated before being persisted in memory (which
+is when the ScatterGatherList is verified). Due to this, those platforms
+fail the SCT that validates this conformance as they return
+EFI_UNSUPPORTED as the capsule header guid being passed to the function
+is not a known valid capsule header guid.
+
+This commit updates the capsule header guid used in the
+MiscRuntimeService tests to use a known good capsule header guid,
+gWindowsUxCapsuleGuid, which causes these platforms to pass this SCT.
+---
+ .../BlackBoxTest/MiscRuntimeServicesBBTest.inf       |  3 +++
+ .../MiscRuntimeServicesBBTestConformance.c           | 12 ++++++------
+ .../BlackBoxTest/MiscRuntimeServicesBBTestFunction.c |  4 ++--
+ .../BlackBoxTest/MiscRuntimeServicesBBTestMain.c     |  4 ----
+ .../BlackBoxTest/MiscRuntimeServicesBBTestMain.h     |  7 -------
+ 5 files changed, 11 insertions(+), 19 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTest.inf b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTest.inf
+index 125d7fa5..b1edde82 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTest.inf
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTest.inf
+@@ -52,3 +52,6 @@
+ 
+ [Protocols]
+   gEfiTestRecoveryLibraryGuid
++
++[Guids]
++  gWindowsUxCapsuleGuid
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestConformance.c
+index b590154c..f6f1085b 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestConformance.c
+@@ -24,7 +24,7 @@ Module Name:
+ 
+ --*/
+ 
+-#include "SctLib.h"
++#include "SctLib.h"
+ #include "MiscRuntimeServicesBBTestMain.h"
+ 
+ #if (EFI_SPECIFICATION_VERSION >= 0x00020000)
+@@ -81,7 +81,7 @@ BBTestUpdateCapsuleConformanceTest (
+   }
+ 
+   CapsuleHeaderArray[0] = (EFI_CAPSULE_HEADER *) (UINTN)AllocatedBuffer;
+-  CapsuleHeaderArray[0]->CapsuleGuid = mEfiCapsuleHeaderGuid;
++  CapsuleHeaderArray[0]->CapsuleGuid = gWindowsUxCapsuleGuid;
+   CapsuleHeaderArray[0]->HeaderSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[0]->CapsuleImageSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[1] = NULL;
+@@ -116,7 +116,7 @@ BBTestUpdateCapsuleConformanceTest (
+   //
+ 
+   CapsuleHeaderArray[0] = (EFI_CAPSULE_HEADER *) (UINTN)AllocatedBuffer;
+-  CapsuleHeaderArray[0]->CapsuleGuid = mEfiCapsuleHeaderGuid;
++  CapsuleHeaderArray[0]->CapsuleGuid = gWindowsUxCapsuleGuid;
+   CapsuleHeaderArray[0]->HeaderSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[0]->CapsuleImageSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[1] = NULL;
+@@ -150,7 +150,7 @@ BBTestUpdateCapsuleConformanceTest (
+   // CAPSULE_FLAGS_PERSIST_ACROSS_RESET set in its header as well.
+   //
+   CapsuleHeaderArray[0] = (EFI_CAPSULE_HEADER *) (UINTN)AllocatedBuffer;
+-  CapsuleHeaderArray[0]->CapsuleGuid = mEfiCapsuleHeaderGuid;
++  CapsuleHeaderArray[0]->CapsuleGuid = gWindowsUxCapsuleGuid;
+   CapsuleHeaderArray[0]->HeaderSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[0]->CapsuleImageSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[1] = NULL;
+@@ -182,7 +182,7 @@ BBTestUpdateCapsuleConformanceTest (
+   // CAPSULE_FLAGS_PERSIST_ACROSS_RESET set in its header as well.
+   //
+   CapsuleHeaderArray[0] = (EFI_CAPSULE_HEADER *) (UINTN)AllocatedBuffer;
+-  CapsuleHeaderArray[0]->CapsuleGuid = mEfiCapsuleHeaderGuid;
++  CapsuleHeaderArray[0]->CapsuleGuid = gWindowsUxCapsuleGuid;
+   CapsuleHeaderArray[0]->HeaderSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[0]->CapsuleImageSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[1] = NULL;
+@@ -268,7 +268,7 @@ BBTestQueryCapsuleCapabilitiesConformanceTest (
+   }
+ 
+   CapsuleHeaderArray[0] = (EFI_CAPSULE_HEADER *) (UINTN)AllocatedBuffer;
+-  CapsuleHeaderArray[0]->CapsuleGuid = mEfiCapsuleHeaderGuid;
++  CapsuleHeaderArray[0]->CapsuleGuid = gWindowsUxCapsuleGuid;
+   CapsuleHeaderArray[0]->HeaderSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[0]->CapsuleImageSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[1] = NULL;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestFunction.c
+index b4ebb806..2f97780e 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestFunction.c
+@@ -24,7 +24,7 @@ Module Name:
+ 
+ --*/
+ 
+-#include "SctLib.h"
++#include "SctLib.h"
+ #include "MiscRuntimeServicesBBTestMain.h"
+ 
+ /**
+@@ -463,7 +463,7 @@ BBTestQueryCapsuleCapabilitiesTest (
+ 
+   CapsuleHeaderArray[0] = (EFI_CAPSULE_HEADER *) AllocatedBuffer;
+   CapsuleHeaderArray[1] = NULL;
+-  CapsuleHeaderArray[0]->CapsuleGuid = mEfiCapsuleHeaderGuid;
++  CapsuleHeaderArray[0]->CapsuleGuid = gWindowsUxCapsuleGuid;
+   CapsuleHeaderArray[0]->CapsuleImageSize = sizeof(EFI_CAPSULE_HEADER);
+   CapsuleHeaderArray[0]->HeaderSize = sizeof(EFI_CAPSULE_HEADER);
+ 
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestMain.c
+index 59907fe8..61815d99 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestMain.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestMain.c
+@@ -27,10 +27,6 @@ Module Name:
+ #include "SctLib.h"
+ #include "MiscRuntimeServicesBBTestMain.h"
+ 
+-#if (EFI_SPECIFICATION_VERSION >= 0x00020000)
+-EFI_GUID mEfiCapsuleHeaderGuid = EFI_CAPSULE_GUID;
+-#endif
+-
+ EFI_TPL TplArray [TPL_ARRAY_SIZE] = {
+   TPL_APPLICATION,
+   TPL_CALLBACK,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestMain.h
+index 52e9fa8f..3e37e2f3 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTestMain.h
+@@ -50,15 +50,8 @@ typedef struct _RESET_DATA {
+ 
+ #define TPL_ARRAY_SIZE 3
+ 
+-#ifndef EFI_CAPSULE_GUID
+-#define EFI_CAPSULE_GUID \
+-  { 0x3B6686BD, 0x0D76, 0x4030, {0xB7, 0x0E, 0xB5, 0x51, 0x9E, 0x2F, 0xC5, 0xA0 }}
+-#endif
+-
+ extern EFI_TPL TplArray[TPL_ARRAY_SIZE];
+ 
+-extern EFI_GUID  mEfiCapsuleHeaderGuid;
+-
+ //
+ // Prototypes of Interface Test
+ //

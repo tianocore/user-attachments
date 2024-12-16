@@ -1,0 +1,183 @@
+From cc47dd233e833ba23507bd18382c200ae4f23e3d Mon Sep 17 00:00:00 2001
+From: Jiewen Yao <jiewen.yao@intel.com>
+Date: Fri, 24 Feb 2017 15:55:06 +0800
+Subject: [PATCH] MdeModulePkg/SmmCore: Enhance FreePool check buffer overflow.
+
+This solution is equivalent to DXE core.
+
+AllocatePool() allocates POOL_TAIL after the buffer.
+This POOL_TAIL is checked at FreePool().
+If the there is buffer overflow, the issue can be caught at FreePool.
+
+Cc: Feng Tian <feng.tian@intel.com>
+Cc: Star Zeng <star.zeng@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+Cc: Laszlo Ersek <lersek@redhat.com>
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Jiewen Yao <jiewen.yao@intel.com>
+---
+ MdeModulePkg/Core/PiSmmCore/PiSmmCore.h | 17 +++++++++
+ MdeModulePkg/Core/PiSmmCore/Pool.c      | 36 +++++++++++++++++++-
+ 2 files changed, 52 insertions(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Core/PiSmmCore/PiSmmCore.h b/MdeModulePkg/Core/PiSmmCore/PiSmmCore.h
+index bdef026..e0a867c 100644
+--- a/MdeModulePkg/Core/PiSmmCore/PiSmmCore.h
++++ b/MdeModulePkg/Core/PiSmmCore/PiSmmCore.h
+@@ -1196,17 +1196,34 @@ extern LIST_ENTRY  mSmmMemoryMap;
+ //
+ #define MAX_POOL_INDEX  (MAX_POOL_SHIFT - MIN_POOL_SHIFT + 1)
+ 
++#define POOL_HEAD_SIGNATURE   SIGNATURE_32('p','h','d','0')
++
+ typedef struct {
++  UINT32          Signature;
++  UINT32          Reserved;
+   UINTN           Size;
+   BOOLEAN         Available;
+   EFI_MEMORY_TYPE Type;
+ } POOL_HEADER;
+ 
++#define POOL_TAIL_SIGNATURE   SIGNATURE_32('p','t','a','l')
++
++typedef struct {
++  UINT32          Signature;
++  UINT32          Reserved;
++  UINTN           Size;
++} POOL_TAIL;
++
+ typedef struct {
+   POOL_HEADER  Header;
+   LIST_ENTRY   Link;
+ } FREE_POOL_HEADER;
+ 
++#define POOL_OVERHEAD (sizeof(POOL_HEADER) + sizeof(POOL_TAIL))
++
++#define HEAD_TO_TAIL(a)   \
++  ((POOL_TAIL *) (((CHAR8 *) (a)) + (a)->Size - sizeof(POOL_TAIL)));
++
+ typedef enum {
+   SmmPoolTypeCode,
+   SmmPoolTypeData,
+diff --git a/MdeModulePkg/Core/PiSmmCore/Pool.c b/MdeModulePkg/Core/PiSmmCore/Pool.c
+index f734b3f..5dce1c5 100644
+--- a/MdeModulePkg/Core/PiSmmCore/Pool.c
++++ b/MdeModulePkg/Core/PiSmmCore/Pool.c
+@@ -133,6 +133,7 @@ InternalAllocPoolByIndex (
+ {
+   EFI_STATUS            Status;
+   FREE_POOL_HEADER      *Hdr;
++  POOL_TAIL             *PoolTail;
+   EFI_PHYSICAL_ADDRESS  Address;
+   SMM_POOL_TYPE         SmmPoolType;
+ 
+@@ -153,18 +154,25 @@ InternalAllocPoolByIndex (
+   } else {
+     Status = InternalAllocPoolByIndex (PoolType, PoolIndex + 1, &Hdr);
+     if (!EFI_ERROR (Status)) {
++      Hdr->Header.Signature = 0;
+       Hdr->Header.Size >>= 1;
+       Hdr->Header.Available = TRUE;
+       Hdr->Header.Type = PoolType;
++      PoolTail = HEAD_TO_TAIL(&Hdr->Header);
++      PoolTail->Signature = 0;
+       InsertHeadList (&mSmmPoolLists[SmmPoolType][PoolIndex], &Hdr->Link);
+       Hdr = (FREE_POOL_HEADER*)((UINT8*)Hdr + Hdr->Header.Size);
+     }
+   }
+ 
+   if (!EFI_ERROR (Status)) {
++    Hdr->Header.Signature = POOL_HEAD_SIGNATURE;
+     Hdr->Header.Size = MIN_POOL_SIZE << PoolIndex;
+     Hdr->Header.Available = FALSE;
+     Hdr->Header.Type = PoolType;
++    PoolTail = HEAD_TO_TAIL(&Hdr->Header);
++    PoolTail->Signature = POOL_TAIL_SIGNATURE;
++    PoolTail->Size = Hdr->Header.Size;
+   }
+ 
+   *FreePoolHdr = Hdr;
+@@ -186,6 +194,7 @@ InternalFreePoolByIndex (
+ {
+   UINTN                 PoolIndex;
+   SMM_POOL_TYPE         SmmPoolType;
++  POOL_TAIL             *PoolTail;
+ 
+   ASSERT ((FreePoolHdr->Header.Size & (FreePoolHdr->Header.Size - 1)) == 0);
+   ASSERT (((UINTN)FreePoolHdr & (FreePoolHdr->Header.Size - 1)) == 0);
+@@ -194,7 +203,10 @@ InternalFreePoolByIndex (
+   SmmPoolType = UefiMemoryTypeToSmmPoolType(FreePoolHdr->Header.Type);
+ 
+   PoolIndex = (UINTN) (HighBitSet32 ((UINT32)FreePoolHdr->Header.Size) - MIN_POOL_SHIFT);
++  FreePoolHdr->Header.Signature = 0;
+   FreePoolHdr->Header.Available = TRUE;
++  PoolTail = HEAD_TO_TAIL(&FreePoolHdr->Header);
++  PoolTail->Signature = 0;
+   ASSERT (PoolIndex < MAX_POOL_INDEX);
+   InsertHeadList (&mSmmPoolLists[SmmPoolType][PoolIndex], &FreePoolHdr->Link);
+   return EFI_SUCCESS;
+@@ -222,6 +234,7 @@ SmmInternalAllocatePool (
+   )
+ {
+   POOL_HEADER           *PoolHdr;
++  POOL_TAIL             *PoolTail;
+   FREE_POOL_HEADER      *FreePoolHdr;
+   EFI_STATUS            Status;
+   EFI_PHYSICAL_ADDRESS  Address;
+@@ -232,7 +245,7 @@ SmmInternalAllocatePool (
+     return EFI_INVALID_PARAMETER;
+   }
+ 
+-  Size += sizeof (*PoolHdr);
++  Size += POOL_OVERHEAD;
+   if (Size > MAX_POOL_SIZE) {
+     Size = EFI_SIZE_TO_PAGES (Size);
+     Status = SmmInternalAllocatePages (AllocateAnyPages, PoolType, Size, &Address);
+@@ -241,9 +254,13 @@ SmmInternalAllocatePool (
+     }
+ 
+     PoolHdr = (POOL_HEADER*)(UINTN)Address;
++    PoolHdr->Signature = POOL_HEAD_SIGNATURE;
+     PoolHdr->Size = EFI_PAGES_TO_SIZE (Size);
+     PoolHdr->Available = FALSE;
+     PoolHdr->Type = PoolType;
++    PoolTail = HEAD_TO_TAIL(PoolHdr);
++    PoolTail->Signature = POOL_TAIL_SIGNATURE;
++    PoolTail->Size = PoolHdr->Size;
+     *Buffer = PoolHdr + 1;
+     return Status;
+   }
+@@ -314,13 +331,30 @@ SmmInternalFreePool (
+   )
+ {
+   FREE_POOL_HEADER  *FreePoolHdr;
++  POOL_TAIL         *PoolTail;
+ 
+   if (Buffer == NULL) {
+     return EFI_INVALID_PARAMETER;
+   }
+ 
+   FreePoolHdr = (FREE_POOL_HEADER*)((POOL_HEADER*)Buffer - 1);
++  ASSERT (FreePoolHdr->Header.Signature == POOL_HEAD_SIGNATURE);
+   ASSERT (!FreePoolHdr->Header.Available);
++  PoolTail = HEAD_TO_TAIL(&FreePoolHdr->Header);
++  ASSERT (PoolTail->Signature == POOL_TAIL_SIGNATURE);
++  ASSERT (FreePoolHdr->Header.Size == PoolTail->Size);
++
++  if (FreePoolHdr->Header.Signature != POOL_HEAD_SIGNATURE) {
++    return EFI_INVALID_PARAMETER;
++  }
++
++  if (PoolTail->Signature != POOL_TAIL_SIGNATURE) {
++    return EFI_INVALID_PARAMETER;
++  }
++
++  if (FreePoolHdr->Header.Size != PoolTail->Size) {
++    return EFI_INVALID_PARAMETER;
++  }
+ 
+   if (FreePoolHdr->Header.Size > MAX_POOL_SIZE) {
+     ASSERT (((UINTN)FreePoolHdr & EFI_PAGE_MASK) == 0);
+-- 
+2.7.4.windows.1
+

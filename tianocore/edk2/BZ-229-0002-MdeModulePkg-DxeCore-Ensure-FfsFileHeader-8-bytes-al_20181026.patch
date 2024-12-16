@@ -1,0 +1,160 @@
+From d270a44f461fbbe451360d04122f131dd760105c Mon Sep 17 00:00:00 2001
+From: Star Zeng <star.zeng@intel.com>
+Date: Fri, 5 Jan 2018 13:46:22 +0800
+Subject: [PATCH 2/3] MdeModulePkg DxeCore: Ensure FfsFileHeader 8 bytes
+ aligned
+
+To follow PI spec, ensure FfsFileHeader 8 bytes aligned.
+
+For the integrity of FV(especially non-MemoryMapped FV) layout,
+let CachedFv point to FV beginning, but not (FV + FV header).
+
+And current code only handles (FwVolHeader->ExtHeaderOffset != 0) path,
+update code to also handle (FwVolHeader->ExtHeaderOffset == 0) path.
+
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Liming Gao <liming.gao@intel.com>
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Star Zeng <star.zeng@intel.com>
+---
+ MdeModulePkg/Core/Dxe/FwVol/FwVol.c | 65 ++++++++-----------------------------
+ 1 file changed, 14 insertions(+), 51 deletions(-)
+
+diff --git a/MdeModulePkg/Core/Dxe/FwVol/FwVol.c b/MdeModulePkg/Core/Dxe/FwVol/FwVol.c
+index 93ddcc35913b..6ce7e93f2d8f 100644
+--- a/MdeModulePkg/Core/Dxe/FwVol/FwVol.c
++++ b/MdeModulePkg/Core/Dxe/FwVol/FwVol.c
+@@ -35,7 +35,7 @@ FV_DEVICE mFvDevice = {
+     FvReadFileSection,
+     FvWriteFile,
+     FvGetNextFile,
+-  sizeof (UINTN),
++	sizeof (UINTN),
+     NULL,
+     FvGetVolumeInfo,
+     FvSetVolumeInfo
+@@ -329,8 +329,6 @@ FvCheck (
+   FFS_FILE_LIST_ENTRY                   *FfsFileEntry;
+   EFI_FFS_FILE_HEADER                   *FfsHeader;
+   UINT8                                 *CacheLocation;
+-  UINTN                                 LbaOffset;
+-  UINTN                                 HeaderSize;
+   UINTN                                 Index;
+   EFI_LBA                               LbaIndex;
+   UINTN                                 Size;
+@@ -353,11 +351,7 @@ FvCheck (
+     return Status;
+   }
+ 
+-  //
+-  // Size is the size of the FV minus the head. We have already allocated
+-  // the header to check to make sure the volume is valid
+-  //
+-  Size = (UINTN)(FwVolHeader->FvLength - FwVolHeader->HeaderLength);
++  Size = (UINTN) FwVolHeader->FvLength;
+   if ((FvbAttributes & EFI_FVB2_MEMORY_MAPPED) != 0) {
+     FvDevice->IsMemoryMapped = TRUE;
+ 
+@@ -369,7 +363,7 @@ FvCheck (
+     //
+     // Don't cache memory mapped FV really.
+     //
+-    FvDevice->CachedFv = (UINT8 *) (UINTN) (PhysicalAddress + FwVolHeader->HeaderLength);
++    FvDevice->CachedFv = (UINT8 *) (UINTN) PhysicalAddress;
+   } else {
+     FvDevice->IsMemoryMapped = FALSE;
+     FvDevice->CachedFv = AllocatePool (Size);
+@@ -380,52 +374,27 @@ FvCheck (
+   }
+ 
+   //
+-  // Remember a pointer to the end fo the CachedFv
++  // Remember a pointer to the end of the CachedFv
+   //
+   FvDevice->EndOfCachedFv = FvDevice->CachedFv + Size;
+ 
+   if (!FvDevice->IsMemoryMapped) {
+     //
+-    // Copy FV minus header into memory using the block map we have all ready
+-    // read into memory.
++    // Copy FV into memory using the block map.
+     //
+     BlockMap = FwVolHeader->BlockMap;
+     CacheLocation = FvDevice->CachedFv;
+     LbaIndex = 0;
+-    LbaOffset = 0;
+-    HeaderSize = FwVolHeader->HeaderLength;
+     while ((BlockMap->NumBlocks != 0) || (BlockMap->Length != 0)) {
+-      Index = 0;
+-      Size  = BlockMap->Length;
+-      if (HeaderSize > 0) {
+-        //
+-        // Skip header size
+-        //
+-        for (; Index < BlockMap->NumBlocks && HeaderSize >= BlockMap->Length; Index ++) {
+-          HeaderSize -= BlockMap->Length;
+-          LbaIndex ++;
+-        }
+-
+-        //
+-        // Check whether FvHeader is crossing the multi block range.
+-        //
+-        if (Index >= BlockMap->NumBlocks) {
+-          BlockMap++;
+-          continue;
+-        } else if (HeaderSize > 0) {
+-          LbaOffset = HeaderSize;
+-          Size = BlockMap->Length - HeaderSize;
+-          HeaderSize = 0;
+-        }
+-      }
+-
+       //
+       // read the FV data
+       //
+-      for (; Index < BlockMap->NumBlocks; Index ++) {
+-        Status = Fvb->Read (Fvb,
++      Size = BlockMap->Length;
++      for (Index = 0; Index < BlockMap->NumBlocks; Index++) {
++        Status = Fvb->Read (
++                        Fvb,
+                         LbaIndex,
+-                        LbaOffset,
++                        0,
+                         &Size,
+                         CacheLocation
+                         );
+@@ -438,13 +407,7 @@ FvCheck (
+         }
+ 
+         LbaIndex++;
+-        CacheLocation += Size;
+-
+-        //
+-        // After we skip Fv Header always read from start of block
+-        //
+-        LbaOffset = 0;
+-        Size  = BlockMap->Length;
++        CacheLocation += BlockMap->Length;
+       }
+ 
+       BlockMap++;
+@@ -475,12 +438,12 @@ FvCheck (
+     //
+     // Searching for files starts on an 8 byte aligned boundary after the end of the Extended Header if it exists.
+     //
+-    FwVolExtHeader = (EFI_FIRMWARE_VOLUME_EXT_HEADER *) (FvDevice->CachedFv + (FwVolHeader->ExtHeaderOffset - FwVolHeader->HeaderLength));
++    FwVolExtHeader = (EFI_FIRMWARE_VOLUME_EXT_HEADER *) (FvDevice->CachedFv + FwVolHeader->ExtHeaderOffset);
+     FfsHeader = (EFI_FFS_FILE_HEADER *) ((UINT8 *) FwVolExtHeader + FwVolExtHeader->ExtHeaderSize);
+-    FfsHeader = (EFI_FFS_FILE_HEADER *) ALIGN_POINTER (FfsHeader, 8);
+   } else {
+-    FfsHeader = (EFI_FFS_FILE_HEADER *) (FvDevice->CachedFv);
++    FfsHeader = (EFI_FFS_FILE_HEADER *) (FvDevice->CachedFv + FwVolHeader->HeaderLength);
+   }
++  FfsHeader = (EFI_FFS_FILE_HEADER *) ALIGN_POINTER (FfsHeader, 8);
+   TopFvAddress = FvDevice->EndOfCachedFv;
+   while (((UINTN) FfsHeader >= (UINTN) FvDevice->CachedFv) && ((UINTN) FfsHeader <= (UINTN) ((UINTN) TopFvAddress - sizeof (EFI_FFS_FILE_HEADER)))) {
+ 
+-- 
+2.7.0.windows.1
+

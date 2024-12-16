@@ -1,0 +1,746 @@
+From aeaf27edf24edb03f2b43bbedda2476b14e01777 Mon Sep 17 00:00:00 2001
+From: "Abhi.Singh" <Abhi.Singh@arm.com>
+Date: Fri, 14 Apr 2023 14:00:27 -0500
+Subject: [PATCH v1 1/1] uefi-sct/SctPkg: TCGMOR Platform Reset Check Test
+
+-implement initial test infrastructure for TCG MOR test cases
+ including updates to: CommonGenFramework.sh, UEFI_SCT.dsc,
+ and Category.ini
+
+-add initial TCG MOR Platform Reset Check Test
+ -Test Assertion that checks if the platform creates the MOR
+  EFI variable as in the TCG Platform Reset Mitigation Spec
+ -Test Assertion that sets MOR bit0 and checks if the platform
+  clears the MOR bit0 upon reset
+
+Cc: G Edhaya Chandran <Edhaya.Chandran@arm.com>
+Cc: Barton Gao <gaojie@byosoft.com.cn>
+Cc: Carolyn Gjertsen <Carolyn.Gjertsen@amd.com>
+Cc: Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>
+Signed-off-by: Abhi Singh <Abhi.Singh@arm.com>
+
+---
+ uefi-sct/SctPkg/CommonGenFramework.sh                                                        |   1 +
+ uefi-sct/SctPkg/Config/Data/Category.ini                                                     |   7 +
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/Guid.c                 |  33 +++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/Guid.h                 |  36 +++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTest.inf       |  53 ++++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestFunction.c | 312 ++++++++++++++++++++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestMain.c     | 109 +++++++
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestMain.h     |  89 ++++++
+ uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc                                                            |   1 +
+ 9 files changed, 641 insertions(+)
+
+diff --git a/uefi-sct/SctPkg/CommonGenFramework.sh b/uefi-sct/SctPkg/CommonGenFramework.sh
+index fb9043b56bca..6e5cd301bdfa 100755
+--- a/uefi-sct/SctPkg/CommonGenFramework.sh
++++ b/uefi-sct/SctPkg/CommonGenFramework.sh
+@@ -226,6 +226,7 @@ then
+     if [ -e $ProcessorType/RiscVBootProtocolBBTest.efi ]; then
+       cp $ProcessorType/RiscVBootProtocolBBTest.efi              $Framework/Test/ > NUL
+     fi
++    cp $ProcessorType/TCGMORBBTest.efi                         $Framework/Test/ > NUL
+ 
+     # *********************************************
+     # Copy ENTS binary
+diff --git a/uefi-sct/SctPkg/Config/Data/Category.ini b/uefi-sct/SctPkg/Config/Data/Category.ini
+index b34d35db9ac8..ead527a783ac 100644
+--- a/uefi-sct/SctPkg/Config/Data/Category.ini
++++ b/uefi-sct/SctPkg/Config/Data/Category.ini
+@@ -165,6 +165,13 @@ InterfaceGuid = AFF115FB-387B-4C18-8C41-6AFC7F03BB90
+ Name          = RuntimeServicesTest\MiscRuntimeServicesTest
+ Description   =
+ 
++[Category Data]
++Revision      = 0x00010000
++CategoryGuid  = 265E661D-D51E-454B-BBC9-665F46EC0A04
++InterfaceGuid = AFF115FB-387B-4C18-8C41-6AFC7F03BB90
++Name          = RuntimeServicesTest\TCGMORTest
++Description   = Tests that check if Platform supports and correctly implements TCG MOR
++
+ [Category Data]
+ Revision      = 0x00010000
+ CategoryGuid  = 5B1B31A1-9562-11D2-8E3F-00A0C969723B
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/Guid.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/Guid.c
+new file mode 100644
+index 000000000000..8f967a2a62f2
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/Guid.c
+@@ -0,0 +1,33 @@
++/** @file
++
++  Copyright 2006 - 2013 Unified EFI, Inc.<BR>
++  Copyright (c) 2013, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  guid.c
++
++Abstract:
++
++  GUIDs auto-generated for EFI test assertion.
++
++--*/
++
++#include "Efi.h"
++#include "Guid.h"
++
++EFI_GUID gTcgMorTestFunctionAssertionGuid001 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_001_GUID;
++
++EFI_GUID gTcgMorTestFunctionAssertionGuid002 = EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_002_GUID;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/Guid.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/Guid.h
+new file mode 100644
+index 000000000000..90c60e476945
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/Guid.h
+@@ -0,0 +1,36 @@
++/** @file
++
++  Copyright 2006 - 2016 Unified EFI, Inc.<BR>
++  Copyright (c) 2013, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  guid.h
++
++Abstract:
++
++  GUIDs auto-generated for EFI test assertion.
++
++--*/
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_001_GUID \
++{ 0xd1c31d5f, 0x944f, 0x434c, {0x88, 0x26, 0xa6, 0xfb, 0x00, 0xd4, 0xbb, 0x97 }}
++
++#define EFI_TEST_TCGMORTESTFUNCTION_ASSERTION_002_GUID \
++{ 0xa6c191b1, 0x9bfb, 0x4231, {0xb9, 0x2d, 0x4e, 0xa2, 0x21, 0xf6, 0x4b, 0x5d }}
++
++extern EFI_GUID gTcgMorTestFunctionAssertionGuid001;
++
++extern EFI_GUID gTcgMorTestFunctionAssertionGuid002;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTest.inf b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTest.inf
+new file mode 100644
+index 000000000000..8fb71a5fb883
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTest.inf
+@@ -0,0 +1,53 @@
++## @file
++#
++#  Copyright 2006 - 2015 Unified EFI, Inc.<BR>
++#  Copyright (c) 2013, Intel Corporation. All rights reserved.<BR>
++#  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++#
++#  This program and the accompanying materials
++#  are licensed and made available under the terms and conditions of the BSD License
++#  which accompanies this distribution.  The full text of the license may be found at
++#  http://opensource.org/licenses/bsd-license.php
++#
++#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++#
++##
++#/*++
++#
++# Module Name:
++#
++#   TCGMORBBTest.inf
++#
++# Abstract:
++#
++#   Component description file for TCG MOR Test.
++#
++#--*/
++
++[defines]
++  INF_VERSION          = 0x00010005
++  BASE_NAME            = TCGMORBBTest
++  FILE_GUID            = ACA989CD-4AEE-45A3-B80F-E9A523BB7164
++  MODULE_TYPE          = UEFI_DRIVER
++  VERSION_STRING       = 1.0
++  ENTRY_POINT          = InitializeTestTCGMOR
++
++[sources.common]
++  TCGMORBBTestMain.c
++  TCGMORBBTestMain.h
++  TCGMORBBTestFunction.c
++  Guid.c
++
++[Packages]
++  MdePkg/MdePkg.dec
++  SctPkg/SctPkg.dec
++  SctPkg/UEFI/UEFI.dec
++
++[LibraryClasses]
++  UefiDriverEntryPoint
++  SctLib
++  EfiTestLib
++
++[Protocols]
++  gEfiTestRecoveryLibraryGuid
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestFunction.c
+new file mode 100644
+index 000000000000..e924165919b1
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestFunction.c
+@@ -0,0 +1,312 @@
++/** @file
++
++  Copyright 2006 - 2016 Unified EFI, Inc.<BR>
++  Copyright (c) 2010 - 2016, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at 
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  TCGMORBBTestFunction.c
++
++Abstract:
++
++  Function Test Cases for the TCG MOR and MORLock EFI Variables
++
++--*/
++#include "SctLib.h"
++#include "TCGMORBBTestMain.h"
++
++#define RECOVER_BUFFER_SIZE  2048
++
++#define TCG_MOR_VARIABLE_ATTRIBUTES 0x00000007
++
++
++/**
++ *  Entry point for TCGMOR Function Test.
++ *  @param This             A pointer to the EFI_BB_TEST_PROTOCOL instance.
++ *  @param ClientInterface  A pointer to the interface to be tested.
++ *  @param TestLevel        Test "thoroughness" control.
++ *  @param SupportHandle    A handle containing support protocols.
++ *  @return EFI_SUCCESS     Successfully.
++ *  @return Other value     Something failed.
++ */
++EFI_STATUS
++BBTestTCGMORFunctionTest (
++  IN EFI_BB_TEST_PROTOCOL              *This,
++  IN VOID                              *ClientInterface,
++  IN EFI_TEST_LEVEL                    TestLevel,
++  IN EFI_HANDLE                        SupportHandle
++  )
++{
++  EFI_STANDARD_TEST_LIBRARY_PROTOCOL   *StandardLib;
++  EFI_TEST_RECOVERY_LIBRARY_PROTOCOL   *RecoveryLib;
++  EFI_STATUS                           Status;
++
++  //
++  // Get the Standard Library Interface
++  //
++  Status = gtBS->HandleProtocol (
++                  SupportHandle,
++                  &gEfiStandardTestLibraryGuid,
++                  (VOID **) &StandardLib
++                  );
++  if (EFI_ERROR(Status)) {
++    return Status;
++  }
++
++  //
++  // Get the Recovery Library Interface
++  //
++  Status = gtBS->HandleProtocol (
++                  SupportHandle,
++                  &gEfiTestRecoveryLibraryGuid,
++                  (VOID **) &RecoveryLib
++                  );
++  if (EFI_ERROR(Status)) {
++    StandardLib->RecordAssertion (
++                  StandardLib,
++                  EFI_TEST_ASSERTION_FAILED,
++                  gTestGenericFailureGuid,
++                  L"BS.HandleProtocol - Handle recovery library",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++    return Status;
++  }
++
++  //
++  // TCGMOR EFI Variable and Platform Reset Checks
++  //
++  Status = TCGMORPlatformResetCheck (StandardLib, RecoveryLib);
++
++  return EFI_SUCCESS;
++}
++
++
++/**
++ *  MOR EFI variable is correctly created by platform and Set MOR bit0 is cleared upon reset
++ *  @param StandardLib    A pointer to EFI_STANDARD_TEST_LIBRARY_PROTOCOL
++ *                        instance.
++ *  @param RecoveryLib    A pointer to EFI_TEST_RECOVERY_LIBRARY_PROTOCOL
++ *                        instance.
++ *  @return EFI_SUCCESS   Successfully.
++ *  @return Other value   Something failed.
++ */
++EFI_STATUS
++TCGMORPlatformResetCheck (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib
++  )
++{
++  EFI_STATUS                           Status;
++  EFI_TEST_ASSERTION                   Result;
++  UINTN                                DataSize;
++  UINTN                                MemoryOverwriteRequestControlData;
++  UINT32                               Attributes;
++  RESET_DATA                           *ResetData;
++  UINT8                                Buffer[RECOVER_BUFFER_SIZE];
++  UINTN                                Size;
++
++
++  ResetData = (RESET_DATA *)Buffer;
++  //
++  // Read reset record
++  //
++  Status = RecoveryLib->ReadResetRecord (
++                  RecoveryLib,
++                  &Size,
++                  Buffer
++                  );
++  if (EFI_ERROR(Status) || (Size < sizeof(RESET_DATA))) {
++    goto INITIAL_RESET;
++  } else if (ResetData->Step == 1) {
++    goto MOR_VARIABLE_CHECK;
++  } else if (ResetData->Step == 2) {
++    goto MOR_BIT_CLEAR_ON_RESET;
++
++  return EFI_LOAD_ERROR;
++  }
++
++
++INITIAL_RESET:
++  //
++  // Perform initial plaform reset
++  //
++  ResetData->Step = 1;
++  ResetData->TplIndex = 0;
++  Status = RecoveryLib->WriteResetRecord (
++                  RecoveryLib,
++                  sizeof (RESET_DATA),
++                  (UINT8*)ResetData
++                  );
++  if (EFI_ERROR(Status)) {
++    StandardLib->RecordAssertion (
++                  StandardLib,
++                  EFI_TEST_ASSERTION_FAILED,
++                  gTestGenericFailureGuid,
++                  L"TestRecoveryLib - WriteResetRecord",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++    return Status;
++  }
++  SctPrint (L"System will cold reset after 1 second...");
++  gtBS->Stall (1000000);
++  gtRT->ResetSystem (
++                  EfiResetCold,
++                  EFI_SUCCESS,
++                  0,
++                  NULL
++                  );
++
++
++MOR_VARIABLE_CHECK:
++  //
++  // Post system reset, Check if the MOR EFI var is correctly created by platform
++  //
++
++  // Write reset record before the second reset (MOR_BIT_CLEAR_ON_RESET)
++  ResetData->Step = 2;
++  ResetData->TplIndex = 0;
++  Status = RecoveryLib->WriteResetRecord (
++                  RecoveryLib,
++                  sizeof (RESET_DATA),
++                  (UINT8*)ResetData
++                  );
++  if (EFI_ERROR(Status)) {
++    StandardLib->RecordAssertion (
++                  StandardLib,
++                  EFI_TEST_ASSERTION_FAILED,
++                  gTestGenericFailureGuid,
++                  L"TestRecoveryLib - WriteResetRecord",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++    return Status;
++  }
++
++  // GetVariable and check if the DataSize and Attributes are as expected
++  DataSize = sizeof(MemoryOverwriteRequestControlData);
++  Attributes = EFI_VARIABLE_NON_VOLATILE |
++             EFI_VARIABLE_BOOTSERVICE_ACCESS |
++             EFI_VARIABLE_RUNTIME_ACCESS;
++
++  Status = gtRT->GetVariable (
++                  L"MemoryOverwriteRequestControl",     // VariableName
++                  &gEfiMemoryOverwriteControlDataGuid,  // VendorGuid
++                  &Attributes,                          // Attributes
++                  &DataSize,                            // DataSize
++                  &MemoryOverwriteRequestControlData    // Data
++                  );
++  if (EFI_ERROR (Status) || (DataSize != 1) || (Attributes != TCG_MOR_VARIABLE_ATTRIBUTES)) {
++    Result = EFI_TEST_ASSERTION_FAILED;
++  } else {
++    Result = EFI_TEST_ASSERTION_PASSED;
++  }
++
++  StandardLib->RecordAssertion (
++                  StandardLib,
++                  Result,
++                  gTcgMorTestFunctionAssertionGuid001,
++                  L"MemoryOverwriteRequestControl - Validate that the MOR Variable is correctly created by the platform",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
++
++  //
++  // Check if platform clears Bit0 upon system reset when Bit0 is initially set
++  //
++  MemoryOverwriteRequestControlData |= 1<<0;
++  // Set Bit0
++  Status = gtRT->SetVariable (
++                  L"MemoryOverwriteRequestControl",     // VariableName
++                  &gEfiMemoryOverwriteControlDataGuid,  // VendorGuid
++                  Attributes,                           // Attributes
++                  DataSize,                             // DataSize
++                  &MemoryOverwriteRequestControlData    // Data
++                  );
++  if (EFI_ERROR (Status) || !(MemoryOverwriteRequestControlData & 1<<0)) {
++    SctPrint (L"Unable to set MemoryOverwriteAction_BitValue Bit0!");
++    return Status;
++  }
++
++  // Cold reset system again for step 2
++  SctPrint (L"System will cold reset after 1 second and test will be resumed after reboot.");
++  gtBS->Stall (1000000);
++  gtRT->ResetSystem (
++                  EfiResetCold,
++                  EFI_SUCCESS,
++                  0,
++                  NULL
++                  );
++
++
++MOR_BIT_CLEAR_ON_RESET:
++  //
++  // Check if the platform has cleared the set MOR bit0 on reset
++  //
++  Status = RecoveryLib->WriteResetRecord (
++                  RecoveryLib,
++                  0,
++                  (UINT8*)ResetData
++                  );
++  if (EFI_ERROR(Status)) {
++    return Status;
++  }
++
++  DataSize = sizeof(MemoryOverwriteRequestControlData);
++  Attributes = EFI_VARIABLE_NON_VOLATILE |
++             EFI_VARIABLE_BOOTSERVICE_ACCESS |
++             EFI_VARIABLE_RUNTIME_ACCESS;
++
++  Status = gtRT->GetVariable (
++                  L"MemoryOverwriteRequestControl",     // VariableName
++                  &gEfiMemoryOverwriteControlDataGuid,  // VendorGuid
++                  &Attributes,                          // Attributes
++                  &DataSize,                            // DataSize
++                  &MemoryOverwriteRequestControlData    // Data
++                  );
++  if (EFI_ERROR (Status) || (MemoryOverwriteRequestControlData & 1<<0)) {
++    Result = EFI_TEST_ASSERTION_FAILED;
++  } else {
++    Result = EFI_TEST_ASSERTION_PASSED;
++  }
++
++  StandardLib->RecordAssertion (
++                  StandardLib,
++                  Result,
++                  gTcgMorTestFunctionAssertionGuid002,
++                  L"MemoryOverwriteRequestControl - Validate that MOR bit0 is cleared after a cold reset when the bit0 is initially set",
++                  L"%a:%d:Status - %r",
++                  __FILE__,
++                  (UINTN)__LINE__,
++                  Status
++                  );
++  if (EFI_ERROR (Status)) {
++    return Status;
++  }
++
++  return EFI_SUCCESS;
++}
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestMain.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestMain.c
+new file mode 100644
+index 000000000000..8c128b15ced4
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestMain.c
+@@ -0,0 +1,109 @@
++/** @file
++
++  Copyright 2006 - 2016 Unified EFI, Inc.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++    TCG2MORTestMain.c
++
++Abstract:
++
++    for EFI Driver TCG MOR Basic Test
++
++--*/
++#include "SctLib.h"
++#include "TCGMORBBTestMain.h"
++
++EFI_GUID gEfiMemoryOverwriteControlDataGuid = MEMORY_ONLY_RESET_CONTROL_GUID;
++
++EFI_BB_TEST_PROTOCOL_FIELD gEfiTCGMORTestProtField = {
++  TCG_MOR_TEST_REVISION,
++  EFI_TCG_MOR_TEST_GUID,
++  L"TCG MOR Test",
++  L"TCG MOR EFI Variable Functionality Test"
++};
++
++EFI_GUID gSupportProtocolGuid1[2] = {
++  EFI_STANDARD_TEST_LIBRARY_GUID,
++  EFI_NULL_GUID
++};
++
++EFI_BB_TEST_ENTRY_FIELD gLoadTCGMOREntryField[] = {
++
++  {
++    EFI_TCG_MOR_TEST_ENTRY_GUID0101,
++    L"Test-TCG MOR Platform Reset Check",
++    L"Test for MemoryOverwriteRequestControl EFI variable in accordance with TCG spec",
++    EFI_TEST_LEVEL_DEFAULT,
++    gSupportProtocolGuid1,
++    EFI_TEST_CASE_AUTO,
++    BBTestTCGMORFunctionTest
++  },
++
++
++  EFI_NULL_GUID
++};
++
++EFI_BB_TEST_PROTOCOL *gTCGMORTestProt;
++
++EFI_STATUS
++EFIAPI
++UnloadTCGMORTest (
++  IN EFI_HANDLE       ImageHandle
++  );
++
++/**
++ *  Creates/installs the BlackBox Interface and eminating Entry Point node list.
++ *  @param  ImageHandle The test driver image handle
++ *  @param  SystemTable Pointer to System Table
++ *  @return EFI_SUCCESS Indicates the interface was installed
++ *  @return EFI_OUT_OF_RESOURCES Indicates space for the new handle could not be allocated
++ *  @return EFI_INVALID_PARAMETER: One of the parameters has an invalid value.
++ */
++EFI_STATUS
++EFIAPI
++InitializeTestTCGMOR (
++  IN EFI_HANDLE           ImageHandle,
++  IN EFI_SYSTEM_TABLE     *SystemTable
++  )
++{
++  //
++  // initialize test utility lib
++  //
++  EfiInitializeTestLib (ImageHandle, SystemTable);
++  SctInitializeLib (ImageHandle, SystemTable);
++
++  return EfiInitAndInstallBBTestInterface (
++           &ImageHandle,
++           &gEfiTCGMORTestProtField,
++           gLoadTCGMOREntryField,
++           UnloadTCGMORTest,
++           &gTCGMORTestProt
++           );
++}
++
++
++
++EFI_STATUS
++EFIAPI
++UnloadTCGMORTest (
++  IN EFI_HANDLE       ImageHandle
++  )
++{
++  return EfiUninstallAndFreeBBTestInterface (
++           ImageHandle,
++           gTCGMORTestProt
++           );
++}
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestMain.h
+new file mode 100644
+index 000000000000..d38e07e38bbc
+--- /dev/null
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTestMain.h
+@@ -0,0 +1,89 @@
++/** @file
++
++  Copyright 2006 - 2017 Unified EFI, Inc.<BR>
++  Copyright (c) 2010 - 2017, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2023, Arm Inc. All rights reserved.<BR>
++
++  This program and the accompanying materials
++  are licensed and made available under the terms and conditions of the BSD License
++  which accompanies this distribution.  The full text of the license may be found at 
++  http://opensource.org/licenses/bsd-license.php
++
++  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
++  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
++
++**/
++/*++
++
++Module Name:
++
++  TCGMORTest.h
++
++Abstract:
++
++  Test Driver of TCG MOR EFI variables from TCG spec
++
++--*/
++
++#ifndef _TCG_MOR_BB_TEST_MAIN
++#define _TCG_MOR_BB_TEST_MAIN
++
++#include "Efi.h"
++#include "Guid.h"
++#include <Library/EfiTestLib.h>
++#include <SctLib.h>
++
++typedef struct _RESET_DATA {
++  UINTN           Step;
++  UINTN           TplIndex;
++  UINT32          RepeatTimes;
++} RESET_DATA;
++
++#include EFI_TEST_PROTOCOL_DEFINITION(TestRecoveryLibrary)
++
++#define TCG_MOR_TEST_REVISION 0x00010000
++
++#define EFI_TCG_MOR_TEST_GUID \
++  { 0x265e661d, 0xd51e, 0x454b, {0xbb, 0xc9, 0x66, 0x5f, 0x46, 0xec, 0x0a, 0x04 }}
++
++#define MEMORY_ONLY_RESET_CONTROL_GUID \
++  { 0xE20939BE, 0x32D4, 0x41BE, {0xA1, 0x50, 0x89, 0x7F, 0x85, 0xD4, 0x98, 0x29 }}
++
++extern EFI_GUID gEfiMemoryOverwriteControlDataGuid;
++
++EFI_STATUS
++EFIAPI
++InitializeTestTCGMOR (
++  IN EFI_HANDLE           ImageHandle,
++  IN EFI_SYSTEM_TABLE     *SystemTable
++  );
++
++EFI_STATUS
++EFIAPI
++UnloadTCGMORTest (
++  IN EFI_HANDLE       ImageHandle
++  );
++
++EFI_STATUS
++BBTestTCGMORFunctionTest (
++  IN EFI_BB_TEST_PROTOCOL             *This,
++  IN VOID                             *ClientInterface,
++  IN EFI_TEST_LEVEL                   TestLevel,
++  IN EFI_HANDLE                       SupportHandle
++  );
++
++EFI_STATUS
++TCGMORPlatformResetCheck (
++  IN EFI_STANDARD_TEST_LIBRARY_PROTOCOL       *StandardLib,
++  IN EFI_TEST_RECOVERY_LIBRARY_PROTOCOL       *RecoveryLib
++  );
++
++
++// ****************************************************************************
++//   Entry GUIDs for Test
++// ****************************************************************************
++
++#define EFI_TCG_MOR_TEST_ENTRY_GUID0101 \
++  { 0x2104436a, 0x77c8, 0x4514, {0xb7, 0xd7, 0xaa, 0x8a, 0x6b, 0xd1, 0x8d, 0xa4 }}
++
++#endif
+diff --git a/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc b/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
+index 155490fa39d3..adeec06ec2e8 100644
+--- a/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
++++ b/uefi-sct/SctPkg/UEFI/UEFI_SCT.dsc
+@@ -235,6 +235,7 @@ SctPkg/TestCase/UEFI/EFI/BootServices/ProtocolHandlerServices/BlackBoxTest/Proto
+ SctPkg/TestCase/UEFI/EFI/RuntimeServices/MiscRuntimeServices/BlackBoxTest/MiscRuntimeServicesBBTest.inf
+ SctPkg/TestCase/UEFI/EFI/RuntimeServices/TimeServices/BlackBoxTest/TimeServicesBBTest.inf
+ SctPkg/TestCase/UEFI/EFI/RuntimeServices/VariableServices/BlackBoxTest/VariableServicesBBTest.inf
++SctPkg/TestCase/UEFI/EFI/RuntimeServices/TCGMOR/BlackBoxTest/TCGMORBBTest.inf
+ 
+ SctPkg/TestCase/UEFI/EFI/Protocol/GraphicsOutput/BlackBoxTest/GraphicsOutputBBTest.inf
+ SctPkg/TestCase/UEFI/EFI/Protocol/Bis/BlackBoxTest/BisBBTest.inf
+-- 
+2.34.1
+

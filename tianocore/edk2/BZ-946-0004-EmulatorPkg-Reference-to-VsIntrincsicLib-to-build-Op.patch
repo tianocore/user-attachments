@@ -1,0 +1,39 @@
+From 1bbbc0ed0c42183187279b36f87c99c43c6e1018 Mon Sep 17 00:00:00 2001
+From: Vineel Kovvuri <vineelko@microsoft.com>
+Date: Thu, 24 Feb 2022 22:01:44 -0800
+Subject: [PATCH 4/6] EmulatorPkg: Reference to VsIntrincsicLib to build
+ OpenSSL lib on Windows
+
+This dependency is needed to build openssl lib under Windows
+and adds implementation for _allmul and _allshr instrinsics.
+
+It is taken from Project Mu:
+https://github.com/microsoft/mu_basecore/commit/b55b341f56257484c86e744c93b113a8a1e03d6
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=3679
+
+Cc: Andrew Fish <afish@apple.com>
+Cc: Ray Ni <ray.ni@intel.com>
+Cc: Yi Li <Yi1.li@intel.com>
+Signed-off-by: Vineel Kovvuri <vineelko@microsoft.com>
+---
+ EmulatorPkg/EmulatorPkg.dsc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/EmulatorPkg/EmulatorPkg.dsc b/EmulatorPkg/EmulatorPkg.dsc
+index 554c13ddb5..483ee0d036 100644
+--- a/EmulatorPkg/EmulatorPkg.dsc
++++ b/EmulatorPkg/EmulatorPkg.dsc
+@@ -138,6 +138,9 @@
+   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
+ !endif
+ 
++[LibraryClasses.IA32]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++
+ [LibraryClasses.common.SEC]
+   PeiServicesLib|EmulatorPkg/Library/SecPeiServicesLib/SecPeiServicesLib.inf
+   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
+-- 
+2.33.0.vfs.0.0
+

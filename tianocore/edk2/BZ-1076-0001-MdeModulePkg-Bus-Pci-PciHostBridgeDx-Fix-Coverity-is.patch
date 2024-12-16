@@ -1,0 +1,69 @@
+From 3ed3cb9586948a118fc8b9bb513c341bb75e1106 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Fri, 23 Dec 2022 16:31:35 +0530
+Subject: [PATCH] MdeModulePkg/Bus/Pci/PciHostBridgeDx: Fix Coverity issues
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4212
+
+The function NotifyPhase has a check
+
+    ASSERT (Index < TypeMax);
+
+but this comes into play only in DEBUG mode. In Release mode, there is
+no handling if the Index value is within array limits or not. If for
+whatever reasons, the Index does not get re-assigned to Index2 at line
+137, then it remains at TypeMax as assigned earlier at line 929. This
+poses array overrun risk at lines 942 and 943. It is better to deploy
+a safety check before line 942 as
+
+            if (Index >= TypeMax) {
+                continue;
+            }
+
+The function SubmitResources has a switch-case code in which the
+case ACPI_ADDRESS_SPACE_TYPE_MEM: which falls through to
+case ACPI_ADDRESS_SPACE_TYPE_IO: if there is no scenario of
+return EFI_INVALID_PARAMETER;
+
+While this may be intentional, it is not evident to any general code
+reader as well as any static analyzer tool. Just adding
+
+// No break; here as this is an intentional fallthrough.
+
+as comment in between makes any reader as well as Coverity happy.
+
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c b/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
+index b20bcd310a..83f1ad450f 100644
+--- a/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
++++ b/MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridge.c
+@@ -939,6 +939,11 @@ NotifyPhase (
+             }
+ 
+             ASSERT (Index < TypeMax);
++
++            if (Index >= TypeMax) {
++                continue;
++            }
++
+             ResNodeHandled[Index] = TRUE;
+             Alignment             = RootBridge->ResAllocNode[Index].Alignment;
+             BitsOfAlignment       = LowBitSet64 (Alignment + 1);
+@@ -1526,6 +1531,10 @@ SubmitResources (
+               return EFI_INVALID_PARAMETER;
+             }
+ 
++            //
++            // No break; here as this is an intentional fall through.
++            //
++
+           case ACPI_ADDRESS_SPACE_TYPE_IO:
+             //
+             // Check aligment, it should be of the form 2^n-1
+-- 
+2.36.1.windows.1
+

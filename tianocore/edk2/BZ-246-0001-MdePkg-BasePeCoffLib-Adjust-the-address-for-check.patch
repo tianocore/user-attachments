@@ -1,0 +1,30 @@
+From 29fab0cfb6d37051ae1d68982e9b30208bc71d4a Mon Sep 17 00:00:00 2001
+From: Dandan Bi <dandan.bi@intel.com>
+Date: Thu, 17 Jan 2019 15:25:26 +0800
+Subject: [patch] MdePkg/BasePeCoffLib: Adjust the address for check
+
+Signed-off-by: Dandan Bi <dandan.bi@intel.com>
+---
+ MdePkg/Library/BasePeCoffLib/BasePeCoff.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdePkg/Library/BasePeCoffLib/BasePeCoff.c b/MdePkg/Library/BasePeCoffLib/BasePeCoff.c
+index d9c94b89bd..1bd079ad6a 100644
+--- a/MdePkg/Library/BasePeCoffLib/BasePeCoff.c
++++ b/MdePkg/Library/BasePeCoffLib/BasePeCoff.c
+@@ -1741,11 +1741,11 @@ PeCoffLoaderRelocateImageForRuntime (
+   //
+   if (NumberOfRvaAndSizes > EFI_IMAGE_DIRECTORY_ENTRY_BASERELOC) {
+     RelocDir      = DataDirectory + EFI_IMAGE_DIRECTORY_ENTRY_BASERELOC;
+     RelocBase     = (EFI_IMAGE_BASE_RELOCATION *) PeCoffLoaderImageAddress (&ImageContext, RelocDir->VirtualAddress, 0);
+     RelocBaseEnd  = (EFI_IMAGE_BASE_RELOCATION *) PeCoffLoaderImageAddress (&ImageContext,
+-                                                                            RelocDir->VirtualAddress + RelocDir->Size,
++                                                                            RelocDir->VirtualAddress + RelocDir->Size - 1,
+                                                                             0
+                                                                             );
+   } else {
+     //
+     // Cannot find relocations, cannot continue to relocate the image, ASSERT for this invalid image.
+-- 
+2.18.0.windows.1
+

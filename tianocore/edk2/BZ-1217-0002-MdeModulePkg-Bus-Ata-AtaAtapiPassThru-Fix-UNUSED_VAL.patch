@@ -1,0 +1,35 @@
+From dbbdfc63e62d27607abbfaa2f2ca7484bcf98d81 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 10:47:04 +0530
+Subject: [PATCH 2/2] MdeModulePkg/Bus/Ata/AtaAtapiPassThru: Fix UNUSED_VALUE
+ Coverity issue
+
+The return value stored in Status after call to SetDriveParameters
+is not made of any use thereafter and hence it remains as UNUSED.
+Assuming, this non-usage is deliberate, the storage in Status can be
+done away with.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4204
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Ata/AtaAtapiPassThru/IdeMode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/IdeMode.c b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/IdeMode.c
+index 75403886e44a..c6d637afa989 100644
+--- a/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/IdeMode.c
++++ b/MdeModulePkg/Bus/Ata/AtaAtapiPassThru/IdeMode.c
+@@ -2555,7 +2555,7 @@ DetectAndConfigIdeDevice (
+       DriveParameters.Heads          = (UINT8)(((ATA5_IDENTIFY_DATA *)(&Buffer.AtaData))->heads - 1);
+       DriveParameters.MultipleSector = (UINT8)((ATA5_IDENTIFY_DATA *)(&Buffer.AtaData))->multi_sector_cmd_max_sct_cnt;
+ 
+-      Status = SetDriveParameters (Instance, IdeChannel, IdeDevice, &DriveParameters, NULL);
++      SetDriveParameters (Instance, IdeChannel, IdeDevice, &DriveParameters, NULL);
+     }
+ 
+     //
+-- 
+2.36.1.windows.1
+

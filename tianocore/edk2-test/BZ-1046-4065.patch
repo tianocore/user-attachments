@@ -1,0 +1,62 @@
+From 319bd0f375028f29c35e4842574c1ef2ed8ae93c Mon Sep 17 00:00:00 2001
+From: Sam Kaynor <sam.kaynor@arm.com>
+Date: Fri, 30 Sep 2022 10:15:40 -0500
+Subject: [PATCH] uefi-sct/SctPkg: Incorrect instances of
+ RANDOM_NAME_PROTOCOL
+
+Changed 4 incorrect instances of "RANDOM_NAME_PROTOCOL" in
+RandomNumberBBTestConformance and RandomNumberBBTestFunction
+to "RANDOM_NUMBER_PROTOCOL".
+
+---
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c | 4 ++--
+ uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c    | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c
+index 2738a4899457..364aaca925e0 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestConformance.c
+@@ -160,7 +160,7 @@ BBTestGetInfoConformanceTestCheckpoint1 (
+                    StandardLib,
+                    EFI_TEST_ASSERTION_WARNING,
+                    gConformanceTestAssertionGuid001,
+-                   L"RANDOM_NAME_PROTOCOL.GetInfo - GetInfo() is not supported or EFI_DEVICE_ERROR",
++                   L"RANDOM_NUMBER_PROTOCOL.GetInfo - GetInfo() is not supported or EFI_DEVICE_ERROR",
+                    L"%a:%d: Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -180,7 +180,7 @@ BBTestGetInfoConformanceTestCheckpoint1 (
+                  StandardLib,
+                  AssertionType,
+                  gConformanceTestAssertionGuid001,
+-                 L"RANDOM_NAME_PROTOCOL.GetInfo - GetInfo() returns EFI_BUFFER_TOO_SMALL with small RNGAlgorithmListSize and returns valid size",
++                 L"RANDOM_NUMBER_PROTOCOL.GetInfo - GetInfo() returns EFI_BUFFER_TOO_SMALL with small RNGAlgorithmListSize and returns valid size",
+                  L"%a:%d: Status - %r, RNGAlgorithmListSize - %d",
+                  __FILE__,
+                  (UINTN)__LINE__,
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c
+index 3d41085d2243..0ba003449dc6 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/Protocol/RandomNumber/BlackBoxTest/RandomNumberBBTestFunction.c
+@@ -188,7 +188,7 @@ BBTestGetInfoFunctionTestCheckpoint1 (
+                    StandardLib,
+                    EFI_TEST_ASSERTION_FAILED,
+                    gTestGenericFailureGuid,
+-                   L"RANDOM_NAME_PROTOCOL.GetInfo - GetInfo() is not supported or EFI_DEVICE_ERROR",
++                   L"RANDOM_NUMBER_PROTOCOL.GetInfo - GetInfo() is not supported or EFI_DEVICE_ERROR",
+                    L"%a:%d: Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -201,7 +201,7 @@ BBTestGetInfoFunctionTestCheckpoint1 (
+                    StandardLib,
+                    EFI_TEST_ASSERTION_FAILED,
+                    gTestGenericFailureGuid,
+-                   L"RANDOM_NAME_PROTOCOL.GetInfo - GetInfo() could not return the correct RNGAlgorithmListSize",
++                   L"RANDOM_NUMBER_PROTOCOL.GetInfo - GetInfo() could not return the correct RNGAlgorithmListSize",
+                    L"%a:%d: Status - %r",
+                    __FILE__,
+                    (UINTN)__LINE__,
+-- 
+2.34.1
+

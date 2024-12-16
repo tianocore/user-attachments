@@ -1,0 +1,70 @@
+From d2319715281f0a17ce15d348ab17a1e359eb9808 Mon Sep 17 00:00:00 2001
+From: Joey Vagedes <joey.vagedes@gmail.com>
+Date: Tue, 31 Jan 2023 11:26:17 -0800
+Subject: [PATCH v1 1/1] BaseTools: Update WindowsVsToolChain plugin
+
+This patch updates edk2-pytool-library dependency to v0.13.0, which has
+an interface change to FindWithVsWhere. The BaseTools plugin uses this
+function, so it is being updated to account for the interface change.
+
+Cc: Bob Feng <bob.c.feng@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Yuwei Chen <yuwei.chen@intel.com>
+Cc: Michael D Kinney <michael.d.kinney@intel.com>
+
+Signed-off-by: Joey Vagedes <joey.vagedes@gmail.com>
+---
+ BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py | 16 ++++++++++++----
+ pip-requirements.txt                                      |  4 ++--
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py b/BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py
+index 0fba2c1b5325..615b5ed6d131 100644
+--- a/BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py
++++ b/BaseTools/Plugin/WindowsVsToolChain/WindowsVsToolChain.py
+@@ -177,15 +177,23 @@ class WindowsVsToolChain(IUefiBuildPlugin):
+ 
+     def _get_vs_install_path(self, vs_version, varname):
+         # check if already specified
+-        path = shell_environment.GetEnvironment().get_shell_var(varname)
++        path = None
++        if varname is not None:
++            path = shell_environment.GetEnvironment().get_shell_var(varname)
++
+         if(path is None):
+             # Not specified...find latest
+-            (rc, path) = FindWithVsWhere(vs_version=vs_version)
+-            if rc == 0 and path is not None and os.path.exists(path):
++            try:
++                path = FindWithVsWhere(vs_version=vs_version)
++            except (EnvironmentError, ValueError, RuntimeError) as e:
++                self.Logger.error(str(e))
++                return None
++
++            if path is not None and os.path.exists(path):
+                 self.Logger.debug("Found VS instance for %s", vs_version)
+             else:
+                 self.Logger.error(
+-                    "Failed to find VS instance with VsWhere (%d)" % rc)
++                    f"VsWhere successfully executed, but could not find VS instance for {vs_version}.")
+         return path
+ 
+     def _get_vc_version(self, path, varname):
+diff --git a/pip-requirements.txt b/pip-requirements.txt
+index 4ffcadddd8cf..d3256ff1ade7 100644
+--- a/pip-requirements.txt
++++ b/pip-requirements.txt
+@@ -12,8 +12,8 @@
+ # https://www.python.org/dev/peps/pep-0440/#version-specifiers
+ ##
+ 
+-edk2-pytool-library==0.12.1
+-edk2-pytool-extensions~=0.20.0
++edk2-pytool-library==0.13.0
++edk2-pytool-extensions~=0.21.2
+ edk2-basetools==0.1.39
+ antlr4-python3-runtime==4.7.1
+ lcov-cobertura==2.0.2
+-- 
+2.39.0.windows.2
+

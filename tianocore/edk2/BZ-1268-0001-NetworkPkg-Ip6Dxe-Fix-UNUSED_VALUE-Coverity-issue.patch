@@ -1,0 +1,63 @@
+From 1e394f15112e219cddd152ba16fd19092e4a7b26 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 13:14:23 +0530
+Subject: [PATCH 1/1] NetworkPkg/Ip6Dxe: Fix UNUSED_VALUE Coverity issue
+
+The return value stored in "Status" after call to Ip6Cfg->SetData()
+is not made of any use thereafter, it remains as UNUSED and later it
+gets overriden. Seemingly, the storage in "Status" can be removed.
+
+Cc: Maciej Rabeda <maciej.rabeda@linux.intel.com>
+Cc: Jiaxin Wu <jiaxin.wu@intel.com>
+Cc: Siyuan Fu <siyuan.fu@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4273
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ NetworkPkg/Ip6Dxe/Ip6Driver.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/NetworkPkg/Ip6Dxe/Ip6Driver.c b/NetworkPkg/Ip6Dxe/Ip6Driver.c
+index b483a7d136d9..dd507437efec 100644
+--- a/NetworkPkg/Ip6Dxe/Ip6Driver.c
++++ b/NetworkPkg/Ip6Dxe/Ip6Driver.c
+@@ -586,12 +586,12 @@ Ip6DriverBindingStart (
+       //
+       // Clean the invalid ManualAddress configuration.
+       //
+-      Status = Ip6Cfg->SetData (
+-                         Ip6Cfg,
+-                         Ip6ConfigDataTypeManualAddress,
+-                         0,
+-                         NULL
+-                         );
++      Ip6Cfg->SetData (
++                Ip6Cfg,
++                Ip6ConfigDataTypeManualAddress,
++                0,
++                NULL
++                );
+       DEBUG ((DEBUG_WARN, "Ip6DriverBindingStart: Clean the invalid ManualAddress configuration.\n"));
+     }
+   }
+@@ -611,12 +611,12 @@ Ip6DriverBindingStart (
+       //
+       // Clean the invalid Gateway configuration.
+       //
+-      Status = Ip6Cfg->SetData (
+-                         Ip6Cfg,
+-                         Ip6ConfigDataTypeGateway,
+-                         0,
+-                         NULL
+-                         );
++      Ip6Cfg->SetData (
++                Ip6Cfg,
++                Ip6ConfigDataTypeGateway,
++                0,
++                NULL
++                );
+       DEBUG ((DEBUG_WARN, "Ip6DriverBindingStart: Clean the invalid Gateway configuration.\n"));
+     }
+   }
+-- 
+2.36.1.windows.1
+

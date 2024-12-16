@@ -1,0 +1,167 @@
+Subject: [edk2] [PATCH v2] MdeModulePkg/Bus: Enable ascending resource list
+
+Some processors require resource list sorted in ascending order.
+
+Cc: Ruiyu Ni <ruiyu.ni@intel.com>
+Cc: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Roman Bacik <roman.bacik@broadcom.com>
+---
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf       |  1 +
+ .../Bus/Pci/PciBusDxe/PciResourceSupport.c         | 43 ++++++++++++++++++----
+ MdeModulePkg/MdeModulePkg.dec                      |  3 ++
+ MdeModulePkg/MdeModulePkg.dsc                      |  1 +
+ 4 files changed, 41 insertions(+), 7 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf b/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+index 97608bf..5cb3761 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+@@ -110,6 +110,7 @@
+   gEfiMdeModulePkgTokenSpaceGuid.PcdAriSupport                  ## CONSUMES
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMrIovSupport                ## CONSUMES
+   gEfiMdeModulePkgTokenSpaceGuid.PcdPciDisableBusEnumeration    ## SOMETIMES_CONSUMES
++  gEfiMdeModulePkgTokenSpaceGuid.PcdListAscending               ## CONSUMES
+ 
+ [UserExtensions.TianoCore."ExtraFiles"]
+   PciBusDxeExtra.uni
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
+index 2f713fc..45575fa 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciResourceSupport.c
+@@ -106,19 +106,30 @@ InsertResourceNode (
+   PCI_RESOURCE_NODE *Temp;
+   UINT64            ResNodeAlignRest;
+   UINT64            TempAlignRest;
++  BOOLEAN           Ascending;
+ 
+   ASSERT (Bridge  != NULL);
+   ASSERT (ResNode != NULL);
+ 
+-  InsertHeadList (&Bridge->ChildList, &ResNode->Link);
++  Ascending = FeaturePcdGet (PcdListAscending);
++
++  if (!Ascending) {
++    InsertHeadList (&Bridge->ChildList, &ResNode->Link);
++    CurrentLink = Bridge->ChildList.ForwardLink->ForwardLink;
++  } else {
++    CurrentLink = Bridge->ChildList.BackLink;
++    InsertTailList (&Bridge->ChildList, &ResNode->Link);
++  }
+ 
+-  CurrentLink = Bridge->ChildList.ForwardLink->ForwardLink;
+   while (CurrentLink != &Bridge->ChildList) {
+     Temp = RESOURCE_NODE_FROM_LINK (CurrentLink);
+ 
+-    if (ResNode->Alignment > Temp->Alignment) {
++    if ((Ascending && Temp->Alignment >= ResNode->Alignment) ||
++       (!Ascending && ResNode->Alignment > Temp->Alignment)) {
+       break;
+-    } else if (ResNode->Alignment == Temp->Alignment) {
++    }
++ 
++    if (!Ascending && ResNode->Alignment == Temp->Alignment) {
+       ResNodeAlignRest  = ResNode->Length & ResNode->Alignment;
+       TempAlignRest     = Temp->Length & Temp->Alignment;
+       if ((ResNodeAlignRest == 0) || (ResNodeAlignRest >= TempAlignRest)) {
+@@ -128,7 +139,11 @@ InsertResourceNode (
+ 
+     SwapListEntries (&ResNode->Link, CurrentLink);
+ 
+-    CurrentLink = ResNode->Link.ForwardLink;
++    if (Ascending) {
++      CurrentLink = ResNode->Link.BackLink;
++    } else {
++      CurrentLink = ResNode->Link.ForwardLink;
++    }
+   }
+ }
+ 
+@@ -1269,6 +1284,7 @@ ProgramBar (
+   EFI_PCI_IO_PROTOCOL *PciIo;
+   UINT64              Address;
+   UINT32              Address32;
++  BOOLEAN           Ascending;
+ 
+   ASSERT (Node->Bar < PCI_MAX_BAR);
+ 
+@@ -1282,6 +1298,7 @@ ProgramBar (
+ 
+   Address = 0;
+   PciIo   = &(Node->PciDev->PciIo);
++  Ascending = FeaturePcdGet (PcdListAscending);
+ 
+   Address = Base + Node->Offset;
+ 
+@@ -1300,6 +1317,10 @@ ProgramBar (
+   case PciBarTypeMem32:
+   case PciBarTypePMem32:
+ 
++    if (Ascending) {
++      Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++      Address %= Base;
++    }
+     PciIo->Pci.Write (
+                  PciIo,
+                  EfiPciIoWidthUint32,
+@@ -1308,13 +1329,19 @@ ProgramBar (
+                  &Address
+                  );
+ 
+-    Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    if (!Ascending) {
++      Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    }
+ 
+     break;
+ 
+   case PciBarTypeMem64:
+   case PciBarTypePMem64:
+ 
++    if (Ascending) {
++      Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++      Address %= Base;
++    }
+     Address32 = (UINT32) (Address & 0x00000000FFFFFFFF);
+ 
+     PciIo->Pci.Write (
+@@ -1335,7 +1362,9 @@ ProgramBar (
+                  &Address32
+                  );
+ 
+-    Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    if (!Ascending) {
++      Node->PciDev->PciBar[Node->Bar].BaseAddress = Address;
++    }
+ 
+     break;
+ 
+diff --git a/MdeModulePkg/MdeModulePkg.dec b/MdeModulePkg/MdeModulePkg.dec
+index cc39718..911f33a 100644
+--- a/MdeModulePkg/MdeModulePkg.dec
++++ b/MdeModulePkg/MdeModulePkg.dec
+@@ -1005,6 +1005,9 @@
+   # @Prompt Enable UEFI Stack Guard.
+   gEfiMdeModulePkgTokenSpaceGuid.PcdCpuStackGuard|FALSE|BOOLEAN|0x30001055
+ 
++  ## Indicates if the resource list is sorted in ascending order
++  gEfiMdeModulePkgTokenSpaceGuid.PcdListAscending|FALSE|BOOLEAN|0x30001056
++
+ [PcdsFixedAtBuild, PcdsPatchableInModule]
+   ## Dynamic type PCD can be registered callback function for Pcd setting action.
+   #  PcdMaxPeiPcdCallBackNumberPerPcdEntry indicates the maximum number of callback function
+diff --git a/MdeModulePkg/MdeModulePkg.dsc b/MdeModulePkg/MdeModulePkg.dsc
+index ec24a50..2dee860 100644
+--- a/MdeModulePkg/MdeModulePkg.dsc
++++ b/MdeModulePkg/MdeModulePkg.dsc
+@@ -200,6 +200,7 @@
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxSizeNonPopulateCapsule|0x0
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxSizePopulateCapsule|0x0
+   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxPeiPerformanceLogEntries|28
++  gEfiMdeModulePkgTokenSpaceGuid.PcdListAscending|FALSE
+ 
+ [PcdsFixedAtBuild.IPF]
+   gEfiMdePkgTokenSpaceGuid.PcdIoBlockBaseAddressForIpf|0x0ffffc000000
+-- 
+2.7.4
+

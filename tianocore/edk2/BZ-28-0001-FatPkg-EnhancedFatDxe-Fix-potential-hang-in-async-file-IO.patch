@@ -1,0 +1,66 @@
+From: Ruiyu Ni <ruiyu.ni@intel.com>
+Date: 2016-12-14 18:01:22
+Subject: [edk2] [PATCH] FatPkg/EnhancedFatDxe: Fix potential hang in async file IO
+
+FatQueueTask() is running at TPL_APPLICATION, while
+FatDestroySubtask() is running at TPL_NOTIFY, it's possible
+for a task containing 2 sub tasks, when the for-loop
+executes GetNextNode (&Task->Subtasks, Link), the memory
+occupied by Link is freed in FatDestroySubtask().
+
+The fix stores the next link in NextLink so that the delete
+in FatDestroySubtask() is safe.
+
+Contributed-under: TianoCore Contribution Agreement 1.0
+Signed-off-by: Ruiyu Ni <ruiyu.ni@intel.com>
+Cc: Feng Tian <feng.tian@intel.com>
+Cc: Boaz Kahana <Boaz.Kahana@phoenix.com>
+---
+ FatPkg/EnhancedFatDxe/Misc.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/FatPkg/EnhancedFatDxe/Misc.c b/FatPkg/EnhancedFatDxe/Misc.c
+index c035670..cef1acd 100644
+--- a/FatPkg/EnhancedFatDxe/Misc.c
++++ b/FatPkg/EnhancedFatDxe/Misc.c
+@@ -1,7 +1,7 @@
+ /** @file
+   Miscellaneous functions.
+ 
+-Copyright (c) 2005 - 2013, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2005 - 2016, Intel Corporation. All rights reserved.<BR>
+ This program and the accompanying materials are licensed and made available
+ under the terms and conditions of the BSD License which accompanies this
+ distribution. The full text of the license may be found at
+@@ -132,6 +132,7 @@ FatQueueTask (
+ {
+   EFI_STATUS          Status;
+   LIST_ENTRY          *Link;
++  LIST_ENTRY          *NextLink;
+   FAT_SUBTASK         *Subtask;
+ 
+   //
+@@ -149,9 +150,13 @@ FatQueueTask (
+   EfiReleaseLock (&FatTaskLock);
+ 
+   Status = EFI_SUCCESS;
+-  for ( Link = GetFirstNode (&Task->Subtasks)
++  //
++  // Use NextLink to store the next link since Link might be freed in the end of previous loop,
++  // resulting next link cannot be retrieved from Link.
++  //
++  for ( Link = GetFirstNode (&Task->Subtasks), NextLink = GetNextNode (&Task->Subtasks, Link)
+       ; !IsNull (&Task->Subtasks, Link)
+-      ; Link = GetNextNode (&Task->Subtasks, Link)
++      ; Link = NextLink, NextLink = GetNextNode (&Task->Subtasks, Link)
+       ) {
+     Subtask = CR (Link, FAT_SUBTASK, Link, FAT_SUBTASK_SIGNATURE);
+     if (Subtask->Write) {
+-- 
+2.9.0.windows.1
+
+_______________________________________________
+edk2-devel mailing list
+edk2-devel@lists.01.org
+https://lists.01.org/mailman/listinfo/edk2-devel
+GitPatchExtractor 1.1

@@ -1,0 +1,30 @@
+From 9304bfa762ff1ea0a6bc9243c23663113c31c0d2 Mon Sep 17 00:00:00 2001
+From: Kun Qin <kuqin@microsoft.com>
+Date: Fri, 10 Jan 2020 23:16:46 -0800
+Subject: [PATCH] Remove double-free caused use-after-free assert
+
+---
+ CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyEku.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyEku.c b/CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyEku.c
+index 229c244b26..c76d8dcba5 100644
+--- a/CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyEku.c
++++ b/CryptoPkg/Library/BaseCryptLib/Pk/CryptPkcs7VerifyEku.c
+@@ -508,9 +508,10 @@ Exit:
+     free (SignedData);
+   }
+ 
+-  if (SignerCert != NULL) {
+-    X509_free (SignerCert);
+-  }
++  // MU_CHANGE: SignerCert is part of Pkcs7 instance which will be freed in the next block
++  // if (SignerCert != NULL) {
++  //   X509_free (SignerCert);
++  // }
+ 
+   if (Pkcs7 != NULL) {
+     PKCS7_free (Pkcs7);
+-- 
+2.20.1.windows.1
+

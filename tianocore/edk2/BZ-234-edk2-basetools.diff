@@ -1,0 +1,48 @@
+diff --git a/BaseTools/Source/C/Makefiles/header.makefile b/BaseTools/Source/C/Makefiles/header.makefile
+index 7f283d6464..4c870500dc 100644
+--- a/BaseTools/Source/C/Makefiles/header.makefile
++++ b/BaseTools/Source/C/Makefiles/header.makefile
+@@ -51,6 +51,19 @@ BUILD_AS ?= gcc
+ BUILD_AR ?= ar
+ BUILD_LD ?= ld
+ LINKER ?= $(BUILD_CC)
++
++# KIND_CC can be enforced from above
++ifeq (,$(strip $(KIND_CC)))
++  KIND_CC = $(strip $(shell $(BUILD_CC) --version))
++  ifneq (,$(findstring clang,$(KIND_CC)))
++    KIND_CC = clang
++  else ifneq (,$(findstring gcc,$(KIND_CC)))
++    KIND_CC = gcc
++  else
++    KIND_CC = unknown
++  endif
++endif
++
+ ifeq ($(HOST_ARCH), IA32)
+ ARCH_INCLUDE = -I $(MAKEROOT)/Include/Ia32/
+ 
+@@ -73,12 +86,18 @@ BUILD_CPPFLAGS = $(INCLUDE)
+ # keep EXTRA_OPTFLAGS last
+ BUILD_OPTFLAGS = -O2 $(EXTRA_OPTFLAGS)
+ 
+-ifeq ($(DARWIN),Darwin)
+-# assume clang or clang compatible flags on OS X
+-BUILD_CFLAGS = -MD -fshort-wchar -fno-strict-aliasing -Wall -Werror -Wno-deprecated-declarations -Wno-self-assign -Wno-unused-result -nostdlib -g
+-else
+-BUILD_CFLAGS = -MD -fshort-wchar -fno-strict-aliasing -Wall -Werror -Wno-deprecated-declarations -Wno-stringop-truncation -Wno-restrict -Wno-unused-result -nostdlib -g
++BUILD_CFLAGS = -MD -fshort-wchar -fno-strict-aliasing -Wall -Werror -Wno-deprecated-declarations -Wno-unused-result
++
++# Add compiler specific flags
++ifeq ($(KIND_CC),clang)
++BUILD_CFLAGS += -Wno-self-assign
++endif
++ifeq ($(KIND_CC),gcc)
++BUILD_CFLAGS += -Wno-stringop-truncation -Wno-restrict
+ endif
++
++BUILD_CFLAGS += -nostdlib -g
++
+ BUILD_LFLAGS =
+ BUILD_CXXFLAGS = -Wno-unused-result
+ 

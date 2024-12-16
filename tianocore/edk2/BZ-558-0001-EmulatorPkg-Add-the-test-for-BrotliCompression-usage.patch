@@ -1,0 +1,73 @@
+From 0f93486cbc9b043f7d5386711717779d23f1e5d8 Mon Sep 17 00:00:00 2001
+From: Liming Gao <gaoliming@byosoft.com.cn>
+Date: Wed, 16 Sep 2020 10:55:50 +0800
+Subject: [PATCH] EmulatorPkg: Add the test for BrotliCompression usage
+
+If Brotli works, Logo can show on the screen. Otherwise, Logo can't be shown. 
+
+Signed-off-by: Liming Gao <gaoliming@byosoft.com.cn>
+---
+ EmulatorPkg/EmulatorPkg.dsc |  3 +++
+ EmulatorPkg/EmulatorPkg.fdf | 13 ++++++++++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/EmulatorPkg/EmulatorPkg.dsc b/EmulatorPkg/EmulatorPkg.dsc
+index 86a6271735..e59478e2e3 100644
+--- a/EmulatorPkg/EmulatorPkg.dsc
++++ b/EmulatorPkg/EmulatorPkg.dsc
+@@ -288,6 +288,7 @@
+       DxeEmuLib|EmulatorPkg/Library/DxeEmuLib/DxeEmuLib.inf
+       NULL|MdeModulePkg/Library/DxeCrc32GuidedSectionExtractLib/DxeCrc32GuidedSectionExtractLib.inf
+       NULL|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
++      NULL|MdeModulePkg/Library/BrotliCustomDecompressLib/BrotliCustomDecompressLib.inf
+   }
+   MdeModulePkg/Universal/PCD/Dxe/Pcd.inf {
+     <LibraryClasses>
+@@ -379,6 +380,8 @@
+ 
+   FatPkg/EnhancedFatDxe/Fat.inf
+ 
++  MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystemDxe.inf
++
+ !if "XCODE5" not in $(TOOL_CHAIN_TAG)
+   ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand.inf {
+     <PcdsFixedAtBuild>
+diff --git a/EmulatorPkg/EmulatorPkg.fdf b/EmulatorPkg/EmulatorPkg.fdf
+index 295f6f1db8..974c2370f4 100644
+--- a/EmulatorPkg/EmulatorPkg.fdf
++++ b/EmulatorPkg/EmulatorPkg.fdf
+@@ -179,12 +179,13 @@ INF  MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
+ INF  MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
+ INF  MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
+ !if "XCODE5" not in $(TOOL_CHAIN_TAG)
+-INF  MdeModulePkg/Logo/LogoDxe.inf
++INF  RuleOverride = BrotliCompression MdeModulePkg/Logo/LogoDxe.inf
+ !endif
+ INF  MdeModulePkg/Universal/LoadFileOnFv2/LoadFileOnFv2.inf
+ INF  RuleOverride = UI MdeModulePkg/Application/UiApp/UiApp.inf
+ INF  MdeModulePkg/Application/BootManagerMenuApp/BootManagerMenuApp.inf
+ INF  MdeModulePkg/Universal/DriverSampleDxe/DriverSampleDxe.inf
++INF  MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystemDxe.inf
+ 
+ #
+ # Network stack drivers
+@@ -257,6 +258,16 @@ INF  ShellPkg/Application/Shell/Shell.inf
+     }
+   }
+ 
++[Rule.Common.DXE_DRIVER.BrotliCompression]
++  FILE DRIVER = $(NAMED_GUID) {
++    DXE_DEPEX    DXE_DEPEX Optional      $(INF_OUTPUT)/$(MODULE_NAME).depex
++    GUIDED 3D532050-5CDA-4FD0-879E-0F7F630D5AFB {
++      PE32     PE32                    $(INF_OUTPUT)/$(MODULE_NAME).efi
++      UI       STRING="$(MODULE_NAME)" Optional
++      VERSION  STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
++    }
++  }
++
+ [Rule.Common.DXE_RUNTIME_DRIVER]
+   FILE DRIVER = $(NAMED_GUID) {
+     DXE_DEPEX    DXE_DEPEX Optional      $(INF_OUTPUT)/$(MODULE_NAME).depex
+-- 
+2.27.0.windows.1
+

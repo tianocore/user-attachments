@@ -1,0 +1,148 @@
+diff --git a/MdeModulePkg/Library/UefiBootManagerLib/BmDriverHealth.c b/MdeModulePkg/Library/UefiBootManagerLib/BmDriverHealth.c
+index ddcee8b067..bfb3e2d46d 100644
+--- a/MdeModulePkg/Library/UefiBootManagerLib/BmDriverHealth.c
++++ b/MdeModulePkg/Library/UefiBootManagerLib/BmDriverHealth.c
+@@ -80,8 +80,8 @@ BmGetControllerName (
+   if (!EFI_ERROR (Status)) {
+     GetEfiGlobalVariable2 (Iso639Language ? L"Lang" : L"PlatformLang", (VOID**)&LanguageVariable, NULL);
+     BestLanguage     = GetBestLanguage(
+-                         ComponentName->SupportedLanguages,
+                          Iso639Language,
++                         ComponentName->SupportedLanguages,
+                          (LanguageVariable != NULL) ? LanguageVariable : "",
+                          Iso639Language ? "eng" : "en-US",
+                          NULL
+diff --git a/MdeModulePkg/Library/UefiHiiLib/HiiString.c b/MdeModulePkg/Library/UefiHiiLib/HiiString.c
+index c6a241e657..49aa4d39c5 100644
+--- a/MdeModulePkg/Library/UefiHiiLib/HiiString.c
++++ b/MdeModulePkg/Library/UefiHiiLib/HiiString.c
+@@ -271,8 +271,8 @@ HiiGetString (
+   // Get the best matching language from SupportedLanguages
+   //
+   BestLanguage = GetBestLanguage (
+-                   SupportedLanguages, 
+                    FALSE,                                             // RFC 4646 mode
++                   SupportedLanguages, 
+                    Language,                                          // Highest priority 
+                    PlatformLanguage != NULL ? PlatformLanguage : "",  // Next highest priority
+                    SupportedLanguages,                                // Lowest priority 
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigKeywordHandler.c b/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigKeywordHandler.c
+index 1b48c1cebe..cfa5a2f54a 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigKeywordHandler.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigKeywordHandler.c
+@@ -1932,8 +1932,8 @@ GetNameFromId (
+   // Get the best matching language from SupportedLanguages
+   //
+   BestLanguage = GetBestLanguage (
+-                   SupportedLanguages, 
+                    FALSE,                                             // RFC 4646 mode
++                   SupportedLanguages, 
+                    PlatformLanguage != NULL ? PlatformLanguage : "",  // Highest priority
+                    SupportedLanguages,                                // Lowest priority 
+                    NULL
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c b/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
+index c9ff1cff62..8afccfb75f 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
+@@ -1394,8 +1394,8 @@ InternalGetString (
+   // Get the best matching language from SupportedLanguages
+   //
+   BestLanguage = GetBestLanguage (
+-                   SupportedLanguages, 
+                    FALSE,                                             // RFC 4646 mode
++                   SupportedLanguages, 
+                    Language,                                          // Highest priority 
+                    PlatformLanguage != NULL ? PlatformLanguage : "",  // Next highest priority
+                    SupportedLanguages,                                // Lowest priority 
+diff --git a/MdeModulePkg/Universal/HiiDatabaseDxe/Font.c b/MdeModulePkg/Universal/HiiDatabaseDxe/Font.c
+index b85cf88f54..bd6e7ffa62 100644
+--- a/MdeModulePkg/Universal/HiiDatabaseDxe/Font.c
++++ b/MdeModulePkg/Universal/HiiDatabaseDxe/Font.c
+@@ -2398,8 +2398,8 @@ HiiStringIdToImage (
+   }
+   GetEfiGlobalVariable2 (L"PlatformLang", (VOID**)&CurrentLanguage, NULL);
+   BestLanguage = GetBestLanguage (
+-                   SupportedLanguages,
+                    FALSE,
++                   SupportedLanguages,
+                    Language,
+                    (CurrentLanguage == NULL) ? CurrentLanguage : "",
+                    (CHAR8 *) PcdGetPtr (PcdUefiVariableDefaultPlatformLang),
+diff --git a/MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariable.c b/MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariable.c
+index 27ea1496a0..cbf5b73691 100644
+--- a/MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariable.c
++++ b/MdeModulePkg/Universal/Variable/EmuRuntimeDxe/EmuVariable.c
+@@ -574,8 +574,8 @@ GetLangFromSupportedLangCodes (
+ CHAR8 *
+ EFIAPI
+ VariableGetBestLanguage (
+-  IN CONST CHAR8  *SupportedLanguages, 
+   IN BOOLEAN      Iso639Language,
++  IN CONST CHAR8  *SupportedLanguages, 
+   ...
+   )
+ {
+@@ -588,7 +588,7 @@ VariableGetBestLanguage (
+ 
+   ASSERT (SupportedLanguages != NULL);
+ 
+-  VA_START (Args, Iso639Language);
++  VA_START (Args, SupportedLanguages);
+   while ((Language = VA_ARG (Args, CHAR8 *)) != NULL) {
+     //
+     // Default to ISO 639-2 mode
+@@ -799,7 +799,7 @@ AutoUpdateLangVariable(
+       //
+       // When setting PlatformLang, firstly get most matched language string from supported language codes.
+       //
+-      BestPlatformLang = VariableGetBestLanguage (mVariableModuleGlobal->PlatformLangCodes, FALSE, Data, NULL);
++      BestPlatformLang = VariableGetBestLanguage (FALSE, mVariableModuleGlobal->PlatformLangCodes, Data, NULL);
+       if (BestPlatformLang != NULL) {
+         //
+         // Get the corresponding index in language codes.
+@@ -832,7 +832,7 @@ AutoUpdateLangVariable(
+       //
+       // When setting Lang, firstly get most matched language string from supported language codes.
+       //
+-      BestLang = VariableGetBestLanguage (mVariableModuleGlobal->LangCodes, TRUE, Data, NULL);
++      BestLang = VariableGetBestLanguage (TRUE, mVariableModuleGlobal->LangCodes, Data, NULL);
+       if (BestLang != NULL) {
+         //
+         // Get the corresponding index in language codes.
+diff --git a/MdePkg/Include/Library/UefiLib.h b/MdePkg/Include/Library/UefiLib.h
+index 0b14792a0a..2d9fed61fd 100644
+--- a/MdePkg/Include/Library/UefiLib.h
++++ b/MdePkg/Include/Library/UefiLib.h
+@@ -817,8 +817,8 @@ GetEfiGlobalVariable2 (
+ CHAR8 *
+ EFIAPI
+ GetBestLanguage (
+-  IN CONST CHAR8  *SupportedLanguages, 
+   IN BOOLEAN      Iso639Language,
++  IN CONST CHAR8  *SupportedLanguages, 
+   ...
+   );
+ 
+diff --git a/MdePkg/Library/UefiLib/UefiLib.c b/MdePkg/Library/UefiLib/UefiLib.c
+index a7eee01240..94df9b3b73 100644
+--- a/MdePkg/Library/UefiLib/UefiLib.c
++++ b/MdePkg/Library/UefiLib/UefiLib.c
+@@ -1513,8 +1513,8 @@ GetEfiGlobalVariable2 (
+ CHAR8 *
+ EFIAPI
+ GetBestLanguage (
+-  IN CONST CHAR8  *SupportedLanguages, 
+   IN BOOLEAN      Iso639Language,
++  IN CONST CHAR8  *SupportedLanguages, 
+   ...
+   )
+ {
+@@ -1527,7 +1527,7 @@ GetBestLanguage (
+ 
+   ASSERT (SupportedLanguages != NULL);
+ 
+-  VA_START (Args, Iso639Language);
++  VA_START (Args, SupportedLanguages);
+   while ((Language = VA_ARG (Args, CHAR8 *)) != NULL) {
+     //
+     // Default to ISO 639-2 mode

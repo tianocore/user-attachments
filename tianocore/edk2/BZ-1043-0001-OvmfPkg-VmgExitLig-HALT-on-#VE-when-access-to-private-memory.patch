@@ -1,0 +1,83 @@
+From: Xu, Min M </o=ExchangeLabs/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=8c3c5c7f76b44deba38fd903921c617f-Xu, Min M>
+Date: 10/28/2022 4:24:01 PM
+Subject: [PATCH V2 1/1] OvmfPkg/VmgExitLig: HALT on #VE when access to private memory
+
+From: Min M Xu <min.m.xu@intel.com>
+
+BZ: https://bugzilla.tianocore.org/show_bug.cgi?id=4125
+
+EPT-violation #VE should be always on shared memory, which means the
+shared bit of the GuestPA should be set. But in current #VE Handler
+it is not checked. When it occurs, stop TD immediately and log out
+the error.
+
+Cc: Erdem Aktas <erdemaktas@google.com>
+Cc: Gerd Hoffmann <kraxel@redhat.com>
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: Jiewen Yao <jiewen.yao@intel.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Min Xu <min.m.xu@intel.com>
+---
+ .../Library/VmgExitLib/VmTdExitVeHandler.c    | 40 ++++++++++++++-----
+ 1 file changed, 29 insertions(+), 11 deletions(-)
+
+diff --git a/OvmfPkg/Library/VmgExitLib/VmTdExitVeHandler.c b/OvmfPkg/Library/VmgExitLib/VmTdExitVeHandler.c
+index b73e877c093b..c89268c5d8e8 100644
+--- a/OvmfPkg/Library/VmgExitLib/VmTdExitVeHandler.c
++++ b/OvmfPkg/Library/VmgExitLib/VmTdExitVeHandler.c
+@@ -300,23 +300,41 @@ MmioExit (
+   IN TDCALL_VEINFO_RETURN_DATA   *Veinfo
+   )
+ {
+-  UINT64   Status;
+-  UINT32   MmioSize;
+-  UINT32   RegSize;
+-  UINT8    OpCode;
+-  BOOLEAN  SeenRex;
+-  UINT64   *Reg;
+-  UINT8    *Rip;
+-  UINT64   Val;
+-  UINT32   OpSize;
+-  MODRM    ModRm;
+-  REX      Rex;
++  UINT64          Status;
++  UINT32          MmioSize;
++  UINT32          RegSize;
++  UINT8           OpCode;
++  BOOLEAN         SeenRex;
++  UINT64          *Reg;
++  UINT8           *Rip;
++  UINT64          Val;
++  UINT32          OpSize;
++  MODRM           ModRm;
++  REX             Rex;
++  TD_RETURN_DATA  TdReturnData;
++  UINT8           Gpaw;
++  UINT64          TdSharedPageMask;
+ 
+   Rip     = (UINT8 *)Regs->Rip;
+   Val     = 0;
+   Rex.Val = 0;
+   SeenRex = FALSE;
+ 
++  Status = TdCall (TDCALL_TDINFO, 0, 0, 0, &TdReturnData);
++  if (Status == TDX_EXIT_REASON_SUCCESS) {
++    Gpaw             = (UINT8)(TdReturnData.TdInfo.Gpaw & 0x3f);
++    TdSharedPageMask = 1ULL << (Gpaw - 1);
++  } else {
++    DEBUG ((DEBUG_ERROR, "TDCALL failed with status=%llx\n", Status));
++    return Status;
++  }
++
++  if ((Veinfo->GuestPA & TdSharedPageMask) == 0) {
++    DEBUG ((DEBUG_ERROR, "EPT-violation #VE on private memory is not allowed!"));
++    TdVmCall (TDVMCALL_HALT, 0, 0, 0, 0, 0);
++    CpuDeadLoop ();
++  }
++
+   //
+   // Default to 32bit transfer
+   //
+-- 
+2.29.2.windows.2
+GitPatchExtractor v0.9

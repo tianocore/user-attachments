@@ -1,0 +1,74 @@
+From d4e7a4a8c9bdeecc529d126e3d881b3ce3293e1d Mon Sep 17 00:00:00 2001
+From: ClientSysFWGit <clientsysfwgit@intel.com>
+Date: Wed, 7 Feb 2018 01:14:55 -0800
+Subject: [PATCH] Title: [CFL-S+CNL-H] System hang-up during serial port
+ loopback test - Part 2 implement in CPU RC Resolution: Remove support for
+ checking ins/outs in SMM save state. Otherwise if ins/outs occurs in one
+ thread during SMI, a page fault will occur. Impacted Platform: All CannonLake
+ and CoffeeLake
+
+---
+ .../SmramSaveState.c    | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/SmramSaveState.c b/SmramSaveState.c
+index 9fbb28b3..060487da 100644
+--- a/SmramSaveState.c
++++ b/SmramSaveState.c
+@@ -8,7 +8,7 @@
+ /** @file
+   SMM State Save register.
+ 
+-  Copyright (c) 2015 - 2017, Intel Corporation. All rights reserved.<BR>
++  Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
+   This software and associated documentation (if any) is furnished
+   under a license and may only be used or copied in accordance
+   with the terms of the license. Except as permitted by such
+@@ -409,6 +409,7 @@ SmmReadSaveStateRegisterByIndex (
+   @retval EFI_SUCCESS           The register was read from Save State.
+   @retval EFI_INVALID_PARAMTER  Buffer is NULL.
+   @retval EFI_UNSUPPORTED       This function does not support reading Register.
++  @retval EFI_NOT_FOUND         The register is not defined for the Save State of Processor.
+ 
+ **/
+ EFI_STATUS
+@@ -423,7 +424,6 @@ SmmCpuFeaturesReadSaveStateRegister (
+   UINT32                      SmmRevId;
+   SMRAM_SAVE_STATE_IOMISC     IoMisc;
+   EFI_SMM_SAVE_STATE_IO_INFO  *IoInfo;
+-  VOID                        *IoMemAddr;
+ 
+   //
+   // Check for special EFI_SMM_SAVE_STATE_REGISTER_LMA
+@@ -469,6 +469,14 @@ SmmCpuFeaturesReadSaveStateRegister (
+       return EFI_NOT_FOUND;
+     }
+ 
++    //
++    // Only support IN/OUT, but not INS/OUTS/REP INS/REP OUTS.
++    //
++    if ((mSmmFeatureCpuIoType[IoMisc.Bits.Type] != EFI_SMM_SAVE_STATE_IO_TYPE_INPUT) &&
++        (mSmmFeatureCpuIoType[IoMisc.Bits.Type] != EFI_SMM_SAVE_STATE_IO_TYPE_OUTPUT)) {
++      return EFI_UNSUPPORTED;
++    }
++
+     //
+     // Compute index for the I/O Length and I/O Type lookup tables
+     //
+@@ -488,12 +496,7 @@ SmmCpuFeaturesReadSaveStateRegister (
+     IoInfo->IoPort = (UINT16)IoMisc.Bits.Port;
+     IoInfo->IoWidth = mSmmFeatureCpuIoWidth[IoMisc.Bits.Length].IoWidth;
+     IoInfo->IoType = mSmmFeatureCpuIoType[IoMisc.Bits.Type];
+-    if (IoInfo->IoType == EFI_SMM_SAVE_STATE_IO_TYPE_INPUT || IoInfo->IoType == EFI_SMM_SAVE_STATE_IO_TYPE_OUTPUT) {
+-      SmmCpuFeaturesReadSaveStateRegister (CpuIndex, EFI_SMM_SAVE_STATE_REGISTER_RAX, mSmmFeatureCpuIoWidth[IoMisc.Bits.Length].Width, &IoInfo->IoData);
+-    } else {
+-      SmmReadSaveStateRegisterByIndex(CpuIndex, SMM_SAVE_STATE_REGISTER_IOMEMADDR_INDEX, sizeof(IoMemAddr), &IoMemAddr);
+-      CopyMem(&IoInfo->IoData, IoMemAddr, mSmmFeatureCpuIoWidth[IoMisc.Bits.Length].Width);
+-    }
++    SmmCpuFeaturesReadSaveStateRegister (CpuIndex, EFI_SMM_SAVE_STATE_REGISTER_RAX, mSmmFeatureCpuIoWidth[IoMisc.Bits.Length].Width, &IoInfo->IoData);
+     return EFI_SUCCESS;
+   }
+ 
+-- 
+2.15.2 (Apple Git-101.1)
+

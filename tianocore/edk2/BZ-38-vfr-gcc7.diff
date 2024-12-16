@@ -1,0 +1,13 @@
+diff --git a/BaseTools/Source/C/VfrCompile/VfrUtilityLib.cpp b/BaseTools/Source/C/VfrCompile/VfrUtilityLib.cpp
+index 3ca57ed741..b81fc7bec7 100644
+--- a/BaseTools/Source/C/VfrCompile/VfrUtilityLib.cpp
++++ b/BaseTools/Source/C/VfrCompile/VfrUtilityLib.cpp
+@@ -3372,7 +3372,7 @@ CVfrStringDB::GetVarStoreNameFormStringId (
+   UINT8       BlockType;
+   EFI_HII_STRING_PACKAGE_HDR *PkgHeader;
+   
+-  if (mStringFileName == '\0' ) {
++  if (mStringFileName == NULL || *mStringFileName == '\0' ) {
+     return NULL;
+   }
+ 

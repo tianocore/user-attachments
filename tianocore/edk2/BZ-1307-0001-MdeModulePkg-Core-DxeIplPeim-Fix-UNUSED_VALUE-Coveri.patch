@@ -1,0 +1,34 @@
+From 4e96112a79560d14c31ab5ecf72ad910b25d4f30 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Wed, 25 Jan 2023 16:10:39 +0530
+Subject: [PATCH] MdeModulePkg/Core/DxeIplPeim: Fix UNUSED_VALUE Coverity issue
+
+The return value from PeiCapsuleOnDisk->LoadCapsuleOnDisk is stored in
+Status, but it is not made of any use and later Status gets overriden.
+
+Assuming this is deliberate, remove the return value storage in Status.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4313
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Core/DxeIplPeim/DxeLoad.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MdeModulePkg/Core/DxeIplPeim/DxeLoad.c b/MdeModulePkg/Core/DxeIplPeim/DxeLoad.c
+index 2c19f1a507..13a03b5f00 100644
+--- a/MdeModulePkg/Core/DxeIplPeim/DxeLoad.c
++++ b/MdeModulePkg/Core/DxeIplPeim/DxeLoad.c
+@@ -356,7 +356,7 @@ DxeLoadCore (
+       // Whether failed, still goes to Firmware Update boot path. BDS will clear corresponding indicator and reboot later on
+       //
+       if (!EFI_ERROR (Status)) {
+-        Status = PeiCapsuleOnDisk->LoadCapsuleOnDisk (PeiServices, PeiCapsuleOnDisk);
++        PeiCapsuleOnDisk->LoadCapsuleOnDisk (PeiServices, PeiCapsuleOnDisk);
+       }
+     }
+   }
+-- 
+2.36.1.windows.1
+

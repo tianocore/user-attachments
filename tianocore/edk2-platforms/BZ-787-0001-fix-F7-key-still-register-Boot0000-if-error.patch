@@ -1,0 +1,42 @@
+From 331119027901ac40da84c785fc0199e83204f7c3 Mon Sep 17 00:00:00 2001
+From: JamesWang <jameswang@ami.com>
+Date: Thu, 5 Aug 2021 15:24:40 +0800
+Subject: [PATCH] fix: F7 key can register Boot0000 if error happens getting
+ mBootMenuOptionNumber
+
+---
+ .../Library/BoardBdsHookLib/BoardBootOption.c          | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/Platform/Intel/BoardModulePkg/Library/BoardBdsHookLib/BoardBootOption.c b/Platform/Intel/BoardModulePkg/Library/BoardBdsHookLib/BoardBootOption.c
+index 87138bdd..5456acfb 100644
+--- a/Platform/Intel/BoardModulePkg/Library/BoardBdsHookLib/BoardBootOption.c
++++ b/Platform/Intel/BoardModulePkg/Library/BoardBdsHookLib/BoardBootOption.c
+@@ -472,12 +472,18 @@ RegisterStaticHotkey (
+   RegisterBootOptionHotkey ((UINT16) BootOption.OptionNumber, &F2.Key, TRUE);
+   EfiBootManagerFreeLoadOption (&BootOption);
+ 
+-  F7.Key.ScanCode    = SCAN_F7;
+-  F7.Key.UnicodeChar = CHAR_NULL;
+-  F7.KeyState.KeyShiftState = EFI_SHIFT_STATE_VALID;
+-  F7.KeyState.KeyToggleState = 0;
+-  mBootMenuBoot  = !EnterSetup;
+-  RegisterBootOptionHotkey ((UINT16) mBootMenuOptionNumber, &F7.Key, mBootMenuBoot);
++  //
++  // Register F7 only when the mBootMenuOptionNumber is valid
++  // 
++  if (mBootMenuOptionNumber != LoadOptionNumberUnassigned)
++  {
++    F7.Key.ScanCode    = SCAN_F7;
++    F7.Key.UnicodeChar = CHAR_NULL;
++    F7.KeyState.KeyShiftState = EFI_SHIFT_STATE_VALID;
++    F7.KeyState.KeyToggleState = 0;
++    mBootMenuBoot  = !EnterSetup;
++    RegisterBootOptionHotkey ((UINT16) mBootMenuOptionNumber, &F7.Key, mBootMenuBoot);
++  }
+ 
+ }
+ 
+-- 
+2.13.2.windows.1
+

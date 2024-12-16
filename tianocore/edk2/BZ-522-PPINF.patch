@@ -1,0 +1,13 @@
+diff --git a/SecurityPkg/Library/SmmTcg2PhysicalPresenceLib/SmmTcg2PhysicalPresenceLib.c b/SecurityPkg/Library/SmmTcg2PhysicalPresenceLib/SmmTcg2PhysicalPresenceLib.c
+index 1c46d5e..8afaa0a 100644
+--- a/SecurityPkg/Library/SmmTcg2PhysicalPresenceLib/SmmTcg2PhysicalPresenceLib.c
++++ b/SecurityPkg/Library/SmmTcg2PhysicalPresenceLib/SmmTcg2PhysicalPresenceLib.c
+@@ -387,7 +387,7 @@ Tcg2PhysicalPresenceLibConstructor (
+ {
+   EFI_STATUS  Status;
+ 
+-  if (AsciiStrnCmp(PP_INF_VERSION_1_2, (CHAR8 *)PcdGetPtr(PcdTcgPhysicalPresenceInterfaceVer), sizeof(PP_INF_VERSION_1_2) - 1) <= 0) {
++  if (AsciiStrnCmp(PP_INF_VERSION_1_2, (CHAR8 *)PcdGetPtr(PcdTcgPhysicalPresenceInterfaceVer), sizeof(PP_INF_VERSION_1_2) - 1) >= 0) {
+     mIsTcg2PPVerLowerThan_1_3 = TRUE;
+   }
+ 

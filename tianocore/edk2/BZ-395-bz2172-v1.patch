@@ -1,0 +1,25 @@
+From fb99e1f3e5d7e14091c497fd2a4886c0a2d4654f Mon Sep 17 00:00:00 2001
+From: BrentHoltsclaw <brent.holtsclaw@intel.com>
+Date: Fri, 3 May 2019 08:47:58 -0700
+Subject: [PATCH 6/6] fix sequential ISS number
+
+---
+ NetworkPkg/TcpDxe/TcpMisc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/NetworkPkg/TcpDxe/TcpMisc.c b/NetworkPkg/TcpDxe/TcpMisc.c
+index 8b0313a028..a3b9ede95a 100644
+--- a/NetworkPkg/TcpDxe/TcpMisc.c
++++ b/NetworkPkg/TcpDxe/TcpMisc.c
+@@ -522,7 +522,7 @@ TcpGetIss (
+   VOID
+   )
+ {
+-  mTcpGlobalIss += TCP_ISS_INCREMENT_1;
++  mTcpGlobalIss = (NetRandomInitSeed());
+   return mTcpGlobalIss;
+ }
+ 
+-- 
+2.20.1.windows.1
+

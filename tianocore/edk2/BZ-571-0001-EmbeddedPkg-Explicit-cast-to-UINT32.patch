@@ -1,0 +1,36 @@
+From 542714ca4c98a2a83ffe9cbe62d11db5d4172705 Mon Sep 17 00:00:00 2001
+From: Matthew Carlson <matthewfcarlson@gmail.com>
+Date: Wed, 7 Oct 2020 11:54:35 -0700
+Subject: [PATCH v1 1/1] [EmbeddedPkg] Explicit cast to UINT32
+
+Cast the UINT64 to UINT32 in VirtualRealTimeClockLib.
+
+Signed-off-by: Matthew Carlson <matthewfcarlson@gmail.com>
+---
+ EmbeddedPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/EmbeddedPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.c b/EmbeddedPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.c
+index 74e72bd48b4c..43aa854bf999 100644
+--- a/EmbeddedPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.c
++++ b/EmbeddedPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.c
+@@ -202,14 +202,14 @@ LibGetTime (
+   // Because we use the performance counter, we can fill the Nanosecond attribute
+   // provided that the remainder doesn't overflow 64-bit during multiplication.
+   if (Remainder <= 18446744073U) {
+-    Time->Nanosecond = MultU64x64 (Remainder, 1000000000U) / Freq;
++    Time->Nanosecond = (UINT32)(MultU64x64 (Remainder, 1000000000U) / Freq);
+   } else {
+     DEBUG ((DEBUG_WARN, "LibGetTime: Nanosecond value not set (64-bit overflow).\n"));
+   }
+ 
+   if (Capabilities) {
+     Capabilities->Accuracy   = 0;
+-    Capabilities->Resolution = Freq;
++    Capabilities->Resolution = (UINT32)Freq;
+     Capabilities->SetsToZero = FALSE;
+   }
+ 
+-- 
+2.28.0.vfs.0.0
+

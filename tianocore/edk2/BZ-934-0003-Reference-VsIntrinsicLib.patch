@@ -1,0 +1,106 @@
+From f3375f8aa32f7c74ed9ad40c12301b574047445a Mon Sep 17 00:00:00 2001
+From: Vineel Kovvuri <vineelko@microsoft.com>
+Date: Sat, 6 Nov 2021 01:01:13 -0700
+Subject: [PATCH 3/4] Reference VsIntrinsicLib
+
+Signed-off-by: Vineel Kovvuri <vineelko@microsoft.com>
+---
+ CryptoPkg/CryptoPkg.dsc     | 3 +++
+ EmulatorPkg/EmulatorPkg.dsc | 3 +++
+ MdePkg/MdePkg.ci.yaml       | 2 +-
+ MdePkg/MdePkg.dsc           | 4 ++++
+ OvmfPkg/OvmfPkgIa32.dsc     | 5 +++++
+ OvmfPkg/OvmfPkgIa32X64.dsc  | 5 +++++
+ 6 files changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/CryptoPkg/CryptoPkg.dsc b/CryptoPkg/CryptoPkg.dsc
+index 0aa72ed878..9a01554f19 100644
+--- a/CryptoPkg/CryptoPkg.dsc
++++ b/CryptoPkg/CryptoPkg.dsc
+@@ -67,6 +67,9 @@
+   HashApiLib|CryptoPkg/Library/BaseHashApiLib/BaseHashApiLib.inf
+   RngLib|MdePkg/Library/BaseRngLibNull/BaseRngLibNull.inf
+ 
++[LibraryClasses.IA32]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++
+ [LibraryClasses.ARM, LibraryClasses.AARCH64]
+   #
+   # It is not possible to prevent the ARM compiler for generic intrinsic functions.
+diff --git a/EmulatorPkg/EmulatorPkg.dsc b/EmulatorPkg/EmulatorPkg.dsc
+index 554c13ddb5..483ee0d036 100644
+--- a/EmulatorPkg/EmulatorPkg.dsc
++++ b/EmulatorPkg/EmulatorPkg.dsc
+@@ -138,6 +138,9 @@
+   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
+ !endif
+ 
++[LibraryClasses.IA32]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++
+ [LibraryClasses.common.SEC]
+   PeiServicesLib|EmulatorPkg/Library/SecPeiServicesLib/SecPeiServicesLib.inf
+   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
+diff --git a/MdePkg/MdePkg.ci.yaml b/MdePkg/MdePkg.ci.yaml
+index 054233ebc7..7c847f70e1 100644
+--- a/MdePkg/MdePkg.ci.yaml
++++ b/MdePkg/MdePkg.ci.yaml
+@@ -86,7 +86,7 @@
+ 
+     ## options defined ci/Plugin/DscCompleteCheck
+     "DscCompleteCheck": {
+-        "IgnoreInf": [""],
++        "IgnoreInf": ["MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf"],
+         "DscPath": "MdePkg.dsc"
+     },
+ 
+diff --git a/MdePkg/MdePkg.dsc b/MdePkg/MdePkg.dsc
+index a94959169b..3a4b9d093e 100644
+--- a/MdePkg/MdePkg.dsc
++++ b/MdePkg/MdePkg.dsc
+@@ -176,6 +176,10 @@
+   MdePkg/Library/MmServicesTableLib/MmServicesTableLib.inf
+   MdePkg/Library/MmUnblockMemoryLib/MmUnblockMemoryLibNull.inf
+ 
++[Components.IA32]
++  # For VS2017 support link the VsIntrinsicLib into all 32 bit modules
++  MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++
+ [Components.EBC]
+   MdePkg/Library/BaseIoLibIntrinsic/BaseIoLibIntrinsic.inf
+   MdePkg/Library/UefiRuntimeLib/UefiRuntimeLib.inf
+diff --git a/OvmfPkg/OvmfPkgIa32.dsc b/OvmfPkg/OvmfPkgIa32.dsc
+index 85abed24c1..ae18225a4f 100644
+--- a/OvmfPkg/OvmfPkgIa32.dsc
++++ b/OvmfPkg/OvmfPkgIa32.dsc
+@@ -231,6 +231,11 @@
+ 
+ !include OvmfPkg/OvmfTpmLibs.dsc.inc
+ 
++!if $(TOOL_CHAIN_TAG) == "VS2019"
++[LibraryClasses.IA32.UEFI_DRIVER]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++!endif
++
+ [LibraryClasses.common]
+   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+   VmgExitLib|UefiCpuPkg/Library/VmgExitLibNull/VmgExitLibNull.inf
+diff --git a/OvmfPkg/OvmfPkgIa32X64.dsc b/OvmfPkg/OvmfPkgIa32X64.dsc
+index a9c1daecc1..ee518d388e 100644
+--- a/OvmfPkg/OvmfPkgIa32X64.dsc
++++ b/OvmfPkg/OvmfPkgIa32X64.dsc
+@@ -235,6 +235,11 @@
+ 
+ !include OvmfPkg/OvmfTpmLibs.dsc.inc
+ 
++!if $(TOOL_CHAIN_TAG) == "VS2019"
++[LibraryClasses.IA32.UEFI_DRIVER]
++  NULL|MdePkg/Library/VsIntrinsicLib/VsIntrinsicLib.inf
++!endif
++
+ [LibraryClasses.common]
+   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+   VmgExitLib|UefiCpuPkg/Library/VmgExitLibNull/VmgExitLibNull.inf
+-- 
+2.25.1
+

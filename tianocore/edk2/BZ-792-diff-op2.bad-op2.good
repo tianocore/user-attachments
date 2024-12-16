@@ -1,0 +1,226 @@
+27,31c27,31
+< xxxx reserve setup_data: [mem 0x0000000000900000-0x00000000bd39c017] usable
+< xxxx reserve setup_data: [mem 0x00000000bd39c018-0x00000000bd3c2e57] usable
+< xxxx reserve setup_data: [mem 0x00000000bd3c2e58-0x00000000bdde2017] usable
+< xxxx reserve setup_data: [mem 0x00000000bdde2018-0x00000000bddeba57] usable
+< xxxx reserve setup_data: [mem 0x00000000bddeba58-0x00000000bf8eefff] usable
+---
+> xxxx reserve setup_data: [mem 0x0000000000900000-0x00000000bccb6017] usable
+> xxxx reserve setup_data: [mem 0x00000000bccb6018-0x00000000bccdce57] usable
+> xxxx reserve setup_data: [mem 0x00000000bccdce58-0x00000000bccdd017] usable
+> xxxx reserve setup_data: [mem 0x00000000bccdd018-0x00000000bcce6a57] usable
+> xxxx reserve setup_data: [mem 0x00000000bcce6a58-0x00000000bf8eefff] usable
+41c41
+< xxxx efi: SMBIOS=0xbf941000 ACPI=0xbfb7e000 ACPI 2.0=0xbfb7e014 MEMATTR=0xbddf7518 
+---
+> xxxx efi: SMBIOS=0xbf941000 ACPI=0xbfb7e000 ACPI 2.0=0xbfb7e014 MEMATTR=0xbddd3018 
+46,47c46,47
+< xxxx kvm-clock: cpu 0, msr 114001001, primary cpu clock
+< xxxx kvm-clock: using sched offset of 1089702625 cycles
+---
+> xxxx kvm-clock: cpu 0, msr a2001001, primary cpu clock
+> xxxx kvm-clock: using sched offset of 1792178786 cycles
+55c55
+< xxxx RAMDISK: [mem 0xbd3c3000-0xbdd35fff]
+---
+> xxxx RAMDISK: [mem 0xbcce7000-0xbd659fff]
+75c75
+< xxxx NODE_DATA(0) allocated [mem 0x23fff7000-0x23fffbfff]
+---
+> xxxx NODE_DATA(0) allocated [mem 0x23fff8000-0x23fffcfff]
+111,115c111,115
+< xxxx PM: hibernation: Registered nosave memory: [mem 0xbd39c000-0xbd39cfff]
+< xxxx PM: hibernation: Registered nosave memory: [mem 0xbd3c2000-0xbd3c2fff]
+< xxxx PM: hibernation: Registered nosave memory: [mem 0xbdde2000-0xbdde2fff]
+< xxxx PM: hibernation: Registered nosave memory: [mem 0xbddeb000-0xbddebfff]
+< xxxx PM: hibernation: Registered nosave memory: [mem 0xbddee000-0xbddf6fff]
+---
+> xxxx PM: hibernation: Registered nosave memory: [mem 0xbccb6000-0xbccb6fff]
+> xxxx PM: hibernation: Registered nosave memory: [mem 0xbccdc000-0xbccdcfff]
+> xxxx PM: hibernation: Registered nosave memory: [mem 0xbccdd000-0xbccddfff]
+> xxxx PM: hibernation: Registered nosave memory: [mem 0xbcce6000-0xbcce6fff]
+> xxxx PM: hibernation: Registered nosave memory: [mem 0xbd664000-0xbd66cfff]
+137c137
+< xxxx Memory: 8083680K/8382924K available (14347K kernel code, 2490K rwdata, 4424K rodata, 1676K init, 3888K bss, 298984K reserved, 0K cma-reserved)
+---
+> xxxx Memory: 8076408K/8382924K available (14347K kernel code, 2490K rwdata, 4424K rodata, 1676K init, 3888K bss, 306256K reserved, 0K cma-reserved)
+185c185
+< xxxx kvm-clock: cpu 1, msr 114001041, secondary cpu clock
+---
+> xxxx kvm-clock: cpu 1, msr a2001041, secondary cpu clock
+188c188
+< xxxx kvm-clock: cpu 2, msr 114001081, secondary cpu clock
+---
+> xxxx kvm-clock: cpu 2, msr a2001081, secondary cpu clock
+191c191
+< xxxx kvm-clock: cpu 3, msr 1140010c1, secondary cpu clock
+---
+> xxxx kvm-clock: cpu 3, msr a20010c1, secondary cpu clock
+210c210
+< xxxx audit: type=2000 audit(1628593193.286:1): state=initialized audit_enabled=0 res=1
+---
+> xxxx audit: type=2000 audit(1628593344.973:1): state=initialized audit_enabled=0 res=1
+373,375c373,375
+< xxxx    prefetch64-sse  : 32716 MB/sec
+< xxxx    generic_sse     : 29970 MB/sec
+< xxxx xor: using function: prefetch64-sse (32716 MB/sec)
+---
+> xxxx    prefetch64-sse  : 32713 MB/sec
+> xxxx    generic_sse     : 29882 MB/sec
+> xxxx xor: using function: prefetch64-sse (32713 MB/sec)
+401d400
+< xxxx input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input0
+402a402
+> xxxx input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input0
+410d409
+< xxxx FDC 0 is a S82078B
+413c412,413
+< xxxx sched_clock: Marking stable (440256626, 58594470)->(506392656, -7541560)
+---
+> xxxx FDC 0 is a S82078B
+> xxxx sched_clock: Marking stable (439708443, 54745327)->(507775669, -13321899)
+421a422,433
+> xxxx ata1.00: ATA-7: QEMU HARDDISK, 2.5+, max UDMA/100
+> xxxx ata1.00: 41943040 sectors, multi 16: LBA48 
+> xxxx ata2.00: ATAPI: QEMU DVD-ROM, 2.5+, max UDMA/100
+> xxxx scsi 0:0:0:0: Direct-Access     ATA      QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+> xxxx sd 0:0:0:0: [sda] 41943040 512-byte logical blocks: (21.5 GB/20.0 GiB)
+> xxxx sd 0:0:0:0: [sda] Write Protect is off
+> xxxx scsi 1:0:0:0: CD-ROM            QEMU     QEMU DVD-ROM     2.5+ PQ: 0 ANSI: 5
+> xxxx sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+> xxxx sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
+> xxxx cdrom: Uniform CD-ROM driver Revision: 3.20
+> xxxx  sda: sda1 sda2 sda3
+> xxxx sd 0:0:0:0: [sda] Attached SCSI disk
+432c444,445
+< xxxx udevd[183]: starting eudev-3.2.10
+---
+> xxxx udevd[184]: starting eudev-3.2.10
+> xxxx random: fast init done
+439,444c452,569
+< mount: mounting /dev/sda2 on /mnt failed: No such file or directory
+< ERROR:  No /sbin/init found on rootdev (or not mounted).  Trouble ahead.
+<         You can try to fix it. Type 'exit' when things are done.
+< 
+< /bin/sh: can't access tty; job control turned off
+< / # 
+\ No newline at end of file
+---
+> xxxx EXT4-fs (sda2): mounted filesystem with ordered data mode. Opts: (null). Quota mode: none.
+> /boot/initrd-5.13.8.gz:  exiting
+> INIT: version 2.99 booting
+> xxxx loop: module loaded
+> Creating static nodes in /dev.
+> Starting udevd:  /sbin/udevd --daemon
+> xxxx urandom_read: 5 callbacks suppressed
+> xxxx random: udevd: uninitialized urandom read (16 bytes read)
+> xxxx random: udevd: uninitialized urandom read (16 bytes read)
+> Triggering udev events:  /sbin/udevadm trigger -[    2.305469] udevd[628]: starting eudev-3.2.10
+> -action=add
+> xxxx input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input2
+> xxxx Linux agpgart interface v0.103
+> xxxx e1000: Intel(R) PRO/1000 Network Driver
+> xxxx e1000: Copyright (c) 1999-2006 Intel Corporation.
+> xxxx parport_pc 00:03: reported by Plug and Play ACPI
+> xxxx ACPI: button: Power Button [PWRF]
+> xxxx parport0: PC-style at 0x378, irq 7 [PCSPP,TRISTATE]
+> xxxx blk_update_request: I/O error, dev fd0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+> xxxx floppy: error 10 while reading block 0
+> xxxx input: VirtualPS/2 VMware VMMouse as /devices/platform/i8042/serio1/input/input4
+> xxxx MCE: In-kernel MCE decoding enabled.
+> xxxx input: VirtualPS/2 VMware VMMouse as /devices/platform/i8042/serio1/input/input3
+> xxxx piix4_smbus 0000:00:01.3: SMBus Host Controller at 0xb100, revision 0
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx ACPI: \_SB_.LNKC: Enabled at IRQ 11
+> xxxx ACPI: \_SB_.LNKB: Enabled at IRQ 10
+> xxxx ACPI: \_SB_.LNKD: Enabled at IRQ 11
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx ppdev: user-space parallel port driver
+> xxxx snd_hda_codec_generic hdaudioC0D0: autoconfig for Generic: line_outs=1 (0x3/0x0/0x0/0x0/0x0) type:line
+> xxxx snd_hda_codec_generic hdaudioC0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+> xxxx snd_hda_codec_generic hdaudioC0D0:    hp_outs=0 (0x0/0x0/0x0/0x0/0x0)
+> xxxx snd_hda_codec_generic hdaudioC0D0:    mono: mono_out=0x0
+> xxxx snd_hda_codec_generic hdaudioC0D0:    inputs:
+> xxxx snd_hda_codec_generic hdaudioC0D0:      Line=0x5
+> xxxx e1000 0000:00:03.0 eth0: (PCI:33MHz:32-bit) 52:54:00:12:34:56
+> xxxx e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx powernow_k8: Power state transitions not supported
+> xxxx [drm] pci: virtio-vga detected at 0000:00:02.0
+> xxxx fb0: switching to virtiodrmfb from EFI VGA
+> xxxx Console: switching to colour dummy device 80x25
+> xxxx virtio-pci 0000:00:02.0: vgaarb: deactivate vga console
+> xxxx [drm] features: -virgl +edid -resource_blob -host_visible
+> xxxx [drm] number of scanouts: 1
+> xxxx [drm] number of cap sets: 0
+> xxxx [drm] Initialized virtio_gpu 0.1.0 0 for virtio0 on minor 0
+> xxxx Console: switching to colour frame buffer device 80x30
+> xxxx virtio_gpu virtio0: [drm] fb0: virtio_gpudrmfb frame buffer device
+> xxxx Adding 2436072k swap on /dev/sda3.  Priority:-2 extents:1 across:2436072k FS
+> Setting the system clock rate:  /sbin/adjtimex --tick 10000 --frequency 0
+> Setting system time from the hardware clock (UTC):  Tue Aug 10 21:02:27 AEST 2021
+> Testing root filesystem status:  read-only filesystem
+> Checking root filesystem:
+> fsck from util-linux 2.37.1
+> /dev/sda2: clean, 623934/1152816 files, 3966514/4608000 blocks
+> Remounting root device with read-write enabled.
+> xxxx EXT4-fs (sda2): re-mounted. Opts: (null). Quota mode: none.
+> mount: /dev/sda2 mounted on /.
+> Updating module dependency list for 5.13.8:  /sbin/depmod --quick
+> Configuring kernel parameters:  /sbin/sysctl -e --system
+> Checking non-root filesystems:
+> fsck from util-linux 2.37.1
+> Mounting non-root local filesystems:
+> /dev/sda1 on /boot/efi type vfat (rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro)
+> Using /etc/random-seed to initialize /dev/urandom.
+> INIT: Entering runlevel: 3
+> Going multiuser...
+> Updating shared library links:  /sbin/ldconfig &
+> setterm: cannot (un)set powersave mode: Inappropriate ioctl for device
+> [9;15][14;60]Starting syslogd daemon:  /usr/sbin/syslogd -s
+> Updating X font indexes:  /usr/bin/fc-cache -f &
+> Updating hardware database index:  /sbin/udevadm hwdb --update
+> Triggering udev events:  /sbin/udevadm trigger --action=change
+> Starting haveged entropy daemon:  /sbin/haveged
+> Starting the network interfaces...
+> eth0: polling for DHCP server
+> eth0: waiting for carrier
+> eth0: carrier acquired
+> DUID 00:01:00:01:28:a4:70:a7:52:54:00:12:34:56
+> eth0: IAID 00:12:34:56
+> eth0: soliciting a DHCP lease
+> eth0: offered 10.0.2.15 from 10.0.2.2
+> eth0: probing address 10.0.2.15/24
+> eth0: leased 10.0.2.15 for 86400 seconds
+> eth0: adding route to 10.0.2.0/24
+> eth0: adding default route via 10.0.2.2
+> forked to background, child pid 943
+> Starting system message bus:  /usr/bin/dbus-uuidgen --ensure ; /usr/bin/dbus-daemon --system
+> Starting elogind:  /lib64/elogind/elogind --daemon
+> Starting RPC portmapper:  /sbin/rpcbind -l -w 
+> Starting RPC NSM (Network Status Monitor):  /sbin/rpc.statd 
+> Starting OpenSSH SSH daemon:  /usr/sbin/sshd
+> Starting NTP daemon:  /usr/sbin/ntpd -g -u ntp:ntp
+> Starting ACPI daemon:  /usr/sbin/acpid
+> Updating MIME database:  /usr/bin/update-mime-database /usr/share/mime &
+> Updating gtk.immodules:
+>   /usr/bin/update-gtk-immodules &
+> Updating gdk-pixbuf.loaders:
+>   /usr/bin/update-gdk-pixbuf-loaders &
+> Compiling GSettings XML schema files:
+>   /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas &
+> Starting crond:  /usr/sbin/crond -l notice
+> Starting atd:  /usr/sbin/atd -b 15 -l 1
+> Starting gpm:  /usr/sbin/gpm -m /dev/mouse -t imps2

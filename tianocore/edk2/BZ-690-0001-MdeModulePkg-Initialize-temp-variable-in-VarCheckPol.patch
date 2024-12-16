@@ -1,0 +1,31 @@
+From 69c3c5e74daa3b8335ca5f92faad7e6a08576b48 Mon Sep 17 00:00:00 2001
+From: Bret Barkelew <bret.barkelew@microsoft.com>
+Date: Fri, 9 Apr 2021 11:21:51 -0700
+Subject: [PATCH v1 1/1] MdeModulePkg: Initialize temp variable in
+ VarCheckPolicyLib
+
+DumpVariablePolicy() will return EFI_INVALID_PARAMETER if the Buffer
+pointer is NULL and the indirect Size is anything but 0. Since this
+TempSize was not being initialized it is very likely that this sequence
+would not return the total buffer size as expected.
+
+Signed-off-by: Bret Barkelew <bret.barkelew@microsoft.com>
+---
+ MdeModulePkg/Library/VarCheckPolicyLib/VarCheckPolicyLib.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MdeModulePkg/Library/VarCheckPolicyLib/VarCheckPolicyLib.c b/MdeModulePkg/Library/VarCheckPolicyLib/VarCheckPolicyLib.c
+index 14e1904e96d3..e50edb4ffc5a 100644
+--- a/MdeModulePkg/Library/VarCheckPolicyLib/VarCheckPolicyLib.c
++++ b/MdeModulePkg/Library/VarCheckPolicyLib/VarCheckPolicyLib.c
+@@ -216,6 +216,7 @@ VarCheckPolicyLibMmiHandler (
+         DumpParamsOut->TotalSize = 0;
+         DumpParamsOut->PageSize = 0;
+         DumpParamsOut->HasMore = FALSE;
++        TempSize = 0;
+         SubCommandStatus = DumpVariablePolicy (NULL, &TempSize);
+         if (SubCommandStatus == EFI_BUFFER_TOO_SMALL && TempSize > 0) {
+           mCurrentPaginationCommand = VAR_CHECK_POLICY_COMMAND_DUMP;
+-- 
+2.28.0.windows.1
+

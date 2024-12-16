@@ -1,0 +1,58 @@
+From 01ceeac7e01c60c00d6c92195a1399110237c567 Mon Sep 17 00:00:00 2001
+From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+Date: Mon, 25 Sep 2017 16:45:33 +0530
+Subject: [PATCH] SNP : Print Status Code in case of EFI_DEVICE_ERROR.
+
+While performing tftp using PCI interface, error message was coming
+continuously, in case of Device busy also:
+
+Snp->undi.transmit()  8000h:4h
+
+Snp->undi.transmit()  8000h:4h
+[======================================> ]   34812 Kb
+Snp->undi.transmit()  8000h:4h
+
+Snp->undi.transmit()  8000h:4h
+
+Snp->undi.transmit()  8000h:4h
+
+Snp->undi.transmit()  8000h:4h
+
+So protect the error print under if loop to check if Status is
+EFI_DEVICE_ERROR.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+
+Signed-off-by: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+---
+ MdeModulePkg/Universal/Network/SnpDxe/Transmit.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/Network/SnpDxe/Transmit.c b/MdeModulePkg/Universal/Network/SnpDxe/Transmit.c
+index 73461bc..28b6734 100644
+--- a/MdeModulePkg/Universal/Network/SnpDxe/Transmit.c
++++ b/MdeModulePkg/Universal/Network/SnpDxe/Transmit.c
+@@ -205,12 +205,14 @@ PxeTransmit (
+     Status = EFI_DEVICE_ERROR;
+   }
+ 
+-  DEBUG (
+-    (EFI_D_ERROR,
+-    "\nSnp->undi.transmit()  %xh:%xh\n",
+-    Snp->Cdb.StatFlags,
+-    Snp->Cdb.StatCode)
+-    );
++  if (Status == EFI_DEVICE_ERROR) {
++    DEBUG (
++      (EFI_D_ERROR,
++      "\nSnp->undi.transmit()  %xh:%xh\n",
++      Snp->Cdb.StatFlags,
++      Snp->Cdb.StatCode)
++      );
++  }
+ 
+   return Status;
+ }
+-- 
+1.9.1
+

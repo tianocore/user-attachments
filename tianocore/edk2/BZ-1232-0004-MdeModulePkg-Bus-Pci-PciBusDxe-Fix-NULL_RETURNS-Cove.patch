@@ -1,0 +1,45 @@
+From 76d7d36f2ae65e8821e3ebdce55a894aa4ca23a8 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 11:06:37 +0530
+Subject: [PATCH 4/5] MdeModulePkg/Bus/Pci/PciBusDxe: Fix NULL_RETURNS Coverity
+ issue
+
+The function StartPciDevices has a check
+
+    ASSERT (RootBridge != NULL);
+
+but this comes into play only in DEBUG mode. In Release mode, there
+is no handling if the RootBridge value is NULL and the code proceeds
+to unconditionally dereference "RootBridge" which will lead to CRASH.
+
+Hence, for safety add NULL pointer checks always and return
+EFI_NOT_READY if RootBridge value is NULL which is one of the return
+values as mentioned in the function description header.
+
+Cc: Hao A Wu <hao.a.wu@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4239
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c b/MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c
+index 581e9075ad41..f43f10325f16 100644
+--- a/MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c
++++ b/MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c
+@@ -773,6 +773,11 @@ StartPciDevices (
+ 
+   RootBridge = GetRootBridgeByHandle (Controller);
+   ASSERT (RootBridge != NULL);
++
++  if (RootBridge == NULL) {
++    return EFI_NOT_READY;
++  }
++
+   ThisHostBridge = RootBridge->PciRootBridgeIo->ParentHandle;
+ 
+   CurrentLink = mPciDevicePool.ForwardLink;
+-- 
+2.36.1.windows.1
+

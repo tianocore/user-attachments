@@ -1,0 +1,351 @@
+
+Dead code function in file: MdeModulePkg/Bus/Pci/PciBusDxe/PciIo.c
+UpStreamBridgesAttributes, line 2080
+
+Dead code function in file: MdeModulePkg/Bus/Pci/PciBusDxe/PciDeviceSupport.c
+GetHpcPciAddressFromRootBridge, line 1071
+
+Inf redundant definition in file: MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+PeCoffLib, line 81
+
+Dead code function in file: MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressHci.c
+ReadNvmeAdminSubmissionQueueBaseAddress, line 276
+ReadNvmeAdminCompletionQueueBaseAddress, line 355
+ReadNvmeAdminQueueAttributes, line 197
+
+Inf redundant definition in file: MdeModulePkg/Bus/Pci/NvmExpressPei/NvmExpressPei.inf
+PciLib, line 53
+
+Dead code function in file: MdeModulePkg/Bus/Pci/SdMmcPciHcDxe/SdDevice.c
+SdCardGetCsd, line 339
+SdCardGetScr, line 390
+
+Dead code function in file: MdeModulePkg/Bus/Sd/EmmcBlockIoPei/EmmcHcMem.c
+EmmcPeimUnlinkMemBlock, line 230
+
+Dead code function in file: MdeModulePkg/Bus/Sd/SdBlockIoPei/SdHcMem.c
+SdPeimUnlinkMemBlock, line 230
+
+Inf redundant definition in file: MdeModulePkg/Bus/Pci/UfsPciHcDxe/UfsPciHcDxe.inf
+DevicePathLib, line 45
+
+Dead code function in file: MdeModulePkg/Bus/Ufs/UfsPassThruDxe/UfsPassThruHci.c
+UfsClearFlag, line 1244
+UfsFindAvailableSlotInTmrl, line 766
+
+Dead code function in file: MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHcMem.c
+UfsPeimUnlinkMemBlock, line 230
+
+Dead code function in file: MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsBlockIoPei.c
+UfsPeimRequestSense, line 154
+UfsPeimInquiry, line 250
+
+Dead code function in file: MdeModulePkg/Bus/Ufs/UfsBlockIoPei/UfsHci.c
+UfsRwAttributes, line 916
+UfsClearFlag, line 1158
+UfsReadFlag, line 1185
+UfsFindAvailableSlotInTmrl, line 707
+
+Dead code function in file: MdeModulePkg/Bus/Pci/XhciDxe/XhciReg.c
+XhcReadDoorBellReg, line 204
+XhcWriteOpReg16, line 170
+
+Dead code function in file: MdeModulePkg/Bus/Pci/EhciDxe/EhciDebug.c
+EhcDumpRegs, line 238
+
+Dead code function in file: MdeModulePkg/Bus/Pci/EhciDxe/EhciReg.c
+EhcDisableAsyncSchd, line 438
+EhcDisablePeriodSchd, line 386
+
+Dead code function in file: MdeModulePkg/Bus/Pci/UhciPei/DmaMem.c
+IoMmuFreeBuffer, line 218
+
+Dead code function in file: MdeModulePkg/Bus/Pci/UhciPei/UhcPeim.c
+DelinkMemoryBlock, line 3274
+IsMemoryBlockEmptied, line 3251
+IsTDLinkPtrQHOrTD, line 2013
+GetCurrentFrameNumber, line 1265
+GetQHHorizontalLinkPtr, line 1361
+GetQHHorizontalValidorInvalid, line 1482
+
+Dead code function in file: MdeModulePkg/Bus/Pci/EhciPei/UsbHcMem.c
+UsbHcUnlinkMemBlock, line 304
+
+Dead code function in file: MdeModulePkg/Bus/Pci/XhciPei/XhcPeim.c
+XhcPeiReadDoorBellReg, line 224
+
+Dead code function in file: MdeModulePkg/Bus/Pci/XhciPei/UsbHcMem.c
+UsbHcUnlinkMemBlock, line 339
+
+Dead code function in file: MdeModulePkg/Bus/Usb/UsbBusPei/HubPeim.c
+PeiHubSetHubFeature, line 209
+
+Dead code function in file: MdeModulePkg/Bus/Usb/UsbBusPei/PeiUsbLib.c
+IsPortConnectChange, line 257
+PeiUsbClearDeviceFeature, line 122
+
+Dead code function in file: MdeModulePkg/Bus/Usb/UsbBotPei/PeiUsbLib.c
+PeiUsbSetConfiguration, line 176
+PeiUsbSetDeviceAddress, line 80
+IsPortConnect, line 271
+IsPortConnectChange, line 319
+IsPortLowSpeedDeviceAttached, line 295
+PeiUsbGetDescriptor, line 37
+
+Inf redundant definition in file: MdeModulePkg/Bus/Ata/AtaBusDxe/AtaBusDxe.inf
+gEfiDiskInfoIdeInterfaceGuid, line 63
+
+Dead code function in file: MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AhciMode.c
+AhciCheckDeviceStatus, line 314
+AhciPortReset, line 1378
+
+Dead code function in file: MdeModulePkg/Bus/Ata/AtaAtapiPassThru/IdeMode.c
+DRDYReady, line 646
+AtaSoftReset, line 1043
+DRDYReady2, line 717
+WaitForBSYClear2, line 840
+
+Dead code function in file: MdeModulePkg/Bus/Usb/UsbBusDxe/UsbHub.c
+UsbHubCtrlSetHubFeature, line 365
+UsbHubCtrlResetTT, line 331
+
+Dead code function in file: MdeModulePkg/Bus/Usb/UsbBusDxe/UsbUtility.c
+UsbHcReset, line 106
+UsbHcAsyncIsochronousTransfer, line 622
+UsbHcGetState, line 134
+UsbHcSetState, line 162
+UsbHcIsochronousTransfer, line 585
+
+Inf redundant definition in file: MdeModulePkg/Bus/I2c/I2cDxe/I2cHostDxe.inf
+DevicePathLib, line 39
+
+Dead code function in file: MdeModulePkg/Bus/Isa/Ps2KeyboardDxe/Ps2KbdCtrller.c
+DisableKeyboard, line 1824
+
+Inf redundant definition in file: MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf
+DebugAgentLib, line 80
+
+Dead code function in file: MdeModulePkg/Application/UiApp/FrontPage.c
+EnableResetReminderFeature, line 1052
+DisableResetReminderFeature, line 1067
+DisableResetRequired, line 1097
+
+Dead code function in file: MdeModulePkg/Universal/Console/TerminalDxe/TerminalConIn.c
+UnicodeFiFoGetKeyCount, line 1212
+
+Dead code function in file: MdeModulePkg/Universal/HiiDatabaseDxe/ConfigRouting.c
+GetStorageWidth, line 3601
+
+Inf redundant definition in file: MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
+IoLib, line 46
+
+Dead code function in file: MdeModulePkg/Universal/Network/Ip4Dxe/Ip4Config2Impl.c
+Ip4Config2OnDhcp4Event, line 1640
+
+Dead code function in file: MdeModulePkg/Universal/Network/IScsiDxe/IScsiProto.c
+IScsiFindTcbByITT, line 1750
+
+Inf redundant definition in file: MdeModulePkg/Universal/Network/IScsiDxe/IScsiDxe.inf
+gEfiAcpi20TableGuid, line 111
+
+Dead code function in file: MdeModulePkg/Universal/Network/Tcp4Dxe/SockImpl.c
+SockRcvdErr, line 1119
+
+Dead code function in file: MdeModulePkg/Universal/Network/Tcp4Dxe/SockInterface.c
+SockGroup, line 955
+
+Dead code function in file: MdeModulePkg/Universal/Network/Tcp4Dxe/Tcp4Option.c
+TcpPawsOK, line 364
+
+Dead code function in file: MdeModulePkg/Universal/SetupBrowserDxe/IfrParse.c
+IsDevicePathExist, line 465
+
+Inf redundant definition in file: MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf
+DxeServicesLib, line 39
+
+Inf redundant definition in file: MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableDxe/FirmwarePerformanceDxe.inf
+gEfiEventReadyToBootGuid, line 64
+gEfiEventLegacyBootGuid, line 65
+
+Inf redundant definition in file: MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
+PrintLib, line 52
+
+Dead code function in file: MdeModulePkg/Application/CapsuleApp/CapsuleDump.c
+DumpImageAuthentication, line 100
+
+Inf redundant definition in file: MdeModulePkg/Application/CapsuleApp/CapsuleApp.inf
+gEfiCertTypeRsa2048Sha256Guid, line 47
+gEfiGlobalVariableGuid, line 43
+gEfiCertPkcs7Guid, line 48
+
+Dead code function in file: MdeModulePkg/Universal/DebugSupportDxe/Ia32/PlDebugSupport.c
+InterruptDistrubutionHub, line 271
+
+Dead code function in file: MdeModulePkg/Core/Dxe/Mem/HeapGuard.c
+ClearGuardMapBit, line 478
+SetGuardMapBit, line 455
+IsHeadGuard, line 527
+IsTailGuard, line 544
+
+Dead code function in file: MdeModulePkg/Core/Dxe/DxeMain/DxeMain.c
+CoreEfiNotAvailableYetArg0, line 572
+
+Inf redundant definition in file: MdeModulePkg/Core/Dxe/DxeMain.inf
+TimerLib, line 100
+gEfiBlockIoProtocolGuid, line 166
+
+Inf redundant definition in file: MdeModulePkg/Application/SmiHandlerProfileInfo/SmiHandlerProfileInfo.inf
+PeCoffGetEntryPointLib, line 45
+
+Dead code function in file: MdeModulePkg/Core/PiSmmCore/MemoryAttributesTable.c
+IsImageInsideSmram, line 1398
+FindImageRecord, line 1237
+SmmMemoryAttributesTableConsistencyCheck, line 123
+SmmRemoveImageRecord, line 1273
+
+Dead code function in file: MdeModulePkg/Core/PiSmmCore/Page.c
+DumpSmmMemoryMapEntry, line 458
+SmmMemoryMapConsistencyCheckRange, line 528
+SmmMemoryMapConsistencyCheck, line 559
+DumpSmmMemoryMap, line 499
+
+Dead code function in file: MdeModulePkg/Core/PiSmmCore/HeapGuard.c
+ClearGuardMapBit, line 490
+SetGuardMapBit, line 467
+AdjustMemoryA, line 1061
+AdjustMemoryS, line 882
+IsHeadGuard, line 539
+IsTailGuard, line 556
+
+Inf redundant definition in file: MdeModulePkg/Core/PiSmmCore/PiSmmCore.inf
+TimerLib, line 66
+DxeServicesLib, line 69
+gEfiSmmCpuProtocolGuid, line 93
+
+Inf redundant definition in file: MdeModulePkg/Universal/Acpi/S3SaveStateDxe/S3SaveStateDxe.inf
+MemoryAllocationLib, line 45
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regversion.c
+onig_version, line 35
+onig_copyright, line 49
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/st.c
+onig_st_init_table, line 169
+onig_st_delete_safe, line 431
+delete_never, line 463
+onig_st_init_strtable, line 189
+onig_st_cleanup_safe, line 475
+onig_st_init_numtable, line 176
+onig_st_delete, line 389
+onig_st_copy, line 348
+onig_st_init_strtable_with_size, line 195
+strhash, line 536
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regsyntax.c
+onig_set_syntax_op2, line 245
+onig_get_syntax_options, line 281
+onig_set_default_syntax, line 223
+onig_get_syntax_op, line 263
+onig_get_syntax_op2, line 269
+onig_get_syntax_behavior, line 275
+onig_set_meta_char, line 287
+onig_set_syntax_options, line 257
+onig_set_syntax_op, line 239
+onig_set_syntax_behavior, line 251
+onig_copy_syntax, line 233
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/OnigurumaUefiPort.c
+OnigStrCmp, line 29
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/reggnu.c
+re_alloc_pattern, line 128
+re_search, line 74
+re_compile_pattern, line 84
+re_match, line 66
+re_adjust_startpos, line 46
+re_free_registers, line 39
+re_mbcinit, line 146
+re_free_pattern, line 122
+re_set_casetable, line 140
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regparse.c
+onig_free_shared_cclass_table, line 4921
+onig_free_node_list, line 1095
+onig_strncmp, line 209
+onig_foreach_name, line 526
+onig_set_warn_func, line 92
+i_names, line 511
+onig_noname_group_capture_is_active, line 908
+onig_set_verb_warn_func, line 97
+onig_name_to_backref_number, line 854
+onig_number_of_names, line 573
+i_free_shared_class, line 4908
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regexec.c
+onig_get_encoding, line 3765
+onig_region_set, line 216
+onig_get_syntax, line 3783
+onig_copy_encoding, line 3812
+history_tree_clone, line 132
+onig_match, line 3062
+onig_number_of_captures, line 3789
+onig_number_of_capture_histories, line 3795
+onig_set_match_stack_limit_size, line 430
+onig_get_options, line 3771
+onig_region_copy, line 269
+onig_get_case_fold_flag, line 3777
+onig_get_match_stack_limit_size, line 424
+onig_get_capture_tree, line 155
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regenc.c
+ss_apply_all_case_fold, line 439
+onigenc_mb4_code_to_mbc, line 737
+onigenc_mb2_code_to_mbclen, line 704
+onigenc_mb4_is_code_ctype, line 809
+onigenc_mbn_mbc_to_code, line 644
+onigenc_set_default_encoding, line 49
+onigenc_property_list_init, line 894
+onigenc_mb4_code_to_mbclen, line 711
+onigenc_apply_all_case_fold_with_map, line 448
+onigenc_mb2_code_to_mbc, line 720
+onigenc_property_list_add_property, line 866
+onigenc_get_left_adjust_char_head, line 361
+onigenc_mb2_is_code_ctype, line 794
+onigenc_mbn_mbc_case_fold, line 662
+onigenc_set_default_caseconv_table, line 354
+onigenc_strlen_null, line 126
+onigenc_get_default_encoding, line 43
+resize_property_list, line 844
+onigenc_get_case_fold_codes_by_str_with_map, line 476
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regtrav.c
+onig_capture_tree_traverse, line 67
+capture_tree_traverse, line 35
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regposerr.c
+regerror, line 76
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regcomp.c
+onig_set_default_case_fold_flag, line 43
+onig_chain_reduce, line 5258
+onig_chain_link_add, line 5249
+onig_new_without_alloc, line 5540
+exec_end_call_list, line 5615
+onig_end, line 5631
+onig_transfer, line 5235
+onig_get_default_case_fold_flag, line 37
+
+Dead code function in file: MdeModulePkg/Universal/RegularExpressionDxe/Oniguruma/regposix.c
+reg_set_encoding, line 233
+regfree, line 226
+onig2posix_error_code, line 58
+i_wrapper, line 266
+reg_number_of_names, line 289
+regcomp, line 136
+reg_foreach_name, line 275
+regexec, line 168
+reg_name_to_group_numbers, line 253
+
+Inf redundant definition in file: MdeModulePkg/Universal/SmmCommunicationBufferDxe/SmmCommunicationBufferDxe.inf
+PcdLib, line 53
+

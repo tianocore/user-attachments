@@ -1,0 +1,46 @@
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestFunction.c b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestFunction.c
+index ad72646b..f3d189bd 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestFunction.c
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestFunction.c
+@@ -827,7 +827,7 @@ BBTestStallInterfaceTest (
+       StartTime = Epoch;
+     OldTpl = gtBS->RaiseTPL (TplArray[Index]);
+     Status = gtBS->Stall (
+-                     10000000
++                     4000000
+                      );
+     gtBS->RestoreTPL (OldTpl);
+     if (gtRT->GetTime (&EndTime, NULL) != EFI_SUCCESS)
+@@ -845,7 +845,7 @@ BBTestStallInterfaceTest (
+                    (Index == 1? \
+                     gMiscBootServicesBBTestFunctionAssertionGuid021: \
+                     gMiscBootServicesBBTestFunctionAssertionGuid022),
+-                   L"BS.Stall - 10 seconds",
++                   L"BS.Stall - 4 seconds",
+                    L"%a:%d:Status - %r, TPL - %d",
+                    __FILE__,
+                    (UINTN)__LINE__,
+@@ -853,8 +853,8 @@ BBTestStallInterfaceTest (
+                    TplArray[Index]
+                    );
+     SecondsElapsed = GetSecondsElapsed (&StartTime, &EndTime);
+-    if ((SecondsElapsed <= 10 + MAX_SECOND_MARGIN) &&
+-         (SecondsElapsed >= 10 - MAX_SECOND_MARGIN)) {
++    if ((SecondsElapsed <= 4 + MAX_SECOND_MARGIN) &&
++         (SecondsElapsed >= 4 - MAX_SECOND_MARGIN)) {
+       AssertionType = EFI_TEST_ASSERTION_PASSED;
+     } else {
+       AssertionType = EFI_TEST_ASSERTION_FAILED;
+diff --git a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestMain.h b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestMain.h
+index 9e98ec01..4f8eaa4c 100644
+--- a/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestMain.h
++++ b/uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/MiscBootServices/BlackBoxTest/MiscBootServicesBBTestMain.h
+@@ -46,7 +46,7 @@ typedef struct _RESET_DATA {
+  { 0xA6033499, 0xE4AF, 0x44f5, {0x9D, 0x16, 0x30, 0x78, 0xD8, 0x61, 0x32, 0x28 }}
+ 
+ #define TPL_ARRAY_SIZE 3
+-#define MAX_SECOND_MARGIN 2
++#define MAX_SECOND_MARGIN 1
+ 
+ //
+ // Change size from TPL_ARRAY_SIZE to TPL_ARRAY_SIZE + 1

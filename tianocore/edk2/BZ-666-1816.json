@@ -1,0 +1,41 @@
+[
+  {
+    "data_version": "3.1",
+    "cve_id": "CVE-2021-",
+    "products": [
+      {
+        "vendor_name": "TianoCore",
+        "product": [
+          {
+            "product_name": "EDK II",
+            "version": "edk2-stable202008",
+            "affects": "="
+          }
+        ]
+      }
+    ],
+    "problem_types": [
+      {
+        "description": [
+          {
+            "lang": "eng",
+            "value": "A case of CWE-122 is occurring in the LzmaUefiDecompressGetInfo function."
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "url": "https://bugzilla.tianocore.org/show_bug.cgi?id=1816"
+      }
+    ],
+    "description": [
+      {
+        "lang": "eng",
+        "value": "A heap overflow in LzmaUefiDecompressGetInfo function in EDK II.",
+		"product_name": "EDK II",
+        "version": "edk2-stable202008"		
+      }
+    ]
+  }
+]

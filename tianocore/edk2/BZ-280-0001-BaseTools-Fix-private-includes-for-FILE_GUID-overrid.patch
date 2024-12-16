@@ -1,0 +1,60 @@
+From 57d67c63a59c86043fd55421e2d29b49608163f5 Mon Sep 17 00:00:00 2001
+From: Michael D Kinney <michael.d.kinney@intel.com>
+Date: Thu, 21 Mar 2019 17:27:20 -0700
+Subject: [PATCH] BaseTools: Fix private includes for FILE_GUID override
+
+When a module in a DSC file uses a FILE_GUID override in the
+module scoped <Defines> section, a copy of the modified INF file
+is placed in the Conf/.cache directory.  The check for private
+includes uses the INF path to determine if the module is allowed
+to use the private includes.  Since the INF path in this case is
+not in any package, this check always fails, and no private
+include paths are possible.
+
+The fix is to keep both the OriginalPath and the new Path in
+the PathClass object, and always use the OriginalPath to see if
+the module INF is in the package with private includes.
+
+Contributed-under: TianoCore Contribution Agreement 1.1
+Signed-off-by: Michael D Kinney <michael.d.kinney@intel.com>
+---
+ BaseTools/Source/Python/AutoGen/AutoGen.py | 2 +-
+ BaseTools/Source/Python/Common/Misc.py     | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/BaseTools/Source/Python/AutoGen/AutoGen.py b/BaseTools/Source/Python/AutoGen/AutoGen.py
+index f4cfb0830d..e00254d11f 100644
+--- a/BaseTools/Source/Python/AutoGen/AutoGen.py
++++ b/BaseTools/Source/Python/AutoGen/AutoGen.py
+@@ -3430,7 +3430,7 @@ class ModuleAutoGen(AutoGen):
+                 RetVal.append(PackageDir)
+             IncludesList = Package.Includes
+             if Package._PrivateIncludes:
+-                if not self.MetaFile.Path.startswith(PackageDir):
++                if not self.MetaFile.OriginalPath.Path.startswith(PackageDir):
+                     IncludesList = list(set(Package.Includes).difference(set(Package._PrivateIncludes)))
+             for Inc in IncludesList:
+                 if Inc not in RetVal:
+diff --git a/BaseTools/Source/Python/Common/Misc.py b/BaseTools/Source/Python/Common/Misc.py
+index 8e4217a4f6..6318cf1382 100644
+--- a/BaseTools/Source/Python/Common/Misc.py
++++ b/BaseTools/Source/Python/Common/Misc.py
+@@ -288,6 +288,7 @@ def ProcessDuplicatedInf(Path, BaseName, Workspace):
+     #
+     RtPath.Path = TempFullPath
+     RtPath.BaseName = BaseName
++    RtPath.OriginalPath = Path
+     #
+     # If file exists, compare contents
+     #
+@@ -1569,6 +1570,7 @@ class PathClass(object):
+         self.TagName = TagName
+         self.ToolCode = ToolCode
+         self.ToolChainFamily = ToolChainFamily
++        self.OriginalPath = self
+ 
+     ## Convert the object of this class to a string
+     #
+-- 
+2.21.0.windows.1
+

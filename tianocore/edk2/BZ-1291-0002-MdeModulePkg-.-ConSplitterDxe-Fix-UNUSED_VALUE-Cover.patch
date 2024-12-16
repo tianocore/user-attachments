@@ -1,0 +1,76 @@
+From c19ad075d9e5cff34afe20749b5857901832f3cb Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:01:32 +0530
+Subject: [PATCH 2/2] MdeModulePkg/.../ConSplitterDxe: Fix UNUSED_VALUE
+ Coverity issue
+
+Full pathname - MdeModulePkg/Universal/Console/ConSplitterDxe
+
+If there is not any physical GOP and UGA device in system, then the
+function ConSplitterTextOutDeleteDevice makes a call to the function
+gBS->UninstallProtocolInterface so as to uninstall Consplitter GOP or
+UGA protocol and stores the return value in Status, but the return
+Status is not made of any use and later Status gets overriden.
+
+Assuming this is deliberate, remove the return value storage in Status.
+
+Cc: Zhichao Gao <zhichao.gao@intel.com>
+Cc: Ray Ni <ray.ni@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4296
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ .../Console/ConSplitterDxe/ConSplitter.c      | 36 +++++++++----------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c b/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
+index 0a50dfccf431..ad102827c2ef 100644
+--- a/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
++++ b/MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitter.c
+@@ -3383,26 +3383,26 @@ ConSplitterTextOutDeleteDevice (
+     // Consplitter GOP or UGA protocol will be uninstalled
+     //
+     if (!FeaturePcdGet (PcdConOutGopSupport)) {
+-      Status = gBS->UninstallProtocolInterface (
+-                      Private->VirtualHandle,
+-                      &gEfiUgaDrawProtocolGuid,
+-                      &Private->UgaDraw
+-                      );
++      gBS->UninstallProtocolInterface (
++             Private->VirtualHandle,
++             &gEfiUgaDrawProtocolGuid,
++             &Private->UgaDraw
++             );
+     } else if (!FeaturePcdGet (PcdConOutUgaSupport)) {
+-      Status = gBS->UninstallProtocolInterface (
+-                      Private->VirtualHandle,
+-                      &gEfiGraphicsOutputProtocolGuid,
+-                      &Private->GraphicsOutput
+-                      );
++      gBS->UninstallProtocolInterface (
++             Private->VirtualHandle,
++             &gEfiGraphicsOutputProtocolGuid,
++             &Private->GraphicsOutput
++             );
+     } else {
+-      Status = gBS->UninstallMultipleProtocolInterfaces (
+-                      Private->VirtualHandle,
+-                      &gEfiUgaDrawProtocolGuid,
+-                      &Private->UgaDraw,
+-                      &gEfiGraphicsOutputProtocolGuid,
+-                      &Private->GraphicsOutput,
+-                      NULL
+-                      );
++      gBS->UninstallMultipleProtocolInterfaces (
++             Private->VirtualHandle,
++             &gEfiUgaDrawProtocolGuid,
++             &Private->UgaDraw,
++             &gEfiGraphicsOutputProtocolGuid,
++             &Private->GraphicsOutput,
++             NULL
++             );
+     }
+   }
+ 
+-- 
+2.36.1.windows.1
+

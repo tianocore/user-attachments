@@ -1,0 +1,366 @@
+From 503339f6bd9b5bd1800d3b81b5bd214fee59ee0b Mon Sep 17 00:00:00 2001
+From: Jian J Wang <jian.j.wang@intel.com>
+Date: Mon, 30 Mar 2020 10:47:57 +0800
+Subject: [PATCH] Vlv2TbltDevicePkg/AcpiPlatform: drop OSFR support
+ (CVE-2019-14561)
+
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=1854
+
+Due to the fact that there's security issue (buffer overflow, see BZ1854)
+and there's no users of OSFR table, remove all code and definitions related
+to OSFR.
+
+Cc: Zailiang Sun <zailiang.sun@intel.com>
+Cc: Yi Qian <yi.qian@intel.com>
+Signed-off-by: Jian J Wang <jian.j.wang@intel.com>
+Reviewed-by: Zailiang Sun <zailiang.sun@intel.com>
+Acked-by: Michael D Kinney <michael.d.kinney@intel.com>
+---
+ .../AcpiPlatform/AcpiPlatform.c               | 141 ------------------
+ .../AcpiPlatform/AcpiPlatform.inf             |   4 -
+ .../Vlv2TbltDevicePkg/AcpiPlatform/Osfr.h     |  56 -------
+ .../Include/Guid/EfiVpdData.h                 |  42 +-----
+ .../Intel/Vlv2TbltDevicePkg/PlatformPkg.dec   |   3 -
+ 5 files changed, 4 insertions(+), 242 deletions(-)
+ delete mode 100644 Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/Osfr.h
+
+diff --git a/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/AcpiPlatform.c b/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/AcpiPlatform.c
+index 37f899d7f5..c687acf138 100644
+--- a/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/AcpiPlatform.c
++++ b/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/AcpiPlatform.c
+@@ -30,7 +30,6 @@ Abstract:
+ #include "Platform.h"
+ #include <Hpet.h>
+ #include <Mcfg.h>
+-#include "Osfr.h"
+ #include <Guid/GlobalVariable.h>
+ #include <Guid/SetupVariable.h>
+ #include <Guid/PlatformInfo.h>
+@@ -46,9 +45,6 @@ Abstract:
+ 
+ 
+ CHAR16    EfiPlatformCpuInfoVariable[] = L"PlatformCpuInfo";
+-CHAR16    gACPIOSFRModelStringVariableName[] = ACPI_OSFR_MODEL_STRING_VARIABLE_NAME;
+-CHAR16    gACPIOSFRRefDataBlockVariableName[] = ACPI_OSFR_REF_DATA_BLOCK_VARIABLE_NAME;
+-CHAR16    gACPIOSFRMfgStringVariableName[] = ACPI_OSFR_MFG_STRING_VARIABLE_NAME;
+ 
+ EFI_GLOBAL_NVS_AREA_PROTOCOL            mGlobalNvsArea;
+ BOOLEAN                   mFirstNotify;
+@@ -60,15 +56,6 @@ SYSTEM_CONFIGURATION      mSystemConfig;
+ UINT8 mSmbusRsvdAddresses[] = PLATFORM_SMBUS_RSVD_ADDRESSES;
+ UINT8 mNumberSmbusAddress = sizeof( mSmbusRsvdAddresses ) / sizeof( mSmbusRsvdAddresses[0] );
+ 
+-EFI_ACPI_OSFR_OCUR_OBJECT  mOcurObjectTemplate = {
+-  {0xB46F133D, 0x235F, 0x4634, 0x9F, 0x03, 0xB1, 0xC0, 0x1C, 0x54, 0x78, 0x5B},
+-  0,
+-  0,
+-  0,
+-  0,
+-  0
+-};
+-
+ /**
+   Locate the first instance of a protocol.  If the protocol requested is an
+   FV protocol, then it will return the first FV that contains the ACPI table
+@@ -207,14 +194,6 @@ PlatformUpdateTables (
+   UINT64                                                      OemIdValue;
+   UINT8                                                       Index;
+   EFI_ACPI_3_0_FIXED_ACPI_DESCRIPTION_TABLE                   *Facp;
+-  EFI_ACPI_OSFR_TABLE                                         *OsfrTable;
+-  EFI_ACPI_OSFR_OCUR_OBJECT                                   *pOcurObject;
+-  CHAR16                                                      *OcurMfgStringBuffer = NULL;
+-  CHAR16                                                      *OcurModelStringBuffer = NULL;
+-  UINT8                                                       *OcurRefDataBlockBuffer = NULL;
+-  UINTN                                                       OcurMfgStringBufferSize;
+-  UINTN                                                       OcurModelStringBufferSize;
+-  UINTN                                                       OcurRefDataBlockBufferSize;
+ #if defined (IDCC2_SUPPORTED) && IDCC2_SUPPORTED
+   EFI_ACPI_ASPT_TABLE                                         *pSpttTable;
+ #endif
+@@ -466,126 +445,6 @@ PlatformUpdateTables (
+         = (UINT8)RShiftU64 (mPlatformInfo->PciData.PciExpressSize, 20) - 1;
+       break;
+ 
+-
+-    case EFI_ACPI_OSFR_TABLE_SIGNATURE:
+-      //
+-      // Get size of OSFR variable.
+-      //
+-      OcurMfgStringBufferSize = 0;
+-      Status = gRT->GetVariable (
+-                      gACPIOSFRMfgStringVariableName,
+-                      &gACPIOSFRMfgStringVariableGuid,
+-                      NULL,
+-                      &OcurMfgStringBufferSize,
+-                      NULL
+-                      );
+-      if (Status != EFI_BUFFER_TOO_SMALL) {
+-        //
+-        // Variable must not be present on the system.
+-        //
+-        return EFI_UNSUPPORTED;
+-      }
+-
+-      //
+-      // Allocate memory for variable data.
+-      //
+-      OcurMfgStringBuffer = AllocatePool (OcurMfgStringBufferSize);
+-      Status = gRT->GetVariable (
+-                      gACPIOSFRMfgStringVariableName,
+-                      &gACPIOSFRMfgStringVariableGuid,
+-                      NULL,
+-                      &OcurMfgStringBufferSize,
+-                      OcurMfgStringBuffer
+-                      );
+-      if (!EFI_ERROR (Status)) {
+-        OcurModelStringBufferSize = 0;
+-        Status = gRT->GetVariable (
+-                        gACPIOSFRModelStringVariableName,
+-                        &gACPIOSFRModelStringVariableGuid,
+-                        NULL,
+-                        &OcurModelStringBufferSize,
+-                        NULL
+-                        );
+-        if (Status != EFI_BUFFER_TOO_SMALL) {
+-          //
+-          // Variable must not be present on the system.
+-          //
+-          return EFI_UNSUPPORTED;
+-        }
+-
+-        //
+-        // Allocate memory for variable data.
+-        //
+-        OcurModelStringBuffer = AllocatePool (OcurModelStringBufferSize);
+-        Status = gRT->GetVariable (
+-                        gACPIOSFRModelStringVariableName,
+-                        &gACPIOSFRModelStringVariableGuid,
+-                        NULL,
+-                        &OcurModelStringBufferSize,
+-                        OcurModelStringBuffer
+-                        );
+-        if (!EFI_ERROR (Status)) {
+-          OcurRefDataBlockBufferSize = 0;
+-          Status = gRT->GetVariable (
+-                          gACPIOSFRRefDataBlockVariableName,
+-                          &gACPIOSFRRefDataBlockVariableGuid,
+-                          NULL,
+-                          &OcurRefDataBlockBufferSize,
+-                          NULL
+-                          );
+-          if (Status == EFI_BUFFER_TOO_SMALL) {
+-            //
+-            // Allocate memory for variable data.
+-            //
+-            OcurRefDataBlockBuffer = AllocatePool (OcurRefDataBlockBufferSize);
+-            Status = gRT->GetVariable (
+-                            gACPIOSFRRefDataBlockVariableName,
+-                            &gACPIOSFRRefDataBlockVariableGuid,
+-                            NULL,
+-                            &OcurRefDataBlockBufferSize,
+-                            OcurRefDataBlockBuffer
+-                            );
+-          }
+-          OsfrTable = (EFI_ACPI_OSFR_TABLE *) Table;
+-          //
+-          // Currently only one object is defined: OCUR_OSFR_TABLE.
+-          //
+-          OsfrTable->ObjectCount = 1;
+-          //
+-          // Initialize table length to fixed portion of the ACPI OSFR table.
+-          //
+-          OsfrTable->Header.Length = sizeof (EFI_ACPI_OSFR_TABLE_FIXED_PORTION);
+-          *(UINT32 *)((UINTN) OsfrTable + sizeof (EFI_ACPI_OSFR_TABLE_FIXED_PORTION)) = \
+-            (UINT32) (sizeof (EFI_ACPI_OSFR_TABLE_FIXED_PORTION) + sizeof (UINT32));
+-          pOcurObject = (EFI_ACPI_OSFR_OCUR_OBJECT *)((UINTN) OsfrTable + sizeof (EFI_ACPI_OSFR_TABLE_FIXED_PORTION) + \
+-            sizeof (UINT32));
+-          CopyMem (pOcurObject, &mOcurObjectTemplate, sizeof (EFI_ACPI_OSFR_OCUR_OBJECT));
+-          pOcurObject->ManufacturerNameStringOffset = (UINT32)((UINTN) pOcurObject - (UINTN) OsfrTable + \
+-            sizeof (EFI_ACPI_OSFR_OCUR_OBJECT));
+-          pOcurObject->ModelNameStringOffset = (UINT32)((UINTN) pOcurObject - (UINTN) OsfrTable + \
+-            sizeof (EFI_ACPI_OSFR_OCUR_OBJECT) + OcurMfgStringBufferSize);
+-          if (OcurRefDataBlockBufferSize > 0) {
+-            pOcurObject->MicrosoftReferenceOffset = (UINT32)((UINTN) pOcurObject - (UINTN) OsfrTable + \
+-              sizeof (EFI_ACPI_OSFR_OCUR_OBJECT) + OcurMfgStringBufferSize + OcurModelStringBufferSize);
+-          }
+-          CopyMem ((UINTN *)((UINTN) pOcurObject + sizeof (EFI_ACPI_OSFR_OCUR_OBJECT)), OcurMfgStringBuffer, \
+-            OcurMfgStringBufferSize);
+-          CopyMem ((UINTN *)((UINTN) pOcurObject + sizeof (EFI_ACPI_OSFR_OCUR_OBJECT) + OcurMfgStringBufferSize), \
+-            OcurModelStringBuffer, OcurModelStringBufferSize);
+-          if (OcurRefDataBlockBufferSize > 0) {
+-            CopyMem ((UINTN *)((UINTN) pOcurObject + sizeof (EFI_ACPI_OSFR_OCUR_OBJECT) + OcurMfgStringBufferSize + \
+-            OcurModelStringBufferSize),OcurRefDataBlockBuffer, OcurRefDataBlockBufferSize);
+-          }
+-          OsfrTable->Header.Length += (UINT32)(OcurMfgStringBufferSize + OcurModelStringBufferSize + OcurRefDataBlockBufferSize);
+-          OsfrTable->Header.Length += sizeof (EFI_ACPI_OSFR_OCUR_OBJECT) + sizeof (UINT32);
+-        }
+-      }
+-      gBS->FreePool (OcurMfgStringBuffer);
+-      gBS->FreePool (OcurModelStringBuffer);
+-      gBS->FreePool (OcurRefDataBlockBuffer);
+-      break;
+-
+-
+     case EFI_ACPI_WINDOWS_SMM_SECURITY_MITIGATION_TABLE_SIGNATURE:
+       WsmtTable = (EFI_ACPI_WSMT_TABLE *) Table;
+        //
+diff --git a/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/AcpiPlatform.inf b/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/AcpiPlatform.inf
+index 6f843d6d2e..eaa4b4e0cd 100644
+--- a/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/AcpiPlatform.inf
++++ b/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/AcpiPlatform.inf
+@@ -49,14 +49,10 @@
+   PchPlatformLib
+ 
+ [Guids]
+-  gACPIOSFRMfgStringVariableGuid
+   gEfiAcpiTableStorageGuid
+-  gACPIOSFRMfgStringVariableGuid
+   gEfiBoardFeaturesGuid
+   gEfiPlatformInfoGuid
+   gEfiNormalSetupGuid
+-  gACPIOSFRRefDataBlockVariableGuid
+-  gACPIOSFRModelStringVariableGuid
+   gEfiPlatformCpuInfoGuid
+   gEfiVlv2VariableGuid
+ 
+diff --git a/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/Osfr.h b/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/Osfr.h
+deleted file mode 100644
+index 4d98db7592..0000000000
+--- a/Platform/Intel/Vlv2TbltDevicePkg/AcpiPlatform/Osfr.h
++++ /dev/null
+@@ -1,56 +0,0 @@
+-/*++
+-
+-  Copyright (c) 2004  - 2014, Intel Corporation. All rights reserved.<BR>
+-                                                                                   
+-  SPDX-License-Identifier: BSD-2-Clause-Patent
+-
+-                                                                                   
+-
+-Module Name:
+-
+-  Osfr.h
+-
+-Abstract:
+-
+-  This file describes the contents of the ACPI OSFR Table.
+-
+---*/
+-
+-#ifndef _OSFR_H
+-#define _OSFR_H
+-
+-//
+-// Statements that include other files.
+-//
+-#include <IndustryStandard/Acpi10.h>
+-#include <IndustryStandard/Acpi20.h>
+-
+-#pragma pack (1)
+-
+-#define EFI_ACPI_OSFR_TABLE_REVISION            0x1
+-//#define EFI_ACPI_OSFR_TABLE_SIGNATURE           'RFSO'
+-#define EFI_ACPI_OSFR_TABLE_SIGNATURE           SIGNATURE_32('O', 'S', 'F', 'R')  //'RFSO'
+-
+-typedef struct {
+-  EFI_ACPI_DESCRIPTION_HEADER          Header;
+-  UINT32                               ObjectCount;
+-  UINT32                               TableDWORDs [64];
+-} EFI_ACPI_OSFR_TABLE;
+-
+-typedef struct {
+-  EFI_ACPI_DESCRIPTION_HEADER          Header;
+-  UINT32                               ObjectCount;
+-} EFI_ACPI_OSFR_TABLE_FIXED_PORTION;
+-
+-typedef struct {
+-  EFI_GUID  ObjectUUID;
+-  UINT32    Reserved1;
+-  UINT32    ManufacturerNameStringOffset;
+-  UINT32    ModelNameStringOffset;
+-  UINT32    Reserved2;
+-  UINT32    MicrosoftReferenceOffset;
+-} EFI_ACPI_OSFR_OCUR_OBJECT;
+-
+-#pragma pack ()
+-
+-#endif
+diff --git a/Platform/Intel/Vlv2TbltDevicePkg/Include/Guid/EfiVpdData.h b/Platform/Intel/Vlv2TbltDevicePkg/Include/Guid/EfiVpdData.h
+index e00e582ce1..73b6feac29 100644
+--- a/Platform/Intel/Vlv2TbltDevicePkg/Include/Guid/EfiVpdData.h
++++ b/Platform/Intel/Vlv2TbltDevicePkg/Include/Guid/EfiVpdData.h
+@@ -1,10 +1,12 @@
+ /*++
+ 
+   Copyright (c) 2004  - 2014, Intel Corporation. All rights reserved.<BR>
+-                                                                                   
++                                                                                   
++
+   SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+-                                                                                   
++                                                                                   
++
+ 
+ 
+ Module Name:
+@@ -99,42 +101,6 @@ extern CHAR16   gUuidVariableName[];
+ extern EFI_GUID gMb32Guid;
+ extern CHAR16   gMb32VariableName[];
+ 
+-//
+-// ACPI OSFR Manufacturer String.
+-//
+-// {72234213-0FD7-48a1-A59F-B41BC107FBCD}
+-//
+-#define  ACPI_OSFR_MFG_STRING_VARIABLE_GUID \
+-  {0x72234213, 0xfd7, 0x48a1, 0xa5, 0x9f, 0xb4, 0x1b, 0xc1, 0x7, 0xfb, 0xcd}
+-#define ACPI_OSFR_MFG_STRING_VARIABLE_NAME (L"OcurMfg")
+-#define ASCII_ACPI_OSFR_MF_STRING_VARIABLE_NAME ("OcurMfg")
+-
+-extern EFI_GUID gACPIOSFRMfgStringVariableGuid;
+-
+-
+-//
+-// ACPI OSFR Model String.
+-//
+-// {72234213-0FD7-48a1-A59F-B41BC107FBCD}
+-//
+-#define  ACPI_OSFR_MODEL_STRING_VARIABLE_GUID \
+-  {0x72234213, 0xfd7, 0x48a1, 0xa5, 0x9f, 0xb4, 0x1b, 0xc1, 0x7, 0xfb, 0xcd}
+-#define ACPI_OSFR_MODEL_STRING_VARIABLE_NAME (L"OcurModel")
+-#define ASCII_ACPI_OSFR_MODEL_STRING_VARIABLE_NAME ("OcurModel")
+-
+-extern EFI_GUID gACPIOSFRModelStringVariableGuid;
+-
+-//
+-// ACPI OSFR Reference Data Block.
+-//
+-// {72234213-0FD7-48a1-A59F-B41BC107FBCD}
+-//
+-#define  ACPI_OSFR_REF_DATA_BLOCK_VARIABLE_GUID \
+-  {0x72234213, 0xfd7, 0x48a1, 0xa5, 0x9f, 0xb4, 0x1b, 0xc1, 0x7, 0xfb, 0xcd}
+-#define ACPI_OSFR_REF_DATA_BLOCK_VARIABLE_NAME (L"OcurRef")
+-#define ASCII_ACPI_OSFR_REF_DATA_BLOCK_VARIABLE_NAME ("OcurRef")
+-extern EFI_GUID gACPIOSFRRefDataBlockVariableGuid;
+-
+ //
+ // Manufacturing mode GUID
+ //
+diff --git a/Platform/Intel/Vlv2TbltDevicePkg/PlatformPkg.dec b/Platform/Intel/Vlv2TbltDevicePkg/PlatformPkg.dec
+index 8745a5b2ab..4812a358c0 100644
+--- a/Platform/Intel/Vlv2TbltDevicePkg/PlatformPkg.dec
++++ b/Platform/Intel/Vlv2TbltDevicePkg/PlatformPkg.dec
+@@ -44,9 +44,6 @@
+   gEfiSetupVariableGuid                   = { 0xec87d643, 0xeba4, 0x4bb5, { 0xa1, 0xe5, 0x3f, 0x3e, 0x36, 0xb2, 0x0d, 0xa9 } }
+   gEfiPlatformInfoGuid                    = { 0x1e2acc41, 0xe26a, 0x483d, { 0xaf, 0xc7, 0xa0, 0x56, 0xc3, 0x4e, 0x08, 0x7b } }
+   gMfgModeVariableGuid                    = { 0xEF14FD78, 0x0793, 0x4e2b, { 0xAC, 0x6D, 0x06, 0x28, 0x47, 0xE0, 0x17, 0x91 } }
+-  gACPIOSFRMfgStringVariableGuid          = { 0x72234213, 0x0fd7, 0x48a1, { 0xa5, 0x9f, 0xb4, 0x1b, 0xc1, 0x07, 0xfb, 0xcd } }
+-  gACPIOSFRRefDataBlockVariableGuid       = { 0x72234213, 0x0fd7, 0x48a1, { 0xa5, 0x9f, 0xb4, 0x1b, 0xc1, 0x07, 0xfb, 0xcd } }
+-  gACPIOSFRModelStringVariableGuid        = { 0xca1bcad9, 0xe021, 0x4547, { 0xa1, 0xb0, 0x5b, 0x22, 0xc7, 0xf6, 0x87, 0xf4 } }
+   gEfiAcpiTableStorageGuid                = { 0x7e374e25, 0x8e01, 0x4fee, { 0x87, 0xf2, 0x39, 0x0c, 0x23, 0xc6, 0x06, 0xcd } }
+   gEfiPciLanInfoGuid                      = { 0x0d9a1427, 0xe02a, 0x437d, { 0x92, 0x6b, 0xaa, 0x52, 0x1f, 0xd7, 0x22, 0xba } }
+   gEfiNormalSetupGuid                     = { 0xec87d643, 0xeba4, 0x4bb5, { 0xa1, 0xe5, 0x3f, 0x3e, 0x36, 0xb2, 0x0d, 0xa9 } }
+-- 
+2.24.0.windows.2
+

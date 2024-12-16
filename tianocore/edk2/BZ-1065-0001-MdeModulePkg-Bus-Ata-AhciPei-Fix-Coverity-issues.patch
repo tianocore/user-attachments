@@ -1,0 +1,32 @@
+From 62a952a47abcb753b74c0b3f09839cd41ed1eb84 Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Thu, 22 Dec 2022 13:42:39 +0530
+Subject: [PATCH] MdeModulePkg/Bus/Ata/AhciPei: Fix Coverity issues
+
+  - Remove redundant code
+
+https://bugzilla.tianocore.org/show_bug.cgi?id=4201
+
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c b/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c
+index 42e4203a22..6013af858d 100644
+--- a/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c
++++ b/MdeModulePkg/Bus/Ata/AhciPei/AhciPeiS3.c
+@@ -66,10 +66,6 @@ AhciS3GetEumeratePorts (
+     }
+   }
+ 
+-  if (S3InitDevices == NULL) {
+-    return 0;
+-  }
+-
+   //
+   // Only enumerate the ports that exist in the device list.
+   //
+-- 
+2.36.1.windows.1
+

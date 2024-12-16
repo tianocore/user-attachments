@@ -1,0 +1,72 @@
+<domain type='xen' id='4' xmlns:xen='http://libvirt.org/schemas/domain/xen/1.0'>
+  <name>ovmf-test</name>
+  <uuid>1597cad1-71da-4bcc-adb6-28b8a8b5ce4d</uuid>
+  <metadata>
+    <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+      <libosinfo:os id="http://suse.com/sle/15.3"/>
+    </libosinfo:libosinfo>
+  </metadata>
+  <memory unit='KiB'>4194304</memory>
+  <currentMemory unit='KiB'>4194304</currentMemory>
+  <vcpu placement='static'>4</vcpu>
+  <os>
+    <type arch='x86_64' machine='xenfv'>hvm</type>
+    <loader readonly='yes' type='pflash'>/usr/share/qemu/ovmf-x86_64-xen-4m.bin</loader>
+    <kernel>/vm_images/test/linux</kernel>
+    <initrd>/vm_images/test/initrd</initrd>
+    <cmdline>install=http://virt1/install/sles15sp3/x86_64</cmdline>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>destroy</on_reboot>
+  <on_crash>destroy</on_crash>
+  <xen:commandline>
+    <xen:arg value='-global'/>
+    <xen:arg value='isa-debugcon.iobase=0x402'/>
+    <xen:arg value='-debugcon'/>
+    <xen:arg value='file:/tmp/ovmf-test.log'/>
+  </xen:commandline>
+  <devices>
+    <emulator>/usr/lib/xen/bin/qemu-system-i386</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='unsafe'/>
+      <source file='/vm_images/test/disk.qcow2'/>
+      <target dev='hda' bus='ide'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
+    <controller type='xenbus' index='0'/>
+    <controller type='ide' index='0'/>
+    <interface type='bridge'>
+      <mac address='00:16:3e:ec:6c:47'/>
+      <source bridge='br0'/>
+      <target dev='vif4.0-emu'/>
+    </interface>
+    <serial type='pty'>
+      <source path='/dev/pts/6'/>
+      <target port='0'/>
+      <alias name='serial0'/>
+    </serial>
+    <console type='pty' tty='/dev/pts/6'>
+      <source path='/dev/pts/6'/>
+      <target type='serial' port='0'/>
+      <alias name='serial0'/>
+    </console>
+    <input type='tablet' bus='usb'/>
+    <input type='mouse' bus='ps2'/>
+    <input type='keyboard' bus='ps2'/>
+    <graphics type='vnc' port='5902' autoport='yes' listen='127.0.0.1'>
+      <listen type='address' address='127.0.0.1'/>
+    </graphics>
+    <video>
+      <model type='vga' vram='16384' heads='1' primary='yes'/>
+    </video>
+    <memballoon model='xen'/>
+  </devices>
+</domain>
+

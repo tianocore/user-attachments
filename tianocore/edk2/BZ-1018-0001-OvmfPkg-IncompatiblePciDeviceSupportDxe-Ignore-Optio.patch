@@ -1,0 +1,71 @@
+From 68fc9ce48c96b027365aea42a906f7bbedfcc13e Mon Sep 17 00:00:00 2001
+From: "Lee, Chun-Yi" <jlee@suse.com>
+Date: Thu, 25 Aug 2022 21:13:51 +0800
+Subject: [PATCH] OvmfPkg/IncompatiblePciDeviceSupportDxe: Ignore OptionRom in
+ Sev guest
+
+This patch is similar to the c477b2783f patch for Td guest.
+
+Host VMM may inject OptionRom which is untrusted in Sev guest. So PCI
+OptionRom needs to be ignored if it is Sev guest. According to
+"Table 20. ACPI 2.0 & 3.0 QWORD Address Space Descriptor Usage"
+PI spec 1.7, type-specific flags can be set to 0 when Address
+Translation Offset == 6 to skip device option ROM.
+
+Without this patch, Sev guest may shows invalid MMIO opcode error
+as following:
+
+Invalid MMIO opcode (F6)
+ASSERT /home/abuild/rpmbuild/BUILD/edk2-edk2-stable202202/OvmfPkg/Library/VmgExitLib/VmgExitVcHandler.c(1041): ((BOOLEAN)(0==1))
+
+Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+---
+ .../IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.c   | 5 +++--
+ .../IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.inf | 1 +
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/OvmfPkg/IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.c b/OvmfPkg/IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.c
+index 2d385d26ef..269e6c2b91 100644
+--- a/OvmfPkg/IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.c
++++ b/OvmfPkg/IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.c
+@@ -16,6 +16,7 @@
+ 
+ #include <Library/DebugLib.h>
+ #include <Library/MemoryAllocationLib.h>
++#include <Library/MemEncryptSevLib.h>
+ #include <Library/PcdLib.h>
+ #include <Library/UefiBootServicesTableLib.h>
+ 
+@@ -264,7 +265,7 @@ CheckDevice (
+   //
+   // In Td guest OptionRom is not allowed.
+   //
+-  if (TdIsEnabled ()) {
++  if (TdIsEnabled () || MemEncryptSevIsEnabled()) {
+     Length += sizeof mOptionRomConfiguration;
+   }
+ 
+@@ -286,7 +287,7 @@ CheckDevice (
+   CopyMem (Ptr, &mMmio64Configuration, sizeof mMmio64Configuration);
+   Length = sizeof mMmio64Configuration;
+ 
+-  if (TdIsEnabled ()) {
++  if (TdIsEnabled () || MemEncryptSevIsEnabled()) {
+     CopyMem (Ptr + Length, &mOptionRomConfiguration, sizeof mOptionRomConfiguration);
+     Length += sizeof mOptionRomConfiguration;
+   }
+diff --git a/OvmfPkg/IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.inf b/OvmfPkg/IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.inf
+index c3e6bb9447..be2b883c40 100644
+--- a/OvmfPkg/IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.inf
++++ b/OvmfPkg/IncompatiblePciDeviceSupportDxe/IncompatiblePciDeviceSupport.inf
+@@ -25,6 +25,7 @@
+ 
+ [LibraryClasses]
+   DebugLib
++  MemEncryptSevLib
+   MemoryAllocationLib
+   PcdLib
+   UefiBootServicesTableLib
+-- 
+2.12.3
+

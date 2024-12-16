@@ -1,0 +1,96 @@
+From 8e1d07fea658697c4307e08e2e6e2bab5d9a2cad Mon Sep 17 00:00:00 2001
+From: John Mathews <john.mathews@intel.com>
+Date: Tue, 28 Jul 2020 13:10:06 -0700
+Subject: [PATCH] Fixed incorrect entropy calculation.
+
+Change-Id: I6a6e3dd733c49e880c4701844e479dd88406d6fa
+Signed-off-by: John Mathews <john.mathews@intel.com>
+---
+
+diff --git a/Platform/Intel/MinPlatformPkg/Tcg/Library/TpmPlatformHierarchyLib/TpmPlatformHierarchyLib.c b/Platform/Intel/MinPlatformPkg/Tcg/Library/TpmPlatformHierarchyLib/TpmPlatformHierarchyLib.c
+index 41ddb26..ef6269f 100644
+--- a/Platform/Intel/MinPlatformPkg/Tcg/Library/TpmPlatformHierarchyLib/TpmPlatformHierarchyLib.c
++++ b/Platform/Intel/MinPlatformPkg/Tcg/Library/TpmPlatformHierarchyLib/TpmPlatformHierarchyLib.c
+@@ -5,7 +5,7 @@
+     Authorization Value (platformAuth) and Platform Hierarchy Authorization
+     Policy (platformPolicy) can be defined through this function.
+ 
+-    Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
++    Copyright (c) 2019 - 2020, Intel Corporation. All rights reserved.<BR>
+     SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+     @par Specification Reference:
+@@ -54,7 +54,7 @@
+   UINT8       *Ptr;
+ 
+   Status = EFI_NOT_READY;
+-  BlockCount = Length / 64;
++  BlockCount = Length / 16;
+   Ptr = (UINT8 *)Entropy;
+ 
+   //
+@@ -65,10 +65,10 @@
+     if (EFI_ERROR (Status)) {
+       return Status;
+     }
+-    CopyMem (Ptr, Seed, 64);
++    CopyMem (Ptr, Seed, 16);
+ 
+     BlockCount--;
+-    Ptr = Ptr + 64;
++    Ptr = Ptr + 16;
+   }
+ 
+   //
+@@ -78,7 +78,7 @@
+   if (EFI_ERROR (Status)) {
+     return Status;
+   }
+-  CopyMem (Ptr, Seed, (Length % 64));
++  CopyMem (Ptr, Seed, (Length % 16));
+ 
+   return Status;
+ }
+diff --git a/Platform/Intel/MinPlatformPkg/Tcg/Tcg2PlatformPei/Tcg2PlatformPei.c b/Platform/Intel/MinPlatformPkg/Tcg/Tcg2PlatformPei/Tcg2PlatformPei.c
+index 3a2d7d3..f3edbd7 100644
+--- a/Platform/Intel/MinPlatformPkg/Tcg/Tcg2PlatformPei/Tcg2PlatformPei.c
++++ b/Platform/Intel/MinPlatformPkg/Tcg/Tcg2PlatformPei/Tcg2PlatformPei.c
+@@ -1,6 +1,6 @@
+ /** @file
+ 
+-Copyright (c) 2017, Intel Corporation. All rights reserved.<BR>
++Copyright (c) 2017 - 2020, Intel Corporation. All rights reserved.<BR>
+ SPDX-License-Identifier: BSD-2-Clause-Patent
+ 
+ **/
+@@ -42,7 +42,7 @@
+   UINT8       *Ptr;
+ 
+   Status = EFI_NOT_READY;
+-  BlockCount = Length / 64;
++  BlockCount = Length / 16;
+   Ptr = (UINT8 *)Entropy;
+ 
+   //
+@@ -53,10 +53,10 @@
+     if (EFI_ERROR(Status)) {
+       return Status;
+     }
+-    CopyMem(Ptr, Seed, 64);
++    CopyMem(Ptr, Seed, 16);
+ 
+     BlockCount--;
+-    Ptr = Ptr + 64;
++    Ptr = Ptr + 16;
+   }
+ 
+   //
+@@ -66,7 +66,7 @@
+   if (EFI_ERROR(Status)) {
+     return Status;
+   }
+-  CopyMem(Ptr, Seed, (Length % 64));
++  CopyMem(Ptr, Seed, (Length % 16));
+ 
+   return Status;
+ }

@@ -1,0 +1,37 @@
+From 2fcf297e06328cd25e92756b7fd13ed39cb9231b Mon Sep 17 00:00:00 2001
+Message-Id: <2fcf297e06328cd25e92756b7fd13ed39cb9231b.1659749541.git.shengfengx.xue@intel.com>
+From: Shengfengx Xue <shengfengx.xue@intel.com>
+Date: Sat, 6 Aug 2022 09:28:21 +0800
+Subject: [PATCH] ShellPkg/SmbiosView: Smbiosview tool is not show Extended
+ Speed and Extended Configured Memory Speed in type 17.
+
+REF:https://bugzilla.tianocore.org/show_bug.cgi?id=4014
+
+if Configured Memory Speed is 65,535 MT/s or greater,
+and the actual speed is stored in the Extended Configured Memory Speed
+field. but current Smbiosview have no this logic.
+
+Signed-off-by: Shengfengx Xue <shengfengx.xue@intel.com>
+---
+ .../UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c        | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+index a0ee286c9a..0ab9f5063a 100644
+--- a/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
++++ b/ShellPkg/Library/UefiShellDebug1CommandsLib/SmbiosView/PrintInfo.c
+@@ -878,6 +878,11 @@ SmbiosPrintStructure (
+         }
+       }
+ 
++      if (AE_SMBIOS_VERSION (0x3, 0x3) && (Struct->Hdr->Length > 0x54)) {
++        PRINT_STRUCT_VALUE_H (Struct, Type17, ExtendedSpeed);
++        PRINT_STRUCT_VALUE_H (Struct, Type17, ExtendedConfiguredMemorySpeed);
++      }
++
+       break;
+ 
+     //
+-- 
+2.26.2.windows.1
+

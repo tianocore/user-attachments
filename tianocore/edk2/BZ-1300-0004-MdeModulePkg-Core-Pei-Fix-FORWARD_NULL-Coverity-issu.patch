@@ -1,0 +1,44 @@
+From ba6869a0da2ec391a947d97e50c661ba6b9c519f Mon Sep 17 00:00:00 2001
+From: Ranbir Singh <Ranbir.Singh3@Dell.com>
+Date: Tue, 24 Jan 2023 15:10:07 +0530
+Subject: [PATCH 4/4] MdeModulePkg/Core/Pei: Fix FORWARD_NULL Coverity issue
+
+The PeiDispatcher function contains an
+
+ASSERT (PeimEntryPoint != NULL);
+
+check, but it is applicable only in DEBUG mode. In RELEASE mode,
+the code continues further to invoke function pointer call even
+if it remains set to NULL for whatever reason and this will lead
+to CRASH.
+
+To avoid unconditional call, add a NULL check on PeimEntryPoint.
+
+Cc: Dandan Bi <dandan.bi@intel.com>
+Cc: Liming Gao <gaoliming@byosoft.com.cn>
+Cc: Debkumar De <debkumar.de@intel.com>
+Cc: Catharine West <catharine.west@intel.com>
+REF: https://bugzilla.tianocore.org/show_bug.cgi?id=4300
+Signed-off-by: Ranbir Singh <Ranbir.Singh3@Dell.com>
+---
+ MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c b/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
+index 3689bbaf2aa3..54b685254cd5 100644
+--- a/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
++++ b/MdeModulePkg/Core/Pei/Dispatcher/Dispatcher.c
+@@ -1613,6 +1613,10 @@ PeiDispatcher (
+               }
+ 
+               ASSERT (PeimEntryPoint != NULL);
++              if (PeimEntryPoint != NULL) {
++                continue;
++              }
++
+               PeimEntryPoint (PeimFileHandle, (const EFI_PEI_SERVICES **)PeiServices);
+               // PERF_END (PeiServices, L"PEIM", PeimFileHandle, 0);
+ 
+-- 
+2.36.1.windows.1
+
